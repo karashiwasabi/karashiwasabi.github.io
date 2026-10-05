@@ -4,144 +4,808 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="google-site-verification" content="PFRdOaNa6WskdaOeknn25M0Lw6TsZ5F0srdl46PWHEY" />
-  <title>Line-aligned - Google Docs™ Precision Typesetting</title>
+  <title>Line-aligned | Google Docs™ Precision Typesetting</title>
   <style>
     :root {
       --primary: #1a73e8;
-      --primary-dark: #1557b0;
+      --primary-hover: #1557b0;
+      --primary-light: #e8f0fe;
       --text: #202124;
       --text-muted: #5f6368;
       --bg: #ffffff;
       --bg-alt: #f8f9fa;
       --border: #dadce0;
+      --card-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      --transition: all 0.25s ease;
     }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "BIZ UDPGothic", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "BIZ UDPGothic", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
       color: var(--text);
       line-height: 1.6;
       background: var(--bg);
+      -webkit-font-smoothing: antialiased;
     }
+
     header {
+      position: sticky;
+      top: 0;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
       border-bottom: 1px solid var(--border);
-      padding: 1rem 2rem;
+      padding: 0.85rem 2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: #fff;
+      z-index: 100;
     }
-    .logo {
-      font-size: 1.3rem;
-      font-weight: 700;
-      color: var(--primary);
-      text-decoration: none;
+
+    .brand {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-    }
-    nav a {
-      margin-left: 1.5rem;
-      color: var(--text-muted);
+      gap: 0.75rem;
       text-decoration: none;
-      font-size: 0.95rem;
-    }
-    nav a:hover { color: var(--primary); }
-    .hero {
-      padding: 4rem 2rem;
-      text-align: center;
-      background: linear-gradient(180deg, #f8fafd 0%, #ffffff 100%);
-    }
-    .hero h1 {
-      font-size: 2.5rem;
-      font-weight: 800;
-      margin-bottom: 1rem;
       color: var(--text);
     }
-    .hero p {
-      font-size: 1.2rem;
-      color: var(--text-muted);
-      max-width: 700px;
-      margin: 0 auto 2rem auto;
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #1a73e8, #34a853);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 800;
+      font-size: 1.1rem;
     }
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 2rem;
+
+    .logo-text {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
     }
-    .feature-card {
+
+    .nav-group {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .lang-switcher {
+      display: flex;
       background: var(--bg-alt);
       border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
+      border-radius: 20px;
+      padding: 3px;
+      gap: 2px;
     }
-    .feature-card h3 {
+
+    .lang-btn {
+      border: none;
+      background: transparent;
+      padding: 4px 12px;
+      border-radius: 16px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .lang-btn.active {
+      background: #fff;
       color: var(--primary);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+    }
+
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      padding: 4rem 1rem 3rem;
+      background: linear-gradient(180deg, #f4f8fe 0%, #ffffff 100%);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero-badge {
+      display: inline-block;
+      padding: 6px 16px;
+      background: var(--primary-light);
+      color: var(--primary);
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 1.25rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(1.8rem, 4vw, 2.75rem);
+      font-weight: 800;
+      line-height: 1.3;
+      margin-bottom: 1rem;
+      letter-spacing: -0.5px;
+    }
+
+    .hero p {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: var(--text-muted);
+      max-width: 720px;
+      margin: 0 auto 2rem;
+    }
+
+    /* Gallery Section */
+    .gallery-section {
+      padding: 3.5rem 0;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .section-title h2 {
+      font-size: 1.85rem;
+      font-weight: 700;
       margin-bottom: 0.5rem;
     }
-    footer {
+
+    .section-title p {
+      color: var(--text-muted);
+      font-size: 1rem;
+    }
+
+    .comparison-container {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: var(--card-shadow);
+      text-align: center;
+    }
+
+    .tab-nav {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 1.5rem;
+    }
+
+    .tab-btn {
+      padding: 8px 18px;
+      border: 1px solid var(--border);
+      background: var(--bg-alt);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .tab-btn:hover {
+      background: #edf2fc;
+      color: var(--primary);
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    .image-viewer {
+      position: relative;
+      overflow: hidden;
+      border-radius: 8px;
+      background: #f1f3f4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: zoom-in;
+    }
+
+    .image-viewer img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      transition: opacity 0.2s ease;
+    }
+
+    .gallery-caption {
+      margin-top: 1rem;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+
+    /* Features Section */
+    .features-section {
+      padding: 3.5rem 0;
+      background: var(--bg-alt);
       border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .feature-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.75rem;
+      box-shadow: var(--card-shadow);
+      transition: transform 0.2s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-3px);
+    }
+
+    .feature-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .feature-card h3 {
+      font-size: 1.15rem;
+      margin-bottom: 0.6rem;
+      color: var(--text);
+    }
+
+    .feature-card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.55;
+    }
+
+    /* Specs & Limitations */
+    .specs-section {
+      padding: 3.5rem 0;
+    }
+
+    .specs-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
       padding: 2rem;
+      box-shadow: var(--card-shadow);
+    }
+
+    .specs-card h3 {
+      font-size: 1.3rem;
+      margin-bottom: 1.25rem;
+      color: var(--primary);
+    }
+
+    .specs-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .specs-list li {
+      padding-left: 1.5rem;
+      position: relative;
+    }
+
+    .specs-list li::before {
+      content: "•";
+      color: var(--primary);
+      font-size: 1.5rem;
+      position: absolute;
+      left: 0;
+      top: -3px;
+    }
+
+    .spec-item-title {
+      font-weight: 700;
+      display: block;
+      margin-bottom: 0.25rem;
+      color: var(--text);
+    }
+
+    .spec-item-desc {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.85);
+      cursor: zoom-out;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal img {
+      max-width: 95%;
+      max-height: 95%;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+
+    /* Footer */
+    footer {
+      background: #fff;
+      border-top: 1px solid var(--border);
+      padding: 3rem 1.5rem 2rem;
       text-align: center;
       color: var(--text-muted);
-      font-size: 0.85rem;
-      background: var(--bg-alt);
+      font-size: 0.9rem;
     }
-    footer a { color: var(--primary); text-decoration: none; }
-    .trademark {
-      margin-top: 1rem;
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--primary);
+    }
+
+    .trademark-notice {
+      max-width: 800px;
+      margin: 1.5rem auto;
       font-size: 0.8rem;
       color: #80868b;
+      line-height: 1.5;
+    }
+
+    /* Multi-language Dynamic Visibility */
+    .lang-content { display: none; }
+    body.lang-ja .lang-content.ja { display: block; }
+    body.lang-en .lang-content.en { display: block; }
+    body.lang-zh .lang-content.zh { display: block; }
+    body.lang-ko .lang-content.ko { display: block; }
+
+    /* Inline for spans/titles */
+    span.lang-content { display: none; }
+    body.lang-ja span.lang-content.ja { display: inline; }
+    body.lang-en span.lang-content.en { display: inline; }
+    body.lang-zh span.lang-content.zh { display: inline; }
+    body.lang-ko span.lang-content.ko { display: inline; }
+
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
+      }
+      .lang-btn {
+        padding: 3px 8px;
+        font-size: 0.75rem;
+      }
+      .hero {
+        padding: 2.5rem 1rem 2rem;
+      }
+      .specs-card {
+        padding: 1.25rem;
+      }
     }
   </style>
 </head>
-<body>
+<body class="lang-ja">
+
+  <!-- Header -->
   <header>
-    <a href="index.html" class="logo">Line-aligned</a>
-    <nav>
-      <a href="index.html">ホーム</a>
-      <a href="privacy.html">プライバシーポリシー</a>
-      <a href="terms.html">利用規約</a>
-    </nav>
+    <a href="#" class="brand">
+      <div class="logo-icon">L</div>
+      <div class="logo-text">Line-aligned</div>
+    </a>
+    <div class="nav-group">
+      <div class="lang-switcher">
+        <button class="lang-btn active" onclick="setLang('ja')">日本語</button>
+        <button class="lang-btn" onclick="setLang('en')">English</button>
+        <button class="lang-btn" onclick="setLang('zh')">中文</button>
+        <button class="lang-btn" onclick="setLang('ko')">한국어</button>
+      </div>
+    </div>
   </header>
 
+  <!-- Hero Section -->
   <section class="hero">
-    <h1>Line-aligned</h1>
-    <p>Google Docs™ をベースライングリッドで整列し、手書きしやすいルーズリーフ・学習ノート形式に自動レイアウトするアドオンです。</p>
+    <div class="hero-badge">
+      <span class="lang-content ja">Google Workspace Marketplace アドオン</span>
+      <span class="lang-content en">Google Workspace Marketplace Add-on</span>
+      <span class="lang-content zh">Google Workspace Marketplace 扩展插件</span>
+      <span class="lang-content ko">Google Workspace Marketplace 확장 프로그램</span>
+    </div>
+
+    <h1>
+      <span class="lang-content ja">Google ドキュメント™を、美しい「学習用ノート」へ自動組版</span>
+      <span class="lang-content en">Automatically typeset Google Docs™ into beautiful "study notebooks"</span>
+      <span class="lang-content zh">将 Google 文档™ 自动排版为美观的“学习笔记”</span>
+      <span class="lang-content ko">Google 문서™를 아름다운 '학습용 노트'로 자동 조판</span>
+    </h1>
+
+    <p>
+      <span class="lang-content ja">ノート罫線と文字を1mmの狂いもなく正確に一致。B5・A4ルーズリーフに完全同期した美しい印刷用PDFを1クリックで生成します。</span>
+      <span class="lang-content en">Aligns text and ruling lines with millimeter precision. Generates clean, print-ready PDFs perfectly synchronized with standard B5/A4 loose-leaf paper in one click.</span>
+      <span class="lang-content zh">文字与笔记本横线毫米级精准对齐。一键生成完美适配 B5 / A4 活页纸的高清晰度打印版 PDF。</span>
+      <span class="lang-content ko">노트 줄눈과 글자를 1mm 오차도 없이 정확하게 일치. B5/A4 루즈리프에 완벽 동기화된 인쇄용 PDF를 한 번의 클릭으로 생성합니다.</span>
+    </p>
   </section>
 
-  <main class="container">
-    <section>
-      <h2 style="margin-bottom: 1.5rem;">主な特長</h2>
-      <div class="feature-card">
-        <h3>1. ベースライングリッドによる「文字と罫線」の完全同期</h3>
-        <p>ドキュメント全体のベースライン（行の標準高さ）と背景の罫線ピッチ（7mm / 6mm等）を数学的に完全一致させます。文字サイズやフォントが変わっても、すべての行底面が自動的に罫線上にピタッと揃います。</p>
+  <!-- Gallery Section -->
+  <section class="gallery-section container">
+    <div class="section-title">
+      <h2>
+        <span class="lang-content ja">Google ドキュメント™ と Line-aligned 組版後の比較</span>
+        <span class="lang-content en">Comparison between Google Docs™ and Line-aligned Typesetting</span>
+        <span class="lang-content zh">Google 文档™ 与 Line-aligned 排版后的对比</span>
+        <span class="lang-content ko">Google 문서™와 Line-aligned 조판 후 비교</span>
+      </h2>
+      <p>
+        <span class="lang-content ja">（左：Google ドキュメント™ 出力 / 右：Line-aligned 組版出力）※画像をクリックすると拡大表示できます</span>
+        <span class="lang-content en">(Left: Standard Google Docs™ output / Right: Line-aligned typeset output) *Click image to zoom</span>
+        <span class="lang-content zh">（左：Google 文档™ 原版输出 / 右：Line-aligned 优化排版输出）※点击图片可放大查看</span>
+        <span class="lang-content ko">(왼쪽: Google 문서™ 출력 / 오른쪽: Line-aligned 조판 출력) ※이미지를 클릭하면 확대됩니다</span>
+      </p>
+    </div>
+
+    <div class="comparison-container">
+      <div class="tab-nav">
+        <button class="tab-btn active" onclick="switchPage(1)">Page 1: <span class="lang-content ja">総合検証</span><span class="lang-content en">Overview</span><span class="lang-content zh">综合验证</span><span class="lang-content ko">종합 검증</span></button>
+        <button class="tab-btn" onclick="switchPage(2)">Page 2: <span class="lang-content ja">表・レイアウト</span><span class="lang-content en">Tables & Layout</span><span class="lang-content zh">表格与布局</span><span class="lang-content ko">표 & 레이아웃</span></button>
+        <button class="tab-btn" onclick="switchPage(3)">Page 3: <span class="lang-content ja">応用組版</span><span class="lang-content en">Applied Layout</span><span class="lang-content zh">应用排版</span><span class="lang-content ko">응용 조판</span></button>
+        <button class="tab-btn" onclick="switchPage(4)">Page 4: <span class="lang-content ja">2段組レイアウト</span><span class="lang-content en">Two-Column Layout</span><span class="lang-content zh">双栏排版</span><span class="lang-content ko">2단 단 분할</span></button>
+        <button class="tab-btn" onclick="switchPage(5)">Page 5: <span class="lang-content ja">総合演習問題</span><span class="lang-content en">Exercise Notebook</span><span class="lang-content zh">综合练习题</span><span class="lang-content ko">종합 연습문제</span></button>
       </div>
 
-      <div class="feature-card">
-        <h3>2. 見出し・構造の自動解析とグリッド調和</h3>
-        <p>タイトル、見出し、箇条書きなどのテキスト要素を自動解析し、罫線グリッドを崩さない最適な余白と行送りを自動適用します。</p>
+      <div class="image-viewer" onclick="openModal()">
+        <img id="mainImage" src="images/page_01_比較（左_GoogleDocs_右_Line-aligned）.png" alt="Comparison preview" />
       </div>
 
-      <div class="feature-card">
-        <h3>3. 製本・バインダー保管に配慮した余白設計</h3>
-        <p>ルーズリーフのパンチ穴やリング、ホチキス留めによる文字欠け・図表欠けを防ぐため、十分な余白バランスを確保しています。</p>
+      <div class="gallery-caption">
+        <span id="captionText">Page 1: 見出し・本文・箇条書き・数式がルーズリーフ罫線に美しくスナップ</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features-section">
+    <div class="container">
+      <div class="section-title">
+        <h2>
+          <span class="lang-content ja">主な機能・特徴</span>
+          <span class="lang-content en">Key Features</span>
+          <span class="lang-content zh">核心功能与特色</span>
+          <span class="lang-content ko">주요 기능 및 특징</span>
+        </h2>
       </div>
 
-      <div class="feature-card">
-        <h3>4. 安心のデータ非保持（プライバシー重視）</h3>
-        <p>ドキュメントの内容は外部サーバーに永続保存されることは一切ありません。組版レンダリング処理のみに使用され、処理完了後に破棄されます。</p>
-      </div>
-    </section>
-  </main>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">📏</div>
+          <h3>
+            <span class="lang-content ja">罫線完全同期エンジン</span>
+            <span class="lang-content en">Ruling Line Synchronization</span>
+            <span class="lang-content zh">横线精准吸附引擎</span>
+            <span class="lang-content ko">줄눈 완벽 동기화 엔진</span>
+          </h3>
+          <p>
+            <span class="lang-content ja">行間や文字高さを自動再計算し、市販のルーズリーフ（A罫・B罫など）の横罫線に文字ベースラインをミリ単位で整列させます。</span>
+            <span class="lang-content en">Automatically recalculates line spacing and font metrics to snap text baselines perfectly onto notebook lines (Rule A/B).</span>
+            <span class="lang-content zh">自动重新计算行间距与字体尺寸，使文字基准线精确贴合市售活页纸横线。</span>
+            <span class="lang-content ko">줄 간격과 글자 높이를 자동 재계산하여, 시판 루즈리프 가로 줄눈에 글자 기준선을 밀리미터 단위로 정렬합니다.</span>
+          </p>
+        </div>
 
+        <div class="feature-card">
+          <div class="feature-icon">📐</div>
+          <h3>
+            <span class="lang-content ja">グリッドスナップ配置</span>
+            <span class="lang-content en">Grid Snap Layout</span>
+            <span class="lang-content zh">网格智能对齐布局</span>
+            <span class="lang-content ko">그리드 스냅 레이아웃</span>
+          </h3>
+          <p>
+            <span class="lang-content ja">挿入された表や画像を罫線グリッドの高さ単位に自動スナップ。全体の段落リズムを崩すことなく美しく収めます。</span>
+            <span class="lang-content en">Snaps tables and figures into notebook grid heights, preserving overall paragraph rhythm and aesthetics.</span>
+            <span class="lang-content zh">将表格与图片自动对齐到横线网格高度单位，不破坏整体排版节奏与阅读美感。</span>
+            <span class="lang-content ko">삽입된 표와 이미지를 줄눈 격자 높이에 자동 맞춤하여 전체 조판 리듬을 유지합니다.</span>
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">📝</div>
+          <h3>
+            <span class="lang-content ja">手書き学習ノート最適化</span>
+            <span class="lang-content en">Study Notebook Optimization</span>
+            <span class="lang-content zh">专为手写与复习优化</span>
+            <span class="lang-content ko">손글씨 학습 노트 최적화</span>
+          </h3>
+          <p>
+            <span class="lang-content ja">文字の追記やメモが書き込みやすい十分な行間とマージンを確保。暗記シートや問題演習の印刷に最適です。</span>
+            <span class="lang-content en">Provides ample margins and spacing tailored for handwriting, making it ideal for self-study and exercise sheets.</span>
+            <span class="lang-content zh">保留充足的行间空白与页边距，方便手写注释与做题记录，打造最强复习手写笔记本。</span>
+            <span class="lang-content ko">필기 추가나 메모를 적기 편한 여백과 줄 간격을 확보하여, 복습 및 문제 풀이 인쇄에 최적화되어 있습니다.</span>
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🖨️</div>
+          <h3>
+            <span class="lang-content ja">印刷用高品位PDF出力</span>
+            <span class="lang-content en">Direct High-Quality PDF</span>
+            <span class="lang-content zh">高品质矢量 PDF 导出</span>
+            <span class="lang-content ko">고품질 인쇄용 PDF 출력</span>
+          </h3>
+          <p>
+            <span class="lang-content ja">画面表示用フォントに依存せず、印刷に最適な標準フォントで高品質なベクターPDFを直接ダウンロードできます。</span>
+            <span class="lang-content en">Outputs high-resolution vector PDFs using standard fonts optimized for sharp paper printing.</span>
+            <span class="lang-content zh">无需依赖本地特殊字体，直接导出适合实体打印的高清晰度矢量 PDF 文件。</span>
+            <span class="lang-content ko">화면용 폰트에 구애받지 않고, 인쇄에 가장 적합한 표준 폰트로 선명한 벡터 PDF를 다운로드할 수 있습니다.</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Specifications & Limitations Section -->
+  <section class="specs-section container">
+    <div class="specs-card">
+      <div class="lang-content ja">
+        <h3>仕様・制限事項</h3>
+        <p style="margin-bottom: 1.5rem; color: var(--text-muted);">本ツールは「手書きしやすい学習ノートへの最適化」を目的として再組版を行うため、以下の仕様・制限事項がございます。</p>
+        <ul class="specs-list">
+          <li>
+            <span class="spec-item-title">Google ドキュメント™ の見た目の完全再現ではありません</span>
+            <span class="spec-item-desc">文字をノート罫線上に美しく乗せるため、行間や行末の折り返し位置は「ノート最適化ルール」に基づいて再計算・再配置されます。</span>
+          </li>
+          <li>
+            <span class="spec-item-title">横書き専用（縦書きは非対応）</span>
+            <span class="spec-item-desc">横書きドキュメントのみに対応しています。縦書き文書の組版には対応しておりません。</span>
+          </li>
+          <li>
+            <span class="spec-item-title">1ページを超える巨大な表のページ跨ぎ分割</span>
+            <span class="spec-item-desc">表は1ページ内に収まるサイズを想定しています。1ページの筆記高さを超える巨大な表は、ページ途中での自動分割は行われず、次のページへ送られます。</span>
+          </li>
+          <li>
+            <span class="spec-item-title">複雑な自由配置テキストボックス・レイヤー重ね合わせ</span>
+            <span class="spec-item-desc">本文から独立して自由に浮動配置されたテキストボックスや、文字と画像の重ね合わせ（前面/背面配置）は、本文の流れに沿ったインラインブロックとして再配置されます。</span>
+          </li>
+          <li>
+            <span class="spec-item-title">フォントの統一（仕様・品質確保）</span>
+            <span class="spec-item-desc">ルーズリーフの罫線と文字の位置を正確に一致させるため、ドキュメント側のフォント設定に関わらず、印刷・視認性に優れた標準フォント（ゴシック体／明朝体）で統一してPDFを出力します。</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="lang-content en">
+        <h3>Specifications & Limitations</h3>
+        <p style="margin-bottom: 1.5rem; color: var(--text-muted);">As this tool reformats documents specifically to optimize them as handwritten study notebooks, the following specifications and limitations apply:</p>
+        <ul class="specs-list">
+          <li>
+            <span class="spec-item-title">Not a 100% replica of Google Docs™ visual layout</span>
+            <span class="spec-item-desc">Line spacing and line wrapping are recalculated and repositioned based on notebook optimization rules to align text cleanly with notebook ruling lines.</span>
+          </li>
+          <li>
+            <span class="spec-item-title">Horizontal text only (Vertical text not supported)</span>
+            <span class="spec-item-desc">Supports horizontal documents only. Vertical document layout is not supported.</span>
+          </li>
+          <li>
+            <span class="spec-item-title">Multi-page split for oversized tables</span>
+            <span class="spec-item-desc">Tables are expected to fit within a single page. Tables exceeding one page in height will not be automatically split across pages and will be pushed to the next page.</span>
+          </li>
+          <li>
+            <span class="spec-item-title">Floating text boxes and layered overlays</span>
+            <span class="spec-item-desc">Floating text boxes and overlapping images/text are reformatted as inline blocks aligned with the main body text flow.</span>
+          </li>
+          <li>
+            <span class="spec-item-title">Font standardization (Quality assurance)</span>
+            <span class="spec-item-desc">To ensure accurate alignment with notebook ruling lines, standard high-legibility fonts (Gothic / Mincho) are applied uniformly for PDF output, regardless of original document font settings.</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="lang-content zh">
+        <h3>规格与使用限制说明</h3>
+        <p style="margin-bottom: 1.5rem; color: var(--text-muted);">为了将文档重排为适合手写记笔记的“学习笔记本”，本工具具有以下规格和限制说明：</p>
+        <ul class="specs-list">
+          <li>
+            <span class="spec-item-title">并非完全复刻 Google 文档™ 的原始外观</span>
+            <span class="spec-item-desc">为了让文字与笔记本横线精准对齐，行距与自动换行位置会根据笔记本优化规则重新计算与排版。</span>
+          </li>
+          <li>
+            <span class="spec-item-title">仅支持横排（不支持竖排文本）</span>
+            <span class="spec-item-desc">仅支持横向排版的文档，不支持竖排文字排版。</span>
+          </li>
+          <li>
+            <span class="spec-item-title">超大表格跨页分割说明</span>
+            <span class="spec-item-desc">表格建议控制在单页内。高度超过单页书写区域的巨大表格不会自动跨页拆分，而是整体移至下一页。</span>
+          </li>
+          <li>
+            <span class="spec-item-title">浮动文本框与多图层叠加</span>
+            <span class="spec-item-desc">正文外浮动的文本框以及文字与图片的叠加图层，将重新排版为跟随正文流的嵌入式块。</span>
+          </li>
+          <li>
+            <span class="spec-item-title">字体统一（排版规范与质量保障）</span>
+            <span class="spec-item-desc">为了保证打印时文字与活页纸横线精准贴合，无论原文档采用何种字体，输出 PDF 时均统一采用高清晰度的标准字体。</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="lang-content ko">
+        <h3>사양 및 제한 사항</h3>
+        <p style="margin-bottom: 1.5rem; color: var(--text-muted);">본 툴은 '손글씨 쓰기 편한 학습 노트 최적화'를 목적으로 재조판을 진행하므로, 다음과 같은 사양 및 제한 사항이 있습니다.</p>
+        <ul class="specs-list">
+          <li>
+            <span class="spec-item-title">Google 문서™ 화면의 완전한 복제가 아닙니다</span>
+            <span class="spec-item-desc">글자를 노트 줄눈 위에 아름답게 맞추기 위해, 줄 간격과 줄 바꿈 위치는 '노特'가 아닌 '노트 최적화 규칙'에 따라 재계산 및 재배치됩니다.</span>
+          </li>
+          <li>
+            <span class="spec-item-title">가로쓰기 전용 (세로쓰기 미지원)</span>
+            <span class="spec-item-desc">가로쓰기 문서만 지원하며, 세로쓰기 문서는 지원하지 않습니다.</span>
+          </li>
+          <li>
+            <span class="spec-item-title">1페이지를 초과하는 대형 표의 페이지 분할</span>
+            <span class="spec-item-desc">표는 1페이지 내에 들어가는 크기를 권장합니다. 높이가 1페이지를 초과하는 대형 표는 중간 자동 분할 없이 다음 페이지로 넘어갑니다.</span>
+          </li>
+          <li>
+            <span class="spec-item-title">복잡한 자유 배치 텍스트 상자 및 레이어 겹침</span>
+            <span class="spec-item-desc">본문과 분리된 자유 부동 텍스트 상자나 텍스트-이미지 겹침 배치는 본문 흐름에 맞춘 인라인 블록으로 재배치됩니다.</span>
+          </li>
+          <li>
+            <span class="spec-item-title">폰트 통일 (품질 및 규격 보장)</span>
+            <span class="spec-item-desc">루즈리프 줄눈과 글자 위치를 정확하게 일치시키기 위해, 원본 폰트 설정과 관계없이 가독성이 뛰어난 표준 폰트로 통일하여 PDF를 출력합니다.</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Lightbox Modal -->
+  <div id="imageModal" class="modal" onclick="closeModal()">
+    <img id="modalImg" src="" alt="Zoom preview" />
+  </div>
+
+  <!-- Footer -->
   <footer>
+    <div class="footer-links">
+      <a href="terms.html">利用規約 / Terms</a>
+      <a href="privacy.html">プライバシーポリシー / Privacy Policy</a>
+    </div>
+
+    <div class="trademark-notice">
+      <span class="lang-content ja">※ Google ドキュメント™（Google Docs™）および Google Workspace™ は Google LLC の商標です。</span>
+      <span class="lang-content en">* Google Docs™ and Google Workspace™ are trademarks of Google LLC.</span>
+      <span class="lang-content zh">※ Google 文档™（Google Docs™）及 Google Workspace™ 是 Google LLC 的商标。</span>
+      <span class="lang-content ko">※ Google 문서™(Google Docs™) 및 Google Workspace™는 Google LLC의 상표입니다.</span>
+    </div>
+
     <p>&copy; 2026 Line-aligned. All rights reserved.</p>
-    <p style="margin-top: 0.5rem;">
-      <a href="privacy.html">プライバシーポリシー</a> | 
-      <a href="terms.html">利用規約</a>
-    </p>
-    <p class="trademark">※ Google Docs™、Google ドキュメント™ は Google LLC の商標です。</p>
   </footer>
+
+  <script>
+    const pages = [
+      {
+        src: "images/page_01_比較（左_GoogleDocs_右_Line-aligned）.png",
+        ja: "Page 1: 見出し・本文・箇条書き・数式がルーズリーフ罫線に美しくスナップ",
+        en: "Page 1: Headings, body text, lists, and formulas cleanly snapped to ruling lines",
+        zh: "Page 1: 标题、正文、列表与数学公式精准吸附活页纸横线",
+        ko: "Page 1: 제목, 본문, 글머리 기호, 수식이 루즈리프 줄눈에 깔끔하게 스냅"
+      },
+      {
+        src: "images/page_02_比較（左_GoogleDocs_右_Line-aligned）.png",
+        ja: "Page 2: 表組み・セルの罫線フィットとノート最適化レイアウト",
+        en: "Page 2: Table layout and cell height fitting synchronized with notebook lines",
+        zh: "Page 2: 表格布局与单元格高度自适应笔记本网格",
+        ko: "Page 2: 표 레이아웃 및 셀 높이 최적화 조판"
+      },
+      {
+        src: "images/page_03_比較（左_GoogleDocs_右_Line-aligned）.png",
+        ja: "Page 3: 図形や画像のインライン配置とテキストの美しい流れ",
+        en: "Page 3: Inline image and diagram placement preserving text flow",
+        zh: "Page 3: 图形与图片的嵌入式排版保持正文流畅自然",
+        ko: "Page 3: 도형 및 이미지 인라인 배치와 자연스러운 본문 흐름"
+      },
+      {
+        src: "images/page_04_比較（左_GoogleDocs_右_Line-aligned）.png",
+        ja: "Page 4: 2段組レイアウト比較（Google Docs標準 vs Line-alignedノート最適化）",
+        en: "Page 4: Two-column layout comparison (Standard Google Docs vs Line-aligned)",
+        zh: "Page 4: 双栏排版对比（Google 文档标准双栏 vs Line-aligned 笔记本优化双栏）",
+        ko: "Page 4: 2단 단 분할 비교 (Google 문서 기본 vs Line-aligned 노트 최적화)"
+      },
+      {
+        src: "images/page_05_比較（左_GoogleDocs_右_Line-aligned）.png",
+        ja: "Page 5: 学習用ノート・総合演習問題としての仕上がり比較",
+        en: "Page 5: Finished study notebook and exercise sheet layout",
+        zh: "Page 5: 综合练习题手写学习笔记成品对比",
+        ko: "Page 5: 학습용 노트 및 종합 연습문제 완성본 비교"
+      }
+    ];
+
+    let currentPage = 1;
+    let currentLang = 'ja';
+
+    function setLang(lang) {
+      currentLang = lang;
+      document.body.className = 'lang-' + lang;
+      document.querySelectorAll('.lang-btn').forEach((btn, idx) => {
+        const langs = ['ja', 'en', 'zh', 'ko'];
+        if (langs[idx] === lang) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+      updateCaption();
+    }
+
+    function switchPage(pageNum) {
+      currentPage = pageNum;
+      const p = pages[pageNum - 1];
+      document.getElementById('mainImage').src = p.src;
+      document.querySelectorAll('.tab-btn').forEach((btn, idx) => {
+        if (idx === pageNum - 1) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+      updateCaption();
+    }
+
+    function updateCaption() {
+      const p = pages[currentPage - 1];
+      document.getElementById('captionText').innerText = p[currentLang] || p.ja;
+    }
+
+    function openModal() {
+      const modal = document.getElementById('imageModal');
+      const modalImg = document.getElementById('modalImg');
+      modalImg.src = pages[currentPage - 1].src;
+      modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('imageModal').style.display = 'none';
+    }
+
+    // Auto-detect browser language
+    (function init() {
+      const browserLang = (navigator.language || navigator.userLanguage || 'ja').toLowerCase();
+      if (browserLang.startsWith('en')) setLang('en');
+      else if (browserLang.startsWith('zh')) setLang('zh');
+      else if (browserLang.startsWith('ko')) setLang('ko');
+      else setLang('ja');
+    })();
+  </script>
 </body>
 </html>
