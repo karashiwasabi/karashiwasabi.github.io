@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="google-site-verification" content="PFRdOaNa6WskdaOeknn25M0Lw6TsZ5F0srdl46PWHEY" />
+  <title>Line-aligned - Google Docs™ Precision Typesetting</title>
+  <style>
+    :root {
+      --primary: #1a73e8;
+      --primary-dark: #1557b0;
+      --text: #202124;
+      --text-muted: #5f6368;
+      --bg: #ffffff;
+      --bg-alt: #f8f9fa;
+      --border: #dadce0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "BIZ UDPGothic", sans-serif;
+      color: var(--text);
+      line-height: 1.6;
+      background: var(--bg);
+    }
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fff;
+    }
+    .logo {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    nav a {
+      margin-left: 1.5rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+    nav a:hover { color: var(--primary); }
+    .hero {
+      padding: 4rem 2rem;
+      text-align: center;
+      background: linear-gradient(180deg, #f8fafd 0%, #ffffff 100%);
+    }
+    .hero h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      color: var(--text);
+    }
+    .hero p {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      max-width: 700px;
+      margin: 0 auto 2rem auto;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    .feature-card {
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .feature-card h3 {
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      background: var(--bg-alt);
+    }
+    footer a { color: var(--primary); text-decoration: none; }
+    .trademark {
+      margin-top: 1rem;
+      font-size: 0.8rem;
+      color: #80868b;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html" class="logo">Line-aligned</a>
+    <nav>
+      <a href="index.html">ホーム</a>
+      <a href="privacy.html">プライバシーポリシー</a>
+      <a href="terms.html">利用規約</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h1>Line-aligned</h1>
+    <p>Google Docs™ をベースライングリッドで整列し、手書きしやすいルーズリーフ・学習ノート形式に自動レイアウトするアドオンです。</p>
+  </section>
+
+  <main class="container">
+    <section>
+      <h2 style="margin-bottom: 1.5rem;">主な特長</h2>
+      <div class="feature-card">
+        <h3>1. ベースライングリッドによる「文字と罫線」の完全同期</h3>
+        <p>ドキュメント全体のベースライン（行の標準高さ）と背景の罫線ピッチ（7mm / 6mm等）を数学的に完全一致させます。文字サイズやフォントが変わっても、すべての行底面が自動的に罫線上にピタッと揃います。</p>
+      </div>
+
+      <div class="feature-card">
+        <h3>2. 見出し・構造の自動解析とグリッド調和</h3>
+        <p>タイトル、見出し、箇条書きなどのテキスト要素を自動解析し、罫線グリッドを崩さない最適な余白と行送りを自動適用します。</p>
+      </div>
+
+      <div class="feature-card">
+        <h3>3. 製本・バインダー保管に配慮した余白設計</h3>
+        <p>ルーズリーフのパンチ穴やリング、ホチキス留めによる文字欠け・図表欠けを防ぐため、十分な余白バランスを確保しています。</p>
+      </div>
+
+      <div class="feature-card">
+        <h3>4. 安心のデータ非保持（プライバシー重視）</h3>
+        <p>ドキュメントの内容は外部サーバーに永続保存されることは一切ありません。組版レンダリング処理のみに使用され、処理完了後に破棄されます。</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Line-aligned. All rights reserved.</p>
+    <p style="margin-top: 0.5rem;">
+      <a href="privacy.html">プライバシーポリシー</a> | 
+      <a href="terms.html">利用規約</a>
+    </p>
+    <p class="trademark">※ Google Docs™、Google ドキュメント™ は Google LLC の商標です。</p>
+  </footer>
+</body>
+</html>
