@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="google-site-verification" content="PFRdOaNa6WskdaOeknn25M0Lw6TsZ5F0srdl46PWHEY" />
-  <title>プライバシーポリシー - Line-aligned</title>
+  <title>プライバシーポリシー / Privacy Policy - Line-aligned</title>
   <style>
     :root {
       --primary: #1a73e8;
@@ -13,10 +13,11 @@
       --bg: #ffffff;
       --bg-alt: #f8f9fa;
       --border: #dadce0;
+      --highlight: #e8f0fe;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "BIZ UDPGothic", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       color: var(--text);
       line-height: 1.7;
       background: var(--bg);
@@ -43,15 +44,38 @@
     }
     nav a:hover { color: var(--primary); }
     .container {
-      max-width: 800px;
+      max-width: 860px;
       margin: 0 auto;
       padding: 3rem 2rem;
     }
     h1 {
       font-size: 2rem;
-      margin-bottom: 1rem;
+      margin-bottom: 0.5rem;
       border-bottom: 2px solid var(--primary);
       padding-bottom: 0.5rem;
+    }
+    .updated-date {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+    }
+    .lang-tabs {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .lang-tab {
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-decoration: none;
+      border-bottom: 2px solid transparent;
+    }
+    .lang-tab.active {
+      color: var(--primary);
+      border-bottom: 2px solid var(--primary);
     }
     h2 {
       font-size: 1.3rem;
@@ -62,6 +86,13 @@
     p, ul { margin-bottom: 1rem; color: #3c4043; }
     ul { padding-left: 1.5rem; }
     li { margin-bottom: 0.5rem; }
+    .box {
+      background: var(--bg-alt);
+      border-left: 4px solid var(--primary);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 0 4px 4px 0;
+    }
     footer {
       border-top: 1px solid var(--border);
       padding: 2rem;
@@ -83,47 +114,102 @@
   <header>
     <a href="index.html" class="logo">Line-aligned</a>
     <nav>
-      <a href="index.html">ホーム</a>
-      <a href="privacy.html">プライバシーポリシー</a>
-      <a href="terms.html">利用規約</a>
+      <a href="index.html">ホーム / Home</a>
+      <a href="privacy.html">プライバシーポリシー / Privacy Policy</a>
+      <a href="terms.html">利用規約 / Terms</a>
     </nav>
   </header>
 
   <div class="container">
-    <h1>プライバシーポリシー</h1>
-    <p>最終更新日: 2026年10月5日</p>
+    <h1>プライバシーポリシー / Privacy Policy</h1>
+    <p class="updated-date">Last Updated: October 7, 2026 / 最終更新日: 2026年10月7日</p>
 
-    <p>「Line-aligned」（以下、「本アプリ」といいます）は、ユーザーのプライバシーを最優先事項として尊重し、個人情報の保護に最大限の配慮を行っています。本プライバシーポリシーでは、本アプリにおけるユーザーデータの取り扱いについて説明します。</p>
+    <div class="box">
+      <strong>English / 日本語:</strong> This Privacy Policy is provided in both English (for international users and Google verification compliance) and Japanese. Both versions convey identical commitments regarding data protection.<br>
+      本プライバシーポリシーは、日本語および英語の両方で記載されています。
+    </div>
 
-    <h2>1. 取得する情報およびその利用目的</h2>
-    <p>本アプリは、Google ドキュメント™ のテキスト、数式、図表をルーズリーフノート形式へ再組版・整形し、PDFを出力する機能を提供します。この目的を達成するために以下のデータにアクセスしますが、保存・蓄積は一切行いません。</p>
-    <ul>
-      <li><strong>ドキュメントコンテンツ:</strong> 組版計算およびPDF生成処理のためにのみメモリ上で一時的に処理されます。処理完了後、データは即座に破棄され、サーバーに永続的に保存されることはありません。</li>
-      <li><strong>基本認証情報:</strong> Google API へのリクエストを安全に実行するために一時的なOAuthアクセストークンを使用します。</li>
-    </ul>
+    <!-- ==================== ENGLISH SECTION ==================== -->
+    <section id="en">
+      <h2 style="color: var(--primary); font-size: 1.6rem; border-bottom: 1px solid var(--border); padding-bottom: 0.3rem;">[English Version]</h2>
 
-    <h2>2. データの非保持（データ保存ゼロ原則）</h2>
-    <p>本アプリは、いかなるユーザーのドキュメントデータ、個人情報、ファイル内容もデータベースや外部ストレージに保存しません。すべての組版処理はステートレスに行われます。</p>
+      <p>"Line-aligned" (hereinafter referred to as "the Application", "we", "us", or "our") respects user privacy and is committed to protecting your personal information. This Privacy Policy outlines how user data is accessed, processed, and safeguarded when using our Google Docs™ Add-on.</p>
 
-    <h2>3. Google API 限定使用ポリシーの遵守</h2>
-    <p>本アプリが Google API から受け取った情報の使用および他のアプリへの転送は、関連する制限要件を含め、<a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank" rel="noopener">Google API サービスのユーザーデータポリシー</a>に準拠します。</p>
+      <h2>1. Information Accessed and Purpose of Use</h2>
+      <p>Line-aligned is designed solely to typeset and format documents into standard loose-leaf notebook rulings (B5/A4) and generate print-ready PDF files directly into the user's Google Drive. To accomplish this, the Application accesses:</p>
+      <ul>
+        <li><strong>Document Content and Structure:</strong> Text, headings, formatting styles, tables, and images of the active document are accessed temporarily to compute precise line-aligned typography.</li>
+        <li><strong>OAuth Access Tokens:</strong> Temporary, short-lived OAuth credentials provided by Google are used strictly to authorize authorized API calls on your behalf.</li>
+      </ul>
 
-    <h2>4. 第三者への開示・提供</h2>
-    <p>本アプリは、取得したデータをいかなる第三者にも開示、販売、共有、提供することはありません。</p>
+      <h2>2. Data Protection Mechanisms for Sensitive Data</h2>
+      <p>We implement strict technical and organizational safeguards to ensure user data remains secure:</p>
+      <ul>
+        <li><strong>Encryption in Transit:</strong> All data transmitted between the user's browser, Google Workspace services, and our backend typesetting engine (hosted on Google Cloud Run) is strictly encrypted in transit using industry-standard <strong>HTTPS / TLS 1.2 or higher</strong> protocols.</li>
+        <li><strong>Stateless In-Memory Processing (Zero Persistent Storage):</strong> Line-aligned operates completely statelessly. Document contents, text, and images are processed strictly in volatile system memory during PDF rendering. <strong>No user document data, personal information, or generated PDFs are ever saved, cached, or logged to persistent disks or databases.</strong></li>
+        <li><strong>Immediate Data Deletion:</strong> Memory buffers containing document data are automatically purged immediately after the typesetting computation and PDF generation are completed.</li>
+      </ul>
 
-    <h2>5. お問い合わせ</h2>
-    <p>本プライバシーポリシーに関するご質問やお問い合わせは、以下までご連絡ください：</p>
-    <p>連絡先メールアドレス: <code>shintanikarashi@gmail.com</code></p>
+      <h2>3. Data Retention and Deletion</h2>
+      <p>Because Line-aligned does not store or persist any user data on its servers, there is no user data stored to retain. Users have complete control over their authorization and can revoke Line-aligned's access permissions at any time via <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener">Google Account Permissions Settings</a> or by uninstalling the Add-on.</p>
+
+      <h2>4. Compliance with Google API Services User Data Policy</h2>
+      <p>Line-aligned's use and transfer to any other app of information received from Google APIs adheres to the <a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank" rel="noopener">Google API Services User Data Policy</a>, including the <strong>Limited Use</strong> requirements.</p>
+
+      <h2>5. Third-Party Sharing and Non-Sale of Data</h2>
+      <p>We do not sell, rent, trade, lease, or share user data with any third parties under any circumstances. Furthermore, user data is never used for advertising, marketing, or training general artificial intelligence (AI) / machine learning models.</p>
+
+      <h2>6. Contact Information</h2>
+      <p>If you have any questions, concerns, or inquiries regarding this Privacy Policy or data security practices, please contact us at:</p>
+      <p>Email: <code>shintanikarashi@gmail.com</code></p>
+    </section>
+
+    <hr style="margin: 3rem 0; border: none; border-top: 2px dashed var(--border);">
+
+    <!-- ==================== JAPANESE SECTION ==================== -->
+    <section id="ja">
+      <h2 style="color: var(--primary); font-size: 1.6rem; border-bottom: 1px solid var(--border); padding-bottom: 0.3rem;">[日本語版]</h2>
+
+      <p>「Line-aligned」（以下、「本アプリ」といいます）は、ユーザーのプライバシーを最優先事項として尊重し、個人情報の保護に最大限の配慮を行っています。本プライバシーポリシーでは、本アプリにおけるユーザーデータの取り扱いおよび保護措置について説明します。</p>
+
+      <h2>1. 取得・アクセスする情報およびその利用目的</h2>
+      <p>本アプリは、Google ドキュメント™ のテキスト、見出し、図表をルーズリーフノート形式へ再組版・整形し、Google ドライブへPDFを出力する機能を提供します。この目的を達成するために以下のデータにアクセスしますが、保存・蓄積は一切行いません。</p>
+      <ul>
+        <li><strong>ドキュメントコンテンツ:</strong> 組版計算およびPDF生成処理のためにのみメモリ上で一時的に処理されます。処理完了後、データは即座に破棄され、サーバーに永続的に保存されることはありません。</li>
+        <li><strong>一時的OAuth認証情報:</strong> Google API へのリクエストを安全に実行するために一時的なOAuthアクセストークンを使用します。</li>
+      </ul>
+
+      <h2>2. 機密データの保護メカニズム（暗号化および非保持）</h2>
+      <p>本アプリは、ユーザーデータの機密性と安全性を保護するため、以下の厳格な安全管理措置を実施しています：</p>
+      <ul>
+        <li><strong>転送時暗号化:</strong> ユーザーのブラウザ、Google Workspace、およびバックエンド組版エンジン（Google Cloud Run）間のすべての通信は、業界標準の <strong>HTTPS / TLS 1.2 以上</strong> のプロトコルを用いて完全に暗号化されます。</li>
+        <li><strong>完全ステートレス処理（保存ゼロ原則）:</strong> 本アプリは完全ステートレスに動作します。ドキュメントのテキストや画像データはPDF生成処理中の揮発性メモリ上でのみ処理され、<strong>外部データベース、永続ディスク、ログファイル等にいかなるユーザーデータも保存・蓄積しません。</strong></li>
+        <li><strong>即時破棄:</strong> 組版処理およびPDFの出力が完了した瞬間、メモリ上のデータは即時に完全に破棄されます。</li>
+      </ul>
+
+      <h2>3. データの保持および削除</h2>
+      <p>本アプリはサーバー上にいかなるユーザーデータも永続保持しないため、サーバー側に保持される個人データは存在しません。ユーザーは、<a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener">Google アカウントのセキュリティ設定</a> またはアドオンのアンインストールにより、いつでも本アプリへのアクセス権限を取り消すことができます。</p>
+
+      <h2>4. Google API サービス ユーザーデータ ポリシーの遵守</h2>
+      <p>本アプリが Google API から受け取った情報の使用および他のアプリへの転送は、関連する制限要件を含め、<a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank" rel="noopener">Google API サービスのユーザーデータ ポリシー（限定使用要件）</a>に厳格に準拠します。</p>
+
+      <h2>5. 第三者への開示・提供および非販売の徹底</h2>
+      <p>本アプリは、取得したデータをいかなる第三者にも開示、販売、貸与、共有、提供することは一切ありません。また、広告目的やAIモデルの一般的な学習用途にデータを利用することもありません。</p>
+
+      <h2>6. お問い合わせ窓口</h2>
+      <p>本プライバシーポリシーまたはデータの安全性に関するご質問やお問い合わせは、以下までご連絡ください：</p>
+      <p>連絡先メールアドレス: <code>shintanikarashi@gmail.com</code></p>
+    </section>
   </div>
 
   <footer>
     <p>&copy; 2026 Line-aligned. All rights reserved.</p>
     <p style="margin-top: 0.5rem;">
-      <a href="index.html">ホーム</a> | 
-      <a href="privacy.html">プライバシーポリシー</a> | 
-      <a href="terms.html">利用規約</a>
+      <a href="index.html">ホーム / Home</a> | 
+      <a href="privacy.html">プライバシーポリシー / Privacy Policy</a> | 
+      <a href="terms.html">利用規約 / Terms</a>
     </p>
-    <p class="trademark">※ Google Docs™、Google ドキュメント™ は Google LLC の商標です。</p>
+    <p class="trademark">※ Google Docs™、Google ドキュメント™、Google Drive™、Google ドライブ™ は Google LLC の商標です。</p>
   </footer>
 </body>
 </html>
