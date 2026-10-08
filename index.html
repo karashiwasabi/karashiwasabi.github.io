@@ -400,11 +400,31 @@
     body.lang-zh span.lang-content.zh { display: inline; }
     body.lang-ko span.lang-content.ko { display: inline; }
 
+    .header-nav {
+      display: flex;
+      gap: 1.25rem;
+      align-items: center;
+    }
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-link:hover {
+      color: var(--primary);
+    }
+
     @media (max-width: 768px) {
       header {
         flex-direction: column;
         gap: 0.75rem;
         padding: 0.75rem 1rem;
+      }
+      .header-nav {
+        gap: 1rem;
+        font-size: 0.85rem;
       }
       .lang-btn {
         padding: 3px 8px;
@@ -428,6 +448,20 @@
       <div class="logo-text">Line-aligned</div>
     </a>
     <div class="nav-group">
+      <nav class="header-nav">
+        <a href="privacy.html" class="nav-link">
+          <span class="lang-content ja">プライバシーポリシー</span>
+          <span class="lang-content en">Privacy Policy</span>
+          <span class="lang-content zh">隐私权政策</span>
+          <span class="lang-content ko">개인정보처리방침</span>
+        </a>
+        <a href="terms.html" class="nav-link">
+          <span class="lang-content ja">利用規約</span>
+          <span class="lang-content en">Terms</span>
+          <span class="lang-content zh">服务条款</span>
+          <span class="lang-content ko">이용약관</span>
+        </a>
+      </nav>
       <div class="lang-switcher">
         <button class="lang-btn active" onclick="setLang('ja')">日本語</button>
         <button class="lang-btn" onclick="setLang('en')">English</button>
