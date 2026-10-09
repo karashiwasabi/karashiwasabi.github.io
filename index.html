@@ -386,6 +386,84 @@
       line-height: 1.5;
     }
 
+    /* Changelog Timeline */
+    .changelog-section {
+      padding: 4rem 1.5rem;
+      background: #f8fafc;
+      border-top: 1px solid var(--border);
+    }
+    .changelog-container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .changelog-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+      text-align: center;
+    }
+    .changelog-subtitle {
+      color: var(--text-muted);
+      text-align: center;
+      margin-bottom: 2.5rem;
+      font-size: 0.95rem;
+    }
+    .timeline {
+      position: relative;
+      padding-left: 2rem;
+      border-left: 2px solid #cbd5e1;
+      margin-left: 1rem;
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 2.5rem;
+    }
+    .timeline-item:last-child {
+      margin-bottom: 0;
+    }
+    .timeline-dot {
+      position: absolute;
+      left: -2.55rem;
+      top: 0.25rem;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--primary);
+      border: 3px solid #fff;
+      box-shadow: 0 0 0 2px var(--primary);
+    }
+    .timeline-date {
+      display: inline-block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--primary);
+      background: #e8f0fe;
+      padding: 2px 10px;
+      border-radius: 12px;
+      margin-bottom: 0.5rem;
+    }
+    .timeline-content {
+      background: #fff;
+      padding: 1.25rem 1.5rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    }
+    .timeline-content h3 {
+      font-size: 1.1rem;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+    .timeline-content ul {
+      margin: 0;
+      padding-left: 1.2rem;
+      color: #475569;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
     /* Multi-language Dynamic Visibility */
     .lang-content { display: none; }
     body.lang-ja .lang-content.ja { display: block; }
@@ -449,6 +527,12 @@
     </a>
     <div class="nav-group">
       <nav class="header-nav">
+        <a href="#changelog" class="nav-link">
+          <span class="lang-content ja">開発履歴</span>
+          <span class="lang-content en">Changelog</span>
+          <span class="lang-content zh">更新日志</span>
+          <span class="lang-content ko">업데이트 로그</span>
+        </a>
         <a href="privacy.html" class="nav-link">
           <span class="lang-content ja">プライバシーポリシー</span>
           <span class="lang-content en">Privacy Policy</span>
@@ -720,6 +804,117 @@
             <span class="spec-item-desc">루즈리프 줄눈과 글자 위치를 정확하게 일치시키기 위해, 원본 폰트 설정과 관계없이 가독성이 뛰어난 표준 폰트로 통일하여 PDF를 출력합니다.</span>
           </li>
         </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Changelog Section -->
+  <section id="changelog" class="changelog-section">
+    <div class="changelog-container">
+      <h2 class="changelog-title">
+        <span class="lang-content ja">開発履歴・アップデート情報</span>
+        <span class="lang-content en">Development Log &amp; Changelog</span>
+        <span class="lang-content zh">开发历程与更新日志</span>
+        <span class="lang-content ko">개발 일지 및 업데이트 기록</span>
+      </h2>
+      <p class="changelog-subtitle">
+        <span class="lang-content ja">Line-aligned の進化と組版エンジンの更新記録（日付順）</span>
+        <span class="lang-content en">Evolution of Line-aligned and precision typesetting engine (Chronological)</span>
+        <span class="lang-content zh">Line-aligned 演进与精密排版引擎更新历程（按时间顺序）</span>
+        <span class="lang-content ko">Line-aligned의 발전 및 정밀 조판 엔진 업데이트 기록 (날짜순)</span>
+      </p>
+
+      <div class="timeline">
+        <!-- 2026-10-09 -->
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-date">2026.10.09</div>
+          <div class="timeline-content">
+            <h3>
+              <span class="lang-content ja">ドキュメント生JSON全タグ網羅スキャナー &amp; 診断レポート機能</span>
+              <span class="lang-content en">Full JSON Tag Scanner &amp; Diagnostic Report in Sidebar</span>
+              <span class="lang-content zh">Docs API 原生 JSON 全标签深度扫描与侧边栏诊断报告</span>
+              <span class="lang-content ko">Docs API 원시 JSON 전체 태그 심층 스캐너 및 사이드바 진단 보고서</span>
+            </h3>
+            <ul>
+              <li><span class="lang-content ja">ドキュメント内の全1,500超プロパティを再帰スキャンし、未対応・注意タグを1件残らず検出する診断エンジンを実装。</span><span class="lang-content en">Implemented recursive scanner for 1,500+ document properties to detect all unsupported attributes.</span><span class="lang-content zh">实现递归扫描1500+文档属性的诊断引擎，精准捕获所有未适配及需注意的属性。</span><span class="lang-content ko">1,500개 이상의 문서 속성을 재귀 스캔하여 미지원/주의 태그를 전수 검출하는 진단 엔진 구현.</span></li>
+              <li><span class="lang-content ja">アドオンサイドバー内に診断結果を日本語の言葉で表示し、ワンクリックでコピーできるUIを追加。</span><span class="lang-content en">Added in-sidebar diagnostic reporting UI with one-click copy functionality.</span><span class="lang-content zh">在侧边栏中以自然语言呈现诊断结果，支持一键复制完整报告。</span><span class="lang-content ko">사이드바 내에 자연어 진단 결과를 표시하고 원클릭 복사가 가능한 UI 추가.</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 2026-10-08 -->
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-date">2026.10.08</div>
+          <div class="timeline-content">
+            <h3>
+              <span class="lang-content ja">最小権限化（auth/drive.file）・水平線パーサー恒久修正・Cloud Runブラウザ統合</span>
+              <span class="lang-content en">Scope Minimization (drive.file), Horizontal Rule Parser Fix &amp; Headless Browser</span>
+              <span class="lang-content zh">权限最小化 (drive.file)、水平线解析器彻底修复与无头浏览器集成</span>
+              <span class="lang-content ko">권한 최소화 (drive.file), 구분선 파서 영구 수정 및 헤드리스 브라우저 통합</span>
+            </h3>
+            <ul>
+              <li><span class="lang-content ja">権限を安全な最小スコープ (drive.file) に移行し、Advanced Drive Service v3 によるセキュアなPDF保存に対応。</span><span class="lang-content en">Transitioned to minimal scope (drive.file) with Advanced Drive Service v3 for secure PDF creation.</span><span class="lang-content zh">全面切换至安全的最小权限 (drive.file)，采用 Advanced Drive Service v3 安全保存 PDF。</span><span class="lang-content ko">안전한 최소 권한 (drive.file)으로 전환하고 Advanced Drive Service v3를 통한 안전한 PDF 저장 지원.</span></li>
+              <li><span class="lang-content ja">Goパーサーを改修し、水平線（Horizontal Rule）直前のタイトルメタデータ消失バグを恒久修正。</span><span class="lang-content en">Fixed parser issue preserving text preceding horizontal rules in Go engine.</span><span class="lang-content zh">重构 Go 解析器，彻底解决分割线前方标题元数据偶发丢失的解析缺陷。</span><span class="lang-content ko">Go 파서를 수정하여 가로선 직전 제목 메타데이터 소실 버그 영구 해결.</span></li>
+              <li><span class="lang-content ja">Cloud Run コンテナに Chromium &amp; 日本語フォント（Noto CJK）を同梱し、ヘッドレスPDF直接出力を確立。</span><span class="lang-content en">Integrated Chromium and Noto CJK fonts into Cloud Run for headless PDF generation.</span><span class="lang-content zh">在 Cloud Run 容器中集成 Chromium 与日文字体，实现完成版 PDF 的云端直接无损渲染。</span><span class="lang-content ko">Cloud Run 컨테이너에 Chromium 및 일본어 폰트를 탑재하여 완성본 PDF 직접 렌더링 구축.</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 2026-10-06 -->
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-date">2026.10.06</div>
+          <div class="timeline-content">
+            <h3>
+              <span class="lang-content ja">Google Workspace Marketplace 出店申請・OAuth審査提出・公式サイト公開</span>
+              <span class="lang-content en">Marketplace Listing, OAuth Verification Submission &amp; Official Website</span>
+              <span class="lang-content zh">Google Workspace Marketplace 上架申请、OAuth 审核提交与官网发布</span>
+              <span class="lang-content ko">Google Workspace Marketplace 출시 신청, OAuth 검토 제출 및 공식 웹사이트 오픈</span>
+            </h3>
+            <ul>
+              <li><span class="lang-content ja">Marketplace SDK ストア掲載情報（4言語対応）、プライバシーポリシーおよび利用規約の整備完了。</span><span class="lang-content en">Prepared Marketplace 4-language store listings, privacy policy, and terms of service.</span><span class="lang-content zh">完成 Marketplace 四语商店上架信息、隐私政策与服务条款的完备构建。</span><span class="lang-content ko">Marketplace 4개 국어 스토어 등록 정보, 개인정보처리방침 및 이용약관 구비 완료.</span></li>
+              <li><span class="lang-content ja">独自ドメイン (wasabikarashi.com) の認証と公式紹介サイトの GitHub Pages ホスティング稼働。</span><span class="lang-content en">Verified custom domain (wasabikarashi.com) and launched official website on GitHub Pages.</span><span class="lang-content zh">完成独立域名所有权认证，并通过 GitHub Pages 稳定运行官方展示站点。</span><span class="lang-content ko">커스텀 도메인 (wasabikarashi.com) 인증 및 공식 쇼케이스 사이트 운영 시작.</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 2026-10-04 -->
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-date">2026.10.04</div>
+          <div class="timeline-content">
+            <h3>
+              <span class="lang-content ja">多段組（2段組・3段組）カラムバランシング &amp; 表組みの決定論的行高事前計測</span>
+              <span class="lang-content en">Multi-column Layout Balancing &amp; Deterministic Table Row Height Calculation</span>
+              <span class="lang-content zh">多栏（双栏/三栏）平衡排版算法与表格行高确定性预先测算</span>
+              <span class="lang-content ko">다단(2단/3단) 레이아웃 밸런싱 및 표 행 높이 사전 측정 엔진 구현</span>
+            </h3>
+            <ul>
+              <li><span class="lang-content ja">Google Docs の 2段組・3段組セクションを解析し、左右の段高さを揃えるカラムバランシングを実装。</span><span class="lang-content en">Implemented column balancing algorithm to equalize heights of multi-column sections.</span><span class="lang-content zh">解析双栏与三栏分节，实现文档末尾多栏等高自动平衡算法。</span><span class="lang-content ko">Google 문서 2단/3단 섹션을 분석하고 다단 하단 높이를 균등하게 맞추는 밸런싱 알고리즘 탑재.</span></li>
+              <li><span class="lang-content ja">表のセル内テキスト折り返しを実フォントメトリクスで事前計算し、行高を罫線の整数倍にスナップ。</span><span class="lang-content en">Calculated table cell wrap using font metrics to snap row heights to integer line multiples.</span><span class="lang-content zh">通过真实字体度量预先计算表格单元格换行，使表格高度严格吸附横线网格。</span><span class="lang-content ko">실제 폰트 메트릭스로 표 셀 텍스트 줄바꿈을 사전 계산하여 줄눈 정수배에 완벽 정렬.</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 2026-10-01 -->
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-date">2026.10.01</div>
+          <div class="timeline-content">
+            <h3>
+              <span class="lang-content ja">ルーズリーフ組版エンジン初版完成（JIS X 4051 禁則処理 / 7.5mm・6.0mm 罫線吸着）</span>
+              <span class="lang-content en">Initial Precision Typesetting Engine (JIS X 4051 Kinsoku &amp; Ruling Line Snap)</span>
+              <span class="lang-content zh">活页纸排版引擎初版诞生（JIS X 4051 避头尾禁则与横线网格精准吸附）</span>
+              <span class="lang-content ko">루즈리프 정밀 조판 엔진 초판 완성 (JIS X 4051 금칙 처리 / 7.5mm·6.0mm 줄눈 정렬)</span>
+            </h3>
+            <ul>
+              <li><span class="lang-content ja">A4（30穴/標準）・A5（20穴/6穴）バインダー余白と 7.5mm / 6.0mm 罫線ピッチへの完全整合エンジン構築。</span><span class="lang-content en">Engineered exact margins and 7.5mm/6.0mm line pitch matching standard loose-leaf rulings.</span><span class="lang-content zh">建立 A4（30孔）与 A5（20孔/6孔）活页夹边距与 7.5mm / 6.0mm 网格完全对齐引擎。</span><span class="lang-content ko">A4(30공) 및 A5(20공/6공) 바인더 여백과 7.5mm / 6.0mm 줄눈 피치 완전 일치 엔진 구축.</span></li>
+              <li><span class="lang-content ja">JIS X 4051 準拠の日本語約物・記号の行頭禁則・行末禁則処理アルゴリズムを独自実装。</span><span class="lang-content en">Implemented Japanese typesetting Kinsoku processing compliant with JIS X 4051 standard.</span><span class="lang-content zh">自研符合 JIS X 4051 标准的日文标点行头行末禁则处理算法。</span><span class="lang-content ko">JIS X 4051 표준 준수 일본어 행두/행말 금칙 처리 알고리즘 독자 구현.</span></li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   </section>
