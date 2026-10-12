@@ -603,6 +603,7 @@
         <button class="tab-btn" onclick="switchPage(3)">Page 3: <span class="lang-content ja">応用組版</span><span class="lang-content en">Applied Layout</span><span class="lang-content zh">应用排版</span><span class="lang-content ko">응용 조판</span></button>
         <button class="tab-btn" onclick="switchPage(4)">Page 4: <span class="lang-content ja">2段組レイアウト</span><span class="lang-content en">Two-Column Layout</span><span class="lang-content zh">双栏排版</span><span class="lang-content ko">2단 단 분할</span></button>
         <button class="tab-btn" onclick="switchPage(5)">Page 5: <span class="lang-content ja">3段組レイアウト</span><span class="lang-content en">Three-Column Layout</span><span class="lang-content zh">三栏排版</span><span class="lang-content ko">3단 단 분할</span></button>
+        <button class="tab-btn" onclick="switchPage(6)">Page 6: <span class="lang-content ja">総合検証（まとめ）</span><span class="lang-content en">Summary</span><span class="lang-content zh">综合总结</span><span class="lang-content ko">종합 요약</span></button>
       </div>
 
       <div class="image-viewer" onclick="openModal()">
@@ -825,6 +826,24 @@
       </p>
 
       <div class="timeline">
+        <!-- 2026-10-12 -->
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-date">2026.10.12</div>
+          <div class="timeline-content">
+            <h3>
+              <span class="lang-content ja">表の幾何学実寸測定・多段組動的バランシングによる超精密組版</span>
+              <span class="lang-content en">Geometric Table Slot Synchronization & Dynamic Multi-column Balancing</span>
+              <span class="lang-content zh">表格几何实寸测量对齐与多栏动态平衡精密排版</span>
+              <span class="lang-content ko">표 기하학적 실치수 슬롯 동기화 및 다단 동적 밸런싱 초정밀 조판</span>
+            </h3>
+            <ul>
+              <li><span class="lang-content ja">表（テーブル）の各セル寸法・余白・フォント高さをミリ単位で幾何学計算し、ノート罫線のスロット幅に完全一致（ベースライン同期）させて描画する精密測定エンジンを実装。</span><span class="lang-content en">Implemented precision measurement engine calculating table cell metrics to snap cell baselines perfectly onto notebook line slots.</span><span class="lang-content zh">实现高精度表格几何尺寸测量引擎，使表格单元格基线严格吸附于活页纸横线插槽。</span><span class="lang-content ko">표의 각 셀 치수, 여백, 폰트 높이를 밀리미터 단위로 기하학 계산하여 노트 줄눈 슬롯에 완벽 정렬(베이스라인 동기화)하는 정밀 측정 엔진 구현.</span></li>
+              <li><span class="lang-content ja">セクション区切り（SectionBreak）の後続セクション適用を精緻化し、多段組（2段組・3段組）の左右カラム高さを均等に揃える動的バランシングと表の等分折り返し描画に対応。</span><span class="lang-content en">Refined section break style handling with dynamic column balancing and proportional multi-column table wrapping.</span><span class="lang-content zh">精细化分节符后续样式继承，支持双栏/三栏动态高度平衡算法与表格等分折行排版。</span><span class="lang-content ko">섹션 구분의 후속 스타일 적용을 정교화하여 다단(2단/3단) 높이를 균등하게 맞추는 동적 밸런싱 및 표 등분 줄바꿈 렌더링 지원.</span></li>
+              <li><span class="lang-content ja">実際にGoogleドライブに出力された完成版PDFとGoogleドキュメント標準PDFの全6ページ完全左右対比見本を更新公開。</span><span class="lang-content en">Published complete 6-page side-by-side comparison gallery matching actual Google Drive PDF output against standard export.</span><span class="lang-content zh">更新发布全6页 Google 驱动器实际导出 PDF 与标准导出 PDF 的高清晰左右对比展示。</span><span class="lang-content ko">실제 Google 드라이브에 출력된 완성본 PDF와 표준 PDF의 전체 6페이지 좌우 대비 샘플 업데이트 공개.</span></li>
+            </ul>
+          </div>
+        </div>
         <!-- 2026-10-09 -->
         <div class="timeline-item">
           <div class="timeline-dot"></div>
@@ -977,6 +996,13 @@
         en: "Page 5: Three-column layout and document ending notebook optimization",
         zh: "Page 5: 三栏排版与文档末尾笔记本优化对比",
         ko: "Page 5: 3단 단 분할 및 문서 말미 노트 최적화 비교"
+      },
+      {
+        src: "images/page_06_比較（左_GoogleDocs_右_Line-aligned）.png",
+        ja: "Page 6: ドキュメント結び・余白バランスとルーズリーフ組版の総合まとめ",
+        en: "Page 6: Document ending, margin balance, and loose-leaf typesetting summary",
+        zh: "Page 6: 文档末尾、页边距平衡与活页纸排版综合总结",
+        ko: "Page 6: 문서 끝부분, 여백 밸런스 및 루즈리프 조판 종합 요약"
       }
     ];
 
