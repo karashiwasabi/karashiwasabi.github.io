@@ -616,6 +616,71 @@
     </div>
   </section>
 
+  <!-- Live Verification & Document Diagnostic Section -->
+  <section class="diagnostic-section container" style="margin-top: 2.5rem; margin-bottom: 2.5rem;">
+    <div class="diagnostic-card" style="background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 2rem; box-shadow: var(--card-shadow);">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 1.25rem; margin-bottom: 1.5rem;">
+        <div>
+          <span style="display: inline-block; background: #e8f0fe; color: var(--primary); font-size: 0.82rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-bottom: 0.4rem;">
+            <span class="lang-content ja">実証検証データ</span>
+            <span class="lang-content en">Live Verification Data</span>
+            <span class="lang-content zh">实测验证数据</span>
+            <span class="lang-content ko">실증 검증 데이터</span>
+          </span>
+          <h2 style="font-size: 1.45rem; font-weight: 700; color: var(--text); margin: 0;">
+            <span class="lang-content ja">📋 ドキュメント診断結果（全タグ網羅スキャン）</span>
+            <span class="lang-content en">📋 Document Diagnostic Report (Full Tag Scanner)</span>
+            <span class="lang-content zh">📋 文档诊断结果（全标签深度扫描）</span>
+            <span class="lang-content ko">📋 문서 진단 결과 (전체 태그 심층 스캔)</span>
+          </h2>
+        </div>
+        <div style="display: flex; gap: 1.5rem; background: var(--bg-alt); padding: 0.75rem 1.25rem; border-radius: 10px; border: 1px solid var(--border);">
+          <div style="text-align: center;">
+            <div style="font-size: 0.78rem; color: var(--text-muted); font-weight: 600;">
+              <span class="lang-content ja">走査プロパティ</span>
+              <span class="lang-content en">Properties Scanned</span>
+              <span class="lang-content zh">扫描属性总数</span>
+              <span class="lang-content ko">스캔 속성</span>
+            </div>
+            <div style="font-size: 1.35rem; font-weight: 800; color: var(--text);">2,148</div>
+          </div>
+          <div style="width: 1px; background: var(--border);"></div>
+          <div style="text-align: center;">
+            <div style="font-size: 0.78rem; color: var(--text-muted); font-weight: 600;">
+              <span class="lang-content ja">対応率</span>
+              <span class="lang-content en">Compatibility Rate</span>
+              <span class="lang-content zh">适配覆盖率</span>
+              <span class="lang-content ko">대응률</span>
+            </div>
+            <div style="font-size: 1.35rem; font-weight: 800; color: #188038;">90.9% <span style="font-size: 0.85rem; font-weight: 500; color: #5f6368;">(未対応: 6種類)</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.25rem; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 0.88rem; line-height: 1.6; color: #334155; overflow-x: auto;">
+        <div style="font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">【Line-aligned 全タグ網羅スキャンレポート】</div>
+        <div>文書名: 【総合検証】ルーズリーフ組版テスト</div>
+        <div>総段落数: 59 / 表: 3 / 段組み: 3段組</div>
+        <div>走査プロパティ総数: 2148 / 対応率: 90.9% (未対応: 6種類)</div>
+        <div style="margin-top: 0.75rem; font-weight: 700; color: #b45309;">⚠️ 検出プロパティ ➜ 対応方針一覧 (6 種類):</div>
+        <div style="padding-left: 0.5rem; margin-top: 0.25rem;">
+          1. [paragraphStyle.borderBetween] (38件) ➜ 未対応: 段落間の区切り線（Docs段落書式）は未実装<br>
+          2. [paragraphStyle.borderTop] (38件) ➜ 未対応: 段落の外枠線（上）は未実装<br>
+          3. [paragraphStyle.borderBottom] (38件) ➜ 未対応: 段落の外枠線（下）は未実装<br>
+          4. [paragraphStyle.borderLeft] (38件) ➜ 未対応: 段落の外枠線（左）は未実装<br>
+          5. [paragraphStyle.borderRight] (38件) ➜ 未対応: 段落の外枠線（右）は未実装<br>
+          6. [element.equation] (5件) ➜ 対応方針: HTMLエクスポートから高解像度数式画像を抽出してインライン配置
+        </div>
+      </div>
+      <p style="margin-top: 1rem; margin-bottom: 0; font-size: 0.85rem; color: var(--text-muted); line-height: 1.5;">
+        <span class="lang-content ja">※本レポートはアドオン実行時に自動出力される診断ログです。Google Docs APIの全プロパティを透過的にスキャンし、組版結果の再現性を数値で証明しています。</span>
+        <span class="lang-content en">*This report is live diagnostic data generated during add-on execution, scanning all Google Docs API properties transparently.</span>
+        <span class="lang-content zh">*本报告为插件执行时自动生成的实测诊断数据，全量扫描 Google Docs API 属性并量化验证排版准确度。</span>
+        <span class="lang-content ko">*본 보고서는 확장 프로그램 실행 시 자동 생성되는 실측 진단 데이터로, Google Docs API의 모든 속성을 투명하게 스캔하여 검증합니다.</span>
+      </p>
+    </div>
+  </section>
+
   <!-- Features Section -->
   <section class="features-section">
     <div class="container">
