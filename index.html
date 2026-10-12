@@ -579,6 +579,35 @@
     </p>
   </section>
 
+  <!-- App Preview / Marketplace Showcase Section -->
+  <section class="container" style="padding-top: 1.5rem; padding-bottom: 2rem;">
+    <div style="background: #ffffff; border: 1px solid var(--border); border-radius: 16px; padding: 1.75rem; box-shadow: var(--card-shadow); text-align: center;">
+      <div style="margin-bottom: 1.25rem;">
+        <span style="display: inline-block; background: var(--primary-light); color: var(--primary); font-size: 0.82rem; font-weight: 700; padding: 4px 12px; border-radius: 20px; margin-bottom: 0.5rem;">
+          <span class="lang-content ja">アドオン画面イメージ</span>
+          <span class="lang-content en">Add-on Interface</span>
+          <span class="lang-content zh">插件界面实览</span>
+          <span class="lang-content ko">확장 프로그램 화면</span>
+        </span>
+        <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.4rem;">
+          <span class="lang-content ja">Google ドキュメント™ 操作画面とサイドバー</span>
+          <span class="lang-content en">Google Docs™ Workspace &amp; Add-on Sidebar</span>
+          <span class="lang-content zh">Google 文档™ 界面与侧边栏操作面板</span>
+          <span class="lang-content ko">Google 문서™ 작업 화면 및 사이드바</span>
+        </h2>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">
+          <span class="lang-content ja">サイドバーから用紙・罫線幅を選び、「PDFを作成」を押すだけで自動組版（※クリックで拡大）</span>
+          <span class="lang-content en">Select paper size and ruling pitch, then click to generate line-aligned PDF (*Click to zoom)</span>
+          <span class="lang-content zh">在侧边栏选择纸张与行距，一键完成高精度自动排版（※点击放大）</span>
+          <span class="lang-content ko">사이드바에서 용지와 줄눈 간격을 선택하고 클릭 한 번으로 자동 조판 (*클릭 시 확대)</span>
+        </p>
+      </div>
+      <div class="image-viewer" onclick="openImageModal('images/marketplace_screenshot_1280x800.png?v=20261012_1')" style="max-width: 980px; margin: 0 auto; cursor: pointer; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 4px 20px rgba(0,0,0,0.06);">
+        <img src="images/marketplace_screenshot_1280x800.png?v=20261012_1" alt="Line-aligned Google Docs Add-on Interface" style="width: 100%; height: auto; display: block;" />
+      </div>
+    </div>
+  </section>
+
   <!-- Gallery Section -->
   <section class="gallery-section container">
     <div class="section-title">
@@ -1107,11 +1136,15 @@
       document.getElementById('captionText').innerText = p[currentLang] || p.ja;
     }
 
-    function openModal() {
+    function openImageModal(src) {
       const modal = document.getElementById('imageModal');
       const modalImg = document.getElementById('modalImg');
-      modalImg.src = pages[currentPage - 1].src;
+      modalImg.src = src;
       modal.style.display = 'flex';
+    }
+
+    function openModal() {
+      openImageModal(pages[currentPage - 1].src);
     }
 
     function closeModal() {
