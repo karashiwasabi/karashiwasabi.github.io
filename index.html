@@ -1013,6 +1013,25 @@
       </p>
 
       <div class="timeline">
+        <!-- 2026-10-13 -->
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-date">2026.10.13</div>
+          <div class="timeline-content">
+            <h3>
+              <span class="lang-content ja">脚注（Footnotes）対応と文末全幅集約（多段組安全復帰）の実装</span>
+              <span class="lang-content en">Footnotes Support &amp; Endnote Aggregation with Multi-column Safety</span>
+              <span class="lang-content zh">脚注（Footnotes）支持与文末全宽聚合排版（多栏安全适配）</span>
+              <span class="lang-content ko">각주(Footnotes) 완벽 대응 및 문서 말미 전폭 집약 조판 (다단 안전 복귀)</span>
+            </h3>
+            <ul>
+              <li><span class="lang-content ja">Google Docs API の root 階層（doc.footnotes）から脚注本文を抽出し、本文中の参照記号 [1], [2], [3] と連動して文書末尾に注釈一覧として自動集約・配置。</span><span class="lang-content en">Extracted footnote content from doc.footnotes and aggregated into an endnote section linked with inline references [1], [2], [3].</span><span class="lang-content zh">从 doc.footnotes 提取脚注正文，与正文中的引用序号 [1], [2], [3] 精准关联并自动汇总排版于文末。</span><span class="lang-content ko">doc.footnotes에서 각주 본문을 추출하여 본문 참조 번호 [1], [2], [3]과 완벽 연동해 문서 끝에 주석 목록으로 자동 집약 배치.</span></li>
+              <li><span class="lang-content ja">文書末尾が2段組や3段組で終了している場合でも、段組みバランシング完了後に安全に全幅（1カラム）へ切り替えて「── 注釈 / Footnotes ──」をノート罫線スロットに吸着描画。</span><span class="lang-content en">Safely transitions multi-column layouts into full-width single column after balancing to render footnote blocks snapped to ruled line slots.</span><span class="lang-content zh">即便文档末尾为双栏或三栏，也能在分栏高度平衡完成后安全切换至全宽，使“── 注释 / Footnotes ──”严格吸附横线插槽。</span><span class="lang-content ko">문서 말미가 2단/3단으로 끝나더라도 밸런싱 완료 후 전폭(1단)으로 안전하게 전환하여 '── 주석 / Footnotes ──'를 줄눈 슬롯에 정렬.</span></li>
+              <li><span class="lang-content ja">文字サイズ・行送りピッチ・スロット判定をすべて定数化（マジックナンバー排除）し、アドオン側診断スキャナーの doc.footnotes を対応済みに同期。</span><span class="lang-content en">Eliminated magic numbers with explicit constants for font size and slot metrics, syncing doc.footnotes as fully supported in the diagnostic audit.</span><span class="lang-content zh">全面常量化字体字号与行距插槽度量，消除硬编码数值，并将插件端审计诊断同步为完全支持。</span><span class="lang-content ko">폰트 크기 및 줄눈 슬롯 메트릭스를 전면 상수화하여 하드코딩을 배제하고, 진단 스캐너의 doc.footnotes를 대응 완료로 동기화.</span></li>
+            </ul>
+          </div>
+        </div>
+
         <!-- 2026-10-12 -->
         <div class="timeline-item">
           <div class="timeline-dot"></div>
