@@ -746,8 +746,61 @@
     </div>
   </section>
 
+  <!-- Font Fidelity Showcase Section -->
+  <section class="container" style="padding-top: 1rem; padding-bottom: 2.5rem;">
+    <div style="background: #ffffff; border: 1px solid var(--border); border-radius: 16px; padding: 2rem; box-shadow: var(--card-shadow);">
+      <div style="text-align: center; margin-bottom: 1.75rem;">
+        <span style="display: inline-block; background: #eff6ff; color: #2563eb; font-size: 0.82rem; font-weight: 700; padding: 4px 12px; border-radius: 20px; margin-bottom: 0.5rem; border: 1px solid #bfdbfe;">
+          <span class="lang-content ja">フォント100%完全同期</span>
+          <span class="lang-content en">100% Font Fidelity</span>
+          <span class="lang-content zh">字体 100% 严格一致</span>
+          <span class="lang-content ko">폰트 100% 완전 동기화</span>
+        </span>
+        <h2 style="font-size: 1.65rem; font-weight: 800; color: var(--text); margin-bottom: 0.5rem;">
+          <span class="lang-content ja">🔤 Google ドキュメントのフォントを100%完全同一再現</span>
+          <span class="lang-content en">🔤 Exact 1:1 Font Replication from Google Docs</span>
+          <span class="lang-content zh">🔤 100% 严格一致还原 Google Docs 字体与字形</span>
+          <span class="lang-content ko">🔤 Google 문서 폰트를 100% 동일하게 완벽 재현</span>
+        </h2>
+        <p style="color: var(--text-muted); font-size: 1rem; max-width: 780px; margin: 0 auto;">
+          <span class="lang-content ja">Courier, Georgia, Impact, Times, BIZ UDゴシック, Noto Serifなど、文書内の指定フォントをサーバー側と完全同期。書体や字形の差異を生じさせず、罫線にピタッと吸着した高品位な組版を実現します。</span>
+          <span class="lang-content en">Synchronized with real font files including Courier, Georgia, Impact, Times, BIZ UDPGothic, and Noto Serif. Zero typeface discrepancies while snapping perfectly to ruling lines.</span>
+          <span class="lang-content zh">深度同步 Courier, Georgia, Impact, Times, BIZ UD, Noto Serif 等真实字体，杜绝替代字体变形，字形完全一致且横线严丝合缝。</span>
+          <span class="lang-content ko">Courier, Georgia, Impact, Times, BIZ UD, Noto Serif 등 지정 폰트를 서버와 완전 동기화하여 서체 왜곡 없이 줄눈에 정밀 밀착합니다.</span>
+        </p>
+      </div>
+
+      <!-- 2枚の比較画像（Page 1 & Page 2） -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; max-width: 1100px; margin: 0 auto;">
+        <div style="background: var(--bg-alt); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; text-align: center;">
+          <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem; color: var(--text);">
+            Page 1: テキスト・フォント混在・多重箇条書き
+          </div>
+          <div class="image-viewer" onclick="openImageModal('images/font_verification_page_1_比較（左_GoogleDocs_右_Line-aligned）.png?v=20261013_1')" style="cursor: pointer; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+            <img src="images/font_verification_page_1_比較（左_GoogleDocs_右_Line-aligned）.png?v=20261013_1" alt="Font Verification Page 1 - Left Google Docs, Right Line-aligned Typeset" style="width: 100%; height: auto; display: block;" />
+          </div>
+          <div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-muted);">
+            ※クリックで高解像度拡大表示
+          </div>
+        </div>
+
+        <div style="background: var(--bg-alt); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; text-align: center;">
+          <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem; color: var(--text);">
+            Page 2: 多重箇条書き・ハングル混在・字形完全一致
+          </div>
+          <div class="image-viewer" onclick="openImageModal('images/font_verification_page_2_比較（左_GoogleDocs_右_Line-aligned）.png?v=20261013_1')" style="cursor: pointer; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+            <img src="images/font_verification_page_2_比較（左_GoogleDocs_右_Line-aligned）.png?v=20261013_1" alt="Font Verification Page 2 - Left Google Docs, Right Line-aligned Typeset" style="width: 100%; height: auto; display: block;" />
+          </div>
+          <div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-muted);">
+            ※クリックで高解像度拡大表示
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Live Verification & Document Diagnostic Section -->
-  <section class="diagnostic-section container" style="margin-top: 2.5rem; margin-bottom: 2.5rem;">
+  <section class="diagnostic-section container" style="margin-top: 1rem; margin-bottom: 2.5rem;">
     <div class="diagnostic-card" style="background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 2rem; box-shadow: var(--card-shadow);">
       <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 1.25rem; margin-bottom: 1.5rem;">
         <div>
@@ -758,13 +811,13 @@
             <span class="lang-content ko">실증 검증 데이터</span>
           </span>
           <h2 style="font-size: 1.45rem; font-weight: 700; color: var(--text); margin: 0;">
-            <span class="lang-content ja">📋 ドキュメント診断結果（全タグ網羅スキャン）</span>
-            <span class="lang-content en">📋 Document Diagnostic Report (Full Tag Scanner)</span>
-            <span class="lang-content zh">📋 文档诊断结果（全标签深度扫描）</span>
-            <span class="lang-content ko">📋 문서 진단 결과 (전체 태그 심층 스캔)</span>
+            <span class="lang-content ja">📋 ドキュメント診断結果（全タグ網羅スキャン ＆ フォント同一性）</span>
+            <span class="lang-content en">📋 Document Diagnostic Report (Full Tag &amp; Font Fidelity)</span>
+            <span class="lang-content zh">📋 文档诊断结果（全标签扫描与字体一致性）</span>
+            <span class="lang-content ko">📋 문서 진단 결과 (전체 태그 스캔 및 폰트 정합성)</span>
           </h2>
         </div>
-        <div style="display: flex; gap: 1.5rem; background: var(--bg-alt); padding: 0.75rem 1.25rem; border-radius: 10px; border: 1px solid var(--border);">
+        <div style="display: flex; gap: 1.5rem; background: var(--bg-alt); padding: 0.75rem 1.25rem; border-radius: 10px; border: 1px solid var(--border); flex-wrap: wrap;">
           <div style="text-align: center;">
             <div style="font-size: 0.78rem; color: var(--text-muted); font-weight: 600;">
               <span class="lang-content ja">走査プロパティ</span>
@@ -784,14 +837,28 @@
             </div>
             <div style="font-size: 1.35rem; font-weight: 800; color: #188038;">91.2% <span style="font-size: 0.85rem; font-weight: 500; color: #5f6368;">(未対応: 5種類)</span></div>
           </div>
+          <div style="width: 1px; background: var(--border);"></div>
+          <div style="text-align: center;">
+            <div style="font-size: 0.78rem; color: var(--text-muted); font-weight: 600;">
+              <span class="lang-content ja">フォント整合性</span>
+              <span class="lang-content en">Font Fidelity</span>
+              <span class="lang-content zh">字体一致率</span>
+              <span class="lang-content ko">폰트 정합성</span>
+            </div>
+            <div style="font-size: 1.35rem; font-weight: 800; color: #188038;">100% <span style="font-size: 0.85rem; font-weight: 500; color: #188038;">(実物完全一致)</span></div>
+          </div>
         </div>
       </div>
 
       <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.25rem; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 0.88rem; line-height: 1.6; color: #334155; overflow-x: auto;">
-        <div style="font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">【Line-aligned 全タグ網羅スキャンレポート】</div>
-        <div>文書名: 【総合検証】ルーズリーフ組版テスト</div>
+        <div style="font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">【Line-aligned 全タグ網羅スキャンレポート】(Ver: 202610131320)</div>
+        <div>文書名: 【総合検証】フォント ＆ ルーズリーフ組版テスト</div>
         <div>総段落数: 59 / 表: 3 / 段組み: 3段組</div>
         <div>走査プロパティ総数: 2148 / 対応率: 91.2% (未対応: 5種類)</div>
+        <div style="margin-top: 0.75rem; font-weight: 700; color: #188038;">🔤 【フォント整合性診断】: ✨ 100% 完全同一（全フォントがサーバー側の実物フォントと完全一致）</div>
+        <div style="padding-left: 0.5rem; margin-top: 0.25rem; font-size: 0.82rem; color: #475569;">
+          ・Courier New, Georgia, Impact, Verdana, Times New Roman, Trebuchet MS, Noto Serif JP, BIZ UDPGothic, Comic Sans MS ➜ ✅ 実物フォント適用
+        </div>
         <div style="margin-top: 0.75rem; font-weight: 700; color: #b45309;">⚠️ 検出プロパティ ➜ 対応方針一覧 (5 種類):</div>
         <div style="padding-left: 0.5rem; margin-top: 0.25rem;">
           1. [paragraphStyle.borderBetween] (38件) ➜ 未対応: 段落間の区切り線（Docs段落書式）は未実装<br>
@@ -872,18 +939,18 @@
         </div>
 
         <div class="feature-card">
-          <div class="feature-icon">🖨️</div>
+          <div class="feature-icon">🔤</div>
           <h3>
-            <span class="lang-content ja">印刷用高品位PDF出力</span>
-            <span class="lang-content en">Direct High-Quality PDF</span>
-            <span class="lang-content zh">高品质矢量 PDF 导出</span>
-            <span class="lang-content ko">고품질 인쇄용 PDF 출력</span>
+            <span class="lang-content ja">実物フォント完全同期 ＆ 高品位PDF</span>
+            <span class="lang-content en">Exact Font Fidelity & High-Quality PDF</span>
+            <span class="lang-content zh">真实字体完全同步与高品质 PDF</span>
+            <span class="lang-content ko">실제 폰트 완벽 동기화 및 고품질 PDF</span>
           </h3>
           <p>
-            <span class="lang-content ja">画面表示用フォントに依存せず、印刷に最適な標準フォントで高品質なベクターPDFを直接ダウンロードできます。</span>
-            <span class="lang-content en">Outputs high-resolution vector PDFs using standard fonts optimized for sharp paper printing.</span>
-            <span class="lang-content zh">无需依赖本地特殊字体，直接导出适合实体打印的高清晰度矢量 PDF 文件。</span>
-            <span class="lang-content ko">화면용 폰트에 구애받지 않고, 인쇄에 가장 적합한 표준 폰트로 선명한 벡터 PDF를 다운로드할 수 있습니다.</span>
+            <span class="lang-content ja">Google ドキュメントで指定されたフォント（Arial, Times, Georgia, BIZ UDゴシック, Noto Serifなど）をサーバー側と完全同期。書体・字形を100%同一に維持しながら、罫線に吸着した美しいベクターPDFを出力します。</span>
+            <span class="lang-content en">Synchronizes server typography with Google Docs fonts (Arial, Times, Georgia, BIZ UDPGothic, Noto Serif, etc.), maintaining 100% exact typeface fidelity on ruled lines.</span>
+            <span class="lang-content zh">将服务器排版引擎与 Google Docs 字体库全面同步，完美还原 Arial, Times, BIZ UD 等指定字体的真实字形，导出精准对齐横线的矢量 PDF。</span>
+            <span class="lang-content ko">Google 문서에서 지정된 폰트(Arial, Times, Georgia, BIZ UD고딕, Noto Serif 등)를 서버와 완전 동기화하여, 글꼴 형태를 100% 유지하며 줄눈에 밀착된 고품질 벡터 PDF를 출력합니다.</span>
           </p>
         </div>
       </div>
@@ -1020,7 +1087,26 @@
       </p>
 
       <div class="timeline">
-        <!-- 2026-10-13 -->
+        <!-- 2026-10-13 (Font Fidelity & Diagnosis) -->
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background: #2563eb; box-shadow: 0 0 0 4px #dbeafe;"></div>
+          <div class="timeline-date">2026.10.13</div>
+          <div class="timeline-content">
+            <h3>
+              <span class="lang-content ja">実物フォント物理配備による「フォント100%完全同一再現」＆「フォント整合性診断機能」の実装</span>
+              <span class="lang-content en">100% Font Fidelity via Physical Font Deployment &amp; Live Font Diagnostic Audit</span>
+              <span class="lang-content zh">物理部署真实字体实现“100% 字体完全一致还原”与“字体一致性诊断”</span>
+              <span class="lang-content ko">실제 폰트 물리 배치를 통한 '폰트 100% 완전 동일 재현' 및 '폰트 정합성 진단' 구현</span>
+            </h3>
+            <ul>
+              <li><span class="lang-content ja">Google ドキュメントで使用される主要フォント（Arial, Times New Roman, Courier New, Georgia, Verdana, Trebuchet MS, Comic Sans MS, Impact, BIZ UDゴシック/明朝, Noto Sans/Serif JP等、計34フォントファイル）をCloud Runサーバーへ物理インストール。Docsの見た目そのままの字形・文字幅でルーズリーフ罫線へ完全吸着する「フォント100%同一レンダリング」を達成。</span><span class="lang-content en">Physically installed 34 core font files (Arial, Times, Courier, Georgia, Verdana, BIZ UDPGothic, Noto Serif, etc.) onto Cloud Run, achieving 100% exact typeface fidelity aligned onto notebook lines.</span><span class="lang-content zh">在 Cloud Run 服务器中物理安装 34 个核心字体文件，彻底解决替代字体变形问题，使 Docs 实际字形与活页横线实现 100% 完全精准吻合。</span><span class="lang-content ko">Cloud Run 서버에 34개의 핵심 폰트 파일을 물리 설치하여, Docs 본래 서체와 줄눈이 100% 동일하게 완벽 일치하는 정밀 조판을 달성.</span></li>
+              <li><span class="lang-content ja">ドキュメント診断スキャナーに「フォント整合性診断」を新設。ドキュメント内で使われている全フォントを自動走査し、PDF生成時にも同一フォントが適用されているか（100%同一 / 差異あり）を自動判定・証明するレポート機能を実装。</span><span class="lang-content en">Added font fidelity audit to document scanner, verifying whether all fonts in the document match server fonts with 100% accuracy.</span><span class="lang-content zh">在文档扫描器中新增“字体一致性诊断”，自动验证并证明文档内所有字体在生成 PDF 时是否达到 100% 严格一致。</span><span class="lang-content ko">문서 스캐너에 '폰트 정합성 진단'을 신설하여, 문서 내 모든 폰트가 PDF 생성 시에도 100% 동일하게 적용되는지 자동 검증 및 증명.</span></li>
+              <li><span class="lang-content ja">英数・漢字・かな・ハングルの4言語および多重箇条書き・インデント・文字装飾混在時でも行が崩れず正確に組版される実証検証を完了。</span><span class="lang-content en">Verified robust formatting under multi-language text (JA, EN, ZH, KO), multi-level nested lists, indents, and varied text styling.</span><span class="lang-content zh">实测验证日英中韩四语种、多层嵌套列表、缩进与复杂文字样式混排时横线吸附完全稳定不乱行。</span><span class="lang-content ko">한영중일 4개 국어 및 다중 글머리 기호, 들여쓰기, 서식 혼재 시에도 줄 흐트러짐 없는 견고한 조판 실증 완료.</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 2026-10-13 (Footnotes) -->
         <div class="timeline-item">
           <div class="timeline-dot"></div>
           <div class="timeline-date">2026.10.13</div>
