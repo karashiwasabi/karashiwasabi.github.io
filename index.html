@@ -501,26 +501,6 @@
       color: var(--primary);
     }
 
-    /* Video Embed Container (16:9 Responsive) */
-    .video-container {
-      position: relative;
-      width: 100%;
-      padding-bottom: 56.25%;
-      height: 0;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 6px 24px rgba(0,0,0,0.12);
-      background: #000;
-    }
-    .video-container iframe {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      border: 0;
-    }
-
     @media (max-width: 768px) {
       header {
         flex-direction: column;
@@ -608,7 +588,7 @@
       <span class="lang-content ja">ノート罫線と文字を1mmの狂いもなく正確に一致。B5・A4ルーズリーフに完全同期した美しい印刷用PDFを1クリックで生成します。</span>
       <span class="lang-content en">Aligns text and ruling lines with millimeter precision. Generates clean, print-ready PDFs perfectly synchronized with standard B5/A4 loose-leaf paper in one click.</span>
       <span class="lang-content zh">文字与笔记本横线毫米级精准对齐。一键生成完美适配 B5 / A4 活页纸的高清晰度打印版 PDF。</span>
-      <span class="lang-content ko">노트 줄눈과 글자를 1mm 오차도 없이 정확하게 일치. B5/A4 루즈리프에 완벽 동기화된 인쇄용 PDF를 한 번의クリック으로 생성합니다.</span>
+      <span class="lang-content ko">노트 줄눈과 글자를 1mm 오차도 없이 정확하게 일치. B5/A4 루즈리프에 완벽 동기화된 인쇄용 PDF를 한 번의 클릭으로 생성합니다.</span>
     </p>
 
     <!-- Call to Action & Product Hunt Badge -->
@@ -625,37 +605,6 @@
       <a href="https://www.producthunt.com/products/line-aligned?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-line-aligned" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; transition: transform 0.2s ease;">
         <img alt="Line-aligned - Turn Google Docs into two-page study notes for iPad | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1281401&amp;theme=light&amp;t=1792132924801" style="width: 250px; height: 54px; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);" />
       </a>
-    </div>
-  </section>
-
-  <!-- Promotional Video Section -->
-  <section class="container" style="padding-top: 1.5rem; padding-bottom: 1rem;">
-    <div style="background: #ffffff; border: 1px solid var(--border); border-radius: 16px; padding: 2rem 1.5rem; box-shadow: var(--card-shadow); text-align: center;">
-      <div style="margin-bottom: 1.5rem;">
-        <span style="display: inline-block; background: #fee2e2; color: #dc2626; font-size: 0.82rem; font-weight: 700; padding: 4px 12px; border-radius: 20px; margin-bottom: 0.5rem; border: 1px solid #fca5a5;">
-          <span class="lang-content ja">公式プロモーション動画</span>
-          <span class="lang-content en">Official Promo Video</span>
-          <span class="lang-content zh">官方宣传视频</span>
-          <span class="lang-content ko">공식 프로모션 영상</span>
-        </span>
-        <h2 style="font-size: 1.55rem; font-weight: 800; color: var(--text); margin-bottom: 0.4rem;">
-          <span class="lang-content ja">🎥 1分でわかる Line-aligned 組版</span>
-          <span class="lang-content en">🎥 Line-aligned Typesetting in 1 Minute</span>
-          <span class="lang-content zh">🎥 1分钟了解 Line-aligned 排版效果</span>
-          <span class="lang-content ko">🎥 1분 만에 알아보는 Line-aligned 조판</span>
-        </h2>
-        <p style="color: var(--text-muted); font-size: 0.95rem; max-width: 680px; margin: 0 auto;">
-          <span class="lang-content ja">Google ドキュメント™ から 1 クリックでノート罫線にピタッと揃う実際の操作と組版精度を動画でご覧いただけます。</span>
-          <span class="lang-content en">Watch how Google Docs™ instantly snaps to notebook lines with millimeter precision in a single click.</span>
-          <span class="lang-content zh">通过视频查看从 Google 文档™ 一键精准吸附笔记本横线的实际操作与高精排版效果。</span>
-          <span class="lang-content ko">Google 문서™에서 클릭 한 번으로 노트 줄눈에 딱 맞게 정렬되는 실제 동작과 조판 정밀도를 영상으로 확인해보세요.</span>
-        </p>
-      </div>
-      <div style="max-width: 860px; margin: 0 auto;">
-        <div class="video-container">
-          <iframe src="https://www.youtube-nocookie.com/embed/4Odg5sl6sng" title="Line-aligned Official Promo Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-        </div>
-      </div>
     </div>
   </section>
 
@@ -843,8 +792,8 @@
           <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem; color: var(--text);">
             Page 1: テキスト・フォント混在・多重箇条書き
           </div>
-          <div class="image-viewer" onclick="openImageModal('images/font_verification_page_1_比較（左_GoogleDocs_右_Line-aligned）.png?v=20261013_1752')" style="cursor: pointer; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-            <img src="images/font_verification_page_1_比較（左_GoogleDocs_右_Line-aligned）.png?v=20261013_1752" alt="Font Verification Page 1 - Left Google Docs, Right Line-aligned Typeset" style="width: 100%; height: auto; display: block;" />
+          <div class="image-viewer" onclick="openImageModal('images/font_verification_page_1_比較（左_GoogleDocs_右_Line-aligned）.png?v=20261013_2')" style="cursor: pointer; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+            <img src="images/font_verification_page_1_比較（左_GoogleDocs_右_Line-aligned）.png?v=20261013_2" alt="Font Verification Page 1 - Left Google Docs, Right Line-aligned Typeset" style="width: 100%; height: auto; display: block;" />
           </div>
           <div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-muted);">
             ※クリックで高解像度拡大表示
@@ -855,8 +804,8 @@
           <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem; color: var(--text);">
             Page 2: 多重箇条書き・ハングル混在・字形完全一致
           </div>
-          <div class="image-viewer" onclick="openImageModal('images/font_verification_page_2_比較（左_GoogleDocs_右_Line-aligned）.png?v=20261013_1752')" style="cursor: pointer; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-            <img src="images/font_verification_page_2_比較（左_GoogleDocs_右_Line-aligned）.png?v=20261013_1752" alt="Font Verification Page 2 - Left Google Docs, Right Line-aligned Typeset" style="width: 100%; height: auto; display: block;" />
+          <div class="image-viewer" onclick="openImageModal('images/font_verification_page_2_比較（左_GoogleDocs_右_Line-aligned）.png?v=20261013_2')" style="cursor: pointer; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+            <img src="images/font_verification_page_2_比較（左_GoogleDocs_右_Line-aligned）.png?v=20261013_2" alt="Font Verification Page 2 - Left Google Docs, Right Line-aligned Typeset" style="width: 100%; height: auto; display: block;" />
           </div>
           <div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-muted);">
             ※クリックで高解像度拡大表示
@@ -918,7 +867,7 @@
       </div>
 
       <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.25rem; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 0.88rem; line-height: 1.6; color: #334155; overflow-x: auto;">
-        <div style="font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">【Line-aligned 全タグ網羅スキャンレポート】(Ver: 202610131610)</div>
+        <div style="font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">【Line-aligned 全タグ網羅スキャンレポート】(Ver: 202610131320)</div>
         <div>文書名: 【総合検証】フォント ＆ ルーズリーフ組版テスト</div>
         <div>総段落数: 59 / 表: 3 / 段組み: 3段組</div>
         <div>走査プロパティ総数: 2148 / 対応率: 91.2% (未対応: 5種類)</div>
@@ -1154,6 +1103,31 @@
       </p>
 
       <div class="timeline">
+        <!-- 2026-10-18 (Development Log & Version 202610180750) -->
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background: #1a73e8; box-shadow: 0 0 0 4px #dbeafe;"></div>
+          <div class="timeline-date">2026.10.18</div>
+          <div class="timeline-content">
+            <h3>
+              <span class="lang-content ja">【公式開発ログ】ver.202610180750 公開とアクセス権限・セキュリティ仕様の検証記録</span>
+              <span class="lang-content en">Release ver.202610180750 &amp; Technical Audit on OAuth Scopes &amp; Security</span>
+              <span class="lang-content zh">发布 ver.202610180750 及 OAuth 权限与数据安全技术验证记录</span>
+              <span class="lang-content ko">ver.202610180750 배포 및 OAuth 권한·데이터 보안 기술 검증 기록</span>
+            </h3>
+            <p style="margin-bottom: 1rem; color: var(--text-muted);">
+              <span class="lang-content ja">利用者の安全と安心のため、アクセス権限を最小限に絞り込む技術検証を行いました。公式X（旧Twitter）での開発ログツリーを掲載しています。</span>
+              <span class="lang-content en">Conducted rigorous technical audits to minimize OAuth permissions for user data safety. Official development log from X:</span>
+              <span class="lang-content zh">为了用户的安全与放心使用，针对将数据权限缩小至最小范围进行了深入的技术验证。以下为官方 X 发布的开发日志：</span>
+              <span class="lang-content ko">사용자의 안전과 안심을 위해 접근 권한을 최소화하는 기술 검증을 진행했습니다. 공식 X 개발 일지:</span>
+            </p>
+            <div style="display: flex; justify-content: center; margin: 1.5rem 0;">
+              <blockquote class="twitter-tweet"><p lang="ja" dir="ltr">【開発ログ】最新版（ver.202610180750）を公開しました！
+  利用者の方に少しでも安心して使っていただけるよう、認証画面の「すべてのドキュメントへのアクセス」を消し、「開いているファイルのみ（currentonly）」へ極限まで権限を狭める技術検証を行いました。しかし、Googleの深い仕様の壁に直面</p>&mdash; Karashi | Line-aligned Docs (@karashiwasabi41) <a href="https://x.com/karashiwasabi41/status/2111594341412253894?ref_src=twsrc%5Etfw">October 17, 2026</a></blockquote>
+              <script async src="https://platform.x.com/widgets.js" charset="utf-8"></script>
+            </div>
+          </div>
+        </div>
+
         <!-- 2026-10-13 (Font Fidelity & Diagnosis) -->
         <div class="timeline-item">
           <div class="timeline-dot" style="background: #2563eb; box-shadow: 0 0 0 4px #dbeafe;"></div>
