@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
@@ -534,6 +534,12 @@
     </a>
     <div class="nav-group">
       <nav class="header-nav">
+        <a href="#beginner-guide" onclick="openBeginnerGuide(event)" class="nav-link" style="color: var(--primary); font-weight: 700; background: var(--primary-light); padding: 4px 12px; border-radius: 16px;">
+          <span class="lang-content ja">🔰 初めての方へ</span>
+          <span class="lang-content en">🔰 Getting Started</span>
+          <span class="lang-content zh">🔰 新手指南</span>
+          <span class="lang-content ko">🔰 시작 가이드</span>
+        </a>
         <a href="#changelog" class="nav-link">
           <span class="lang-content ja">開発履歴</span>
           <span class="lang-content en">Changelog</span>
@@ -607,11 +613,169 @@
       </a>
     </div>
 
-    <div style="margin-top: 1.25rem; font-size: 0.9rem; color: var(--text-muted); text-align: center;">
-      <span class="lang-content ja">※インストール後は、タブレットやスマートフォンのブラウザから直接 <a href="https://script.google.com/macros/s/AKfycbwmzKUscmWw5_Ku5PdxZpuy8wFdvv4D1QSQJaPpvdhKOX-sh3DkUQaFXnGfIyxfPZA6/exec" target="_blank" rel="noopener noreferrer" style="color: var(--primary); font-weight: 600; text-decoration: underline;">Line-aligned Studio</a> を開いてご利用いただけます。</span>
-      <span class="lang-content en">*After installation, you can launch <a href="https://script.google.com/macros/s/AKfycbwmzKUscmWw5_Ku5PdxZpuy8wFdvv4D1QSQJaPpvdhKOX-sh3DkUQaFXnGfIyxfPZA6/exec" target="_blank" rel="noopener noreferrer" style="color: var(--primary); font-weight: 600; text-decoration: underline;">Line-aligned Studio</a> directly from your tablet or mobile browser.</span>
-      <span class="lang-content zh">※安装完成后，您可以在平板或手机浏览器中直接打开 <a href="https://script.google.com/macros/s/AKfycbwmzKUscmWw5_Ku5PdxZpuy8wFdvv4D1QSQJaPpvdhKOX-sh3DkUQaFXnGfIyxfPZA6/exec" target="_blank" rel="noopener noreferrer" style="color: var(--primary); font-weight: 600; text-decoration: underline;">Line-aligned Studio</a> 使用。</span>
-      <span class="lang-content ko">※설치 후에는 태블릿이나 스마트폰 브라우저에서 <a href="https://script.google.com/macros/s/AKfycbwmzKUscmWw5_Ku5PdxZpuy8wFdvv4D1QSQJaPpvdhKOX-sh3DkUQaFXnGfIyxfPZA6/exec" target="_blank" rel="noopener noreferrer" style="color: var(--primary); font-weight: 600; text-decoration: underline;">Line-aligned Studio</a> 를 직접 열어 이용하실 수 있습니다.</span>
+    <!-- 2-Step Quick Start & Beginner Guide Trigger -->
+    <div style="max-width: 860px; margin: 1.75rem auto 0; background: #ffffff; border: 2px solid #bfdbfe; border-radius: 14px; padding: 1.25rem 1.5rem; box-shadow: 0 6px 20px rgba(26,115,232,0.08); text-align: left;">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; align-items: stretch;">
+        <!-- Step 1 -->
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem;">
+          <div style="font-size: 0.78rem; font-weight: 800; color: #1a73e8; margin-bottom: 0.25rem;">
+            <span class="lang-content ja">STEP 1（最初の1回だけ）</span>
+            <span class="lang-content en">STEP 1 (One-Time Setup)</span>
+            <span class="lang-content zh">STEP 1（僅需首次設定）</span>
+            <span class="lang-content ko">STEP 1 (최초 1회만)</span>
+          </div>
+          <div style="font-weight: 700; font-size: 0.95rem; color: var(--text); margin-bottom: 0.35rem;">
+            <span class="lang-content ja">上の「無料でインストール」で連携許可</span>
+            <span class="lang-content en">Click "Install Free App" Above to Authorize</span>
+            <span class="lang-content zh">點擊上方「免費安裝應用」完成授權</span>
+            <span class="lang-content ko">위 '무료 설치하기'를 눌러 계정 연동 허용</span>
+          </div>
+          <div style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.5;">
+            <span class="lang-content ja">※スマホ・iPadの待ち受け画面にアイコンは増えません。個人の <code>@gmail.com</code> アカウントでのインストールを推奨します。</span>
+            <span class="lang-content en">*No home screen icon is added on mobile. Using a personal <code>@gmail.com</code> account is recommended.</span>
+            <span class="lang-content zh">※手機或平板桌面不會新增圖示。建議使用個人 <code>@gmail.com</code> 帳號安裝。</span>
+            <span class="lang-content ko">※스마트폰·태블릿 홈 화면에 아이콘이 생기지 않습니다. 개인 <code>@gmail.com</code> 계정 권장.</span>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div style="background: #eff6ff; border: 1px solid #93c5fd; border-radius: 10px; padding: 1rem; display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="font-size: 0.78rem; font-weight: 800; color: #0284c7; margin-bottom: 0.25rem;">
+              <span class="lang-content ja">STEP 2（スマホ・iPad・PCからすぐ起動！）</span>
+              <span class="lang-content en">STEP 2 (Launch on Phone, iPad or PC!)</span>
+              <span class="lang-content zh">STEP 2（手機・iPad・電腦直接啟動！）</span>
+              <span class="lang-content ko">STEP 2 (스마트폰·iPad·PC에서 바로 실행!)</span>
+            </div>
+            <div style="font-weight: 700; font-size: 0.95rem; color: var(--text); margin-bottom: 0.4rem;">
+              <span class="lang-content ja">インストール後は下のボタンから直接開けます</span>
+              <span class="lang-content en">Open Studio Directly via the Button Below</span>
+              <span class="lang-content zh">安裝完成後點擊下方按鈕即可直接開啟</span>
+              <span class="lang-content ko">설치 후 아래 버튼에서 바로 열 수 있습니다</span>
+            </div>
+          </div>
+          <a href="https://script.google.com/macros/s/AKfycbwmzKUscmWw5_Ku5PdxZpuy8wFdvv4D1QSQJaPpvdhKOX-sh3DkUQaFXnGfIyxfPZA6/exec" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: #0284c7; color: #ffffff; padding: 10px 16px; border-radius: 8px; font-weight: 700; font-size: 0.92rem; text-decoration: none; box-shadow: 0 2px 8px rgba(2,132,199,0.28);">
+            <span>🚀</span>
+            <span class="lang-content ja">Line-aligned Studio を開く（ブックマーク推奨）</span>
+            <span class="lang-content en">Open Line-aligned Studio (Bookmark This!)</span>
+            <span class="lang-content zh">開啟 Line-aligned Studio（建議加入書籤）</span>
+            <span class="lang-content ko">Line-aligned Studio 열기 (북마크 권장)</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Beginner Guide Accordion (1 to 10 Full Explanation) -->
+      <div id="beginner-guide" style="margin-top: 1rem; scroll-margin-top: 80px;">
+        <details id="beginner-guide-details" style="background: #fffbeb; border: 1px solid #fcd34d; border-radius: 10px; overflow: hidden;">
+          <summary style="padding: 0.85rem 1.15rem; cursor: pointer; font-weight: 800; font-size: 0.96rem; color: #92400e; display: flex; align-items: center; justify-content: space-between; list-style: none;">
+            <span>
+              <span class="lang-content ja">🔰 初めての方へ：1から10までわかる完全ガイド（スマホ・iPadでの始め方／権限の安全性）</span>
+              <span class="lang-content en">🔰 Complete Beginner's Guide (1–10): How to Start on Phone/iPad &amp; Permission Safety</span>
+              <span class="lang-content zh">🔰 新手完整指南（1〜10）：手機・iPad 啟動方式與權限安全說明</span>
+              <span class="lang-content ko">🔰 처음 오신 분을 위한 완벽 가이드 (1~10): 스마트폰·iPad 사용법 및 권한 안전성 안내</span>
+            </span>
+            <span style="font-size: 0.82rem; background: #fef3c7; border: 1px solid #f59e0b; padding: 3px 10px; border-radius: 12px; color: #b45309; white-space: nowrap; margin-left: 8px;">
+              <span class="lang-content ja">タップして開く ▼</span>
+              <span class="lang-content en">Tap to Expand ▼</span>
+              <span class="lang-content zh">點擊展開 ▼</span>
+              <span class="lang-content ko">눌러서 열기 ▼</span>
+            </span>
+          </summary>
+
+          <div style="padding: 1.25rem 1.4rem; background: #ffffff; border-top: 1px solid #fde68a; font-size: 0.92rem; line-height: 1.75; color: #1e293b;">
+            <!-- Japanese 1-10 Guide -->
+            <div class="lang-content ja">
+              <div style="display: grid; gap: 1rem;">
+                <div>
+                  <strong style="color: #1a73e8; font-size: 1rem;">1. 『Line-aligned』って何？</strong><br>
+                  Google ドキュメントやPDFには「ノートの罫線（横線）」がなく、また Word で「行間を固定値」にして無理やり罫線を引くと見出しの大きな文字や数式・図の上半分がスパッと切れて消えてしまいます。『Line-aligned』は、普段の <strong>Word（.docx）・Google ドキュメント・PDF</strong> を読み込むだけで、すべての文字・見出し・数式・表・画像を<strong>「ノートの罫線に1ミリのズレもなくピタッと揃えたルーズリーフPDF」</strong>へ自動変換する無料Webアプリです。
+                </div>
+                <div>
+                  <strong style="color: #1a73e8; font-size: 1rem;">2. どんなノートが作れるの？（5種類の用紙に対応）</strong><br>
+                  1つの原稿から、<strong>① A3見開きノート（左：本文 ／ 右：白紙の罫線ノート）</strong>、<strong>② A4まとめノート</strong>、<strong>③ A5コンパクト・ルーズリーフ</strong>、<strong>④ B5大学ノート</strong>、<strong>⑤ iPadデジタル学習ノート（Goodnotes等向け）</strong>の5種類を自在に出力できます。太罫・中罫・細罫・5mm方眼や、コーネル式のような右側メモ欄の追加も1クリックです。
+                </div>
+                <div>
+                  <strong style="color: #1a73e8; font-size: 1rem;">3. スマホや iPad だけでも使えるの？</strong><br>
+                  <strong>はい、使えます！</strong> パソコンだけでなく、iPhone・Androidスマホ・iPad のブラウザ（Safari や Chrome）から直接アクセスして、手元の Word（.docx）や PDF、Google ドライブ内のドキュメントをルーズリーフ化できます。
+                </div>
+                <div>
+                  <strong style="color: #1a73e8; font-size: 1rem;">4. 【重要】使う前の準備（学校のアカウントに関するご注意）</strong><br>
+                  高校や大学から配布されている学校用の Google アカウント（末尾が <code>.ac.jp</code> や <code>.ed.jp</code> のもの）は、学校の管理者が外部アプリの追加をブロックしている場合があります。<strong>必ず個人の Google アカウント（<code>@gmail.com</code>）に切り替えてから</strong>インストールしてください。
+                </div>
+                <div>
+                  <strong style="color: #1a73e8; font-size: 1rem;">5. ステップ①：Google Workspace Marketplace で「インストール（連携許可）」（最初の1回だけ）</strong><br>
+                  このページ上の青い<strong>「＋ 無料でインストール」</strong>ボタンを押し、Google Workspace Marketplace の画面で「インストール」を押して個人の Google アカウントを選びます。
+                </div>
+                <div>
+                  <strong style="color: #1a73e8; font-size: 1rem;">6. ステップ②：権限の確認画面について（なぜ権限が必要なの？安全なの？）</strong><br>
+                  インストール時に表示される権限は、Google 公式の厳しいセキュリティ審査を通過した正規のものです。<br>
+                  ・<strong>ドライブ上の特定のファイルのみの参照・作成</strong>：あなたがファイル選択画面（Picker）で<strong>自分で選んだファイルだけ</strong>を読み込むために使います。選んでいないプライベートなファイルを勝手に見ることはできません。<br>
+                  ・<strong>Google ドキュメントの参照・編集</strong>：Google ドキュメントの見出し・段落・数式・表の構造データを正確に読み取って罫線に揃えるために必要です（※元のドキュメントを勝手に書き換えたり削除したりすることは一切ありません）。
+                </div>
+                <div style="background: #eff6ff; border-left: 4px solid #1a73e8; padding: 0.75rem 1rem; border-radius: 6px;">
+                  <strong style="color: #1e40af; font-size: 1rem;">7. 【ここが一番大事！】インストールしたあと、スマホのどこから開くの？</strong><br>
+                  Google Workspace Marketplace の「インストール」は「アカウント連携の許可」なので、<strong>スマホやiPadのホーム画面に自動でアプリアイコンが増えるわけではありません。</strong><br>
+                  インストール完了後は、すぐ上の <strong>「🚀 Line-aligned Studio を開く」</strong> ボタンをタップしてください！ブラウザ画面いっぱいに組版スタジオが開きます。
+                </div>
+                <div>
+                  <strong style="color: #1a73e8; font-size: 1rem;">8. ステップ③：2回目から1秒で開けるように「ブックマーク／ホーム画面に追加」しよう</strong><br>
+                  1度インストールすれば、2回目からはマーケットプレイスに行く必要はありません。開いた『Line-aligned Studio』のページをブックマークしてください。iPhone / iPad（Safari）なら、共有ボタンから<strong>「ホーム画面に追加」</strong>を選ぶと、本物のアプリのようにホーム画面にアイコンを作れます！パソコンの Google ドキュメント画面上部「拡張機能 ＞ Line-aligned」からも起動できます。
+                </div>
+                <div>
+                  <strong style="color: #1a73e8; font-size: 1rem;">9. ステップ④：実際にルーズリーフPDFを作ってみよう！</strong><br>
+                  まずはスタジオ画面の<strong>「サンプル読込」</strong>ボタンを押すと、見出し・表・数式入りのお手本データで一瞬でルーズリーフ化を体験できます。自分のファイルを作る時は「ファイル選択」から Google ドキュメント・Word（.docx）・PDF を選び、用紙サイズや罫線を選んで「PDF出力」を押すだけです。
+                </div>
+                <div>
+                  <strong style="color: #1a73e8; font-size: 1rem;">10. 出力した PDF のおすすめの活用法</strong><br>
+                  ・<strong>iPad（Goodnotes / Notability 等）</strong>：ダウンロードしたPDFを「共有 ＞ Goodnotesで開く」で読み込めば、Apple Pencil で綺麗に書き込める自分専用のデジタル学習ノートになります。<br>
+                  ・<strong>紙への印刷</strong>：自宅のプリンターやコンビニのマルチコピー機で印刷してバインダーに綴じたり、市販の無地ルーズリーフ用紙にそのまま印刷するのもおすすめです！
+                </div>
+              </div>
+            </div>
+
+            <!-- English 1-10 Guide -->
+            <div class="lang-content en">
+              <div style="display: grid; gap: 0.9rem;">
+                <div><strong style="color: #1a73e8;">1. What is Line-aligned?</strong><br>Google Docs and PDFs lack notebook ruling lines, and setting "Exact" line spacing in Word clips the top of headings, math equations, and figures. Line-aligned is a free, Google-verified web app that converts your <strong>Word (.docx), Google Docs, and PDFs</strong> into precision-ruled loose-leaf PDFs where every line of text, heading, math formula, and table snaps cleanly to the grid.</div>
+                <div><strong style="color: #1a73e8;">2. 5 Notebook Formats from 1 File</strong><br>Generate <strong>A3 Spreads (Left: Content / Right: Blank Ruled Note)</strong>, <strong>A4 Study Notes</strong>, <strong>A5 Compact Binders</strong>, <strong>B5 Notebooks</strong>, or <strong>iPad Digital Notes (optimized for Goodnotes)</strong>, with Wide/Medium/Narrow ruling, 5mm grid, and Cornell-style memo columns.</div>
+                <div><strong style="color: #1a73e8;">3. Works on Smartphones, iPads &amp; PCs</strong><br>Use it directly from Safari or Chrome on your iPhone, Android phone, iPad, Mac, Windows PC, or Chromebook.</div>
+                <div><strong style="color: #1a73e8;">4. Important Note for Students (School Accounts)</strong><br>School-issued Google accounts (<code>.edu</code>, <code>.ac.jp</code>, etc.) often block Marketplace installations. Please switch to your personal <strong><code>@gmail.com</code></strong> account before installing.</div>
+                <div><strong style="color: #1a73e8;">5. Step 1: One-Time Install on Google Workspace Marketplace</strong><br>Click the blue <strong>"Install Free App"</strong> button above and authorize with your Google account once.</div>
+                <div><strong style="color: #1a73e8;">6. Step 2: About Permissions &amp; Safety</strong><br>Line-aligned has passed Google's official OAuth security verification. It only accesses files you explicitly pick via Google Picker and reads Google Docs structure to align headings/math/tables with ruling lines—it never modifies or deletes your original documents.</div>
+                <div style="background: #eff6ff; border-left: 4px solid #1a73e8; padding: 0.75rem 1rem; border-radius: 6px;"><strong style="color: #1e40af;">7. Crucial Tip: How to Open After Installing on Mobile/iPad</strong><br>Marketplace installation authorizes your Google account—it does <strong>not</strong> add an icon to your phone's home screen. After installing, simply tap the <strong>"🚀 Open Line-aligned Studio"</strong> button right above to launch the web app!</div>
+                <div><strong style="color: #1a73e8;">8. Step 3: Bookmark or "Add to Home Screen"</strong><br>Once installed, bookmark the Studio URL (or use Safari's <strong>"Add to Home Screen"</strong> on iPhone/iPad) for instant 1-tap access anytime.</div>
+                <div><strong style="color: #1a73e8;">9. Step 4: Generate Your Ruled PDF</strong><br>Click <strong>"Load Sample"</strong> in Studio to test immediately, or select your own Google Doc, Word (.docx), or PDF file, pick your paper/ruling style, and click <strong>"Export PDF"</strong>.</div>
+                <div><strong style="color: #1a73e8;">10. Study on iPad or Print on Loose-Leaf Paper</strong><br>Import the exported PDF directly into Goodnotes/Notability for Apple Pencil note-taking, or print double-sided at home or a convenience store!</div>
+              </div>
+            </div>
+
+            <!-- Traditional Chinese 1-10 Guide -->
+            <div class="lang-content zh">
+              <div style="display: grid; gap: 0.9rem;">
+                <div><strong style="color: #1a73e8;">1. 『Line-aligned』是什麼？</strong><br>Google 文件與 PDF 沒有筆記本橫線，而在 Word 設定「固定行高」又會導致標題、公式與圖表上方被截斷。Line-aligned 是通過 Google 官方安全審核的免費網頁應用，只需載入 <strong>Word (.docx)、Google 文件或 PDF</strong>，即可一鍵生成文字、標題、公式與表格完美對齊格線的活頁筆記 PDF。</div>
+                <div><strong style="color: #1a73e8;">2. 支援五大筆記尺寸與多種格線</strong><br>可一鍵輸出 <strong>A3 雙頁展開筆記（左正文／右空白橫線）</strong>、<strong>A4 講義</strong>、<strong>A5 隨身活頁紙</strong>、<strong>B5 大學筆記</strong> 與 <strong>iPad 數位筆記（Goodnotes 最佳化）</strong>，支援寬行、中行、細行、5mm 方格與右側筆記欄。</div>
+                <div><strong style="color: #1a73e8;">3. 手機、iPad 與電腦皆可使用</strong><br>無論是 iPhone、Android 手機、iPad（Safari / Chrome）或電腦瀏覽器皆可直接操作。</div>
+                <div><strong style="color: #1a73e8;">4. 學生注意事項（學校帳號限制）</strong><br>學校配發的 Google 帳號（如 <code>.edu</code>）常會封鎖外部應用安裝，請務必切換至個人 <strong><code>@gmail.com</code></strong> 帳號進行安裝。</div>
+                <div><strong style="color: #1a73e8;">5〜6. 首次安裝與權限安全說明</strong><br>點擊上方「免費安裝應用」完成首次授權。本應用已通過 Google 官方安全審查，僅會讀取您主動選取的檔案與排版結構，絕不會修改或刪除您的原始文件。</div>
+                <div style="background: #eff6ff; border-left: 4px solid #1a73e8; padding: 0.75rem 1rem; border-radius: 6px;"><strong style="color: #1e40af;">7〜8. 【最重要】安裝後如何從手機／iPad 開啟？</strong><br>Marketplace 的「安裝」代表帳號授權，<strong>手機桌面不會自動新增圖示</strong>。安裝後請直接點擊上方的 <strong>「🚀 開啟 Line-aligned Studio」</strong> 按鈕，並將該網頁加入書籤（iPhone/iPad 可選 Safari「加入主畫面」），之後即可一鍵啟動！</div>
+                <div><strong style="color: #1a73e8;">9〜10. 立即體驗與活用方式</strong><br>開啟 Studio 後可先點擊「載入範例」體驗排版效果，或選取自己的 Word (.docx)、Google 文件與 PDF 輸出，直接匯入 Goodnotes 手寫學習或雙面列印裝訂！</div>
+              </div>
+            </div>
+
+            <!-- Korean 1-10 Guide -->
+            <div class="lang-content ko">
+              <div style="display: grid; gap: 0.9rem;">
+                <div><strong style="color: #1a73e8;">1. 『Line-aligned』란 무엇인가요?</strong><br>Google 문서와 PDF에는 노트 줄눈이 없고, Word에서 '줄 간격 고정'을 설정하면 제목·수식·그림 윗부분이 잘려 나갑니다. Line-aligned는 <strong>Word (.docx), Google 문서, PDF</strong>를 불러오기만 하면 모든 글자와 수식, 표를 노트 줄눈에 정확히 맞춰 루즈리프 PDF로 자동 변환해 주는 무료 웹 앱입니다.</div>
+                <div><strong style="color: #1a73e8;">2. 5가지 노트 규격 &amp; 줄눈 지원</strong><br><strong>A3 펼침 노트(왼쪽 본문 / 오른쪽 빈 줄 노트)</strong>, <strong>A4 요약 노트</strong>, <strong>A5 루즈리프</strong>, <strong>B5 노트</strong>, <strong>iPad 디지털 노트(Goodnotes 최적화)</strong> 및 가로줄·5mm 모눈·우측 메모란을 원클릭으로 전환할 수 있습니다.</div>
+                <div><strong style="color: #1a73e8;">3~4. 스마트폰·iPad 완벽 지원 및 계정 안내</strong><br>PC뿐만 아니라 iPhone, Android, iPad 브라우저에서 바로 사용할 수 있습니다. 학교 계정(<code>.ac.kr</code> 등)은 관리자 차단 가능성이 있으므로 <strong>개인 <code>@gmail.com</code> 계정</strong>으로 설치해 주세요.</div>
+                <div><strong style="color: #1a73e8;">5~6. 최초 1회 설치 및 권한 안전성</strong><br>위 '무료 설치하기'를 눌러 권한을 허용합니다. Google 공식 보안 심사를 통과한 안전한 앱이며, 사용자가 직접 선택한 파일만 읽고 원본 문서를 임의로 수정하거나 삭제하지 않습니다.</div>
+                <div style="background: #eff6ff; border-left: 4px solid #1a73e8; padding: 0.75rem 1rem; border-radius: 6px;"><strong style="color: #1e40af;">7~8. 【가장 중요!】 설치 후 스마트폰·iPad에서 여는 방법</strong><br>마켓플레이스 설치는 계정 연동 허용이므로 <strong>스마트폰 홈 화면에 아이콘이 자동 생성되지 않습니다.</strong> 설치 후 바로 위의 <strong>「🚀 Line-aligned Studio 열기」</strong> 버튼을 눌러 실행하고, 북마크(또는 Safari '홈 화면에 추가')해 두면 언제든 1초 만에 열 수 있습니다!</div>
+                <div><strong style="color: #1a73e8;">9~10. 샘플 체험 및 PDF 활용법</strong><br>스튜디오에서 '샘플 불러오기'로 즉시 체험하거나 내 Word(.docx)·Google 문서·PDF를 변환해 Goodnotes 필기나 양면 인쇄 바인더 노트로 활용해 보세요!</div>
+              </div>
+            </div>
+          </div>
+        </details>
+      </div>
     </div>
   </section>
 
@@ -1505,6 +1669,15 @@
 
     function closeModal() {
       document.getElementById('imageModal').style.display = 'none';
+    }
+
+    function openBeginnerGuide(event) {
+      if (event) event.preventDefault();
+      const details = document.getElementById('beginner-guide-details');
+      if (details) {
+        details.open = true;
+        details.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }
 
     // Auto-detect browser language
