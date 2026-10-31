@@ -749,6 +749,7 @@
   let currentGenreKey = 'haiku';
   let currentLines = [];
   let currentAuthor = '';
+  let youtubePrivacyStatus = 'private'; // 初期状態は安全な「private（非公開）」
 
   const bgImages = {};
   function preloadBgImage(path) {
@@ -1598,8 +1599,6 @@
   /* ==================================================
      YouTube Data API v3 へのアップロード（非公開 / 公開 トグル対応）
      ================================================== */
-  let youtubePrivacyStatus = 'private'; // 初期状態は安全な「private（非公開）」
-
   function updatePrivacyToggleUI() {
     const dict = I18N_DICT[currentUiLang] || I18N_DICT['ja'];
     if (youtubePrivacyStatus === 'public') {
