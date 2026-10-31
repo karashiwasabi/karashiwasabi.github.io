@@ -555,18 +555,15 @@
   const FADE_DURATION_MS = 1000;
   const OUTRO_HOLD_MS = 3000;
 
-  // 動画・無音音声（X / Instagram / TikTok 完全互換用AAC）エンコード品質定数
+  // 動画エンコード品質定数（スマホでも固まらず超高速・高画質に処理できる設定）
   const VIDEO_CAPTURE_FPS = 30;
-  const VIDEO_BITRATE_BPS = 10000000; // YouTube 1080p30 推奨(8Mbps)を上回る高精細かつ軽快な10Mbps
+  const VIDEO_BITRATE_BPS = 8000000; // YouTube 1080p30 公式推奨の8Mbps（高画質かつスマホメモリに優しい軽量サイズ）
   const MICROSECONDS_PER_SEC = 1000000;
-  const KEYFRAME_INTERVAL_FRAMES = 10;
-  const PROGRESS_UI_UPDATE_FRAME_INTERVAL = 15;
+  const KEYFRAME_INTERVAL_FRAMES = 15;
+  const MAX_ENCODER_QUEUE_SIZE = 2; // スマホのハードウェアエンコーダが詰まらないようキュー上限を2フレームに制限
+  const PROGRESS_UI_UPDATE_FRAME_INTERVAL = 5;
   const PROGRESS_MAX_DURING_ENCODE_PERCENT = 99;
   const GOLD_PARTICLE_COUNT = 22;
-  const AUDIO_SAMPLE_RATE_HZ = 48000;
-  const AUDIO_CHANNEL_COUNT = 2;
-  const AUDIO_BITRATE_BPS = 128000;
-  const AUDIO_FRAMES_PER_CHUNK = 1024;
 
   /* ==================================================
      全8ジャンルの完全設定（背景・Webフォント・文字色・組版方向・既定テキスト）
@@ -1475,24 +1472,7 @@
       const totalFrames = Math.ceil((totalCycleMs / MS_PER_SECOND) * VIDEO_CAPTURE_FPS);
       const frameDurationUs = Math.round(MICROSECONDS_PER_SEC / VIDEO_CAPTURE_FPS);
 
-      // X / Instagram リール / TikTok で「音声トラックなしエラー」が起きないよう、WebCodecs AudioEncoder で無音AACトラックを同時多重化する
-      let canEncodeSilentAudio = false;
-      const audioConfig = {
-        codec: 'mp4a.40.2', // AAC-LC
-        sampleRate: AUDIO_SAMPLE_RATE_HZ,
-        numberOfChannels: AUDIO_CHANNEL_COUNT,
-        bitrate: AUDIO_BITRATE_BPS
-      };
-      if (typeof AudioEncoder !== 'undefined' && typeof AudioData !== 'undefined') {
-        try {
-          const support = await AudioEncoder.isConfigSupported(audioConfig);
-          canEncodeSilentAudio = Boolean(support && support.supported);
-        } catch (e) {
-          canEncodeSilentAudio = false;
-        }
-      }
-
-      const muxerOptions = {
+      const muxer = new Mp4Muxer.Muxer({
         target: new Mp4Muxer.ArrayBufferTarget(),
         video: {
           codec: 'avc',
@@ -1500,16 +1480,7 @@
           height: CANVAS_HEIGHT_PX
         },
         fastStart: 'in-memory'
-      };
-      if (canEncodeSilentAudio) {
-        muxerOptions.audio = {
-          codec: 'aac',
-          sampleRate: AUDIO_SAMPLE_RATE_HZ,
-          numberOfChannels: AUDIO_CHANNEL_COUNT
-        };
-      }
-
-      const muxer = new Mp4Muxer.Muxer(muxerOptions);
+      });
 
       const videoEncoder = new VideoEncoder({
         output: (chunk, meta) => muxer.addVideoChunk(chunk, meta),
@@ -1526,16 +1497,12 @@
         latencyMode: 'quality'
       });
 
-      let audioEncoder = null;
-      if (canEncodeSilentAudio) {
-        audioEncoder = new AudioEncoder({
-          output: (chunk, meta) => muxer.addAudioChunk(chunk, meta),
-          error: (err) => console.error("AudioEncoder error:", err)
-        });
-        audioEncoder.configure(audioConfig);
-      }
-
       for (let i = 0; i < totalFrames; i++) {
+        // スマホのハードウェアエンコーダのバッファ溢れ（フリーズ）を防ぐバックプレッシャー制御
+        while (videoEncoder.encodeQueueSize > MAX_ENCODER_QUEUE_SIZE) {
+          await new Promise((r) => setTimeout(r, 4));
+        }
+
         const elapsedMs = (i / VIDEO_CAPTURE_FPS) * MS_PER_SECOND;
         drawFrame(elapsedMs);
 
@@ -1553,28 +1520,6 @@
           if (onProgress) onProgress(percent);
           await new Promise((r) => setTimeout(r, 0));
         }
-      }
-
-      // 動画の長さに合わせた完全無音のステレオ音声データ（AAC）をエンコードしてMP4に格納
-      if (audioEncoder) {
-        const totalAudioFrames = Math.ceil((totalCycleMs / MS_PER_SECOND) * AUDIO_SAMPLE_RATE_HZ);
-        const silentBuffer = new Float32Array(AUDIO_FRAMES_PER_CHUNK * AUDIO_CHANNEL_COUNT);
-        for (let sampleOffset = 0; sampleOffset < totalAudioFrames; sampleOffset += AUDIO_FRAMES_PER_CHUNK) {
-          const frameCount = Math.min(AUDIO_FRAMES_PER_CHUNK, totalAudioFrames - sampleOffset);
-          const timestampUs = Math.round((sampleOffset / AUDIO_SAMPLE_RATE_HZ) * MICROSECONDS_PER_SEC);
-          const audioData = new AudioData({
-            format: 'f32-planar',
-            sampleRate: AUDIO_SAMPLE_RATE_HZ,
-            numberOfFrames: frameCount,
-            numberOfChannels: AUDIO_CHANNEL_COUNT,
-            timestamp: timestampUs,
-            data: silentBuffer.subarray(0, frameCount * AUDIO_CHANNEL_COUNT)
-          });
-          audioEncoder.encode(audioData);
-          audioData.close();
-        }
-        await audioEncoder.flush();
-        audioEncoder.close();
       }
 
       await videoEncoder.flush();
