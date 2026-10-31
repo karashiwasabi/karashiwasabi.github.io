@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="google-site-verification" content="XTUyp1ouHdnj1jkzypNTPJRBj4YpdgQYlUPgpsipJKk" />
+  <title>Short Verse Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- 全OS・全端末（iPhone/Android/Linux/Windows）で100%同一の字形を保証するジャンル別Webフォント -->
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Gowun+Batang:wght@700&family=Shippori+Mincho:wght@500;700&family=Yuji+Mai&family=Yuji+Syuku&display=swap" rel="stylesheet">
+  <!-- Google公式 OAuth クライアントライブラリ -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <!-- WebCodecs 高精細MP4書き出し用マルチプレクサ -->
+  <script src="https://cdn.jsdelivr.net/npm/mp4-muxer@5.1.3/build/mp4-muxer.min.js"></script>
+  <style>
+    /* ==================================================
+       レイアウト定数（CSS変数）
+       ================================================== */
+    :root {
+      --bg-color-main: #f5f2eb;
+      --bg-color-card: #ffffff;
+      --text-color-main: #2b2b2b;
+      --text-color-sub: #666666;
+      --accent-color: #8c2727;
+      --accent-color-hover: #a83232;
+      --border-color: #d8d0c5;
+      --input-font-size-px: 19px;
+      --label-font-size-px: 14px;
+      --btn-height-px: 54px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Shippori Mincho', serif;
+      background-color: var(--bg-color-main);
+      color: var(--text-color-main);
+      line-height: 1.6;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 540px;
+      min-height: 100vh;
+      background-color: var(--bg-color-card);
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.06);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* ヘッダー：Short Verse Studio と 〇/× YouTube account */
+    .header {
+      padding: 14px 18px;
+      background-color: #fdfbf7;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header h1 {
+      font-size: 20px;
+      color: var(--accent-color);
+      letter-spacing: 1px;
+    }
+
+    .auth-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: #f5f0eb;
+      border: 2px solid var(--border-color);
+      border-radius: 24px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #777777;
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+    }
+    .auth-badge.connected {
+      background: #e6f4ea;
+      border-color: #34a853;
+      color: #137333;
+    }
+
+    /* --------------------------------------------------
+       ステップ1：入力画面
+       -------------------------------------------------- */
+    .step-input {
+      padding: 18px 18px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    /* 全8ジャンル選択グリッド（2列×4段） */
+    .genre-selector {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    .genre-btn {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 14px;
+      padding: 10px 6px;
+      border: 2px solid var(--border-color);
+      border-radius: 8px;
+      background: #faf8f5;
+      color: #444;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+    }
+    .genre-btn.active {
+      border-color: var(--accent-color);
+      background: #fdf2f2;
+      color: var(--accent-color);
+      font-weight: 700;
+    }
+
+    .lines-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .form-label {
+      font-size: var(--label-font-size-px);
+      font-weight: 700;
+      color: #444;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .char-count {
+      font-size: 12px;
+      color: var(--text-color-sub);
+      font-weight: normal;
+    }
+
+    .text-input {
+      font-family: 'Shippori Mincho', serif;
+      font-size: var(--input-font-size-px);
+      padding: 10px 12px;
+      border: 2px solid var(--border-color);
+      border-radius: 8px;
+      background-color: #faf8f5;
+      color: var(--text-color-main);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .text-input:focus {
+      border-color: var(--accent-color);
+      background-color: #ffffff;
+    }
+
+    .primary-btn {
+      height: var(--btn-height-px);
+      font-family: 'Shippori Mincho', serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: #ffffff;
+      background-color: var(--accent-color);
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 10px rgba(140, 39, 39, 0.25);
+      transition: background-color 0.2s, transform 0.1s;
+    }
+    .primary-btn:active {
+      transform: scale(0.98);
+      background-color: var(--accent-color-hover);
+    }
+    .primary-btn:disabled {
+      background-color: #b5aea4;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .terms-consent-box {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 12px;
+      margin-top: 4px;
+      background-color: #faf6f0;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--text-color-main);
+      cursor: pointer;
+    }
+    .terms-consent-box input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      margin-top: 2px;
+      accent-color: var(--accent-color);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .terms-consent-box a {
+      color: var(--accent-color);
+      font-weight: 700;
+      text-decoration: underline;
+    }
+
+    /* --------------------------------------------------
+       ステップ2：全画面プレビュー画面
+       -------------------------------------------------- */
+    .step-preview {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px 16px 24px;
+      gap: 14px;
+    }
+
+    .canvas-wrapper {
+      width: 100%;
+      max-width: 340px;
+      aspect-ratio: 9 / 16;
+      position: relative;
+      background-color: #1a1612;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    }
+
+    #shortsCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .preview-controls {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .secondary-btn {
+      height: 48px;
+      font-family: 'Shippori Mincho', serif;
+      font-size: 16px;
+      background-color: #e8e3d8;
+      color: #444;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .badge-private {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 6px 16px;
+      background-color: #ebe6dc;
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      font-family: 'Shippori Mincho', serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: #444;
+      text-align: center;
+      margin: 0 auto;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.2s;
+    }
+    .badge-private:hover {
+      border-color: var(--accent-color);
+    }
+    .badge-private.is-public {
+      background-color: #e6f4ea;
+      border-color: #34a853;
+      color: #137333;
+    }
+
+    .progress-box {
+      display: none;
+      width: 100%;
+      padding: 14px;
+      background: #fdfbf7;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      text-align: center;
+      font-size: 14px;
+      color: var(--accent-color);
+      font-weight: bold;
+    }
+
+    .success-box {
+      display: none;
+      width: 100%;
+      padding: 16px;
+      background: #e6f4ea;
+      border: 1px solid #34a853;
+      border-radius: 8px;
+      text-align: center;
+      color: #137333;
+      font-size: 15px;
+    }
+    .success-box a {
+      color: #1a73e8;
+      font-weight: bold;
+      text-decoration: underline;
+      display: block;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+  <header class="header">
+    <h1>Short Verse Studio</h1>
+    <div id="authStatusBtn" class="auth-badge" title="YouTube Auth">
+      <span id="authSymbol">×</span>
+      <span>YouTube account</span>
+    </div>
+  </header>
+
+  <!-- ステップ1：入力画面 -->
+  <main id="inputStep" class="step-input">
+    <!-- 全8ジャンルの選択ボタン（漢字 + アルファベット記載） -->
+    <div class="genre-selector" id="genreSelector">
+      <button type="button" class="genre-btn active" data-genre="haiku">俳句 (Haiku)</button>
+      <button type="button" class="genre-btn" data-genre="tanka">短歌 (Tanka)</button>
+      <button type="button" class="genre-btn" data-genre="jueju">絶句 (Jueju)</button>
+      <button type="button" class="genre-btn" data-genre="sijo">時調 (Sijo)</button>
+      <button type="button" class="genre-btn" data-genre="rubaiyat">ルバイヤート (Rubaiyat)</button>
+      <button type="button" class="genre-btn" data-genre="ghazal">ガザル (Ghazal)</button>
+      <button type="button" class="genre-btn" data-genre="limerick">リメリック (Limerick)</button>
+      <button type="button" class="genre-btn" data-genre="epigram">エピグラム (Epigram)</button>
+    </div>
+
+    <!-- 選択したジャンルに応じて動的に切り替わるテキストボックス群 -->
+    <div id="linesContainer" class="lines-container"></div>
+
+    <div class="form-group">
+      <label class="form-label" for="authorInput">
+        <span>雅号 / 作者 (Author)</span>
+        <span class="char-count" id="fontIndicator">Font: Yuji Syuku</span>
+      </label>
+      <input type="text" id="authorInput" class="text-input" placeholder="芭蕉" value="芭蕉" maxlength="24">
+    </div>
+
+    <label class="terms-consent-box" for="termsAgreeCheckbox">
+      <input type="checkbox" id="termsAgreeCheckbox">
+      <span>
+        作成・投稿する動画の著作権や表現内容はすべて自己責任であることに同意します（<a href="terms.html" target="_blank" rel="noopener">利用規約 / Terms</a>）<br>
+        <small style="color: var(--text-color-sub);">I agree to the Terms of Service and take full responsibility for my content.</small>
+      </span>
+    </label>
+
+    <div style="display: flex; gap: 10px; margin-top: 6px;">
+      <button type="button" id="clearInputsBtn" class="secondary-btn" style="flex: 1; height: var(--btn-height-px);">
+        クリア (Clear)
+      </button>
+      <button type="button" id="goToPreviewBtn" class="primary-btn" style="flex: 2;" disabled>
+        動画を確認する ➔
+      </button>
+    </div>
+
+    <footer style="margin-top: 20px; padding-top: 12px; border-top: 1px solid var(--border-color); text-align: center; font-size: 12px; color: var(--text-color-sub);">
+      <a href="privacy.html" style="color: var(--text-color-sub); text-decoration: underline; margin: 0 8px;">Privacy Policy (プライバシーポリシー)</a> |
+      <a href="terms.html" style="color: var(--text-color-sub); text-decoration: underline; margin: 0 8px;">Terms of Service (利用規約)</a>
+    </footer>
+  </main>
+
+  <!-- ステップ2：全画面プレビュー & 送信画面 -->
+  <section id="previewStep" class="step-preview">
+    <button type="button" id="privacyToggleBtn" class="badge-private" title="クリックで非公開 / 公開を切り替え">
+      🔒 YouTube Private (非公開) ⇄
+    </button>
+
+    <div class="canvas-wrapper">
+      <canvas id="shortsCanvas" width="1080" height="1920"></canvas>
+    </div>
+
+    <div id="progressBox" class="progress-box">
+      🎬 <span id="progressText">...</span>
+    </div>
+
+    <div id="successBox" class="success-box">
+      🎉 <strong id="successTitleText">YouTube (Private) Uploaded!</strong>
+      <a id="videoLink" href="#" target="_blank" rel="noopener noreferrer">YouTube Studio ➔</a>
+    </div>
+
+    <div class="preview-controls">
+      <button type="button" id="uploadBtn" class="primary-btn">
+        自分のYouTubeに非公開で送る
+      </button>
+
+      <button type="button" id="recordVideoBtn" class="secondary-btn">
+        端末に動画ファイルとして保存
+      </button>
+
+      <button type="button" id="backBtn" class="secondary-btn">
+        ← 入力しなおす
+      </button>
+    </div>
+  </section>
+</div>
+
+<script>
+  /* ==================================================
+     Google OAuth 2.0 & YouTube API 定数設定
+     ================================================== */
+  const GOOGLE_CLIENT_ID = '435490220637-8s3venub2beh3lddb19d6j85gbt2hnvt.apps.googleusercontent.com';
+  const YOUTUBE_SCOPES = 'https://www.googleapis.com/auth/youtube.upload https://www.googleapis.com/auth/youtube.readonly';
+  const STORAGE_KEY_TOKEN = 'svs_yt_access_token';
+  const STORAGE_KEY_EXPIRY = 'svs_yt_token_expiry_ms';
+  const STORAGE_KEY_TERMS_AGREED = 'svs_terms_agreed_v1';
+  const DEFAULT_TOKEN_LIFETIME_SEC = 3500;
+  const MS_PER_SECOND = 1000;
+
+  let accessToken = null;
+  let tokenClient = null;
+
+  /* ==================================================
+     レイアウト定数定義（マジックナンバー厳禁）
+     基準：YouTubeショート規格 1080 x 1920 px
+     根拠：mask_layout.png の厳密な紙面領域 (X: 108〜809, Y: 400〜1499)
+     ================================================== */
+  const CANVAS_WIDTH_PX = 1080;
+  const CANVAS_HEIGHT_PX = 1920;
+
+  // mask_layout.png で定義された紙面の絶対領域
+  const PAPER_LEFT_X_PX = 108;
+  const PAPER_RIGHT_X_PX = 809;
+  const PAPER_TOP_Y_PX = 400;
+  const PAPER_BOTTOM_Y_PX = 1499;
+
+  // 縦書き・横書き共通の紙面内安全領域（上下左右に十分な余白を取り、綴じ目やクリップ・筆に絶対重ならない範囲）
+  const PAPER_SAFE_LEFT_X_PX = 165;
+  const PAPER_SAFE_RIGHT_X_PX = 745;
+  const PAPER_SAFE_CENTER_X_PX = Math.round((PAPER_SAFE_LEFT_X_PX + PAPER_SAFE_RIGHT_X_PX) / 2); // = 455px
+  const PAPER_SAFE_WIDTH_PX = PAPER_SAFE_RIGHT_X_PX - PAPER_SAFE_LEFT_X_PX; // = 580px
+  const PAPER_SAFE_TOP_Y_PX = 510;
+  const PAPER_SAFE_BOTTOM_Y_PX = 1390;
+
+  // リメリック用（左にノートの綴じ目、右に真鍮クリップがあるため横幅をさらに安全側に絞る）
+  const LIMERICK_SAFE_LEFT_X_PX = 215;
+  const LIMERICK_SAFE_RIGHT_X_PX = 710;
+  const LIMERICK_SAFE_CENTER_X_PX = Math.round((LIMERICK_SAFE_LEFT_X_PX + LIMERICK_SAFE_RIGHT_X_PX) / 2); // = 463px
+  const LIMERICK_SAFE_WIDTH_PX = LIMERICK_SAFE_RIGHT_X_PX - LIMERICK_SAFE_LEFT_X_PX; // = 495px
+
+  // 【縦書き用】列X座標定数（右から左へ並ぶ）
+  const HAIKU_LINE_X_COORDS_PX = [645, 490, 335];
+  const HAIKU_AUTHOR_X_PX = 200;
+  const HAIKU_LINE_INDENT_Y_PX = [0, 36, 72];
+
+  const TANKA_LINE_X_COORDS_PX = [700, 595, 490, 385, 280];
+  const TANKA_AUTHOR_X_PX = 178;
+  const TANKA_LINE_INDENT_Y_PX = [0, 24, 48, 72, 96];
+
+  // 絶句（竹簡4行＋作者）：竹簡の節目に美しく収まる4列＋作者列
+  const JUEJU_LINE_X_COORDS_PX = [675, 550, 425, 300];
+  const JUEJU_AUTHOR_X_PX = 185;
+  const JUEJU_LINE_INDENT_Y_PX = [0, 0, 0, 0]; // 漢詩（絶句）は天頭を揃える伝統組版
+
+  // 【横書き用】Y座標定数（上から下へ並ぶ）
+  const HORIZONTAL_START_Y_3LINES_PX = 680;
+  const HORIZONTAL_LINE_PITCH_3LINES_PX = 155;
+  const HORIZONTAL_START_Y_4LINES_PX = 630;
+  const HORIZONTAL_LINE_PITCH_4LINES_PX = 140;
+  const HORIZONTAL_START_Y_5LINES_PX = 600;
+  const HORIZONTAL_LINE_PITCH_5LINES_PX = 120;
+  const HORIZONTAL_AUTHOR_Y_PX = 1320;
+  const HORIZONTAL_AUTHOR_FONT_SIZE_PX = 38;
+  const HORIZONTAL_MIN_FONT_SIZE_PX = 24;
+  const HORIZONTAL_FONT_SHRINK_STEP_PX = 2;
+
+  // 【縦書き用】自動縮小・雅号組版定数
+  const VERTICAL_MIN_FONT_SIZE_PX = 40;
+  const VERTICAL_FONT_SPACING_RATIO = 0.78;
+  const VERTICAL_AUTHOR_MAX_HEIGHT_PX = 450;
+  const VERTICAL_AUTHOR_BASE_SPACING_PX = 64;
+  const VERTICAL_AUTHOR_BASE_FONT_SIZE_PX = 46;
+  const VERTICAL_AUTHOR_MIN_FONT_SIZE_PX = 32;
+  const VERTICAL_AUTHOR_FONT_SPACING_RATIO = 0.76;
+  const VERTICAL_AUTHOR_BOTTOM_OFFSET_PX = 30;
+
+  // アニメーション時間定数（ミリ秒）
+  const INTRO_SILENCE_MS = 1400;
+  const LINE_APPEAR_INTERVAL_MS = 2000;
+  const FADE_DURATION_MS = 1000;
+  const OUTRO_HOLD_MS = 3000;
+
+  // 動画・無音音声（X / Instagram / TikTok 完全互換用AAC）エンコード品質定数
+  const VIDEO_CAPTURE_FPS = 30;
+  const VIDEO_BITRATE_BPS = 25000000;
+  const MICROSECONDS_PER_SEC = 1000000;
+  const KEYFRAME_INTERVAL_FRAMES = 10;
+  const PROGRESS_UI_UPDATE_FRAME_INTERVAL = 15;
+  const PROGRESS_MAX_DURING_ENCODE_PERCENT = 99;
+  const GOLD_PARTICLE_COUNT = 22;
+  const AUDIO_SAMPLE_RATE_HZ = 48000;
+  const AUDIO_CHANNEL_COUNT = 2;
+  const AUDIO_BITRATE_BPS = 128000;
+  const AUDIO_FRAMES_PER_CHUNK = 1024;
+
+  /* ==================================================
+     全8ジャンルの完全設定（背景・Webフォント・文字色・組版方向・既定テキスト）
+     ================================================== */
+  const GENRE_CONFIGS = {
+    haiku: {
+      id: 'haiku',
+      label: '俳句 (Haiku)',
+      bgPath: 'shortliterature/Haiku（俳句）.jpg',
+      layoutMode: 'vertical',
+      fontFamily: '"Yuji Syuku", "Shippori Mincho", serif',
+      fontLabel: 'Yuji Syuku (毛筆行書風)',
+      fontWeight: '400',
+      textColor: '#181412',
+      authorColor: '#3a2b22',
+      lineXCoords: HAIKU_LINE_X_COORDS_PX,
+      authorX: HAIKU_AUTHOR_X_PX,
+      lineIndentsY: HAIKU_LINE_INDENT_Y_PX,
+      baseFontSize: 74,
+      baseCharSpacing: 96,
+      defaultAuthor: '芭蕉',
+      fields: [
+        { label: '上五 (Line 1)', hint: '5音目安', defaultText: '古池や', maxLength: 12 },
+        { label: '中七 (Line 2)', hint: '7音目安', defaultText: '蛙飛びこむ', maxLength: 16 },
+        { label: '下五 (Line 3)', hint: '5音目安', defaultText: '水の音', maxLength: 12 }
+      ]
+    },
+    tanka: {
+      id: 'tanka',
+      label: '短歌 (Tanka)',
+      bgPath: 'shortliterature/短歌（Tanka）.jpg',
+      layoutMode: 'vertical',
+      fontFamily: '"Shippori Mincho", serif',
+      fontLabel: 'Shippori Mincho (伝統明朝)',
+      fontWeight: '700',
+      textColor: '#181412',
+      authorColor: '#3a2b22',
+      lineXCoords: TANKA_LINE_X_COORDS_PX,
+      authorX: TANKA_AUTHOR_X_PX,
+      lineIndentsY: TANKA_LINE_INDENT_Y_PX,
+      baseFontSize: 64,
+      baseCharSpacing: 86,
+      defaultAuthor: '紀友則',
+      fields: [
+        { label: '初句 (Line 1)', hint: '5音目安', defaultText: 'ひさかたの', maxLength: 12 },
+        { label: '二句 (Line 2)', hint: '7音目安', defaultText: '光のどけき', maxLength: 16 },
+        { label: '三句 (Line 3)', hint: '5音目安', defaultText: '春の日に', maxLength: 12 },
+        { label: '四句 (Line 4)', hint: '7音目安', defaultText: 'しづ心なく', maxLength: 16 },
+        { label: '結句 (Line 5)', hint: '7音目安', defaultText: '花の散るらむ', maxLength: 16 }
+      ]
+    },
+    jueju: {
+      id: 'jueju',
+      label: '絶句 (Jueju)',
+      bgPath: 'shortliterature/絶句.jpg',
+      layoutMode: 'vertical',
+      fontFamily: '"Yuji Mai", "Shippori Mincho", serif',
+      fontLabel: 'Yuji Mai (漢詩書道風)',
+      fontWeight: '400',
+      textColor: '#110d0a',
+      authorColor: '#6b1d1d',
+      lineXCoords: JUEJU_LINE_X_COORDS_PX,
+      authorX: JUEJU_AUTHOR_X_PX,
+      lineIndentsY: JUEJU_LINE_INDENT_Y_PX,
+      baseFontSize: 76,
+      baseCharSpacing: 112,
+      defaultAuthor: '李白',
+      fields: [
+        { label: '起句 (Line 1)', hint: '五言 / 七言', defaultText: '床前看月光', maxLength: 10 },
+        { label: '承句 (Line 2)', hint: '五言 / 七言', defaultText: '疑是地上霜', maxLength: 10 },
+        { label: '転句 (Line 3)', hint: '五言 / 七言', defaultText: '舉頭望山月', maxLength: 10 },
+        { label: '結句 (Line 4)', hint: '五言 / 七言', defaultText: '低頭思故郷', maxLength: 10 }
+      ]
+    },
+    sijo: {
+      id: 'sijo',
+      label: '時調 (Sijo)',
+      bgPath: 'shortliterature/シジョ（時調）.jpg',
+      layoutMode: 'horizontal',
+      fontFamily: '"Gowun Batang", "Shippori Mincho", serif',
+      fontLabel: 'Gowun Batang (韓国標準横書3行)',
+      fontWeight: '700',
+      textColor: '#1c1815',
+      authorColor: '#4a382b',
+      startY: HORIZONTAL_START_Y_3LINES_PX,
+      linePitchY: HORIZONTAL_LINE_PITCH_3LINES_PX,
+      baseFontSize: 40,
+      defaultAuthor: '황진이',
+      fields: [
+        { label: '초장 / 初章 (Line 1)', hint: '3-4-3-4', defaultText: '동짓달 기나긴 밤을 한 허리를 버혀 내어', maxLength: 32 },
+        { label: '중장 / 中章 (Line 2)', hint: '3-4-3-4', defaultText: '춘풍 니블 아래 서리서리 넣었다가', maxLength: 32 },
+        { label: '종장 / 終章 (Line 3)', hint: '3-5-4-3', defaultText: '어론님 오신 날 밤이어든 구비구비 펴리라', maxLength: 32 }
+      ]
+    },
+    rubaiyat: {
+      id: 'rubaiyat',
+      label: 'ルバイヤート (Rubaiyat)',
+      bgPath: 'shortliterature/ルバイヤート.jpg',
+      layoutMode: 'horizontal_auto_rtl', // アラビア・ペルシャ文字なら自動で右横書き(RTL)に切替
+      fontFamily: '"Amiri", "Shippori Mincho", serif',
+      fontLabel: 'Amiri (ペルシャ古典書体)',
+      fontWeight: '700',
+      textColor: '#2b1d12',
+      authorColor: '#5c3c24',
+      startY: HORIZONTAL_START_Y_4LINES_PX,
+      linePitchY: HORIZONTAL_LINE_PITCH_4LINES_PX,
+      baseFontSize: 44,
+      defaultAuthor: 'عمر خیام',
+      fields: [
+        { label: '第1行 (Line 1)', hint: 'Misra 1', defaultText: 'هنگام سپیده دم خروس سحری', maxLength: 42 },
+        { label: '第2行 (Line 2)', hint: 'Misra 2', defaultText: 'دانی که چرا همی کند نوحه گری', maxLength: 42 },
+        { label: '第3行 (Line 3)', hint: 'Misra 3', defaultText: 'یعنی که نمودند در آیینه صبح', maxLength: 42 },
+        { label: '第4行 (Line 4)', hint: 'Misra 4', defaultText: 'کز عمر شبی گذشت و تو بی خبری', maxLength: 42 }
+      ]
+    },
+    ghazal: {
+      id: 'ghazal',
+      label: 'ガザル (Ghazal)',
+      bgPath: 'shortliterature/ガザル.jpg',
+      layoutMode: 'horizontal_auto_rtl',
+      fontFamily: '"Amiri", "Shippori Mincho", serif',
+      fontLabel: 'Amiri (金泥書体)',
+      fontWeight: '700',
+      textColor: '#f5e6c4', // 深い群青色の紙面に映える金泥・シャンパンゴールド色
+      authorColor: '#d4b475',
+      startY: HORIZONTAL_START_Y_4LINES_PX,
+      linePitchY: HORIZONTAL_LINE_PITCH_4LINES_PX,
+      baseFontSize: 44,
+      defaultAuthor: 'حافظ',
+      fields: [
+        { label: '第1連・上 (Couplet 1a)', hint: 'Matla', defaultText: 'الا یا ایها الساقی ادر کاسا و ناولها', maxLength: 42 },
+        { label: '第1連・下 (Couplet 1b)', hint: 'Matla', defaultText: 'که عشق آسان نمود اول ولی افتاد مشکل‌ها', maxLength: 42 },
+        { label: '第2連・上 (Couplet 2a)', hint: 'Sher', defaultText: 'به بوی نافه‌ای کاخر صبا زان طره بگشاید', maxLength: 42 },
+        { label: '第2連・下 (Couplet 2b)', hint: 'Sher', defaultText: 'ز تاب جعد مشکینش چه خون افتاد در دل‌ها', maxLength: 42 }
+      ]
+    },
+    limerick: {
+      id: 'limerick',
+      label: 'リメリック (Limerick)',
+      bgPath: 'shortliterature/リメリック.jpg',
+      layoutMode: 'horizontal_limerick',
+      fontFamily: '"Cormorant Garamond", "Shippori Mincho", serif',
+      fontLabel: 'Cormorant Garamond',
+      fontWeight: '700',
+      textColor: '#1f1a17',
+      authorColor: '#4d3f36',
+      startY: HORIZONTAL_START_Y_5LINES_PX,
+      linePitchY: HORIZONTAL_LINE_PITCH_5LINES_PX,
+      baseFontSize: 42,
+      defaultAuthor: 'Edward Lear',
+      fields: [
+        { label: 'Line 1 (A)', hint: 'Rhyme A', defaultText: 'There was an Old Man with a beard,', maxLength: 45 },
+        { label: 'Line 2 (A)', hint: 'Rhyme A', defaultText: 'Who said, "It is just as I feared!', maxLength: 45 },
+        { label: 'Line 3 (B)', hint: 'Rhyme B', defaultText: 'Two Owls and a Hen,', maxLength: 36 },
+        { label: 'Line 4 (B)', hint: 'Rhyme B', defaultText: 'Four Larks and a Wren,', maxLength: 36 },
+        { label: 'Line 5 (A)', hint: 'Rhyme A', defaultText: 'Have all built their nests in my beard!"', maxLength: 45 }
+      ]
+    },
+    epigram: {
+      id: 'epigram',
+      label: 'エピグラム (Epigram)',
+      bgPath: 'shortliterature/Epigram（エピグラム）.jpg',
+      layoutMode: 'horizontal',
+      fontFamily: '"Cormorant Garamond", "Shippori Mincho", serif',
+      fontLabel: 'Cormorant Garamond',
+      fontWeight: '700',
+      textColor: '#241c15',
+      authorColor: '#524132',
+      startY: HORIZONTAL_START_Y_3LINES_PX,
+      linePitchY: HORIZONTAL_LINE_PITCH_3LINES_PX,
+      baseFontSize: 48,
+      defaultAuthor: 'Oscar Wilde',
+      fields: [
+        { label: 'Line 1', hint: 'Setup', defaultText: 'We are all in the gutter,', maxLength: 42 },
+        { label: 'Line 2', hint: 'Turn', defaultText: 'but some of us', maxLength: 42 },
+        { label: 'Line 3', hint: 'Punchline', defaultText: 'are looking at the stars.', maxLength: 42 }
+      ]
+    }
+  };
+
+  /* ==================================================
+     状態管理 & 全背景画像・Webフォントのプリロード
+     ================================================== */
+  let currentGenreKey = 'haiku';
+  let currentLines = [];
+  let currentAuthor = '';
+
+  const bgImages = {};
+  function preloadBgImage(path) {
+    if (bgImages[path]) return bgImages[path];
+    const img = new Image();
+    img.src = encodeURI(path);
+    bgImages[path] = img;
+    return img;
+  }
+
+  Object.values(GENRE_CONFIGS).forEach((cfg) => preloadBgImage(cfg.bgPath));
+
+  // OSに依存せず指定のWebフォントが100%ロード完了するのを待機する関数
+  async function ensureGenreFontsLoaded(config) {
+    if (!document.fonts || !document.fonts.load) return;
+    try {
+      await document.fonts.load(`${config.fontWeight} ${config.baseFontSize}px ${config.fontFamily}`);
+      await document.fonts.ready;
+    } catch (e) {
+      console.warn("Font preload warning:", e);
+    }
+  }
+
+  const goldParticles = Array.from({ length: GOLD_PARTICLE_COUNT }, (_, i) => ({
+    x: (i * 197) % CANVAS_WIDTH_PX,
+    y: (i * 313) % CANVAS_HEIGHT_PX,
+    radius: 2 + (i % 3),
+    speedY: -12 - (i % 15),
+    speedX: 5 - (i % 11),
+    phase: i * 0.7
+  }));
+
+  /* ==================================================
+     DOM要素 & フォーム動的生成
+     ================================================== */
+  const authStatusBtn = document.getElementById('authStatusBtn');
+  const authSymbol = document.getElementById('authSymbol');
+  const genreSelector = document.getElementById('genreSelector');
+  const linesContainer = document.getElementById('linesContainer');
+  const authorInput = document.getElementById('authorInput');
+  const fontIndicator = document.getElementById('fontIndicator');
+
+  const inputStep = document.getElementById('inputStep');
+  const previewStep = document.getElementById('previewStep');
+  const termsAgreeCheckbox = document.getElementById('termsAgreeCheckbox');
+  const goToPreviewBtn = document.getElementById('goToPreviewBtn');
+  const privacyToggleBtn = document.getElementById('privacyToggleBtn');
+  const successTitleText = document.getElementById('successTitleText');
+  const backBtn = document.getElementById('backBtn');
+  const uploadBtn = document.getElementById('uploadBtn');
+  const recordVideoBtn = document.getElementById('recordVideoBtn');
+  const progressBox = document.getElementById('progressBox');
+  const progressText = document.getElementById('progressText');
+  const successBox = document.getElementById('successBox');
+  const videoLink = document.getElementById('videoLink');
+
+  const canvas = document.getElementById('shortsCanvas');
+  const ctx = canvas.getContext('2d');
+
+  let animationFrameId = null;
+  let animationStartTime = 0;
+  let isRecordingVideo = false;
+
+  // アラビア語・ペルシャ語などのRTL（右から左）文字が含まれているか判定する正規表現
+  const RTL_CHAR_REGEX = /[\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC]/;
+
+  function renderInputFieldsForGenre(genreKey) {
+    currentGenreKey = genreKey;
+    const config = GENRE_CONFIGS[genreKey];
+    linesContainer.innerHTML = '';
+
+    config.fields.forEach((field, idx) => {
+      const isRtlDefault = RTL_CHAR_REGEX.test(field.defaultText);
+      const dirAttr = isRtlDefault ? 'dir="auto"' : '';
+      const group = document.createElement('div');
+      group.className = 'form-group';
+      group.innerHTML = `
+        <label class="form-label" for="lineInput_${idx}">
+          <span>${field.label}</span>
+          <span class="char-count">${field.hint}</span>
+        </label>
+        <input type="text" id="lineInput_${idx}" ${dirAttr} class="text-input line-field" placeholder="${field.defaultText.replace(/"/g, '&quot;')}" value="${field.defaultText.replace(/"/g, '&quot;')}" maxlength="${field.maxLength}">
+      `;
+      linesContainer.appendChild(group);
+    });
+
+    authorInput.placeholder = config.defaultAuthor;
+    authorInput.value = config.defaultAuthor;
+    fontIndicator.textContent = `Font: ${config.fontLabel}`;
+    ensureGenreFontsLoaded(config);
+  }
+
+  genreSelector.addEventListener('click', (e) => {
+    const btn = e.target.closest('.genre-btn');
+    if (!btn) return;
+    const genreKey = btn.dataset.genre;
+    if (!genreKey || genreKey === currentGenreKey) return;
+
+    document.querySelectorAll('.genre-btn').forEach((b) => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderInputFieldsForGenre(genreKey);
+  });
+
+  document.getElementById('clearInputsBtn').addEventListener('click', () => {
+    const inputs = document.querySelectorAll('.line-field');
+    inputs.forEach((inp) => { inp.value = ''; });
+    if (inputs[0]) inputs[0].focus();
+  });
+
+  renderInputFieldsForGenre('haiku');
+
+  /* ==================================================
+     利用規約・自己責任同意チェックボックス（初回のみ必須・以降は自動維持）
+     ================================================== */
+  function syncTermsAgreementState() {
+    const agreed = localStorage.getItem(STORAGE_KEY_TERMS_AGREED) === '1';
+    termsAgreeCheckbox.checked = agreed;
+    goToPreviewBtn.disabled = !agreed;
+  }
+
+  termsAgreeCheckbox.addEventListener('change', () => {
+    const isChecked = termsAgreeCheckbox.checked;
+    if (isChecked) {
+      localStorage.setItem(STORAGE_KEY_TERMS_AGREED, '1');
+    } else {
+      localStorage.removeItem(STORAGE_KEY_TERMS_AGREED);
+    }
+    goToPreviewBtn.disabled = !isChecked;
+  });
+
+  syncTermsAgreementState();
+
+  /* ==================================================
+     Google Identity Services 認証管理
+     ================================================== */
+  window.addEventListener('load', () => {
+    restoreSavedToken();
+    initGoogleAuth();
+  });
+
+  function restoreSavedToken() {
+    const savedToken = localStorage.getItem(STORAGE_KEY_TOKEN);
+    const savedExpiry = Number(localStorage.getItem(STORAGE_KEY_EXPIRY) || 0);
+    if (savedToken && Date.now() < savedExpiry) {
+      accessToken = savedToken;
+      updateAuthUI(true);
+    } else {
+      clearSavedToken();
+    }
+  }
+
+  function saveTokenToStorage(token, expiresInSec) {
+    const lifetimeSec = Number(expiresInSec) || DEFAULT_TOKEN_LIFETIME_SEC;
+    const expiryMs = Date.now() + (lifetimeSec * MS_PER_SECOND);
+    accessToken = token;
+    localStorage.setItem(STORAGE_KEY_TOKEN, token);
+    localStorage.setItem(STORAGE_KEY_EXPIRY, String(expiryMs));
+    updateAuthUI(true);
+  }
+
+  function clearSavedToken() {
+    accessToken = null;
+    localStorage.removeItem(STORAGE_KEY_TOKEN);
+    localStorage.removeItem(STORAGE_KEY_EXPIRY);
+    updateAuthUI(false);
+  }
+
+  function initGoogleAuth() {
+    if (typeof google === 'undefined' || !google.accounts || !google.accounts.oauth2) {
+      setTimeout(initGoogleAuth, 300);
+      return;
+    }
+
+    tokenClient = google.accounts.oauth2.initTokenClient({
+      client_id: GOOGLE_CLIENT_ID,
+      scope: YOUTUBE_SCOPES,
+      callback: (response) => {
+        if (response.error !== undefined) {
+          console.error("Google Auth Error:", response);
+          return;
+        }
+        saveTokenToStorage(response.access_token, response.expires_in);
+      },
+    });
+  }
+
+  authStatusBtn.addEventListener('click', () => {
+    loginWithGoogle();
+  });
+
+  function loginWithGoogle(callbackAfterLogin = null) {
+    if (!tokenClient) return;
+    restoreSavedToken();
+    if (accessToken) {
+      if (callbackAfterLogin) callbackAfterLogin();
+      return;
+    }
+
+    tokenClient.callback = (response) => {
+      if (!response.error) {
+        saveTokenToStorage(response.access_token, response.expires_in);
+        if (callbackAfterLogin) callbackAfterLogin();
+      }
+    };
+
+    tokenClient.requestAccessToken({ prompt: '' });
+  }
+
+  function updateAuthUI(connected) {
+    if (connected) {
+      authStatusBtn.classList.add('connected');
+      authSymbol.textContent = '〇';
+    } else {
+      authStatusBtn.classList.remove('connected');
+      authSymbol.textContent = '×';
+    }
+  }
+
+  /* ==================================================
+     画面遷移 & 1サイクル時間計算
+     ================================================== */
+  function getTotalCycleMs() {
+    const lineCount = GENRE_CONFIGS[currentGenreKey].fields.length;
+    return INTRO_SILENCE_MS + (LINE_APPEAR_INTERVAL_MS * (lineCount + 1)) + OUTRO_HOLD_MS;
+  }
+
+  goToPreviewBtn.addEventListener('click', async () => {
+    const config = GENRE_CONFIGS[currentGenreKey];
+    const inputs = document.querySelectorAll('.line-field');
+    currentLines = Array.from(inputs).map((inp, idx) => inp.value.trim() || config.fields[idx].defaultText);
+    currentAuthor = authorInput.value.trim() || config.defaultAuthor;
+
+    // 端末やOSに関わらず確実にWebフォントがロードされてから描画を開始する
+    await ensureGenreFontsLoaded(config);
+
+    inputStep.style.display = 'none';
+    previewStep.style.display = 'flex';
+    successBox.style.display = 'none';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    startCanvasAnimation();
+  });
+
+  backBtn.addEventListener('click', () => {
+    if (animationFrameId) cancelAnimationFrame(animationFrameId);
+    previewStep.style.display = 'none';
+    inputStep.style.display = 'flex';
+  });
+
+  /* ==================================================
+     描画ループ & ジャンル別組版エンジン（1080 x 1920）
+     ================================================== */
+  function startCanvasAnimation() {
+    if (animationFrameId) cancelAnimationFrame(animationFrameId);
+    isRecordingVideo = false;
+    animationStartTime = performance.now();
+    drawFrame(0);
+    animationFrameId = requestAnimationFrame(renderLoop);
+  }
+
+  function renderLoop() {
+    const totalCycleMs = getTotalCycleMs();
+    const rawElapsed = performance.now() - animationStartTime;
+    const elapsed = isRecordingVideo
+      ? Math.min(rawElapsed, totalCycleMs - 1)
+      : (rawElapsed % totalCycleMs);
+    drawFrame(elapsed);
+    animationFrameId = requestAnimationFrame(renderLoop);
+  }
+
+  function drawFrame(elapsedMs) {
+    const config = GENRE_CONFIGS[currentGenreKey];
+    ctx.clearRect(0, 0, CANVAS_WIDTH_PX, CANVAS_HEIGHT_PX);
+
+    // 1. 背景テンプレート画像と微細な金砂子エフェクト
+    drawTemplateBackground(config.bgPath, elapsedMs);
+
+    // 2. 冒頭の一拍（INTRO_SILENCE_MS）を引いた時間で各行のフェードを計算
+    const textElapsed = elapsedMs - INTRO_SILENCE_MS;
+
+    if (config.layoutMode === 'vertical') {
+      // 【縦書きジャンル：俳句・短歌・絶句】
+      for (let i = 0; i < currentLines.length; i++) {
+        const alpha = getFadeAlpha(textElapsed, i * LINE_APPEAR_INTERVAL_MS);
+        if (alpha > 0) {
+          const x = config.lineXCoords[i];
+          const startY = PAPER_SAFE_TOP_Y_PX + config.lineIndentsY[i];
+          drawSafeVerticalLine(currentLines[i], x, startY, config, alpha);
+        }
+      }
+      const authorAlpha = getFadeAlpha(textElapsed, currentLines.length * LINE_APPEAR_INTERVAL_MS);
+      if (authorAlpha > 0) {
+        drawSafeVerticalAuthor(currentAuthor, config.authorX, config, authorAlpha);
+      }
+    } else {
+      // 【横書きジャンル：時調・ルバイヤート(RTL対応)・ガザル(RTL対応)・リメリック・エピグラム】
+      for (let i = 0; i < currentLines.length; i++) {
+        const alpha = getFadeAlpha(textElapsed, i * LINE_APPEAR_INTERVAL_MS);
+        if (alpha > 0) {
+          const y = config.startY + (i * config.linePitchY);
+          drawSafeHorizontalLine(currentLines[i], y, config, alpha);
+        }
+      }
+      const authorAlpha = getFadeAlpha(textElapsed, currentLines.length * LINE_APPEAR_INTERVAL_MS);
+      if (authorAlpha > 0) {
+        drawSafeHorizontalAuthor(currentAuthor, HORIZONTAL_AUTHOR_Y_PX, config, authorAlpha);
+      }
+    }
+  }
+
+  function getFadeAlpha(elapsed, startTimeMs) {
+    if (elapsed < startTimeMs) return 0;
+    const progress = (elapsed - startTimeMs) / FADE_DURATION_MS;
+    return Math.min(1, Math.max(0, progress));
+  }
+
+  // 縦書き本文1行を紙面の安全領域内に絶対収めて描画する
+  function drawSafeVerticalLine(text, x, startY, config, alpha) {
+    if (!text) return;
+    const charCount = text.length;
+    const availableHeight = PAPER_SAFE_BOTTOM_Y_PX - startY;
+
+    let spacing = config.baseCharSpacing;
+    let fontSize = config.baseFontSize;
+    if (charCount > 1 && (charCount - 1) * spacing > availableHeight) {
+      spacing = Math.floor(availableHeight / (charCount - 1));
+      fontSize = Math.max(VERTICAL_MIN_FONT_SIZE_PX, Math.floor(spacing * VERTICAL_FONT_SPACING_RATIO));
+    }
+
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    ctx.font = `${config.fontWeight} ${fontSize}px ${config.fontFamily}`;
+    ctx.fillStyle = config.textColor;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    for (let i = 0; i < charCount; i++) {
+      const y = startY + (i * spacing);
+      ctx.fillText(text[i], x, y);
+    }
+    ctx.restore();
+  }
+
+  // 縦書き雅号を紙面左下の安全領域に下揃え基準で描画する
+  function drawSafeVerticalAuthor(authorText, x, config, alpha) {
+    if (!authorText) return;
+    const charCount = authorText.length;
+
+    let spacing = VERTICAL_AUTHOR_BASE_SPACING_PX;
+    let fontSize = VERTICAL_AUTHOR_BASE_FONT_SIZE_PX;
+    if (charCount > 1 && (charCount - 1) * spacing > VERTICAL_AUTHOR_MAX_HEIGHT_PX) {
+      spacing = Math.floor(VERTICAL_AUTHOR_MAX_HEIGHT_PX / (charCount - 1));
+      fontSize = Math.max(VERTICAL_AUTHOR_MIN_FONT_SIZE_PX, Math.floor(spacing * VERTICAL_AUTHOR_FONT_SPACING_RATIO));
+    }
+
+    const totalHeight = (charCount - 1) * spacing;
+    const startY = (PAPER_SAFE_BOTTOM_Y_PX - VERTICAL_AUTHOR_BOTTOM_OFFSET_PX) - totalHeight;
+
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.font = `${config.fontWeight} ${fontSize}px ${config.fontFamily}`;
+    ctx.fillStyle = config.authorColor;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    for (let i = 0; i < charCount; i++) {
+      const y = startY + (i * spacing);
+      ctx.fillText(authorText[i], x, y);
+    }
+    ctx.restore();
+  }
+
+  // 横書き本文1行（LTRおよびイスラム圏のアラビア・ペルシャ文字RTLに完全対応し、紙面幅内に絶対収める）
+  function drawSafeHorizontalLine(text, y, config, alpha) {
+    if (!text) return;
+    const isLimerick = (config.layoutMode === 'horizontal_limerick');
+    const centerX = isLimerick ? LIMERICK_SAFE_CENTER_X_PX : PAPER_SAFE_CENTER_X_PX;
+    const maxWidth = isLimerick ? LIMERICK_SAFE_WIDTH_PX : PAPER_SAFE_WIDTH_PX;
+    const isRtlText = RTL_CHAR_REGEX.test(text);
+
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    ctx.fillStyle = config.textColor;
+    ctx.textBaseline = 'middle';
+
+    // アラビア語・ペルシャ語が含まれる場合はCanvasの書字方向をRTLに設定し、リガチャ（文字連結）と語順を正しく保ったまま紙面中央に配置
+    ctx.direction = isRtlText ? 'rtl' : 'ltr';
+    ctx.textAlign = 'center';
+
+    // 紙面幅（maxWidth）をはみ出さないようにフォントサイズを自動縮小
+    let fontSize = config.baseFontSize;
+    ctx.font = `${config.fontWeight} ${fontSize}px ${config.fontFamily}`;
+    let measuredWidth = ctx.measureText(text).width;
+    while (measuredWidth > maxWidth && fontSize > HORIZONTAL_MIN_FONT_SIZE_PX) {
+      fontSize -= HORIZONTAL_FONT_SHRINK_STEP_PX;
+      ctx.font = `${config.fontWeight} ${fontSize}px ${config.fontFamily}`;
+      measuredWidth = ctx.measureText(text).width;
+    }
+
+    ctx.fillText(text, centerX, y, maxWidth);
+    ctx.restore();
+  }
+
+  // 横書き作者名を紙面下部に描画する（ペルシャ文字RTLや韓国・時調では欧文ダッシュを付けず原典表記を尊重）
+  function drawSafeHorizontalAuthor(authorText, y, config, alpha) {
+    if (!authorText) return;
+    const isLimerick = (config.layoutMode === 'horizontal_limerick');
+    const centerX = isLimerick ? LIMERICK_SAFE_CENTER_X_PX : PAPER_SAFE_CENTER_X_PX;
+    const maxWidth = isLimerick ? LIMERICK_SAFE_WIDTH_PX : PAPER_SAFE_WIDTH_PX;
+    const isRtlText = RTL_CHAR_REGEX.test(authorText);
+    const useWesternDash = !isRtlText && config.id !== 'sijo';
+    const displayAuthor = useWesternDash ? `— ${authorText}` : authorText;
+
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.direction = isRtlText ? 'rtl' : 'ltr';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = config.authorColor;
+    ctx.font = `${config.fontWeight} ${HORIZONTAL_AUTHOR_FONT_SIZE_PX}px ${config.fontFamily}`;
+    ctx.fillText(displayAuthor, centerX, y, maxWidth);
+    ctx.restore();
+  }
+
+  function drawTemplateBackground(bgPath, elapsedMs) {
+    const img = bgImages[bgPath];
+    ctx.save();
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+
+    if (img && img.complete && img.naturalWidth > 0) {
+      ctx.drawImage(img, 0, 0, CANVAS_WIDTH_PX, CANVAS_HEIGHT_PX);
+    } else {
+      ctx.fillStyle = '#2c221a';
+      ctx.fillRect(0, 0, CANVAS_WIDTH_PX, CANVAS_HEIGHT_PX);
+      ctx.fillStyle = '#f7f3eb';
+      ctx.fillRect(PAPER_LEFT_X_PX, PAPER_TOP_Y_PX, PAPER_RIGHT_X_PX - PAPER_LEFT_X_PX, PAPER_BOTTOM_Y_PX - PAPER_TOP_Y_PX);
+    }
+
+    const tSec = elapsedMs / MS_PER_SECOND;
+    for (const p of goldParticles) {
+      const px = (p.x + p.speedX * tSec + CANVAS_WIDTH_PX) % CANVAS_WIDTH_PX;
+      const py = (p.y + p.speedY * tSec + CANVAS_HEIGHT_PX) % CANVAS_HEIGHT_PX;
+      const shimmer = 0.18 + 0.15 * Math.sin(tSec * 2.5 + p.phase);
+
+      ctx.beginPath();
+      ctx.arc(px, py, p.radius, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(218, 185, 110, ${shimmer.toFixed(3)})`;
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  /* ==================================================
+     高精細動画生成（WebCodecs VideoEncoder + Mp4Muxer）
+     ================================================== */
+  async function generateVideoBlob(onProgress) {
+    if (animationFrameId) cancelAnimationFrame(animationFrameId);
+    isRecordingVideo = true;
+
+    try {
+      const config = GENRE_CONFIGS[currentGenreKey];
+      await ensureGenreFontsLoaded(config);
+
+      const totalCycleMs = getTotalCycleMs();
+      const totalFrames = Math.ceil((totalCycleMs / MS_PER_SECOND) * VIDEO_CAPTURE_FPS);
+      const frameDurationUs = Math.round(MICROSECONDS_PER_SEC / VIDEO_CAPTURE_FPS);
+
+      // X / Instagram リール / TikTok で「音声トラックなしエラー」が起きないよう、WebCodecs AudioEncoder で無音AACトラックを同時多重化する
+      let canEncodeSilentAudio = false;
+      const audioConfig = {
+        codec: 'mp4a.40.2', // AAC-LC
+        sampleRate: AUDIO_SAMPLE_RATE_HZ,
+        numberOfChannels: AUDIO_CHANNEL_COUNT,
+        bitrate: AUDIO_BITRATE_BPS
+      };
+      if (typeof AudioEncoder !== 'undefined' && typeof AudioData !== 'undefined') {
+        try {
+          const support = await AudioEncoder.isConfigSupported(audioConfig);
+          canEncodeSilentAudio = Boolean(support && support.supported);
+        } catch (e) {
+          canEncodeSilentAudio = false;
+        }
+      }
+
+      const muxerOptions = {
+        target: new Mp4Muxer.ArrayBufferTarget(),
+        video: {
+          codec: 'avc',
+          width: CANVAS_WIDTH_PX,
+          height: CANVAS_HEIGHT_PX
+        },
+        fastStart: 'in-memory'
+      };
+      if (canEncodeSilentAudio) {
+        muxerOptions.audio = {
+          codec: 'aac',
+          sampleRate: AUDIO_SAMPLE_RATE_HZ,
+          numberOfChannels: AUDIO_CHANNEL_COUNT
+        };
+      }
+
+      const muxer = new Mp4Muxer.Muxer(muxerOptions);
+
+      const videoEncoder = new VideoEncoder({
+        output: (chunk, meta) => muxer.addVideoChunk(chunk, meta),
+        error: (err) => console.error("VideoEncoder error:", err)
+      });
+
+      videoEncoder.configure({
+        codec: 'avc1.64002a',
+        width: CANVAS_WIDTH_PX,
+        height: CANVAS_HEIGHT_PX,
+        bitrate: VIDEO_BITRATE_BPS,
+        bitrateMode: 'constant',
+        framerate: VIDEO_CAPTURE_FPS,
+        latencyMode: 'quality'
+      });
+
+      let audioEncoder = null;
+      if (canEncodeSilentAudio) {
+        audioEncoder = new AudioEncoder({
+          output: (chunk, meta) => muxer.addAudioChunk(chunk, meta),
+          error: (err) => console.error("AudioEncoder error:", err)
+        });
+        audioEncoder.configure(audioConfig);
+      }
+
+      for (let i = 0; i < totalFrames; i++) {
+        const elapsedMs = (i / VIDEO_CAPTURE_FPS) * MS_PER_SECOND;
+        drawFrame(elapsedMs);
+
+        const videoFrame = new VideoFrame(canvas, {
+          timestamp: i * frameDurationUs,
+          duration: frameDurationUs
+        });
+
+        const isKeyFrame = (i % KEYFRAME_INTERVAL_FRAMES === 0);
+        videoEncoder.encode(videoFrame, { keyFrame: isKeyFrame });
+        videoFrame.close();
+
+        if (i % PROGRESS_UI_UPDATE_FRAME_INTERVAL === 0) {
+          const percent = Math.min(PROGRESS_MAX_DURING_ENCODE_PERCENT, Math.floor((i / totalFrames) * 100));
+          if (onProgress) onProgress(percent);
+          await new Promise((r) => setTimeout(r, 0));
+        }
+      }
+
+      // 動画の長さに合わせた完全無音のステレオ音声データ（AAC）をエンコードしてMP4に格納
+      if (audioEncoder) {
+        const totalAudioFrames = Math.ceil((totalCycleMs / MS_PER_SECOND) * AUDIO_SAMPLE_RATE_HZ);
+        const silentBuffer = new Float32Array(AUDIO_FRAMES_PER_CHUNK * AUDIO_CHANNEL_COUNT);
+        for (let sampleOffset = 0; sampleOffset < totalAudioFrames; sampleOffset += AUDIO_FRAMES_PER_CHUNK) {
+          const frameCount = Math.min(AUDIO_FRAMES_PER_CHUNK, totalAudioFrames - sampleOffset);
+          const timestampUs = Math.round((sampleOffset / AUDIO_SAMPLE_RATE_HZ) * MICROSECONDS_PER_SEC);
+          const audioData = new AudioData({
+            format: 'f32-planar',
+            sampleRate: AUDIO_SAMPLE_RATE_HZ,
+            numberOfFrames: frameCount,
+            numberOfChannels: AUDIO_CHANNEL_COUNT,
+            timestamp: timestampUs,
+            data: silentBuffer.subarray(0, frameCount * AUDIO_CHANNEL_COUNT)
+          });
+          audioEncoder.encode(audioData);
+          audioData.close();
+        }
+        await audioEncoder.flush();
+        audioEncoder.close();
+      }
+
+      await videoEncoder.flush();
+      videoEncoder.close();
+      muxer.finalize();
+
+      if (onProgress) onProgress(100);
+
+      const buffer = muxer.target.buffer;
+      const blob = new Blob([buffer], { type: 'video/mp4' });
+      return { blob, mimeType: 'video/mp4' };
+    } finally {
+      startCanvasAnimation();
+    }
+  }
+
+  recordVideoBtn.addEventListener('click', async () => {
+    recordVideoBtn.disabled = true;
+    progressBox.style.display = 'block';
+    const { blob } = await generateVideoBlob((p) => {
+      progressText.textContent = `${p}%`;
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${currentGenreKey}_${Date.now()}.mp4`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    progressBox.style.display = 'none';
+    recordVideoBtn.disabled = false;
+  });
+
+  /* ==================================================
+     YouTube Data API v3 へのアップロード（非公開 / 公開 トグル対応）
+     ================================================== */
+  let youtubePrivacyStatus = 'private'; // 初期状態は安全な「private（非公開）」
+
+  function updatePrivacyToggleUI() {
+    if (youtubePrivacyStatus === 'public') {
+      privacyToggleBtn.classList.add('is-public');
+      privacyToggleBtn.textContent = '🌐 YouTube Public (公開) ⇄';
+      uploadBtn.textContent = '自分のYouTubeに公開で送る';
+    } else {
+      privacyToggleBtn.classList.remove('is-public');
+      privacyToggleBtn.textContent = '🔒 YouTube Private (非公開) ⇄';
+      uploadBtn.textContent = '自分のYouTubeに非公開で送る';
+    }
+  }
+
+  privacyToggleBtn.addEventListener('click', () => {
+    youtubePrivacyStatus = (youtubePrivacyStatus === 'private') ? 'public' : 'private';
+    updatePrivacyToggleUI();
+  });
+
+  uploadBtn.addEventListener('click', () => {
+    if (!accessToken) {
+      loginWithGoogle(() => {
+        executeUploadToYouTube();
+      });
+      return;
+    }
+    executeUploadToYouTube();
+  });
+
+  async function executeUploadToYouTube() {
+    uploadBtn.disabled = true;
+    progressBox.style.display = 'block';
+    successBox.style.display = 'none';
+
+    try {
+      progressText.textContent = "1/2 ...";
+      const { blob } = await generateVideoBlob((p) => {
+        progressText.textContent = `1/2 (${p}%)`;
+      });
+
+      const poemJoined = currentLines.join(' ');
+      const videoTitle = `${poemJoined.slice(0, 75)} #Shorts`;
+      const videoDescription = `${currentAuthor}\n\nShort Verse Studio (${GENRE_CONFIGS[currentGenreKey].label})\n#Shorts`;
+
+      const metadata = {
+        snippet: {
+          title: videoTitle,
+          description: videoDescription,
+          tags: ["Shorts", currentGenreKey, "ShortVerseStudio"]
+        },
+        status: {
+          privacyStatus: youtubePrivacyStatus,
+          selfDeclaredMadeForKids: false
+        }
+      };
+
+      progressText.textContent = "2/2 Uploading...";
+
+      const initResponse = await fetch('https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json; charset=UTF-8',
+          'X-Upload-Content-Type': blob.type,
+          'X-Upload-Content-Length': blob.size.toString()
+        },
+        body: JSON.stringify(metadata)
+      });
+
+      if (initResponse.status === 401) {
+        clearSavedToken();
+        throw new Error("Google認証の有効期限が切れました。右上のボタンから再接続してください。");
+      }
+
+      if (!initResponse.ok) {
+        const errJson = await initResponse.json().catch(() => ({}));
+        throw new Error(errJson.error?.message || "YouTube API Error");
+      }
+
+      const uploadUrl = initResponse.headers.get('Location');
+      if (!uploadUrl) throw new Error("Upload URL missing");
+
+      const uploadResponse = await fetch(uploadUrl, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': blob.type
+        },
+        body: blob
+      });
+
+      if (!uploadResponse.ok) {
+        throw new Error("Upload failed");
+      }
+
+      const uploadResult = await uploadResponse.json();
+      const videoId = uploadResult.id;
+
+      progressBox.style.display = 'none';
+      successBox.style.display = 'block';
+      const statusLabel = (youtubePrivacyStatus === 'public') ? 'Public' : 'Private';
+      successTitleText.textContent = `YouTube (${statusLabel}) Uploaded!`;
+      videoLink.href = (youtubePrivacyStatus === 'public')
+        ? `https://www.youtube.com/shorts/${videoId}`
+        : `https://studio.youtube.com/video/${videoId}/edit`;
+      videoLink.textContent = (youtubePrivacyStatus === 'public')
+        ? `YouTube Shorts (${videoId}) ➔`
+        : `YouTube Studio (${videoId}) ➔`;
+
+    } catch (err) {
+      console.error(err);
+      alert(`Error:\n${err.message}`);
+      progressBox.style.display = 'none';
+    } finally {
+      uploadBtn.disabled = false;
+    }
+  }
+</script>
+
+</body>
+</html>
