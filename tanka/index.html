@@ -58,19 +58,41 @@
       position: relative;
     }
 
-    /* ヘッダー：Short Verse Studio と 〇/× YouTube account */
+    /* ヘッダー：Short Verse Studio と 言語切替 & 〇/× YouTube account */
     .header {
-      padding: 14px 18px;
+      padding: 12px 14px;
       background-color: #fdfbf7;
       border-bottom: 1px solid var(--border-color);
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
     }
     .header h1 {
-      font-size: 20px;
+      font-size: 19px;
       color: var(--accent-color);
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .lang-select {
+      padding: 5px 8px;
+      font-size: 12px;
+      font-weight: 700;
+      border: 2px solid var(--border-color);
+      border-radius: 16px;
+      background-color: #faf8f5;
+      color: var(--text-color-main);
+      cursor: pointer;
+      outline: none;
+    }
+    .lang-select:focus {
+      border-color: var(--accent-color);
     }
 
     .auth-badge {
@@ -340,15 +362,25 @@
 <div class="app-container">
   <header class="header">
     <h1>Short Verse Studio</h1>
-    <div id="authStatusBtn" class="auth-badge" title="YouTube™ Auth">
-      <span id="authSymbol">×</span>
-      <span>YouTube™ account</span>
+    <div class="header-controls">
+      <select id="langSelect" class="lang-select" aria-label="Language">
+        <option value="ja">🇯🇵 日本語</option>
+        <option value="en">🌐 English</option>
+        <option value="zh-TW">🇹🇼 繁體中文</option>
+        <option value="zh-CN">🇨🇳 简体中文</option>
+        <option value="ko">🇰🇷 한국어</option>
+        <option value="fa">🇮🇷 فارسی / عربی</option>
+      </select>
+      <div id="authStatusBtn" class="auth-badge" title="YouTube™ Auth">
+        <span id="authSymbol">×</span>
+        <span>YouTube™ account</span>
+      </div>
     </div>
   </header>
 
   <!-- ステップ1：入力画面 -->
   <main id="inputStep" class="step-input">
-    <!-- 全8ジャンルの選択ボタン（漢字 + アルファベット記載） -->
+    <!-- 全8ジャンルの選択ボタン（多言語連動） -->
     <div class="genre-selector" id="genreSelector">
       <button type="button" class="genre-btn active" data-genre="haiku">俳句 (Haiku)</button>
       <button type="button" class="genre-btn" data-genre="tanka">短歌 (Tanka)</button>
@@ -365,7 +397,7 @@
 
     <div class="form-group">
       <label class="form-label" for="authorInput">
-        <span>雅号 / 作者 (Author)</span>
+        <span id="authorLabelText">雅号 / 作者 (Author)</span>
         <span class="char-count" id="fontIndicator">Font: Yuji Syuku</span>
       </label>
       <input type="text" id="authorInput" class="text-input" placeholder="芭蕉" value="芭蕉" maxlength="24">
@@ -373,9 +405,8 @@
 
     <label class="terms-consent-box" for="termsAgreeCheckbox">
       <input type="checkbox" id="termsAgreeCheckbox">
-      <span>
-        作成・投稿する動画の著作権や表現内容はすべて自己責任であることに同意します（<a href="terms.html" target="_blank" rel="noopener">利用規約 / Terms</a>）<br>
-        <small style="color: var(--text-color-sub);">I agree to the Terms of Service and take full responsibility for my content.</small>
+      <span id="termsConsentText">
+        作成・投稿する動画の著作権や表現内容はすべて自己責任であることに同意します（<a href="terms.html" target="_blank" rel="noopener">利用規約 / Terms</a>）
       </span>
     </label>
 
@@ -390,10 +421,10 @@
 
     <footer style="margin-top: 20px; padding-top: 12px; border-top: 1px solid var(--border-color); text-align: center; font-size: 12px; color: var(--text-color-sub);">
       <div>
-        <a href="privacy.html" style="color: var(--text-color-sub); text-decoration: underline; margin: 0 8px;">Privacy Policy (プライバシーポリシー)</a> |
-        <a href="terms.html" style="color: var(--text-color-sub); text-decoration: underline; margin: 0 8px;">Terms of Service (利用規約)</a>
+        <a id="footerPrivacyLink" href="privacy.html" style="color: var(--text-color-sub); text-decoration: underline; margin: 0 8px;">Privacy Policy (プライバシーポリシー)</a> |
+        <a id="footerTermsLink" href="terms.html" style="color: var(--text-color-sub); text-decoration: underline; margin: 0 8px;">Terms of Service (利用規約)</a>
       </div>
-      <div style="margin-top: 6px; font-size: 11px; color: #888;">
+      <div id="footerTrademarkText" style="margin-top: 6px; font-size: 11px; color: #888;">
         ※ YouTube™ は Google LLC の商標です。 / YouTube™ is a trademark of Google LLC.
       </div>
     </footer>
@@ -443,6 +474,7 @@
   const STORAGE_KEY_TOKEN = 'svs_yt_access_token';
   const STORAGE_KEY_EXPIRY = 'svs_yt_token_expiry_ms';
   const STORAGE_KEY_TERMS_AGREED = 'svs_terms_agreed_v1';
+  const STORAGE_KEY_UI_LANG = 'svs_ui_lang_v1';
   const DEFAULT_TOKEN_LIFETIME_SEC = 3500;
   const MS_PER_SECOND = 1000;
 
@@ -750,14 +782,203 @@
   }));
 
   /* ==================================================
+     多言語辞書データ（日・英・台[繁]・中[簡]・韓・ペルシャ/アラビア）
+     ================================================== */
+  const I18N_DICT = {
+    'ja': {
+      authorLabel: '雅号 / 作者 (Author)',
+      clearBtn: 'クリア',
+      previewBtn: '動画を確認する ➔',
+      termsConsentHtml: '作成・投稿する動画の著作権や表現内容はすべて自己責任であることに同意します（<a href="terms.html" target="_blank" rel="noopener">利用規約</a>）',
+      privacyLink: 'プライバシーポリシー',
+      termsLink: '利用規約',
+      trademark: '※ YouTube™ は Google LLC の商標です。',
+      badgePrivate: '🔒 YouTube™ Private (非公開) ⇄',
+      badgePublic: '🌐 YouTube™ Public (公開) ⇄',
+      uploadPrivateBtn: '自分のYouTube™に非公開で送る',
+      uploadPublicBtn: '自分のYouTube™に公開で送る',
+      downloadBtn: '端末に動画ファイルとして保存 (.mp4)',
+      backBtn: '← 入力しなおす',
+      linePrefix: '第',
+      lineSuffix: '行',
+      genres: {
+        haiku: '俳句 (Haiku)',
+        tanka: '短歌 (Tanka)',
+        jueju: '絶句 (Jueju)',
+        sijo: '時調 (Sijo)',
+        rubaiyat: 'ルバイヤート (Rubaiyat)',
+        ghazal: 'ガザル (Ghazal)',
+        limerick: 'リメリック (Limerick)',
+        epigram: 'エピグラム (Epigram)'
+      }
+    },
+    'en': {
+      authorLabel: 'Author / Pen Name',
+      clearBtn: 'Clear',
+      previewBtn: 'Preview Video ➔',
+      termsConsentHtml: 'I agree to the <a href="terms.html" target="_blank" rel="noopener">Terms of Service</a> and take full responsibility for my content and copyright.',
+      privacyLink: 'Privacy Policy',
+      termsLink: 'Terms of Service',
+      trademark: 'YouTube™ is a trademark of Google LLC.',
+      badgePrivate: '🔒 YouTube™ Private ⇄ (Tap to switch)',
+      badgePublic: '🌐 YouTube™ Public ⇄ (Tap to switch)',
+      uploadPrivateBtn: 'Upload to My YouTube™ (Private)',
+      uploadPublicBtn: 'Upload to My YouTube™ (Public)',
+      downloadBtn: 'Save Video to Device (.mp4)',
+      backBtn: '← Back to Edit',
+      linePrefix: 'Line ',
+      lineSuffix: '',
+      genres: {
+        haiku: 'Haiku (俳句)',
+        tanka: 'Tanka (短歌)',
+        jueju: 'Jueju (絶句)',
+        sijo: 'Sijo (시조)',
+        rubaiyat: 'Rubaiyat (رباعی)',
+        ghazal: 'Ghazal (غزل)',
+        limerick: 'Limerick',
+        epigram: 'Epigram'
+      }
+    },
+    'zh-TW': {
+      authorLabel: '雅號 / 作者',
+      clearBtn: '清除',
+      previewBtn: '預覽影片 ➔',
+      termsConsentHtml: '本人同意<a href="terms.html" target="_blank" rel="noopener">服務條款</a>，並對所創作及上傳影片之著作權與內容負全部責任。',
+      privacyLink: '隱私權政策',
+      termsLink: '服務條款',
+      trademark: '※ YouTube™ 為 Google LLC 之商標。',
+      badgePrivate: '🔒 YouTube™ 私人 (不公開) ⇄',
+      badgePublic: '🌐 YouTube™ 公開 (Public) ⇄',
+      uploadPrivateBtn: '上傳至我的 YouTube™ (私人)',
+      uploadPublicBtn: '上傳至我的 YouTube™ (公開)',
+      downloadBtn: '儲存影片至裝置 (.mp4)',
+      backBtn: '← 返回修改',
+      linePrefix: '第 ',
+      lineSuffix: ' 行',
+      genres: {
+        haiku: '俳句 (Haiku)',
+        tanka: '短歌 (Tanka)',
+        jueju: '絕句 (Jueju)',
+        sijo: '時調 (Sijo)',
+        rubaiyat: '魯拜集 (Rubaiyat)',
+        ghazal: '格扎勒 (Ghazal)',
+        limerick: '五行打油詩 (Limerick)',
+        epigram: '警句詩 (Epigram)'
+      }
+    },
+    'zh-CN': {
+      authorLabel: '雅号 / 作者',
+      clearBtn: '清空',
+      previewBtn: '预览视频 ➔',
+      termsConsentHtml: '本人同意<a href="terms.html" target="_blank" rel="noopener">服务条款</a>，并对所创作及上传视频的版权与内容承担全部责任。',
+      privacyLink: '隐私政策',
+      termsLink: '服务条款',
+      trademark: '※ YouTube™ 是 Google LLC 的商标。',
+      badgePrivate: '🔒 YouTube™ 私享 (不公开) ⇄',
+      badgePublic: '🌐 YouTube™ 公开 (Public) ⇄',
+      uploadPrivateBtn: '上传至我的 YouTube™ (私享)',
+      uploadPublicBtn: '上传至我的 YouTube™ (公开)',
+      downloadBtn: '保存视频至设备 (.mp4)',
+      backBtn: '← 返回修改',
+      linePrefix: '第 ',
+      lineSuffix: ' 行',
+      genres: {
+        haiku: '俳句 (Haiku)',
+        tanka: '短歌 (Tanka)',
+        jueju: '绝句 (Jueju)',
+        sijo: '时调 (Sijo)',
+        rubaiyat: '鲁拜集 (Rubaiyat)',
+        ghazal: '格扎勒 (Ghazal)',
+        limerick: '五行打油诗 (Limerick)',
+        epigram: '警句诗 (Epigram)'
+      }
+    },
+    'ko': {
+      authorLabel: '호 / 작자 (Author)',
+      clearBtn: '지우기',
+      previewBtn: '동영상 미리보기 ➔',
+      termsConsentHtml: '제작·업로드하는 동영상의 저작권 및 표현 내용에 대한 모든 책임은 본인에게 있음에 동의합니다 (<a href="terms.html" target="_blank" rel="noopener">이용약관</a>).',
+      privacyLink: '개인정보처리방침',
+      termsLink: '이용약관',
+      trademark: '※ YouTube™는 Google LLC의 상표입니다.',
+      badgePrivate: '🔒 YouTube™ 비공개 (Private) ⇄',
+      badgePublic: '🌐 YouTube™ 공개 (Public) ⇄',
+      uploadPrivateBtn: '내 YouTube™에 비공개로 업로드',
+      uploadPublicBtn: '내 YouTube™에 공개로 업로드',
+      downloadBtn: '기기에 동영상 파일로 저장 (.mp4)',
+      backBtn: '← 다시 입력하기',
+      linePrefix: '제 ',
+      lineSuffix: '행',
+      genres: {
+        haiku: '하이쿠 (Haiku)',
+        tanka: '단가 (Tanka)',
+        jueju: '절구 (Jueju)',
+        sijo: '시조 (Sijo)',
+        rubaiyat: '루바이야트 (Rubaiyat)',
+        ghazal: '가잘 (Ghazal)',
+        limerick: '리머릭 (Limerick)',
+        epigram: '에피그램 (Epigram)'
+      }
+    },
+    'fa': {
+      authorLabel: 'شاعر / نویسنده (Author)',
+      clearBtn: 'پاک کردن',
+      previewBtn: 'پیش‌نمایش ویدیو ➔',
+      termsConsentHtml: 'من با <a href="terms.html" target="_blank" rel="noopener">شرایط استفاده</a> موافقم و مسئولیت کامل محتوا و حق نشر ویدیوی خود را می‌پذیرم.',
+      privacyLink: 'سیاست حفظ حریم خصوصی',
+      termsLink: 'شرایط استفاده',
+      trademark: 'YouTube™ علامت تجاری Google LLC است.',
+      badgePrivate: '🔒 YouTube™ خصوصی (Private) ⇄',
+      badgePublic: '🌐 YouTube™ عمومی (Public) ⇄',
+      uploadPrivateBtn: 'آپلود خصوصی در YouTube™ من',
+      uploadPublicBtn: 'آپلود عمومی در YouTube™ من',
+      downloadBtn: 'ذخیره فایل ویدیو در دستگاه (.mp4)',
+      backBtn: '← بازگشت به ویرایش',
+      linePrefix: 'مصرع ',
+      lineSuffix: '',
+      genres: {
+        haiku: 'هایکو (Haiku)',
+        tanka: 'تانکا (Tanka)',
+        jueju: 'جوئه‌جو (Jueju)',
+        sijo: 'سیجو (Sijo)',
+        rubaiyat: 'رباعی (Rubaiyat)',
+        ghazal: 'غزل (Ghazal)',
+        limerick: 'لیمریک (Limerick)',
+        epigram: 'اپیگرام (Epigram)'
+      }
+    }
+  };
+
+  function detectInitialLanguage() {
+    const saved = localStorage.getItem(STORAGE_KEY_UI_LANG);
+    if (saved && I18N_DICT[saved]) return saved;
+    const nav = (navigator.language || 'ja').toLowerCase();
+    if (nav.startsWith('ja')) return 'ja';
+    if (nav.includes('zh-tw') || nav.includes('zh-hk') || nav.includes('zh-hant')) return 'zh-TW';
+    if (nav.startsWith('zh')) return 'zh-CN';
+    if (nav.startsWith('ko')) return 'ko';
+    if (nav.startsWith('fa') || nav.startsWith('ar') || nav.startsWith('ur')) return 'fa';
+    return 'en';
+  }
+
+  let currentUiLang = detectInitialLanguage();
+
+  /* ==================================================
      DOM要素 & フォーム動的生成
      ================================================== */
+  const langSelect = document.getElementById('langSelect');
   const authStatusBtn = document.getElementById('authStatusBtn');
   const authSymbol = document.getElementById('authSymbol');
   const genreSelector = document.getElementById('genreSelector');
   const linesContainer = document.getElementById('linesContainer');
+  const authorLabelText = document.getElementById('authorLabelText');
   const authorInput = document.getElementById('authorInput');
   const fontIndicator = document.getElementById('fontIndicator');
+  const termsConsentText = document.getElementById('termsConsentText');
+  const clearInputsBtn = document.getElementById('clearInputsBtn');
+  const footerPrivacyLink = document.getElementById('footerPrivacyLink');
+  const footerTermsLink = document.getElementById('footerTermsLink');
+  const footerTrademarkText = document.getElementById('footerTrademarkText');
 
   const inputStep = document.getElementById('inputStep');
   const previewStep = document.getElementById('previewStep');
@@ -783,6 +1004,51 @@
   // アラビア語・ペルシャ語などのRTL（右から左）文字が含まれているか判定する正規表現
   const RTL_CHAR_REGEX = /[\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC]/;
 
+  function getLocalizedFieldLabel(genreKey, field, idx) {
+    if (currentUiLang === 'ja') return field.label;
+    const dict = I18N_DICT[currentUiLang] || I18N_DICT['en'];
+    return `${dict.linePrefix}${idx + 1}${dict.lineSuffix}`;
+  }
+
+  function applyUiLanguage(langKey) {
+    if (!I18N_DICT[langKey]) langKey = 'en';
+    currentUiLang = langKey;
+    localStorage.setItem(STORAGE_KEY_UI_LANG, langKey);
+    langSelect.value = langKey;
+
+    const dict = I18N_DICT[langKey];
+    document.documentElement.lang = langKey;
+
+    // ジャンルボタンのラベル更新
+    document.querySelectorAll('.genre-btn').forEach((btn) => {
+      const gKey = btn.dataset.genre;
+      if (dict.genres[gKey]) {
+        btn.textContent = dict.genres[gKey];
+      }
+    });
+
+    // 各行のラベル更新（ユーザーが入力中のテキスト自体は消さずに維持）
+    const config = GENRE_CONFIGS[currentGenreKey];
+    config.fields.forEach((field, idx) => {
+      const labelSpan = document.getElementById(`lineLabel_${idx}`);
+      if (labelSpan) {
+        labelSpan.textContent = getLocalizedFieldLabel(currentGenreKey, field, idx);
+      }
+    });
+
+    authorLabelText.textContent = dict.authorLabel;
+    termsConsentText.innerHTML = dict.termsConsentHtml;
+    clearInputsBtn.textContent = dict.clearBtn;
+    goToPreviewBtn.textContent = dict.previewBtn;
+    footerPrivacyLink.textContent = dict.privacyLink;
+    footerTermsLink.textContent = dict.termsLink;
+    footerTrademarkText.textContent = dict.trademark;
+    recordVideoBtn.textContent = dict.downloadBtn;
+    backBtn.textContent = dict.backBtn;
+
+    updatePrivacyToggleUI();
+  }
+
   function renderInputFieldsForGenre(genreKey) {
     currentGenreKey = genreKey;
     const config = GENRE_CONFIGS[genreKey];
@@ -793,9 +1059,10 @@
       const dirAttr = isRtlDefault ? 'dir="auto"' : '';
       const group = document.createElement('div');
       group.className = 'form-group';
+      const labelStr = getLocalizedFieldLabel(genreKey, field, idx);
       group.innerHTML = `
         <label class="form-label" for="lineInput_${idx}">
-          <span>${field.label}</span>
+          <span id="lineLabel_${idx}">${labelStr}</span>
           <span class="char-count">${field.hint}</span>
         </label>
         <input type="text" id="lineInput_${idx}" ${dirAttr} class="text-input line-field" placeholder="${field.defaultText.replace(/"/g, '&quot;')}" value="${field.defaultText.replace(/"/g, '&quot;')}" maxlength="${field.maxLength}">
@@ -809,6 +1076,10 @@
     ensureGenreFontsLoaded(config);
   }
 
+  langSelect.addEventListener('change', () => {
+    applyUiLanguage(langSelect.value);
+  });
+
   genreSelector.addEventListener('click', (e) => {
     const btn = e.target.closest('.genre-btn');
     if (!btn) return;
@@ -820,13 +1091,14 @@
     renderInputFieldsForGenre(genreKey);
   });
 
-  document.getElementById('clearInputsBtn').addEventListener('click', () => {
+  clearInputsBtn.addEventListener('click', () => {
     const inputs = document.querySelectorAll('.line-field');
     inputs.forEach((inp) => { inp.value = ''; });
     if (inputs[0]) inputs[0].focus();
   });
 
   renderInputFieldsForGenre('haiku');
+  applyUiLanguage(currentUiLang);
 
   /* ==================================================
      利用規約・自己責任同意チェックボックス（初回のみ必須・以降は自動維持）
@@ -1329,14 +1601,15 @@
   let youtubePrivacyStatus = 'private'; // 初期状態は安全な「private（非公開）」
 
   function updatePrivacyToggleUI() {
+    const dict = I18N_DICT[currentUiLang] || I18N_DICT['ja'];
     if (youtubePrivacyStatus === 'public') {
       privacyToggleBtn.classList.add('is-public');
-      privacyToggleBtn.textContent = '🌐 YouTube™ Public (公開) ⇄';
-      uploadBtn.textContent = '自分のYouTube™に公開で送る';
+      privacyToggleBtn.textContent = dict.badgePublic;
+      uploadBtn.textContent = dict.uploadPublicBtn;
     } else {
       privacyToggleBtn.classList.remove('is-public');
-      privacyToggleBtn.textContent = '🔒 YouTube™ Private (非公開) ⇄';
-      uploadBtn.textContent = '自分のYouTube™に非公開で送る';
+      privacyToggleBtn.textContent = dict.badgePrivate;
+      uploadBtn.textContent = dict.uploadPrivateBtn;
     }
   }
 
