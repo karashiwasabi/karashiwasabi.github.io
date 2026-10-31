@@ -557,7 +557,7 @@
 
   // 動画・無音音声（X / Instagram / TikTok 完全互換用AAC）エンコード品質定数
   const VIDEO_CAPTURE_FPS = 30;
-  const VIDEO_BITRATE_BPS = 25000000;
+  const VIDEO_BITRATE_BPS = 10000000; // YouTube 1080p30 推奨(8Mbps)を上回る高精細かつ軽快な10Mbps
   const MICROSECONDS_PER_SEC = 1000000;
   const KEYFRAME_INTERVAL_FRAMES = 10;
   const PROGRESS_UI_UPDATE_FRAME_INTERVAL = 15;
@@ -1641,10 +1641,9 @@
     progressBox.style.display = 'none';
     recordVideoBtn.disabled = false;
 
-    // 2. Web Share API（ファイル共有）対応端末（スマホや対応ブラウザ）なら、共有ボタンを表示＆共有メニューも起動
+    // 2. Web Share API（ファイル共有）対応端末なら、共有メニュー起動用のボタンを表示（ダウンロード処理と同時起動してOSが重くなるのを防止）
     if (canUseWebShareWithFile(latestGeneratedMp4File)) {
       shareNowBtn.style.display = 'block';
-      await triggerNativeFileShare(latestGeneratedMp4File);
     }
   });
 
