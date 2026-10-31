@@ -340,9 +340,9 @@
 <div class="app-container">
   <header class="header">
     <h1>Short Verse Studio</h1>
-    <div id="authStatusBtn" class="auth-badge" title="YouTube Auth">
+    <div id="authStatusBtn" class="auth-badge" title="YouTube™ Auth">
       <span id="authSymbol">×</span>
-      <span>YouTube account</span>
+      <span>YouTube™ account</span>
     </div>
   </header>
 
@@ -389,15 +389,20 @@
     </div>
 
     <footer style="margin-top: 20px; padding-top: 12px; border-top: 1px solid var(--border-color); text-align: center; font-size: 12px; color: var(--text-color-sub);">
-      <a href="privacy.html" style="color: var(--text-color-sub); text-decoration: underline; margin: 0 8px;">Privacy Policy (プライバシーポリシー)</a> |
-      <a href="terms.html" style="color: var(--text-color-sub); text-decoration: underline; margin: 0 8px;">Terms of Service (利用規約)</a>
+      <div>
+        <a href="privacy.html" style="color: var(--text-color-sub); text-decoration: underline; margin: 0 8px;">Privacy Policy (プライバシーポリシー)</a> |
+        <a href="terms.html" style="color: var(--text-color-sub); text-decoration: underline; margin: 0 8px;">Terms of Service (利用規約)</a>
+      </div>
+      <div style="margin-top: 6px; font-size: 11px; color: #888;">
+        ※ YouTube™ は Google LLC の商標です。 / YouTube™ is a trademark of Google LLC.
+      </div>
     </footer>
   </main>
 
   <!-- ステップ2：全画面プレビュー & 送信画面 -->
   <section id="previewStep" class="step-preview">
     <button type="button" id="privacyToggleBtn" class="badge-private" title="クリックで非公開 / 公開を切り替え">
-      🔒 YouTube Private (非公開) ⇄
+      🔒 YouTube™ Private (非公開) ⇄
     </button>
 
     <div class="canvas-wrapper">
@@ -409,13 +414,13 @@
     </div>
 
     <div id="successBox" class="success-box">
-      🎉 <strong id="successTitleText">YouTube (Private) Uploaded!</strong>
-      <a id="videoLink" href="#" target="_blank" rel="noopener noreferrer">YouTube Studio ➔</a>
+      🎉 <strong id="successTitleText">YouTube™ (Private) Uploaded!</strong>
+      <a id="videoLink" href="#" target="_blank" rel="noopener noreferrer">YouTube Studio™ ➔</a>
     </div>
 
     <div class="preview-controls">
       <button type="button" id="uploadBtn" class="primary-btn">
-        自分のYouTubeに非公開で送る
+        自分のYouTube™に非公開で送る
       </button>
 
       <button type="button" id="recordVideoBtn" class="secondary-btn">
@@ -1326,12 +1331,12 @@
   function updatePrivacyToggleUI() {
     if (youtubePrivacyStatus === 'public') {
       privacyToggleBtn.classList.add('is-public');
-      privacyToggleBtn.textContent = '🌐 YouTube Public (公開) ⇄';
-      uploadBtn.textContent = '自分のYouTubeに公開で送る';
+      privacyToggleBtn.textContent = '🌐 YouTube™ Public (公開) ⇄';
+      uploadBtn.textContent = '自分のYouTube™に公開で送る';
     } else {
       privacyToggleBtn.classList.remove('is-public');
-      privacyToggleBtn.textContent = '🔒 YouTube Private (非公開) ⇄';
-      uploadBtn.textContent = '自分のYouTubeに非公開で送る';
+      privacyToggleBtn.textContent = '🔒 YouTube™ Private (非公開) ⇄';
+      uploadBtn.textContent = '自分のYouTube™に非公開で送る';
     }
   }
 
@@ -1421,13 +1426,13 @@
       progressBox.style.display = 'none';
       successBox.style.display = 'block';
       const statusLabel = (youtubePrivacyStatus === 'public') ? 'Public' : 'Private';
-      successTitleText.textContent = `YouTube (${statusLabel}) Uploaded!`;
+      successTitleText.textContent = `YouTube™ (${statusLabel}) Uploaded!`;
       videoLink.href = (youtubePrivacyStatus === 'public')
         ? `https://www.youtube.com/shorts/${videoId}`
         : `https://studio.youtube.com/video/${videoId}/edit`;
       videoLink.textContent = (youtubePrivacyStatus === 'public')
-        ? `YouTube Shorts (${videoId}) ➔`
-        : `YouTube Studio (${videoId}) ➔`;
+        ? `YouTube Shorts™ (${videoId}) ➔`
+        : `YouTube Studio™ (${videoId}) ➔`;
 
     } catch (err) {
       console.error(err);
