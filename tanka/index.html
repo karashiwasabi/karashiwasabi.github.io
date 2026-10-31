@@ -1233,15 +1233,25 @@
     currentAuthor = authorInput.value.trim() || config.defaultAuthor;
     latestGeneratedMp4File = null;
 
-    // 端末やOSに関わらず確実にWebフォントがロードされてから描画を開始する
-    await ensureGenreFontsLoaded(config);
-
     inputStep.style.display = 'none';
     previewStep.style.display = 'flex';
     successBox.style.display = 'none';
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    startCanvasAnimation();
+    // プレビュー画面を開いた時点でMP4ファイルを事前生成しておくことで、
+    // 「📤 共有」「💾 保存」「YouTube™送信」のすべてを1回目のタップで即座（0秒）に発動させる
+    uploadBtn.disabled = true;
+    recordVideoBtn.disabled = true;
+    shareNowBtn.disabled = true;
+    try {
+      await ensureGenreFontsLoaded(config);
+      await ensureMp4FileReady();
+    } finally {
+      uploadBtn.disabled = false;
+      recordVideoBtn.disabled = false;
+      shareNowBtn.disabled = false;
+      startCanvasAnimation();
+    }
   });
 
   backBtn.addEventListener('click', () => {
@@ -1574,12 +1584,14 @@
     }
   });
 
-  // 「📤 共有」ボタン：ダウンロードは行わず、OS標準の共有メニュー（X / Instagram / LINE 等）のみを開く
+  // 「📤 共有」ボタン：ダウンロードは行わず、OS標準の共有メニュー（X / Instagram / LINE 等）のみを1タップ目で即座に開く
   shareNowBtn.addEventListener('click', async () => {
+    // プレビュー表示時に latestGeneratedMp4File が事前生成されているため、
+    // ブラウザのユーザー操作有効期限（Transient Activation）を消費しないよう await なしで即座に navigator.share を呼ぶ
+    const file = latestGeneratedMp4File || await ensureMp4FileReady();
     recordVideoBtn.disabled = true;
     shareNowBtn.disabled = true;
     try {
-      const file = await ensureMp4FileReady();
       if (typeof navigator !== 'undefined' && navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
         await navigator.share({
           files: [file],
@@ -1597,7 +1609,7 @@
         window.open(`https://twitter.com/intent/tweet?text=${tweetText}`, '_blank', 'noopener');
       }
     } catch (err) {
-      // 共有メニューのキャンセル時、または初回エンコード後にブラウザが再度タップを要求した場合はそのまま待機（2回目のタップで即座に開く）
+      // 共有メニューのキャンセル時は何もしない
     } finally {
       recordVideoBtn.disabled = false;
       shareNowBtn.disabled = false;
@@ -1641,10 +1653,8 @@
     successBox.style.display = 'none';
 
     try {
-      progressText.textContent = "1/2 ...";
-      const { blob } = await generateVideoBlob((p) => {
-        progressText.textContent = `1/2 (${p}%)`;
-      });
+      const blob = latestGeneratedMp4File || await ensureMp4FileReady();
+      progressBox.style.display = 'block';
 
       const poemJoined = currentLines.join(' ');
       const videoTitle = `${poemJoined.slice(0, 75)} #Shorts`;
