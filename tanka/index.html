@@ -454,13 +454,14 @@
         自分のYouTube™に非公開で送る
       </button>
 
-      <button type="button" id="recordVideoBtn" class="secondary-btn">
-        📤 共有 / 保存 (.mp4)
-      </button>
-
-      <button type="button" id="shareNowBtn" class="secondary-btn" style="display: none; background-color: #e6f4ea; color: #137333; font-weight: 700; border: 1px solid #34a853;">
-        📤 X / Instagram / LINE 等へ共有
-      </button>
+      <div style="display: flex; gap: 10px; width: 100%;">
+        <button type="button" id="recordVideoBtn" class="secondary-btn" style="flex: 1;">
+          💾 保存 (.mp4)
+        </button>
+        <button type="button" id="shareNowBtn" class="secondary-btn" style="flex: 1;">
+          📤 共有
+        </button>
+      </div>
 
       <button type="button" id="backBtn" class="secondary-btn">
         ← 入力しなおす
@@ -799,8 +800,8 @@
       badgePublic: '🌐 YouTube™ Public (公開) ⇄',
       uploadPrivateBtn: '自分のYouTube™に非公開で送る',
       uploadPublicBtn: '自分のYouTube™に公開で送る',
-      downloadBtn: '📤 共有 / 保存 (.mp4)',
-      shareReadyBtn: '📤 他アプリ（X・Instagram等）へ共有する',
+      downloadBtn: '💾 保存 (.mp4)',
+      shareReadyBtn: '📤 共有',
       backBtn: '← 入力しなおす',
       linePrefix: '第',
       lineSuffix: '行',
@@ -827,8 +828,8 @@
       badgePublic: '🌐 YouTube™ Public ⇄ (Tap to switch)',
       uploadPrivateBtn: 'Upload to My YouTube™ (Private)',
       uploadPublicBtn: 'Upload to My YouTube™ (Public)',
-      downloadBtn: '📤 Share / Save Video (.mp4)',
-      shareReadyBtn: '📤 Share to X / Instagram / Apps',
+      downloadBtn: '💾 Save (.mp4)',
+      shareReadyBtn: '📤 Share',
       backBtn: '← Back to Edit',
       linePrefix: 'Line ',
       lineSuffix: '',
@@ -855,8 +856,8 @@
       badgePublic: '🌐 YouTube™ 公開 (Public) ⇄',
       uploadPrivateBtn: '上傳至我的 YouTube™ (私人)',
       uploadPublicBtn: '上傳至我的 YouTube™ (公開)',
-      downloadBtn: '📤 分享 / 儲存影片 (.mp4)',
-      shareReadyBtn: '📤 分享至 X / Instagram / 其他應用程式',
+      downloadBtn: '💾 儲存 (.mp4)',
+      shareReadyBtn: '📤 分享',
       backBtn: '← 返回修改',
       linePrefix: '第 ',
       lineSuffix: ' 行',
@@ -883,8 +884,8 @@
       badgePublic: '🌐 YouTube™ 公开 (Public) ⇄',
       uploadPrivateBtn: '上传至我的 YouTube™ (私享)',
       uploadPublicBtn: '上传至我的 YouTube™ (公开)',
-      downloadBtn: '📤 分享 / 保存视频 (.mp4)',
-      shareReadyBtn: '📤 分享至 X / Instagram / 其他应用',
+      downloadBtn: '💾 保存 (.mp4)',
+      shareReadyBtn: '📤 分享',
       backBtn: '← 返回修改',
       linePrefix: '第 ',
       lineSuffix: ' 行',
@@ -911,8 +912,8 @@
       badgePublic: '🌐 YouTube™ 공개 (Public) ⇄',
       uploadPrivateBtn: '내 YouTube™에 비공개로 업로드',
       uploadPublicBtn: '내 YouTube™에 공개로 업로드',
-      downloadBtn: '📤 공유 / 동영상 저장 (.mp4)',
-      shareReadyBtn: '📤 X / Instagram / 다른 앱으로 공유',
+      downloadBtn: '💾 저장 (.mp4)',
+      shareReadyBtn: '📤 공유',
       backBtn: '← 다시 입력하기',
       linePrefix: '제 ',
       lineSuffix: '행',
@@ -939,8 +940,8 @@
       badgePublic: '🌐 YouTube™ عمومی (Public) ⇄',
       uploadPrivateBtn: 'آپلود خصوصی در YouTube™ من',
       uploadPublicBtn: 'آپلود عمومی در YouTube™ من',
-      downloadBtn: '📤 اشتراک‌گذاری / ذخیره ویدیو (.mp4)',
-      shareReadyBtn: '📤 اشتراک‌گذاری در X / Instagram',
+      downloadBtn: '💾 ذخیره (.mp4)',
+      shareReadyBtn: '📤 اشتراک‌گذاری',
       backBtn: '← بازگشت به ویرایش',
       linePrefix: 'مصرع ',
       lineSuffix: '',
@@ -1230,6 +1231,7 @@
     const inputs = document.querySelectorAll('.line-field');
     currentLines = Array.from(inputs).map((inp, idx) => inp.value.trim() || config.fields[idx].defaultText);
     currentAuthor = authorInput.value.trim() || config.defaultAuthor;
+    latestGeneratedMp4File = null;
 
     // 端末やOSに関わらず確実にWebフォントがロードされてから描画を開始する
     await ensureGenreFontsLoaded(config);
@@ -1244,7 +1246,6 @@
 
   backBtn.addEventListener('click', () => {
     if (animationFrameId) cancelAnimationFrame(animationFrameId);
-    shareNowBtn.style.display = 'none';
     previewStep.style.display = 'none';
     inputStep.style.display = 'flex';
   });
@@ -1536,65 +1537,70 @@
     }
   }
 
-  // 生成済みMP4ファイルを保持し、「端末への保存」と「スマホ・OS標準の共有メニュー（Web Share API）」の両方を実現
+  // 生成済みMP4ファイルを保持し、「💾 保存」ボタンと「📤 共有」ボタンを独立して高速に動作させる
   let latestGeneratedMp4File = null;
 
-  function canUseWebShareWithFile(file) {
-    if (!file || typeof navigator === 'undefined' || !navigator.share || !navigator.canShare) {
-      return false;
+  async function ensureMp4FileReady() {
+    if (latestGeneratedMp4File) {
+      return latestGeneratedMp4File;
     }
-    try {
-      return navigator.canShare({ files: [file] });
-    } catch (e) {
-      return false;
-    }
-  }
-
-  async function triggerNativeFileShare(file) {
-    if (!canUseWebShareWithFile(file)) return;
-    try {
-      await navigator.share({
-        files: [file],
-        title: 'Short Verse Studio',
-        text: `${currentLines.join(' ')} — ${currentAuthor}`
-      });
-    } catch (err) {
-      // ユーザーが共有シートをキャンセルした場合やブラウザのジェスチャー期限切れ時は無視
-    }
-  }
-
-  recordVideoBtn.addEventListener('click', async () => {
-    recordVideoBtn.disabled = true;
-    shareNowBtn.style.display = 'none';
     progressBox.style.display = 'block';
     const { blob } = await generateVideoBlob((p) => {
       progressText.textContent = `${p}%`;
     });
-
+    progressBox.style.display = 'none';
     const fileName = `${currentGenreKey}_${Date.now()}.mp4`;
     latestGeneratedMp4File = new File([blob], fileName, { type: 'video/mp4' });
+    return latestGeneratedMp4File;
+  }
 
-    // 1. まず端末に .mp4 ファイルとして確実に自動保存（ダウンロード）する
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = fileName;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-
-    progressBox.style.display = 'none';
-    recordVideoBtn.disabled = false;
-
-    // 2. Web Share API（ファイル共有）対応端末なら、共有メニュー起動用のボタンを表示（ダウンロード処理と同時起動してOSが重くなるのを防止）
-    if (canUseWebShareWithFile(latestGeneratedMp4File)) {
-      shareNowBtn.style.display = 'block';
+  // 「💾 保存 (.mp4)」ボタン：端末へのダウンロード保存のみを行う（共有メニューと衝突しない）
+  recordVideoBtn.addEventListener('click', async () => {
+    recordVideoBtn.disabled = true;
+    shareNowBtn.disabled = true;
+    try {
+      const file = await ensureMp4FileReady();
+      const url = URL.createObjectURL(file);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = file.name;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+    } finally {
+      recordVideoBtn.disabled = false;
+      shareNowBtn.disabled = false;
     }
   });
 
+  // 「📤 共有」ボタン：ダウンロードは行わず、OS標準の共有メニュー（X / Instagram / LINE 等）のみを開く
   shareNowBtn.addEventListener('click', async () => {
-    if (latestGeneratedMp4File) {
-      await triggerNativeFileShare(latestGeneratedMp4File);
+    recordVideoBtn.disabled = true;
+    shareNowBtn.disabled = true;
+    try {
+      const file = await ensureMp4FileReady();
+      if (typeof navigator !== 'undefined' && navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: 'Short Verse Studio',
+          text: `${currentLines.join(' ')} — ${currentAuthor}`
+        });
+      } else if (typeof navigator !== 'undefined' && navigator.share) {
+        await navigator.share({
+          title: 'Short Verse Studio',
+          text: `${currentLines.join(' ')} — ${currentAuthor}`,
+          url: window.location.href
+        });
+      } else {
+        const tweetText = encodeURIComponent(`${currentLines.join(' ')} — ${currentAuthor}\n#ShortVerseStudio`);
+        window.open(`https://twitter.com/intent/tweet?text=${tweetText}`, '_blank', 'noopener');
+      }
+    } catch (err) {
+      // 共有メニューのキャンセル時、または初回エンコード後にブラウザが再度タップを要求した場合はそのまま待機（2回目のタップで即座に開く）
+    } finally {
+      recordVideoBtn.disabled = false;
+      shareNowBtn.disabled = false;
     }
   });
 
