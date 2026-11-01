@@ -1276,15 +1276,21 @@
   }
 
   authStatusBtn.addEventListener('click', () => {
-    loginWithGoogle();
+    // すでに接続済みの状態でヘッダーボタンを押した場合は一度トークンをクリアし、OAuth同意画面を再表示できるようにする
+    if (accessToken) {
+      clearSavedToken();
+    }
+    loginWithGoogle(null, true);
   });
 
-  function loginWithGoogle(callbackAfterLogin = null) {
+  function loginWithGoogle(callbackAfterLogin = null, forceConsentPrompt = false) {
     if (!tokenClient) return;
-    restoreSavedToken();
-    if (accessToken) {
-      if (callbackAfterLogin) callbackAfterLogin();
-      return;
+    if (!forceConsentPrompt) {
+      restoreSavedToken();
+      if (accessToken) {
+        if (callbackAfterLogin) callbackAfterLogin();
+        return;
+      }
     }
 
     tokenClient.callback = (response) => {
@@ -1294,7 +1300,7 @@
       }
     };
 
-    tokenClient.requestAccessToken({ prompt: '' });
+    tokenClient.requestAccessToken({ prompt: 'consent' });
   }
 
   function updateAuthUI(connected) {

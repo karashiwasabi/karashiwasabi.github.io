@@ -103,8 +103,8 @@
       <li><strong>基本認証情報:</strong> Google API へのリクエストを安全に実行するために一時的なOAuthアクセストークンを使用します。</li>
     </ul>
 
-    <h2>2. データの非保持（データ保存ゼロ原則）</h2>
-    <p>本アプリは、いかなるユーザーのドキュメントデータ、個人情報、ファイル内容もデータベースや外部ストレージに保存しません。すべての組版処理はステートレスに行われます。</p>
+    <h2>2. Google ユーザーデータの保持期間および削除方法 (Retention and Deletion of Google User Data)</h2>
+    <p>本アプリは、いかなるユーザーのドキュメントデータ、動画データ、個人情報、ファイル内容も開発者のデータベースや外部サーバーに保存・保持しません（サーバー保持期間：0日）。一時的な OAuth アクセストークンはセッション中（最大約1時間）のみ保持され、処理完了または有効期限切れとともに自動的に破棄されます。ユーザーはブラウザデータの消去または <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener">Google アカウントのアクセス権限設定ページ（https://myaccount.google.com/permissions）</a> からいつでもアクセス権限および関連データを削除・取り消すことができます。また、<code>shintanikarashi@gmail.com</code> へのご連絡によるデータ削除リクエストにも7営業日以内に対応いたします。</p>
 
     <h2>3. Google API 限定使用ポリシーの遵守</h2>
     <p>本アプリが Google API から受け取った情報の使用および他のアプリへの転送は、関連する制限要件を含め、<a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank" rel="noopener">Google API サービスのユーザーデータポリシー</a>に準拠します。</p>
@@ -131,3 +131,4 @@
   </footer>
 </body>
 </html>
+

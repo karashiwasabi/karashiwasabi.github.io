@@ -107,8 +107,19 @@
       <li><strong>Google / YouTube™ OAuth 認証情報（<code>https://www.googleapis.com/auth/youtube.upload</code>）:</strong> ユーザーが明示的にアップロード操作を行った際、ユーザーのブラウザから直接 YouTube™ Data API v3 へ動画を送信する目的でのみ一時的なOAuthアクセストークンを使用します。</li>
     </ul>
 
-    <h2>2. 通信の暗号化とデータの非保持（データ保存ゼロ原則）</h2>
-    <p>本アプリのすべての通信および Google API とのデータ送受信は <strong>HTTPS / TLS 1.2 以上</strong> により暗号化されます。本アプリは独自のバックエンドデータベースを持たず、ユーザーの個人情報、認証情報、入力テキスト、動画ファイルを外部サーバーやストレージに保存・蓄積することは一切ありません。</p>
+    <h2>2. Google ユーザーデータの保持期間および削除方法 (Retention and Deletion of Google User Data)</h2>
+    <p>本アプリにおける Google ユーザーデータの保持（Retention）および削除（Deletion）に関するポリシーは以下の通りです：</p>
+    <ul>
+      <li><strong>データの保持期間（Data Retention）:</strong> 本アプリは独自のバックエンドサーバーやデータベースを持たず、開発者のサーバー上で Google ユーザーデータを保持・保存することは一切ありません（サーバー保持期間：0日）。Google OAuth 2.0 アクセストークン（<code>https://www.googleapis.com/auth/youtube.upload</code>）は、ユーザーのブラウザ内（<code>localStorage</code>）にのみ最大約1時間（3,500秒）一時保持され、有効期限切れとともに自動的に消去されます。すべての通信は <strong>HTTPS / TLS 1.2 以上</strong> により暗号化されます。</li>
+      <li><strong>データの削除および権限の取り消し方法（Data Deletion &amp; Revocation）:</strong>
+        <ul>
+          <li>ユーザーは本アプリ画面右上の「YouTube™ account」ボタンをクリックするか、ブラウザのキャッシュ・サイトデータを消去することで、ブラウザ内に一時保持された OAuth トークンをいつでも即座に削除（ログアウト）できます。</li>
+          <li>ユーザーは <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener">Google アカウントのアクセス権限設定ページ（https://myaccount.google.com/permissions）</a> から、本アプリのアクセス権限をいつでも直接取り消す（削除する）ことができます。</li>
+          <li>ユーザーが本アプリを通じてご自身の YouTube™ チャンネルへアップロードした動画データは、ユーザーご自身の <a href="https://studio.youtube.com/" target="_blank" rel="noopener">YouTube Studio™</a> からいつでも編集または完全に削除することができます。</li>
+          <li>また、データ削除に関するお問い合わせや削除リクエストは <code>shintanikarashi@gmail.com</code> にて常時受け付けており、ご連絡から7営業日以内に対応いたします。</li>
+        </ul>
+      </li>
+    </ul>
 
     <h2>3. Google API 限定使用ポリシーおよび YouTube™ API 規約の遵守</h2>
     <p>本アプリが Google API から受け取った情報の使用および他のアプリへの転送は、限定使用の要件（Limited Use requirements）を含め、<a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank" rel="noopener">Google API サービスのユーザーデータポリシー</a>に準拠します。また、本アプリは YouTube™ API サービスを利用しており、ユーザーはGoogleのプライバシーポリシー（<a href="http://www.google.com/policies/privacy" target="_blank" rel="noopener">http://www.google.com/policies/privacy</a>）および <a href="https://security.google.com/settings/security/permissions" target="_blank" rel="noopener">Google セキュリティ設定ページ</a> からいつでも本アプリのアクセス権限を取り消すことができます。</p>
@@ -126,7 +137,18 @@
     <div class="en-box" lang="en">
       <h2>Privacy Policy (English Summary for Google OAuth Verification)</h2>
       <p><strong>1. Data Collection and Purpose:</strong> Short Verse Studio renders user-entered short poetry into MP4 videos entirely within the user's local web browser. We request the Google OAuth scope <code>https://www.googleapis.com/auth/youtube.upload</code> solely to allow users to upload their self-created videos directly from their browser to their own YouTube™ channel via the YouTube™ Data API v3 when explicitly triggered by the user.</p>
-      <p><strong>2. Data Encryption and Zero Server Storage:</strong> All communications and API requests are encrypted in transit using <strong>HTTPS / TLS 1.2 or higher</strong>. Short Verse Studio operates purely client-side and statelessly; we do not store, log, or retain any user personal data, OAuth tokens, text inputs, or video files on any external server or database.</p>
+      <p><strong>2. Data Retention and Deletion of Google User Data:</strong></p>
+      <ul>
+        <li><strong>Data Retention Policy:</strong> Short Verse Studio operates purely client-side and statelessly with zero backend databases. We do <strong>not</strong> retain, store, or log any Google user data, personal information, text inputs, or video files on any developer server (server retention period: <strong>0 days</strong>). Temporary OAuth 2.0 access tokens (for scope <code>https://www.googleapis.com/auth/youtube.upload</code>) are cached exclusively in the user's local web browser (<code>localStorage</code>) for up to 1 hour (3,500 seconds) and are automatically deleted upon expiration. All communications and API requests are encrypted in transit using <strong>HTTPS / TLS 1.2 or higher</strong>.</li>
+        <li><strong>Data Deletion Policy:</strong> Users can delete their Google user data and revoke access at any time through any of the following methods:
+          <ul>
+            <li><strong>In-App Deletion:</strong> Click the <code>YouTube™ account</code> button in the application header or clear browser site data to immediately delete the locally stored OAuth access token from the browser.</li>
+            <li><strong>Revoking Google Account Access:</strong> Visit the <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener">Google Account Permissions page (https://myaccount.google.com/permissions)</a> to revoke Short Verse Studio's access to your Google account at any time.</li>
+            <li><strong>Deleting Uploaded Videos:</strong> Any videos uploaded to your YouTube™ channel remain under your sole ownership and can be permanently deleted at any time via <a href="https://studio.youtube.com/" target="_blank" rel="noopener">YouTube Studio™</a>.</li>
+            <li><strong>Deletion Requests via Email:</strong> Users may also contact us at <code>shintanikarashi@gmail.com</code> to request data deletion; any requests are processed within 7 business days.</li>
+          </ul>
+        </li>
+      </ul>
       <p><strong>3. Google API Limited Use Disclosure:</strong> <em>Short Verse Studio's use and transfer to any other app of information received from Google APIs adheres to the <a href="https://developers.google.com/terms/api-services-user-data-policy" target="_blank" rel="noopener">Google API Services User Data Policy</a>, including the Limited Use requirements.</em> Users can revoke Short Verse Studio's access to their data at any time via the <a href="https://security.google.com/settings/security/permissions" target="_blank" rel="noopener">Google Security Settings page</a>. Please also refer to the <a href="http://www.google.com/policies/privacy" target="_blank" rel="noopener">Google Privacy Policy</a>.</p>
       <p><strong>4. No Third-Party Sharing &amp; No AI/ML Training:</strong> We never sell, rent, or share user data with any third parties. We do not use any Google user data for advertising purposes or for training generalized Artificial Intelligence (AI) or Machine Learning (ML) models.</p>
       <p><strong>5. Contact:</strong> <code>shintanikarashi@gmail.com</code></p>
