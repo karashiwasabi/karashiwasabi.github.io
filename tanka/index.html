@@ -1193,6 +1193,7 @@
   clearInputsBtn.addEventListener('click', () => {
     const inputs = document.querySelectorAll('.line-field');
     inputs.forEach((inp) => { inp.value = ''; });
+    authorInput.value = '';
     if (inputs[0]) inputs[0].focus();
   });
 
@@ -1310,15 +1311,23 @@
      画面遷移 & 1サイクル時間計算
      ================================================== */
   function getTotalCycleMs() {
-    const lineCount = GENRE_CONFIGS[currentGenreKey].fields.length;
-    return INTRO_SILENCE_MS + (LINE_APPEAR_INTERVAL_MS * (lineCount + 1)) + OUTRO_HOLD_MS;
+    const activeLineCount = currentLines.length > 0 ? currentLines.length : GENRE_CONFIGS[currentGenreKey].fields.length;
+    const authorStepCount = currentAuthor.length > 0 ? 1 : 0;
+    return INTRO_SILENCE_MS + (LINE_APPEAR_INTERVAL_MS * (activeLineCount + authorStepCount)) + OUTRO_HOLD_MS;
   }
 
   goToPreviewBtn.addEventListener('click', async () => {
     const config = GENRE_CONFIGS[currentGenreKey];
     const inputs = document.querySelectorAll('.line-field');
-    currentLines = Array.from(inputs).map((inp, idx) => inp.value.trim() || config.fields[idx].defaultText);
-    currentAuthor = authorInput.value.trim() || config.defaultAuthor;
+    const trimmedLines = Array.from(inputs).map((inp) => inp.value.trim());
+    const hasAnyUserLine = trimmedLines.some((line) => line.length > 0);
+    // 1行でも入力されていれば空欄行にデフォルト例文を復活させず、入力された行のみを採用する（全行空欄のときだけ見本を表示）
+    currentLines = hasAnyUserLine
+      ? trimmedLines.filter((line) => line.length > 0)
+      : config.fields.map((f) => f.defaultText);
+    currentAuthor = hasAnyUserLine
+      ? authorInput.value.trim()
+      : (authorInput.value.trim() || config.defaultAuthor);
     latestGeneratedMp4File = null;
 
     inputStep.style.display = 'none';
@@ -1395,16 +1404,21 @@
       }
     } else {
       // 【横書きジャンル：時調・ルバイヤート(RTL対応)・ガザル(RTL対応)・リメリック・エピグラム】
+      // 4行枠に2行だけ入力された場合などでも紙面の上下中央に美しく収まるよう開始Y座標を自動補正する
+      const missingLineCount = Math.max(0, config.fields.length - currentLines.length);
+      const dynamicStartY = config.startY + (missingLineCount * config.linePitchY) / 2;
       for (let i = 0; i < currentLines.length; i++) {
         const alpha = getFadeAlpha(textElapsed, i * LINE_APPEAR_INTERVAL_MS);
         if (alpha > 0) {
-          const y = config.startY + (i * config.linePitchY);
+          const y = dynamicStartY + (i * config.linePitchY);
           drawSafeHorizontalLine(currentLines[i], y, config, alpha);
         }
       }
-      const authorAlpha = getFadeAlpha(textElapsed, currentLines.length * LINE_APPEAR_INTERVAL_MS);
-      if (authorAlpha > 0) {
-        drawSafeHorizontalAuthor(currentAuthor, HORIZONTAL_AUTHOR_Y_PX, config, authorAlpha);
+      if (currentAuthor) {
+        const authorAlpha = getFadeAlpha(textElapsed, currentLines.length * LINE_APPEAR_INTERVAL_MS);
+        if (authorAlpha > 0) {
+          drawSafeHorizontalAuthor(currentAuthor, HORIZONTAL_AUTHOR_Y_PX, config, authorAlpha);
+        }
       }
     }
   }
