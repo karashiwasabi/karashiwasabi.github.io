@@ -1390,17 +1390,23 @@
 
     if (config.layoutMode === 'vertical') {
       // 【縦書きジャンル：俳句・短歌・絶句】
+      // 自由律俳句（1行のみ）など入力行数が少ない場合でも紙面の左右中央に美しく配置されるようX座標を自動補正する
+      const totalCols = config.lineXCoords.length;
+      const activeCols = Math.max(1, currentLines.length);
+      const centerOffsetX = (config.lineXCoords[totalCols - 1] - config.lineXCoords[activeCols - 1]) / 2;
       for (let i = 0; i < currentLines.length; i++) {
         const alpha = getFadeAlpha(textElapsed, i * LINE_APPEAR_INTERVAL_MS);
         if (alpha > 0) {
-          const x = config.lineXCoords[i];
+          const x = config.lineXCoords[i] + centerOffsetX;
           const startY = PAPER_SAFE_TOP_Y_PX + config.lineIndentsY[i];
           drawSafeVerticalLine(currentLines[i], x, startY, config, alpha);
         }
       }
-      const authorAlpha = getFadeAlpha(textElapsed, currentLines.length * LINE_APPEAR_INTERVAL_MS);
-      if (authorAlpha > 0) {
-        drawSafeVerticalAuthor(currentAuthor, config.authorX, config, authorAlpha);
+      if (currentAuthor) {
+        const authorAlpha = getFadeAlpha(textElapsed, currentLines.length * LINE_APPEAR_INTERVAL_MS);
+        if (authorAlpha > 0) {
+          drawSafeVerticalAuthor(currentAuthor, config.authorX, config, authorAlpha);
+        }
       }
     } else {
       // 【横書きジャンル：時調・ルバイヤート(RTL対応)・ガザル(RTL対応)・リメリック・エピグラム】
