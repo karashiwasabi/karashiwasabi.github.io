@@ -584,14 +584,14 @@
   const LIMERICK_SAFE_CENTER_X_PX = Math.round((LIMERICK_SAFE_LEFT_X_PX + LIMERICK_SAFE_RIGHT_X_PX) / 2); // = 463px
   const LIMERICK_SAFE_WIDTH_PX = LIMERICK_SAFE_RIGHT_X_PX - LIMERICK_SAFE_LEFT_X_PX; // = 495px
 
-  // 宇宙俳句（Project Suncatcher ホログラムHUDフレーム中央配置定数）
+  // 宇宙俳句（Project Suncatcher ワイドホログラムHUDフレーム中央配置定数）
   const SUNCATCHER_SAFE_CENTER_X_PX = 540;
-  const SUNCATCHER_SAFE_WIDTH_PX = 420;
-  const SUNCATCHER_START_Y_3LINES_PX = 560;
-  const SUNCATCHER_LINE_PITCH_3LINES_PX = 160;
-  const SUNCATCHER_AUTHOR_Y_PX = 1140;
-  const SUNCATCHER_GLOW_BLUR_PX = 14;
-  const SUNCATCHER_AUTHOR_GLOW_BLUR_PX = 10;
+  const SUNCATCHER_SAFE_WIDTH_PX = 840;
+  const SUNCATCHER_START_Y_3LINES_PX = 640;
+  const SUNCATCHER_LINE_PITCH_3LINES_PX = 155;
+  const SUNCATCHER_AUTHOR_Y_PX = 1125;
+  const SUNCATCHER_GLOW_BLUR_PX = 18;
+  const SUNCATCHER_AUTHOR_GLOW_BLUR_PX = 12;
 
   // 【縦書き用】列X座標定数（右から左へ並ぶ）
   const HAIKU_LINE_X_COORDS_PX = [645, 490, 335];
@@ -825,16 +825,16 @@
     suncatcher: {
       id: 'suncatcher',
       label: '🛰️ 宇宙俳句 (Space Haiku)',
-      bgPath: 'shortliterature/bg_9_suncatcher.jpg',
+      bgPath: 'shortliterature/bg_9_suncatcher.jpg?v=2',
       layoutMode: 'horizontal_suncatcher',
       fontFamily: '"Share Tech Mono", "DotGothic16", monospace',
       fontLabel: 'Share Tech Mono / DotGothic16 (Digital HUD)',
-      fontWeight: '400',
-      textColor: '#e6fbff',
+      fontWeight: '700',
+      textColor: '#ffffff',
       authorColor: '#ffd97d',
       startY: SUNCATCHER_START_Y_3LINES_PX,
       linePitchY: SUNCATCHER_LINE_PITCH_3LINES_PX,
-      baseFontSize: 38,
+      baseFontSize: 58,
       defaultAuthor: 'Project Suncatcher',
       fields: [
         { label: 'Line 1 (5 syllables / 上五)', hint: '5音節 / 5音', defaultText: 'Blue marble below,', maxLength: 42 },
