@@ -450,7 +450,6 @@
       <button type="button" class="genre-btn" data-genre="ghazal">ガザル (Ghazal)</button>
       <button type="button" class="genre-btn" data-genre="limerick">リメリック (Limerick)</button>
       <button type="button" class="genre-btn" data-genre="epigram">エピグラム (Epigram)</button>
-      <button type="button" class="genre-btn" data-genre="suncatcher" style="grid-column: 1 / -1;">🛰️ 宇宙俳句 (Space Haiku / Suncatcher)</button>
     </div>
 
     <!-- 選択したジャンルに応じて動的に切り替わるテキストボックス群 -->
@@ -570,19 +569,19 @@
   const PAPER_TOP_Y_PX = 400;
   const PAPER_BOTTOM_Y_PX = 1499;
 
-  // 縦書き・横書き共通の紙面内安全領域（上下左右に十分な余白を取り、綴じ目やクリップ・筆に絶対重ならない範囲）
-  const PAPER_SAFE_LEFT_X_PX = 165;
-  const PAPER_SAFE_RIGHT_X_PX = 745;
+  // 縦書き・横書き共通の紙面内安全領域（YouTube Shorts等の右側ボタン・下部タイトルを避け、紙面の左上〜中央を最大限広く使う）
+  const PAPER_SAFE_LEFT_X_PX = 135;
+  const PAPER_SAFE_RIGHT_X_PX = 775;
   const PAPER_SAFE_CENTER_X_PX = Math.round((PAPER_SAFE_LEFT_X_PX + PAPER_SAFE_RIGHT_X_PX) / 2); // = 455px
-  const PAPER_SAFE_WIDTH_PX = PAPER_SAFE_RIGHT_X_PX - PAPER_SAFE_LEFT_X_PX; // = 580px
-  const PAPER_SAFE_TOP_Y_PX = 510;
-  const PAPER_SAFE_BOTTOM_Y_PX = 1390;
+  const PAPER_SAFE_WIDTH_PX = PAPER_SAFE_RIGHT_X_PX - PAPER_SAFE_LEFT_X_PX; // = 640px
+  const PAPER_SAFE_TOP_Y_PX = 465;
+  const PAPER_SAFE_BOTTOM_Y_PX = 1420;
 
-  // リメリック用（左にノートの綴じ目、右に真鍮クリップがあるため横幅をさらに安全側に絞る）
-  const LIMERICK_SAFE_LEFT_X_PX = 215;
-  const LIMERICK_SAFE_RIGHT_X_PX = 710;
-  const LIMERICK_SAFE_CENTER_X_PX = Math.round((LIMERICK_SAFE_LEFT_X_PX + LIMERICK_SAFE_RIGHT_X_PX) / 2); // = 463px
-  const LIMERICK_SAFE_WIDTH_PX = LIMERICK_SAFE_RIGHT_X_PX - LIMERICK_SAFE_LEFT_X_PX; // = 495px
+  // リメリック用（左にノートの綴じ目、右に真鍮クリップがあるため安全範囲内で最大限広げる）
+  const LIMERICK_SAFE_LEFT_X_PX = 195;
+  const LIMERICK_SAFE_RIGHT_X_PX = 735;
+  const LIMERICK_SAFE_CENTER_X_PX = Math.round((LIMERICK_SAFE_LEFT_X_PX + LIMERICK_SAFE_RIGHT_X_PX) / 2); // = 465px
+  const LIMERICK_SAFE_WIDTH_PX = LIMERICK_SAFE_RIGHT_X_PX - LIMERICK_SAFE_LEFT_X_PX; // = 540px
 
   // 宇宙俳句（Project Suncatcher ワイドホログラムHUDフレーム中央配置定数）
   const SUNCATCHER_SAFE_CENTER_X_PX = 540;
@@ -593,39 +592,39 @@
   const SUNCATCHER_GLOW_BLUR_PX = 18;
   const SUNCATCHER_AUTHOR_GLOW_BLUR_PX = 12;
 
-  // 【縦書き用】列X座標定数（右から左へ並ぶ）
-  const HAIKU_LINE_X_COORDS_PX = [645, 490, 335];
-  const HAIKU_AUTHOR_X_PX = 200;
+  // 【縦書き用】列X座標定数（右から左へ紙面いっぱいに広く使う）
+  const HAIKU_LINE_X_COORDS_PX = [665, 495, 325];
+  const HAIKU_AUTHOR_X_PX = 180;
   const HAIKU_LINE_INDENT_Y_PX = [0, 36, 72];
 
-  const TANKA_LINE_X_COORDS_PX = [700, 595, 490, 385, 280];
-  const TANKA_AUTHOR_X_PX = 178;
+  const TANKA_LINE_X_COORDS_PX = [715, 605, 495, 385, 275];
+  const TANKA_AUTHOR_X_PX = 165;
   const TANKA_LINE_INDENT_Y_PX = [0, 24, 48, 72, 96];
 
   // 絶句（竹簡4行＋作者）：竹簡の節目に美しく収まる4列＋作者列
-  const JUEJU_LINE_X_COORDS_PX = [675, 550, 425, 300];
-  const JUEJU_AUTHOR_X_PX = 185;
+  const JUEJU_LINE_X_COORDS_PX = [690, 560, 430, 300];
+  const JUEJU_AUTHOR_X_PX = 175;
   const JUEJU_LINE_INDENT_Y_PX = [0, 0, 0, 0]; // 漢詩（絶句）は天頭を揃える伝統組版
 
-  // 【横書き用】Y座標定数（上から下へ並ぶ）
-  const HORIZONTAL_START_Y_3LINES_PX = 680;
-  const HORIZONTAL_LINE_PITCH_3LINES_PX = 155;
-  const HORIZONTAL_START_Y_4LINES_PX = 630;
-  const HORIZONTAL_LINE_PITCH_4LINES_PX = 140;
-  const HORIZONTAL_START_Y_5LINES_PX = 600;
-  const HORIZONTAL_LINE_PITCH_5LINES_PX = 120;
-  const HORIZONTAL_AUTHOR_Y_PX = 1320;
-  const HORIZONTAL_AUTHOR_FONT_SIZE_PX = 38;
-  const HORIZONTAL_MIN_FONT_SIZE_PX = 24;
+  // 【横書き用】Y座標定数（YouTube Shortsの下部UIを避け、上寄りに大きく配置）
+  const HORIZONTAL_START_Y_3LINES_PX = 620;
+  const HORIZONTAL_LINE_PITCH_3LINES_PX = 175;
+  const HORIZONTAL_START_Y_4LINES_PX = 575;
+  const HORIZONTAL_LINE_PITCH_4LINES_PX = 155;
+  const HORIZONTAL_START_Y_5LINES_PX = 545;
+  const HORIZONTAL_LINE_PITCH_5LINES_PX = 135;
+  const HORIZONTAL_AUTHOR_Y_PX = 1310;
+  const HORIZONTAL_AUTHOR_FONT_SIZE_PX = 42;
+  const HORIZONTAL_MIN_FONT_SIZE_PX = 26;
   const HORIZONTAL_FONT_SHRINK_STEP_PX = 2;
 
   // 【縦書き用】自動縮小・雅号組版定数
-  const VERTICAL_MIN_FONT_SIZE_PX = 40;
+  const VERTICAL_MIN_FONT_SIZE_PX = 44;
   const VERTICAL_FONT_SPACING_RATIO = 0.78;
-  const VERTICAL_AUTHOR_MAX_HEIGHT_PX = 450;
-  const VERTICAL_AUTHOR_BASE_SPACING_PX = 64;
-  const VERTICAL_AUTHOR_BASE_FONT_SIZE_PX = 46;
-  const VERTICAL_AUTHOR_MIN_FONT_SIZE_PX = 32;
+  const VERTICAL_AUTHOR_MAX_HEIGHT_PX = 480;
+  const VERTICAL_AUTHOR_BASE_SPACING_PX = 68;
+  const VERTICAL_AUTHOR_BASE_FONT_SIZE_PX = 50;
+  const VERTICAL_AUTHOR_MIN_FONT_SIZE_PX = 34;
   const VERTICAL_AUTHOR_FONT_SPACING_RATIO = 0.76;
   const VERTICAL_AUTHOR_BOTTOM_OFFSET_PX = 30;
 
@@ -662,8 +661,8 @@
       lineXCoords: HAIKU_LINE_X_COORDS_PX,
       authorX: HAIKU_AUTHOR_X_PX,
       lineIndentsY: HAIKU_LINE_INDENT_Y_PX,
-      baseFontSize: 74,
-      baseCharSpacing: 96,
+      baseFontSize: 82,
+      baseCharSpacing: 106,
       defaultAuthor: '芭蕉',
       fields: [
         { label: '上五 (Line 1)', hint: '5音目安', defaultText: '古池や', maxLength: 12 },
@@ -684,8 +683,8 @@
       lineXCoords: TANKA_LINE_X_COORDS_PX,
       authorX: TANKA_AUTHOR_X_PX,
       lineIndentsY: TANKA_LINE_INDENT_Y_PX,
-      baseFontSize: 64,
-      baseCharSpacing: 86,
+      baseFontSize: 70,
+      baseCharSpacing: 94,
       defaultAuthor: '紀友則',
       fields: [
         { label: '初句 (Line 1)', hint: '5音目安', defaultText: 'ひさかたの', maxLength: 12 },
@@ -708,8 +707,8 @@
       lineXCoords: JUEJU_LINE_X_COORDS_PX,
       authorX: JUEJU_AUTHOR_X_PX,
       lineIndentsY: JUEJU_LINE_INDENT_Y_PX,
-      baseFontSize: 76,
-      baseCharSpacing: 112,
+      baseFontSize: 82,
+      baseCharSpacing: 120,
       defaultAuthor: '李白',
       fields: [
         { label: '起句 (Line 1)', hint: '五言 / 七言', defaultText: '床前看月光', maxLength: 10 },
@@ -730,7 +729,7 @@
       authorColor: '#4a382b',
       startY: HORIZONTAL_START_Y_3LINES_PX,
       linePitchY: HORIZONTAL_LINE_PITCH_3LINES_PX,
-      baseFontSize: 40,
+      baseFontSize: 46,
       defaultAuthor: '황진이',
       fields: [
         { label: '초장 / 初章 (Line 1)', hint: '3-4-3-4', defaultText: '동짓달 기나긴 밤을 한 허리를 버혀 내어', maxLength: 32 },
@@ -750,7 +749,7 @@
       authorColor: '#5c3c24',
       startY: HORIZONTAL_START_Y_4LINES_PX,
       linePitchY: HORIZONTAL_LINE_PITCH_4LINES_PX,
-      baseFontSize: 44,
+      baseFontSize: 52,
       defaultAuthor: 'عمر خیام',
       fields: [
         { label: '第1行 (Line 1)', hint: 'Misra 1', defaultText: 'هنگام سپیده دم خروس سحری', maxLength: 42 },
@@ -771,7 +770,7 @@
       authorColor: '#d4b475',
       startY: HORIZONTAL_START_Y_4LINES_PX,
       linePitchY: HORIZONTAL_LINE_PITCH_4LINES_PX,
-      baseFontSize: 44,
+      baseFontSize: 52,
       defaultAuthor: 'حافظ',
       fields: [
         { label: '第1連・上 (Couplet 1a)', hint: 'Matla', defaultText: 'الا یا ایها الساقی ادر کاسا و ناولها', maxLength: 42 },
@@ -792,7 +791,7 @@
       authorColor: '#4d3f36',
       startY: HORIZONTAL_START_Y_5LINES_PX,
       linePitchY: HORIZONTAL_LINE_PITCH_5LINES_PX,
-      baseFontSize: 42,
+      baseFontSize: 48,
       defaultAuthor: 'Edward Lear',
       fields: [
         { label: 'Line 1 (A)', hint: 'Rhyme A', defaultText: 'There was an Old Man with a beard,', maxLength: 45 },
@@ -814,7 +813,7 @@
       authorColor: '#524132',
       startY: HORIZONTAL_START_Y_3LINES_PX,
       linePitchY: HORIZONTAL_LINE_PITCH_3LINES_PX,
-      baseFontSize: 48,
+      baseFontSize: 56,
       defaultAuthor: 'Oscar Wilde',
       fields: [
         { label: 'Line 1', hint: 'Setup', defaultText: 'We are all in the gutter,', maxLength: 42 },
