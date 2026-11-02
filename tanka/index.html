@@ -8,8 +8,8 @@
   <title>Short Verse Studio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <!-- 全OS・全端末（iPhone/Android/Linux/Windows）で100%同一の字形を保証するジャンル別Webフォント -->
-  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Gowun+Batang:wght@700&family=Shippori+Mincho:wght@500;700&family=Yuji+Mai&family=Yuji+Syuku&display=swap" rel="stylesheet">
+  <!-- 全OS・全端末（iPhone/Android/Linux/Windows）で100%同一の字形を保証するジャンル別Webフォント（デジタル書体 Share Tech Mono / DotGothic16 含む） -->
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=DotGothic16&family=Gowun+Batang:wght@700&family=Share+Tech+Mono&family=Shippori+Mincho:wght@500;700&family=Yuji+Mai&family=Yuji+Syuku&display=swap" rel="stylesheet">
   <!-- Google公式 OAuth クライアントライブラリ -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <!-- WebCodecs 高精細MP4書き出し用マルチプレクサ -->
@@ -450,6 +450,7 @@
       <button type="button" class="genre-btn" data-genre="ghazal">ガザル (Ghazal)</button>
       <button type="button" class="genre-btn" data-genre="limerick">リメリック (Limerick)</button>
       <button type="button" class="genre-btn" data-genre="epigram">エピグラム (Epigram)</button>
+      <button type="button" class="genre-btn" data-genre="suncatcher" style="grid-column: 1 / -1;">🛰️ 宇宙俳句 (Space Haiku / Suncatcher)</button>
     </div>
 
     <!-- 選択したジャンルに応じて動的に切り替わるテキストボックス群 -->
@@ -582,6 +583,15 @@
   const LIMERICK_SAFE_RIGHT_X_PX = 710;
   const LIMERICK_SAFE_CENTER_X_PX = Math.round((LIMERICK_SAFE_LEFT_X_PX + LIMERICK_SAFE_RIGHT_X_PX) / 2); // = 463px
   const LIMERICK_SAFE_WIDTH_PX = LIMERICK_SAFE_RIGHT_X_PX - LIMERICK_SAFE_LEFT_X_PX; // = 495px
+
+  // 宇宙俳句（Project Suncatcher ホログラムHUDフレーム中央配置定数）
+  const SUNCATCHER_SAFE_CENTER_X_PX = 540;
+  const SUNCATCHER_SAFE_WIDTH_PX = 420;
+  const SUNCATCHER_START_Y_3LINES_PX = 560;
+  const SUNCATCHER_LINE_PITCH_3LINES_PX = 160;
+  const SUNCATCHER_AUTHOR_Y_PX = 1140;
+  const SUNCATCHER_GLOW_BLUR_PX = 14;
+  const SUNCATCHER_AUTHOR_GLOW_BLUR_PX = 10;
 
   // 【縦書き用】列X座標定数（右から左へ並ぶ）
   const HAIKU_LINE_X_COORDS_PX = [645, 490, 335];
@@ -811,6 +821,26 @@
         { label: 'Line 2', hint: 'Turn', defaultText: 'but some of us', maxLength: 42 },
         { label: 'Line 3', hint: 'Punchline', defaultText: 'are looking at the stars.', maxLength: 42 }
       ]
+    },
+    suncatcher: {
+      id: 'suncatcher',
+      label: '🛰️ 宇宙俳句 (Space Haiku)',
+      bgPath: 'shortliterature/bg_9_suncatcher.jpg',
+      layoutMode: 'horizontal_suncatcher',
+      fontFamily: '"Share Tech Mono", "DotGothic16", monospace',
+      fontLabel: 'Share Tech Mono / DotGothic16 (Digital HUD)',
+      fontWeight: '400',
+      textColor: '#e6fbff',
+      authorColor: '#ffd97d',
+      startY: SUNCATCHER_START_Y_3LINES_PX,
+      linePitchY: SUNCATCHER_LINE_PITCH_3LINES_PX,
+      baseFontSize: 38,
+      defaultAuthor: 'Project Suncatcher',
+      fields: [
+        { label: 'Line 1 (5 syllables / 上五)', hint: '5音節 / 5音', defaultText: 'Blue marble below,', maxLength: 42 },
+        { label: 'Line 2 (7 syllables / 中七)', hint: '7音節 / 7音', defaultText: 'Data streams in silent grace,', maxLength: 42 },
+        { label: 'Line 3 (5 syllables / 下五)', hint: '5音節 / 5音', defaultText: 'Starlight feeds my core.', maxLength: 42 }
+      ]
     }
   };
 
@@ -882,7 +912,8 @@
         rubaiyat: 'ルバイヤート (Rubaiyat)',
         ghazal: 'ガザル (Ghazal)',
         limerick: 'リメリック (Limerick)',
-        epigram: 'エピグラム (Epigram)'
+        epigram: 'エピグラム (Epigram)',
+        suncatcher: '🛰️ 宇宙俳句 (Space Haiku / Suncatcher)'
       }
     },
     'en': {
@@ -910,7 +941,8 @@
         rubaiyat: 'Rubaiyat (رباعی)',
         ghazal: 'Ghazal (غزل)',
         limerick: 'Limerick',
-        epigram: 'Epigram'
+        epigram: 'Epigram',
+        suncatcher: '🛰️ Space Haiku (Project Suncatcher)'
       }
     },
     'zh-TW': {
@@ -938,7 +970,8 @@
         rubaiyat: '魯拜集 (Rubaiyat)',
         ghazal: '格扎勒 (Ghazal)',
         limerick: '五行打油詩 (Limerick)',
-        epigram: '警句詩 (Epigram)'
+        epigram: '警句詩 (Epigram)',
+        suncatcher: '🛰️ 太空俳句 (Space Haiku)'
       }
     },
     'zh-CN': {
@@ -966,7 +999,8 @@
         rubaiyat: '鲁拜集 (Rubaiyat)',
         ghazal: '格扎勒 (Ghazal)',
         limerick: '五行打油诗 (Limerick)',
-        epigram: '警句诗 (Epigram)'
+        epigram: '警句诗 (Epigram)',
+        suncatcher: '🛰️ 太空俳句 (Space Haiku)'
       }
     },
     'ko': {
@@ -994,7 +1028,8 @@
         rubaiyat: '루바이야트 (Rubaiyat)',
         ghazal: '가잘 (Ghazal)',
         limerick: '리머릭 (Limerick)',
-        epigram: '에피그램 (Epigram)'
+        epigram: '에피그램 (Epigram)',
+        suncatcher: '🛰️ 우주 하이쿠 (Space Haiku)'
       }
     },
     'fa': {
@@ -1022,7 +1057,8 @@
         rubaiyat: 'رباعی (Rubaiyat)',
         ghazal: 'غزل (Ghazal)',
         limerick: 'لیمریک (Limerick)',
-        epigram: 'اپیگرام (Epigram)'
+        epigram: 'اپیگرام (Epigram)',
+        suncatcher: '🛰️ هایکوی فضایی (Space Haiku)'
       }
     }
   };
@@ -1429,7 +1465,8 @@
       if (currentAuthor) {
         const authorAlpha = getFadeAlpha(textElapsed, currentLines.length * LINE_APPEAR_INTERVAL_MS);
         if (authorAlpha > 0) {
-          drawSafeHorizontalAuthor(currentAuthor, HORIZONTAL_AUTHOR_Y_PX, config, authorAlpha);
+          const authorY = (config.layoutMode === 'horizontal_suncatcher') ? SUNCATCHER_AUTHOR_Y_PX : HORIZONTAL_AUTHOR_Y_PX;
+          drawSafeHorizontalAuthor(currentAuthor, authorY, config, authorAlpha);
         }
       }
     }
@@ -1499,12 +1536,17 @@
     ctx.restore();
   }
 
-  // 横書き本文1行（LTRおよびイスラム圏のアラビア・ペルシャ文字RTLに完全対応し、紙面幅内に絶対収める）
+  // 横書き本文1行（LTRおよびイスラム圏のアラビア・ペルシャ文字RTL、宇宙ホログラムHUDに完全対応し、枠内に絶対収める）
   function drawSafeHorizontalLine(text, y, config, alpha) {
     if (!text) return;
     const isLimerick = (config.layoutMode === 'horizontal_limerick');
-    const centerX = isLimerick ? LIMERICK_SAFE_CENTER_X_PX : PAPER_SAFE_CENTER_X_PX;
-    const maxWidth = isLimerick ? LIMERICK_SAFE_WIDTH_PX : PAPER_SAFE_WIDTH_PX;
+    const isSuncatcher = (config.layoutMode === 'horizontal_suncatcher');
+    const centerX = isSuncatcher
+      ? SUNCATCHER_SAFE_CENTER_X_PX
+      : (isLimerick ? LIMERICK_SAFE_CENTER_X_PX : PAPER_SAFE_CENTER_X_PX);
+    const maxWidth = isSuncatcher
+      ? SUNCATCHER_SAFE_WIDTH_PX
+      : (isLimerick ? LIMERICK_SAFE_WIDTH_PX : PAPER_SAFE_WIDTH_PX);
     const isRtlText = RTL_CHAR_REGEX.test(text);
 
     ctx.save();
@@ -1513,6 +1555,11 @@
     ctx.imageSmoothingQuality = 'high';
     ctx.fillStyle = config.textColor;
     ctx.textBaseline = 'middle';
+
+    if (isSuncatcher) {
+      ctx.shadowColor = '#00e5ff';
+      ctx.shadowBlur = SUNCATCHER_GLOW_BLUR_PX;
+    }
 
     // アラビア語・ペルシャ語が含まれる場合はCanvasの書字方向をRTLに設定し、リガチャ（文字連結）と語順を正しく保ったまま紙面中央に配置
     ctx.direction = isRtlText ? 'rtl' : 'ltr';
@@ -1536,11 +1583,18 @@
   function drawSafeHorizontalAuthor(authorText, y, config, alpha) {
     if (!authorText) return;
     const isLimerick = (config.layoutMode === 'horizontal_limerick');
-    const centerX = isLimerick ? LIMERICK_SAFE_CENTER_X_PX : PAPER_SAFE_CENTER_X_PX;
-    const maxWidth = isLimerick ? LIMERICK_SAFE_WIDTH_PX : PAPER_SAFE_WIDTH_PX;
+    const isSuncatcher = (config.layoutMode === 'horizontal_suncatcher');
+    const centerX = isSuncatcher
+      ? SUNCATCHER_SAFE_CENTER_X_PX
+      : (isLimerick ? LIMERICK_SAFE_CENTER_X_PX : PAPER_SAFE_CENTER_X_PX);
+    const maxWidth = isSuncatcher
+      ? SUNCATCHER_SAFE_WIDTH_PX
+      : (isLimerick ? LIMERICK_SAFE_WIDTH_PX : PAPER_SAFE_WIDTH_PX);
     const isRtlText = RTL_CHAR_REGEX.test(authorText);
     const useWesternDash = !isRtlText && config.id !== 'sijo';
-    const displayAuthor = useWesternDash ? `— ${authorText}` : authorText;
+    const displayAuthor = isSuncatcher
+      ? `[ ${authorText} ]`
+      : (useWesternDash ? `— ${authorText}` : authorText);
 
     ctx.save();
     ctx.globalAlpha = alpha;
@@ -1548,6 +1602,10 @@
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = config.authorColor;
+    if (isSuncatcher) {
+      ctx.shadowColor = '#ffaa00';
+      ctx.shadowBlur = SUNCATCHER_AUTHOR_GLOW_BLUR_PX;
+    }
     ctx.font = `${config.fontWeight} ${HORIZONTAL_AUTHOR_FONT_SIZE_PX}px ${config.fontFamily}`;
     ctx.fillText(displayAuthor, centerX, y, maxWidth);
     ctx.restore();
@@ -1569,6 +1627,7 @@
     }
 
     const tSec = elapsedMs / MS_PER_SECOND;
+    const isSuncatcher = (currentGenreKey === 'suncatcher');
     for (const p of goldParticles) {
       const px = (p.x + p.speedX * tSec + CANVAS_WIDTH_PX) % CANVAS_WIDTH_PX;
       const py = (p.y + p.speedY * tSec + CANVAS_HEIGHT_PX) % CANVAS_HEIGHT_PX;
@@ -1576,7 +1635,9 @@
 
       ctx.beginPath();
       ctx.arc(px, py, p.radius, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(218, 185, 110, ${shimmer.toFixed(3)})`;
+      ctx.fillStyle = isSuncatcher
+        ? `rgba(0, 229, 255, ${shimmer.toFixed(3)})`
+        : `rgba(218, 185, 110, ${shimmer.toFixed(3)})`;
       ctx.fill();
     }
     ctx.restore();
