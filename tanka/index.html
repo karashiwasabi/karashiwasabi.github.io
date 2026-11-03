@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="google-site-verification" content="XTUyp1ouHdnj1jkzypNTPJRBj4YpdgQYlUPgpsipJKk" />
   <meta name="google-adsense-account" content="ca-pub-4382223240782332">
+  <!-- Google tag (gtag.js) - wasabikarashi.com 共通 GA4 計測タグ -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-310XSTTWSM"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-310XSTTWSM');
+  </script>
   <title>Short Verse Studio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1715,7 +1723,19 @@
     return INTRO_SILENCE_MS + (LINE_APPEAR_INTERVAL_MS * (activeLineCount + authorStepCount)) + OUTRO_HOLD_MS;
   }
 
+  function trackAnalyticsEvent(eventName, extraParams = {}) {
+    if (typeof gtag === 'function') {
+      gtag('event', eventName, {
+        genre: currentGenreKey,
+        bg_theme: currentBgThemeKey,
+        ui_lang: currentUiLang,
+        ...extraParams
+      });
+    }
+  }
+
   goToPreviewBtn.addEventListener('click', async () => {
+    trackAnalyticsEvent('preview_video');
     const config = GENRE_CONFIGS[currentGenreKey];
     const inputs = document.querySelectorAll('.line-field');
     const trimmedLines = Array.from(inputs).map((inp) => inp.value.trim());
@@ -2098,6 +2118,7 @@
 
   // 「💾 保存 (.mp4)」ボタン：端末へのダウンロード保存のみを行う（共有メニューと衝突しない）
   recordVideoBtn.addEventListener('click', async () => {
+    trackAnalyticsEvent('download_mp4');
     recordVideoBtn.disabled = true;
     shareNowBtn.disabled = true;
     try {
@@ -2118,6 +2139,7 @@
 
   // 「📤 共有」ボタン：ダウンロードは行わず、OS標準の共有メニュー（X / Instagram / LINE 等）のみを1タップ目で即座に開く
   shareNowBtn.addEventListener('click', async () => {
+    trackAnalyticsEvent('share_video');
     // プレビュー表示時に latestGeneratedMp4File が事前生成されているため、
     // ブラウザのユーザー操作有効期限（Transient Activation）を消費しないよう await なしで即座に navigator.share を呼ぶ
     const file = latestGeneratedMp4File || await ensureMp4FileReady();
@@ -2244,6 +2266,7 @@
 
       const uploadResult = await uploadResponse.json();
       const videoId = uploadResult.id;
+      trackAnalyticsEvent('upload_youtube', { privacy_status: youtubePrivacyStatus });
 
       progressBox.style.display = 'none';
       successBox.style.display = 'block';
