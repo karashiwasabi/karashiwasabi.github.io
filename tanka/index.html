@@ -153,6 +153,41 @@
       font-weight: 700;
     }
 
+    /* 背景テーマ選択チップ群（ステップ1・ステップ2共通） */
+    .bg-theme-section {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      width: 100%;
+    }
+    .bg-theme-selector {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      width: 100%;
+    }
+    .bg-theme-btn {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 13px;
+      padding: 7px 10px;
+      border: 1.5px solid var(--border-color);
+      border-radius: 20px;
+      background: #faf8f5;
+      color: #444;
+      cursor: pointer;
+      transition: all 0.15s;
+      flex: 1 1 calc(25% - 6px);
+      min-width: 98px;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .bg-theme-btn.active {
+      border-color: var(--accent-color);
+      background: #fdf2f2;
+      color: var(--accent-color);
+      font-weight: 700;
+    }
+
     .lines-container {
       display: flex;
       flex-direction: column;
@@ -415,6 +450,80 @@
     .rakuten-affiliate-wrap td[style*="width:248px"] br {
       display: inline;
     }
+
+    /* 上部1行キャッチコピー＆使い方ジャンプリンク */
+    .intro-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background-color: #faf6f0;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 12.5px;
+      color: var(--text-color-main);
+    }
+    .intro-guide-btn {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent-color);
+      background: #fff;
+      border: 1px solid var(--accent-color);
+      border-radius: 14px;
+      padding: 3px 10px;
+      cursor: pointer;
+      white-space: nowrap;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+    .intro-guide-btn:hover {
+      background: #fdf2f2;
+    }
+
+    /* 下部：使い方・創作のコツ・短詩ガイド（言葉による丁寧な解説） */
+    .guide-section {
+      margin-top: 14px;
+      padding: 18px 16px;
+      background-color: #faf7f2;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      font-size: 13.5px;
+      line-height: 1.75;
+      color: var(--text-color-main);
+    }
+    .guide-block h2 {
+      font-size: 15px;
+      color: var(--accent-color);
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 4px;
+      margin-bottom: 8px;
+    }
+    .guide-list {
+      padding-left: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .guide-genre-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      font-size: 13px;
+    }
+    .guide-genre-item {
+      background: #ffffff;
+      border: 1px solid #e6dfd5;
+      border-radius: 6px;
+      padding: 8px 10px;
+    }
+    .guide-genre-item strong {
+      color: var(--accent-color);
+    }
   </style>
 </head>
 <body>
@@ -440,6 +549,12 @@
 
   <!-- ステップ1：入力画面 -->
   <main id="inputStep" class="step-input">
+    <!-- 1行案内バー（登録不要の安心感と使い方セクションへのスムーズ移動） -->
+    <div class="intro-bar">
+      <span id="introCatchText">✨ 登録不要・ブラウザ完結で短詩を縦型動画(MP4)に</span>
+      <a href="#howToUseSection" id="introGuideLink" class="intro-guide-btn">📖 使い方 ↓</a>
+    </div>
+
     <!-- 全8ジャンルの選択ボタン（多言語連動） -->
     <div class="genre-selector" id="genreSelector">
       <button type="button" class="genre-btn active" data-genre="haiku">俳句 (Haiku)</button>
@@ -461,6 +576,14 @@
         <span class="char-count" id="fontIndicator">Font: Yuji Syuku</span>
       </label>
       <input type="text" id="authorInput" class="text-input" placeholder="芭蕉" value="芭蕉" maxlength="24">
+    </div>
+
+    <!-- 背景テーマ選択（標準＋春夏秋冬・雨・星月夜・古典和紙） -->
+    <div class="bg-theme-section">
+      <div class="form-label">
+        <span id="bgThemeLabelText">🎨 背景テーマ (Background)</span>
+      </div>
+      <div id="bgThemeSelectorStep1" class="bg-theme-selector"></div>
     </div>
 
     <label class="terms-consent-box" for="termsAgreeCheckbox">
@@ -488,6 +611,59 @@
       <div id="rakutenAffiliateSlot"></div>
     </aside>
 
+    <!-- 使い方・創作のコツ・世界8つの短詩ガイド（言葉による解説セクション） -->
+    <section id="howToUseSection" class="guide-section" aria-label="使い方と短詩ガイド">
+      <div class="guide-block" id="guideContentJa">
+        <h2>📖 Short Verse Studio の使い方（3ステップ）</h2>
+        <p style="margin-bottom: 8px;">
+          アカウント登録やアプリのインストールはいりません。スマートフォンでもパソコンでも、ブラウザで開くだけで自分の言葉を美しい縦型ショート動画（1080×1920・MP4）に仕立てることができます。
+        </p>
+        <ol class="guide-list">
+          <li><strong>ジャンルを選び、言葉を書く：</strong>俳句・短歌をはじめ世界の8つの短詩から選び、各行と雅号（作者名）を入力します。</li>
+          <li><strong>季節や情景の背景を選ぶ：</strong>「🌸 春・桜」「🌿 夏・新緑」「🍁 秋・紅葉」「❄️ 冬・雪椿」「💧 雨・紫陽花」「🌌 星月夜」など、作品の空気感に合った和紙・書斎の背景を選べます（動画プレビュー画面でもリアルタイムに切り替えられます）。</li>
+          <li><strong>保存・SNS共有・YouTube™投稿：</strong>「動画を確認する ➔」を押すと約2秒でMP4動画が完成します。「💾 保存 (.mp4)」で端末に保存したり、「📤 共有」でX（旧Twitter）・Instagram・LINEへ1タップで投稿したり、ご自身のYouTube™チャンネルへ直接送ることができます。</li>
+        </ol>
+
+        <h2 style="margin-top: 14px;">💡 自由律や現代短歌・一行詩を作るコツ</h2>
+        <ul class="guide-list">
+          <li><strong>自由律俳句や一行詩・二行詩にも対応：</strong>3行や5行すべての入力枠を埋める必要はありません。1行だけ（または2行だけ）入力して残りの枠を空欄にしておくと、入力された行だけが紙面の中央に自動で美しく配置されます。</li>
+          <li><strong>無記名（作者名なし）での作成：</strong>雅号／作者欄を空欄（または「クリア」ボタンを押して本文だけ入力）にすれば、作者名を入れずに詩の言葉だけの動画を作れます。</li>
+          <li><strong>文字サイズの自動調整：</strong>一文が長い場合や字余りの句でも、和紙の安全領域からはみ出さないよう文字サイズと字間が自動で美しく調整されます。</li>
+        </ul>
+
+        <h2 style="margin-top: 14px;">🌏 選べる8つの短詩ジャンルと書体</h2>
+        <div class="guide-genre-grid">
+          <div class="guide-genre-item"><strong>俳句 (Haiku)：</strong>五・七・五の三句十七音で季節と一瞬の情景を切り取る日本の伝統短詩。毛筆行書風の「Yuji Syuku」書体で縦書き組版します。</div>
+          <div class="guide-genre-item"><strong>短歌 (Tanka)：</strong>五・七・五・七・七の三十一音で心の揺れや日常の情景を詠む和歌・現代短歌。端正な「Shippori Mincho」書体で五列の縦書きに組版します。</div>
+          <div class="guide-genre-item"><strong>絶句 (Jueju)：</strong>起・承・転・結の四句で構成される漢詩の代表形式。力強い書道風「Yuji Mai」書体で天頭揃えの縦書きに組版します。</div>
+          <div class="guide-genre-item"><strong>時調 (Sijo)：</strong>初章・中章・終章の三行で詠まれる韓国の伝統詩歌。気品ある「Gowun Batang」書体で横書き三行に組版します。</div>
+          <div class="guide-genre-item"><strong>ルバイヤート (Rubaiyat)：</strong>ペルシャ文学の四行詩。アラビア・ペルシャ文字の右横書き（RTL）と古典書体「Amiri」に対応しています。</div>
+          <div class="guide-genre-item"><strong>ガザル (Ghazal)：</strong>イスラム文化圏で愛される叙情対句詩。群青と金泥の装丁に映える組版を行います。</div>
+          <div class="guide-genre-item"><strong>リメリック (Limerick)：</strong>AABBAの韻を踏む英語圏のユーモア五行詩。「Cormorant Garamond」書体で組版します。</div>
+          <div class="guide-genre-item"><strong>エピグラム (Epigram)：</strong>機知と余韻を凝縮した西洋の警句・アフォリズム詩。名言や短い現代詩の映像化にも最適です。</div>
+        </div>
+      </div>
+
+      <div class="guide-block" id="guideContentEn" style="display: none;">
+        <h2>📖 How to Use Short Verse Studio (3 Easy Steps)</h2>
+        <p style="margin-bottom: 8px;">
+          No account registration or app installation is required. Directly in your mobile or desktop browser, you can turn your short poems into vertical short videos (1080×1920 MP4).
+        </p>
+        <ol class="guide-list">
+          <li><strong>Choose a Genre & Write Your Verse:</strong> Select from 8 world short poetry traditions and enter your lines and pen name.</li>
+          <li><strong>Pick a Seasonal or Mood Background:</strong> Choose from "🌸 Spring Sakura", "🌿 Summer Green", "🍁 Autumn Maple", "❄️ Winter Camellia", "💧 Rain Hydrangea", or "🌌 Starry Night" — you can also switch backgrounds live on the video preview screen.</li>
+          <li><strong>Save, Share, or Upload to YouTube™:</strong> Click "Preview Video ➔" to generate a crisp MP4 video in ~2 seconds. Save it locally (".mp4"), share in 1 tap to X / Instagram / LINE, or upload directly to your YouTube™ channel.</li>
+        </ol>
+
+        <h2 style="margin-top: 14px;">💡 Tips for Free-Form & Single-Line Poems</h2>
+        <ul class="guide-list">
+          <li><strong>Free-Form & One-Line Poems:</strong> You don't have to fill every line box. If you enter just 1 or 2 lines and leave the rest blank, your lines are automatically centered on the paper.</li>
+          <li><strong>Anonymous Poems:</strong> Leave the Author / Pen Name box blank to create a video featuring only your verse.</li>
+          <li><strong>Automatic Typography Fitting:</strong> Longer lines automatically scale to fit cleanly inside the safe area of the paper.</li>
+        </ul>
+      </div>
+    </section>
+
     <footer style="margin-top: 20px; padding-top: 12px; border-top: 1px solid var(--border-color); text-align: center; font-size: 12px; color: var(--text-color-sub);">
       <div>
         <a id="footerPrivacyLink" href="privacy.html" style="color: var(--text-color-sub); text-decoration: underline; margin: 0 8px;">Privacy Policy (プライバシーポリシー)</a> |
@@ -507,6 +683,10 @@
 
     <div class="canvas-wrapper">
       <canvas id="shortsCanvas" width="1080" height="1920"></canvas>
+    </div>
+
+    <div class="bg-theme-section">
+      <div id="bgThemeSelectorStep2" class="bg-theme-selector"></div>
     </div>
 
     <div id="progressBox" class="progress-box">
@@ -844,15 +1024,35 @@
   };
 
   /* ==================================================
+     背景テーマ設定（ジャンル標準＋春夏秋冬・雨・星月夜・古典和紙）
+     すべての追加背景は mask_layout.png (X:108-809, Y:400-1499) の和紙領域に完全準拠
+     ================================================== */
+  const WASHI_DARK_TEXT_COLOR = '#181412';
+  const WASHI_DARK_AUTHOR_COLOR = '#3a2b22';
+
+  const BG_THEMES = [
+    { key: 'default', bgPath: null },
+    { key: 'spring_sakura', bgPath: 'shortliterature/bg_spring_sakura.jpg' },
+    { key: 'summer_green', bgPath: 'shortliterature/bg_summer_green.jpg' },
+    { key: 'autumn_momiji', bgPath: 'shortliterature/bg_autumn_momiji.jpg' },
+    { key: 'winter_tsubaki', bgPath: 'shortliterature/bg_winter_tsubaki.jpg' },
+    { key: 'rain_ajisai', bgPath: 'shortliterature/bg_rain_ajisai.jpg' },
+    { key: 'star_night', bgPath: 'shortliterature/bg_star_night.jpg' },
+    { key: 'classic_alt', bgPath: 'shortliterature/Haiku（俳句）.jpg' }
+  ];
+
+  /* ==================================================
      状態管理 & 全背景画像・Webフォントのプリロード
      ================================================== */
   let currentGenreKey = 'haiku';
+  let currentBgThemeKey = 'default';
   let currentLines = [];
   let currentAuthor = '';
   let youtubePrivacyStatus = 'private'; // 初期状態は安全な「private（非公開）」
 
   const bgImages = {};
   function preloadBgImage(path) {
+    if (!path) return null;
     if (bgImages[path]) return bgImages[path];
     const img = new Image();
     img.src = encodeURI(path);
@@ -861,6 +1061,33 @@
   }
 
   Object.values(GENRE_CONFIGS).forEach((cfg) => preloadBgImage(cfg.bgPath));
+  BG_THEMES.forEach((theme) => {
+    if (theme.bgPath) preloadBgImage(theme.bgPath);
+  });
+
+  function getEffectiveConfig() {
+    const baseConfig = GENRE_CONFIGS[currentGenreKey];
+    if (currentBgThemeKey === 'default') {
+      return baseConfig;
+    }
+    const themeObj = BG_THEMES.find((t) => t.key === currentBgThemeKey);
+    if (!themeObj) return baseConfig;
+
+    let resolvedBgPath = themeObj.bgPath;
+    if (currentBgThemeKey === 'classic_alt') {
+      resolvedBgPath = (currentGenreKey === 'haiku')
+        ? 'shortliterature/短歌（Tanka）.jpg'
+        : 'shortliterature/Haiku（俳句）.jpg';
+    }
+
+    return {
+      ...baseConfig,
+      bgPath: resolvedBgPath,
+      layoutMode: (baseConfig.layoutMode === 'horizontal_limerick') ? 'horizontal' : baseConfig.layoutMode,
+      textColor: (baseConfig.id === 'ghazal') ? WASHI_DARK_TEXT_COLOR : baseConfig.textColor,
+      authorColor: (baseConfig.id === 'ghazal') ? WASHI_DARK_AUTHOR_COLOR : baseConfig.authorColor
+    };
+  }
 
   // OSに依存せず指定のWebフォントが100%ロード完了するのを待機する関数
   async function ensureGenreFontsLoaded(config) {
@@ -913,6 +1140,17 @@
         limerick: 'リメリック (Limerick)',
         epigram: 'エピグラム (Epigram)',
         suncatcher: '🛰️ 宇宙俳句 (Space Haiku / Suncatcher)'
+      },
+      bgLabel: '🎨 背景テーマ (Background)',
+      bgThemes: {
+        default: '🖌️ 標準',
+        spring_sakura: '🌸 春・桜',
+        summer_green: '🌿 夏・新緑',
+        autumn_momiji: '🍁 秋・紅葉',
+        winter_tsubaki: '❄️ 冬・雪椿',
+        rain_ajisai: '💧 雨・紫陽花',
+        star_night: '🌌 星月夜',
+        classic_alt: '📜 別抄和紙'
       }
     },
     'en': {
@@ -942,6 +1180,17 @@
         limerick: 'Limerick',
         epigram: 'Epigram',
         suncatcher: '🛰️ Space Haiku (Project Suncatcher)'
+      },
+      bgLabel: '🎨 Background Theme',
+      bgThemes: {
+        default: '🖌️ Default',
+        spring_sakura: '🌸 Spring Sakura',
+        summer_green: '🌿 Summer Green',
+        autumn_momiji: '🍁 Autumn Maple',
+        winter_tsubaki: '❄️ Winter Camellia',
+        rain_ajisai: '💧 Rain Hydrangea',
+        star_night: '🌌 Starry Night',
+        classic_alt: '📜 Classic Washi'
       }
     },
     'zh-TW': {
@@ -971,6 +1220,17 @@
         limerick: '五行打油詩 (Limerick)',
         epigram: '警句詩 (Epigram)',
         suncatcher: '🛰️ 太空俳句 (Space Haiku)'
+      },
+      bgLabel: '🎨 背景主題',
+      bgThemes: {
+        default: '🖌️ 預設',
+        spring_sakura: '🌸 春・櫻花',
+        summer_green: '🌿 夏・新綠',
+        autumn_momiji: '🍁 秋・紅葉',
+        winter_tsubaki: '❄️ 冬・雪椿',
+        rain_ajisai: '💧 雨・紫陽花',
+        star_night: '🌌 星月夜',
+        classic_alt: '📜 古典和紙'
       }
     },
     'zh-CN': {
@@ -1000,6 +1260,17 @@
         limerick: '五行打油诗 (Limerick)',
         epigram: '警句诗 (Epigram)',
         suncatcher: '🛰️ 太空俳句 (Space Haiku)'
+      },
+      bgLabel: '🎨 背景主题',
+      bgThemes: {
+        default: '🖌️ 默认',
+        spring_sakura: '🌸 春・樱花',
+        summer_green: '🌿 夏・新绿',
+        autumn_momiji: '🍁 秋・红叶',
+        winter_tsubaki: '❄️ 冬・雪椿',
+        rain_ajisai: '💧 雨・紫阳花',
+        star_night: '🌌 星月夜',
+        classic_alt: '📜 古典和纸'
       }
     },
     'ko': {
@@ -1029,6 +1300,17 @@
         limerick: '리머릭 (Limerick)',
         epigram: '에피그램 (Epigram)',
         suncatcher: '🛰️ 우주 하이쿠 (Space Haiku)'
+      },
+      bgLabel: '🎨 배경 테마',
+      bgThemes: {
+        default: '🖌️ 기본',
+        spring_sakura: '🌸 봄·벚꽃',
+        summer_green: '🌿 여름·신록',
+        autumn_momiji: '🍁 가을·단풍',
+        winter_tsubaki: '❄️ 겨울·동백',
+        rain_ajisai: '💧 비·수국',
+        star_night: '🌌 별밤',
+        classic_alt: '📜 전통 한지/화지'
       }
     },
     'fa': {
@@ -1058,6 +1340,17 @@
         limerick: 'لیمریک (Limerick)',
         epigram: 'اپیگرام (Epigram)',
         suncatcher: '🛰️ هایکوی فضایی (Space Haiku)'
+      },
+      bgLabel: '🎨 طرح پس‌زمینه',
+      bgThemes: {
+        default: '🖌️ پیش‌فرض',
+        spring_sakura: '🌸 بهار (شکوفه)',
+        summer_green: '🌿 تابستان',
+        autumn_momiji: '🍁 پاییز',
+        winter_tsubaki: '❄️ زمستان',
+        rain_ajisai: '💧 باران',
+        star_night: '🌌 شب پرستاره',
+        classic_alt: '📜 کاغذ سنتی'
       }
     }
   };
@@ -1087,6 +1380,9 @@
   const authorLabelText = document.getElementById('authorLabelText');
   const authorInput = document.getElementById('authorInput');
   const fontIndicator = document.getElementById('fontIndicator');
+  const bgThemeLabelText = document.getElementById('bgThemeLabelText');
+  const bgThemeSelectorStep1 = document.getElementById('bgThemeSelectorStep1');
+  const bgThemeSelectorStep2 = document.getElementById('bgThemeSelectorStep2');
   const termsConsentText = document.getElementById('termsConsentText');
   const clearInputsBtn = document.getElementById('clearInputsBtn');
   const footerPrivacyLink = document.getElementById('footerPrivacyLink');
@@ -1151,6 +1447,10 @@
     });
 
     authorLabelText.textContent = dict.authorLabel;
+    if (bgThemeLabelText && dict.bgLabel) {
+      bgThemeLabelText.textContent = dict.bgLabel;
+    }
+    renderBgThemeSelectors();
     termsConsentText.innerHTML = dict.termsConsentHtml;
     clearInputsBtn.textContent = dict.clearBtn;
     goToPreviewBtn.textContent = dict.previewBtn;
@@ -1160,6 +1460,22 @@
     recordVideoBtn.textContent = dict.downloadBtn;
     shareNowBtn.textContent = dict.shareReadyBtn;
     backBtn.textContent = dict.backBtn;
+
+    const introCatchText = document.getElementById('introCatchText');
+    const introGuideLink = document.getElementById('introGuideLink');
+    const guideContentJa = document.getElementById('guideContentJa');
+    const guideContentEn = document.getElementById('guideContentEn');
+    if (langKey === 'ja') {
+      if (introCatchText) introCatchText.textContent = '✨ 登録不要・ブラウザ完結で短詩を縦型動画(MP4)に';
+      if (introGuideLink) introGuideLink.textContent = '📖 使い方 ↓';
+      if (guideContentJa) guideContentJa.style.display = 'block';
+      if (guideContentEn) guideContentEn.style.display = 'none';
+    } else {
+      if (introCatchText) introCatchText.textContent = '✨ Free & no sign-up — turn short poems into MP4 videos';
+      if (introGuideLink) introGuideLink.textContent = '📖 How to Use ↓';
+      if (guideContentJa) guideContentJa.style.display = 'none';
+      if (guideContentEn) guideContentEn.style.display = 'block';
+    }
 
     updatePrivacyToggleUI();
   }
@@ -1224,6 +1540,48 @@
     btn.classList.add('active');
     renderInputFieldsForGenre(genreKey);
   });
+
+  function renderBgThemeSelectors() {
+    const dict = I18N_DICT[currentUiLang] || I18N_DICT['ja'];
+    const labels = dict.bgThemes || I18N_DICT['ja'].bgThemes;
+    [bgThemeSelectorStep1, bgThemeSelectorStep2].forEach((container) => {
+      if (!container) return;
+      container.innerHTML = '';
+      BG_THEMES.forEach((theme) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'bg-theme-btn' + (theme.key === currentBgThemeKey ? ' active' : '');
+        btn.dataset.bgTheme = theme.key;
+        btn.textContent = labels[theme.key] || theme.key;
+        btn.addEventListener('click', () => selectBgTheme(theme.key));
+        container.appendChild(btn);
+      });
+    });
+  }
+
+  async function selectBgTheme(themeKey) {
+    if (!themeKey || themeKey === currentBgThemeKey) return;
+    currentBgThemeKey = themeKey;
+    document.querySelectorAll('.bg-theme-btn').forEach((btn) => {
+      btn.classList.toggle('active', btn.dataset.bgTheme === themeKey);
+    });
+    latestGeneratedMp4File = null;
+
+    // ステップ2（プレビュー画面）表示中に背景を切り替えた場合は即座に再描画＆MP4を再生成する
+    if (previewStep.style.display === 'flex') {
+      uploadBtn.disabled = true;
+      recordVideoBtn.disabled = true;
+      shareNowBtn.disabled = true;
+      try {
+        await ensureMp4FileReady();
+      } finally {
+        uploadBtn.disabled = false;
+        recordVideoBtn.disabled = false;
+        shareNowBtn.disabled = false;
+        startCanvasAnimation();
+      }
+    }
+  }
 
   clearInputsBtn.addEventListener('click', () => {
     const inputs = document.querySelectorAll('.line-field');
@@ -1420,7 +1778,7 @@
   }
 
   function drawFrame(elapsedMs) {
-    const config = GENRE_CONFIGS[currentGenreKey];
+    const config = getEffectiveConfig();
     ctx.clearRect(0, 0, CANVAS_WIDTH_PX, CANVAS_HEIGHT_PX);
 
     // 1. 背景テンプレート画像と微細な金砂子エフェクト
