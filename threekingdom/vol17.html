@@ -916,6 +916,11 @@
     return usedKeys;
   }
 
+  function getShortNameWithReading(labelStr) {
+    if (!labelStr) return '';
+    return labelStr.replace(/：[^）]*）$/, '）');
+  }
+
   function renderMapLayersForCurrentMode() {
     baseAreaGroup.clearLayers();
     pinMarkerGroup.clearLayers();
@@ -930,7 +935,7 @@
         fillColor: isCommandery ? '#8d6e63' : '#42a5f5',
         fillOpacity: isCommandery ? 0.06 : 0.03
       }).addTo(baseAreaGroup);
-      poly.bindTooltip(`🗺️ 【エリア】${area.label}`, { sticky: true });
+      poly.bindTooltip(`🗺️ ${getShortNameWithReading(area.label)}`, { sticky: true });
       poly.on('click', () => {
         focusPlaceOnMap(area.key, area.key);
       });
@@ -985,7 +990,7 @@
 
     // (A) エリア（州・郡・河南・河北など）をクリックした場合：領域ポリゴン（面）と中央バナーを表示
     if (found.is_area && found.area_polygon) {
-      map.fitBounds(found.area_polygon, { padding: [40, 40], maxZoom: targetZoom });
+      map.fitBounds(found.area_polygon, { padding: [36, 36], maxZoom: 7 });
 
       const areaPoly = L.polygon(found.area_polygon, {
         color: '#d84315',
@@ -996,37 +1001,32 @@
 
       const bannerIcon = L.divIcon({
         className: '',
-        html: `<span class="area-banner-label">🗺️ 【エリア】${found.key.replace('郡', '')}（${found.category.split('（')[0]}）</span>`,
-        iconSize: [180, 30],
-        iconAnchor: [90, 15]
+        html: `<span class="area-banner-label">🗺️ ${found.key}</span>`,
+        iconSize: [140, 28],
+        iconAnchor: [70, 14]
       });
       const bannerMarker = L.marker([found.lat, found.lng], { icon: bannerIcon, interactive: false }).addTo(map);
       activeHighlightLayers.push(areaPoly, bannerMarker);
-
-      // このエリアの内部に属している地点（県・城・関）の一覧を取得
-      const childPoints = PLACES.filter(p => p.is_pin && p.parent_area === found.key && activeKeys.has(p.key)).map(p => p.key);
-      if (childPoints.length > 0) {
-        hierarchyHtml = `<div style="margin-top:4px; color:#a5d6a7; font-size:0.8rem;">📦 このエリア内の登録地点: <strong>${childPoints.join('・')}</strong></div>`;
-      }
     }
     // (B) 河川をクリックした場合：水系ポリラインをハイライト
     else if (found.is_river) {
-      map.setView([found.lat, found.lng], targetZoom, { animate: true, duration: 0.5 });
+      map.setView([found.lat, found.lng], 7, { animate: true, duration: 0.5 });
       RIVER_LINES.filter(r => r.key === found.key).forEach(river => {
         const hl = L.polyline(river.coords, { color: '#ffeb3b', weight: 7, opacity: 0.85 }).addTo(map);
         const fg = L.polyline(river.coords, { color: '#d32f2f', weight: 3.5, opacity: 0.95 }).addTo(map);
         activeHighlightLayers.push(hl, fg);
       });
     }
-    // (C) 地点（県・城・関・山）をクリックした場合：ピンをハイライト＋親エリア枠も同時表示
+    // (C) 地点（県・城・関・山）をクリックした場合：親エリア（豫州・徐州・兗州など）全体が見える縮尺に合わせてピン＋親枠を表示
     else {
-      map.setView([found.lat, found.lng], targetZoom, { animate: true, duration: 0.5 });
       const labelEl = document.getElementById(`pin-label-${found.key}`);
       if (labelEl) labelEl.classList.add('selected-pin');
 
-      // 親エリア（parent_area）の領域枠を緑・金破線で表示して「エリアの中の地点」であることを可視化
       const parentArea = PLACES.find(a => a.is_area && a.key === found.parent_area);
       if (parentArea && parentArea.area_polygon) {
+        // 親エリア（例：許なら豫州）の枠全体が画面に収まる縮尺（最大ズーム7）に合わせる
+        map.fitBounds(parentArea.area_polygon, { padding: [36, 36], maxZoom: 7 });
+
         const parentPoly = L.polygon(parentArea.area_polygon, {
           color: '#2e7d32',
           weight: 2.5,
@@ -1039,43 +1039,40 @@
         const parentBanner = L.marker([pLat, pLng], {
           icon: L.divIcon({
             className: '',
-            html: `<span class="parent-area-banner-label">親エリア：${parentArea.key}</span>`,
-            iconSize: [130, 22],
-            iconAnchor: [65, 11]
+            html: `<span class="parent-area-banner-label">${parentArea.key}</span>`,
+            iconSize: [100, 22],
+            iconAnchor: [50, 11]
           }),
           interactive: false
         }).addTo(map);
         activeHighlightLayers.push(parentPoly, parentBanner);
-        hierarchyHtml = `<div style="margin-top:4px; color:#ffe082; font-size:0.8rem;">🧭 所属エリア（親エリア）: <strong>${parentArea.label}</strong></div>`;
+      } else {
+        map.setView([found.lat, found.lng], 7, { animate: true, duration: 0.5 });
       }
 
       const ptCircle = L.circle([found.lat, found.lng], {
-        radius: 10000,
+        radius: 14000,
         color: '#c62828',
         weight: 2.5,
         fillColor: '#ff5252',
-        fillOpacity: 0.22
+        fillOpacity: 0.25
       }).addTo(map);
       activeHighlightLayers.push(ptCircle);
     }
-
-    const specialNote = PLACE_NOTES[clickedRawSurface] || '';
-    const specialHtml = specialNote
-      ? `<div style="margin-top:6px;"><span class="toast-special-badge">🔗 特別キーワード変換</span><br><span style="font-size:0.78rem; color:#ffe082;">${specialNote}</span></div>`
-      : '';
 
     const toast = document.getElementById('mapToast');
     const safeSurface = (clickedRawSurface || found.key).replace(/'/g, "\'");
     const safeKey = found.key.replace(/'/g, "\'");
     const toastFeedbackHtml = isEditModeActive() ? `
       <div class="toast-feedback-bar">
-        <button class="toast-fb-btn" onclick="addPlaceToastFeedback('${safeKey}', '${safeSurface}', '🔄 場所が違う（同名別地・比定地修正）')">🔄 場所が違う</button>
+        <button class="toast-fb-btn" onclick="addPlaceToastFeedback('${safeKey}', '${safeSurface}', '🔄 場所が違う（同名別地・位置修正）')">🔄 場所が違う</button>
         <button class="toast-fb-btn" onclick="addPlaceToastFeedback('${safeKey}', '${safeSurface}', '📐 エリア⇔地点の区分変更')">📐 エリア⇔地点変更</button>
         <button class="toast-fb-btn" onclick="startMapCoordPicker('${safeKey}', '${safeSurface}')">📍 地図クリックで正しい位置を指定</button>
         <button class="toast-fb-btn" onclick="addPlaceToastFeedback('${safeKey}', '${safeSurface}', '❌ 地名タグ解除')">❌ タグ解除</button>
       </div>
     ` : '';
-    toast.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;"><div>📍 <strong>${found.label}</strong></div><button onclick="document.getElementById('mapToast').style.display='none'" style="background:transparent; border:none; color:#ccc; cursor:pointer; font-size:0.9rem; line-height:1; padding:0 2px;" title="閉じる">✕</button></div><span style="font-size:0.8rem; color:#eee;">区分: ${found.category} （ズーム倍率: ${targetZoom}）<br>現代の比定地: ${found.modern}</span>${hierarchyHtml}${specialHtml}${toastFeedbackHtml}`;
+    const shortTitle = getShortNameWithReading(found.label);
+    toast.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center; gap:10px;"><div>📍 <strong>${shortTitle}</strong> <span style="font-size:0.8rem; color:#ddd;">（現在の${found.modern}）</span></div><button onclick="document.getElementById('mapToast').style.display='none'" style="background:transparent; border:none; color:#ccc; cursor:pointer; font-size:0.9rem; line-height:1; padding:0 2px;" title="閉じる">✕</button></div>${toastFeedbackHtml}`;
     toast.style.display = 'block';
     return true;
   }
