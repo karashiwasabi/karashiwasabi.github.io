@@ -785,16 +785,16 @@
   // 【縦書き用】列X座標定数（右から左へ紙面いっぱいに広く使う）
   const HAIKU_LINE_X_COORDS_PX = [665, 495, 325];
   const HAIKU_AUTHOR_X_PX = 180;
-  const HAIKU_LINE_INDENT_Y_PX = [0, 36, 72];
+  const HAIKU_LINE_INDENT_Y_PX = [40, 76, 112];
 
   const TANKA_LINE_X_COORDS_PX = [715, 605, 495, 385, 275];
   const TANKA_AUTHOR_X_PX = 165;
-  const TANKA_LINE_INDENT_Y_PX = [0, 24, 48, 72, 96];
+  const TANKA_LINE_INDENT_Y_PX = [30, 54, 78, 102, 126];
 
-  // 絶句（竹簡4行＋作者）：竹簡の節目に美しく収まる4列＋作者列
+  // 絶句（竹簡4行＋作者）：竹簡および和紙の中央に美しく収まる4列＋作者列（天頭揃え）
   const JUEJU_LINE_X_COORDS_PX = [690, 560, 430, 300];
   const JUEJU_AUTHOR_X_PX = 175;
-  const JUEJU_LINE_INDENT_Y_PX = [0, 0, 0, 0]; // 漢詩（絶句）は天頭を揃える伝統組版
+  const JUEJU_LINE_INDENT_Y_PX = [85, 85, 85, 85]; // 漢詩（絶句）は天頭を揃えつつ紙面上端に窮屈にならないよう85px下げる
 
   // 【横書き用】Y座標定数（YouTube Shortsの下部UIを避け、上寄りに大きく配置）
   const HORIZONTAL_START_Y_3LINES_PX = 620;
@@ -1055,7 +1055,7 @@
     { key: 'korean_celadon', bgPath: 'shortliterature/bg_korean_celadon.jpg' },
     { key: 'western_quill', bgPath: 'shortliterature/bg_western_quill.jpg' },
     { key: 'cafe_fountainpen', bgPath: 'shortliterature/bg_cafe_fountainpen.jpg' },
-    { key: 'ocean_sunset', bgPath: 'shortliterature/bg_ocean_sunset.jpg' },
+    { key: 'ocean_sunset', bgPath: 'shortliterature/bg_ocean_sunset.jpg?v=2' },
     { key: 'classic_alt', bgPath: 'shortliterature/Haiku（俳句）.jpg' }
   ];
 
