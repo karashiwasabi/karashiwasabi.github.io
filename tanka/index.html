@@ -628,7 +628,7 @@
         </p>
         <ol class="guide-list">
           <li><strong>ジャンルを選び、言葉を書く：</strong>俳句・短歌をはじめ世界の8つの短詩から選び、各行と雅号（作者名）を入力します。</li>
-          <li><strong>季節や情景の背景を選ぶ：</strong>「🌸 春・桜」「🌿 夏・新緑」「🍁 秋・紅葉」「❄️ 冬・雪椿」「💧 雨・紫陽花」「🌌 星月夜」など、作品の空気感に合った和紙・書斎の背景を選べます（動画プレビュー画面でもリアルタイムに切り替えられます）。</li>
+          <li><strong>季節や世界の情景・背景を選ぶ：</strong>日本の四季（「🌸 春・桜」「🌿 夏・新緑」「🍁 秋・紅葉」「❄️ 冬・雪椿」「💧 雨・紫陽花」「🌌 星月夜」）に加え、「🕌 ペルシャ宮殿」「🌙 アラビアン夜」「🏔️ 松と翡翠」「🏮 紅梅と香炉」「🏺 高麗青磁」「🪶 羽ペンと封蝋」「☕ 珈琲と万年筆」「🌊 海辺・夕凪」など全16種類の背景から選べます（動画プレビュー画面でもリアルタイムに切り替えられます）。</li>
           <li><strong>保存・SNS共有・YouTube™投稿：</strong>「動画を確認する ➔」を押すと約2秒でMP4動画が完成します。「💾 保存 (.mp4)」で端末に保存したり、「📤 共有」でX（旧Twitter）・Instagram・LINEへ1タップで投稿したり、ご自身のYouTube™チャンネルへ直接送ることができます。</li>
         </ol>
 
@@ -659,7 +659,7 @@
         </p>
         <ol class="guide-list">
           <li><strong>Choose a Genre & Write Your Verse:</strong> Select from 8 world short poetry traditions and enter your lines and pen name.</li>
-          <li><strong>Pick a Seasonal or Mood Background:</strong> Choose from "🌸 Spring Sakura", "🌿 Summer Green", "🍁 Autumn Maple", "❄️ Winter Camellia", "💧 Rain Hydrangea", or "🌌 Starry Night" — you can also switch backgrounds live on the video preview screen.</li>
+          <li><strong>Pick a Seasonal or World Background:</strong> Choose from 16 backgrounds including Japanese seasons ("🌸 Spring Sakura", "🍁 Autumn Maple"), world traditions ("🕌 Persian Palace", "🌙 Arabian Night", "🏔️ Pine & Jade", "🏺 Korean Celadon", "🪶 Quill & Seal"), and modern moods ("☕ Cafe & Pen", "🌊 Ocean Shore") — switchable live on the preview screen.</li>
           <li><strong>Save, Share, or Upload to YouTube™:</strong> Click "Preview Video ➔" to generate a crisp MP4 video in ~2 seconds. Save it locally (".mp4"), share in 1 tap to X / Instagram / LINE, or upload directly to your YouTube™ channel.</li>
         </ol>
 
@@ -908,7 +908,7 @@
     sijo: {
       id: 'sijo',
       label: '時調 (Sijo)',
-      bgPath: 'shortliterature/シジョ（時調）.jpg',
+      bgPath: 'shortliterature/シジョ（時調）.jpg?v=2',
       layoutMode: 'horizontal',
       fontFamily: '"Gowun Batang", "Shippori Mincho", serif',
       fontLabel: 'Gowun Batang (韓国標準横書3行)',
@@ -1046,6 +1046,14 @@
     { key: 'winter_tsubaki', bgPath: 'shortliterature/bg_winter_tsubaki.jpg' },
     { key: 'rain_ajisai', bgPath: 'shortliterature/bg_rain_ajisai.jpg' },
     { key: 'star_night', bgPath: 'shortliterature/bg_star_night.jpg' },
+    { key: 'persian_emerald', bgPath: 'shortliterature/bg_persian_emerald.jpg' },
+    { key: 'arabian_night', bgPath: 'shortliterature/bg_arabian_night.jpg' },
+    { key: 'chinese_sansui', bgPath: 'shortliterature/bg_chinese_sansui.jpg' },
+    { key: 'chinese_plum', bgPath: 'shortliterature/bg_chinese_plum.jpg' },
+    { key: 'korean_celadon', bgPath: 'shortliterature/bg_korean_celadon.jpg' },
+    { key: 'western_quill', bgPath: 'shortliterature/bg_western_quill.jpg' },
+    { key: 'cafe_fountainpen', bgPath: 'shortliterature/bg_cafe_fountainpen.jpg' },
+    { key: 'ocean_sunset', bgPath: 'shortliterature/bg_ocean_sunset.jpg' },
     { key: 'classic_alt', bgPath: 'shortliterature/Haiku（俳句）.jpg' }
   ];
 
@@ -1158,6 +1166,14 @@
         winter_tsubaki: '❄️ 冬・雪椿',
         rain_ajisai: '💧 雨・紫陽花',
         star_night: '🌌 星月夜',
+        persian_emerald: '🕌 ペルシャ宮殿',
+        arabian_night: '🌙 アラビアン夜',
+        chinese_sansui: '🏔️ 松と翡翠',
+        chinese_plum: '🏮 紅梅と香炉',
+        korean_celadon: '🏺 高麗青磁',
+        western_quill: '🪶 羽ペンと封蝋',
+        cafe_fountainpen: '☕ 珈琲と万年筆',
+        ocean_sunset: '🌊 海辺・夕凪',
         classic_alt: '📜 別抄和紙'
       }
     },
@@ -1198,6 +1214,14 @@
         winter_tsubaki: '❄️ Winter Camellia',
         rain_ajisai: '💧 Rain Hydrangea',
         star_night: '🌌 Starry Night',
+        persian_emerald: '🕌 Persian Palace',
+        arabian_night: '🌙 Arabian Night',
+        chinese_sansui: '🏔️ Pine & Jade',
+        chinese_plum: '🏮 Red Plum',
+        korean_celadon: '🏺 Korean Celadon',
+        western_quill: '🪶 Quill & Seal',
+        cafe_fountainpen: '☕ Cafe & Pen',
+        ocean_sunset: '🌊 Ocean Shore',
         classic_alt: '📜 Classic Washi'
       }
     },
@@ -1238,6 +1262,14 @@
         winter_tsubaki: '❄️ 冬・雪椿',
         rain_ajisai: '💧 雨・紫陽花',
         star_night: '🌌 星月夜',
+        persian_emerald: '🕌 波斯宮殿',
+        arabian_night: '🌙 阿拉伯之夜',
+        chinese_sansui: '🏔️ 松與翡翠',
+        chinese_plum: '🏮 紅梅與香爐',
+        korean_celadon: '🏺 高麗青瓷',
+        western_quill: '🪶 羽毛筆與封蠟',
+        cafe_fountainpen: '☕ 咖啡與鋼筆',
+        ocean_sunset: '🌊 海邊夕照',
         classic_alt: '📜 古典和紙'
       }
     },
@@ -1278,6 +1310,14 @@
         winter_tsubaki: '❄️ 冬・雪椿',
         rain_ajisai: '💧 雨・紫阳花',
         star_night: '🌌 星月夜',
+        persian_emerald: '🕌 波斯宫殿',
+        arabian_night: '🌙 阿拉伯之夜',
+        chinese_sansui: '🏔️ 松与翡翠',
+        chinese_plum: '🏮 红梅与香炉',
+        korean_celadon: '🏺 高丽青瓷',
+        western_quill: '🪶 羽毛笔与火漆',
+        cafe_fountainpen: '☕ 咖啡与钢笔',
+        ocean_sunset: '🌊 海边夕照',
         classic_alt: '📜 古典和纸'
       }
     },
@@ -1318,6 +1358,14 @@
         winter_tsubaki: '❄️ 겨울·동백',
         rain_ajisai: '💧 비·수국',
         star_night: '🌌 별밤',
+        persian_emerald: '🕌 페르시아 궁전',
+        arabian_night: '🌙 아라비안 나이트',
+        chinese_sansui: '🏔️ 소나무와 비취',
+        chinese_plum: '🏮 홍매화와 향로',
+        korean_celadon: '🏺 고려청자·한지',
+        western_quill: '🪶 깃펜과 실링왁스',
+        cafe_fountainpen: '☕ 커피와 만년필',
+        ocean_sunset: '🌊 해변 노을',
         classic_alt: '📜 전통 한지/화지'
       }
     },
@@ -1358,6 +1406,14 @@
         winter_tsubaki: '❄️ زمستان',
         rain_ajisai: '💧 باران',
         star_night: '🌌 شب پرستاره',
+        persian_emerald: '🕌 کاخ ایرانی',
+        arabian_night: '🌙 شب‌های شرقی',
+        chinese_sansui: '🏔️ کاج و یشم',
+        chinese_plum: '🏮 شکوفه آلو',
+        korean_celadon: '🏺 سفال سلادون',
+        western_quill: '🪶 پر و مهر موم',
+        cafe_fountainpen: '☕ قهوه و خودنویس',
+        ocean_sunset: '🌊 ساحل غروب',
         classic_alt: '📜 کاغذ سنتی'
       }
     }
@@ -2137,12 +2193,53 @@
     }
   });
 
+  // 全ジャンル＆背景テーマごとの最適ハッシュタグ定義（共有・YouTube投稿時に自動付与）
+  const GENRE_HASHTAGS_MAP = {
+    haiku: '#俳句 #Haiku #自由律俳句 #詩 #ShortVerseStudio',
+    tanka: '#短歌 #tanka #現代短歌 #うたの日 #ShortVerseStudio',
+    jueju: '#絶句 #漢詩 #Jueju #ChinesePoetry #ShortVerseStudio',
+    sijo: '#時調 #시조 #Sijo #KoreanPoetry #ShortVerseStudio',
+    rubaiyat: '#ルバイヤート #رباعی #Rubaiyat #PersianPoetry #ShortVerseStudio',
+    ghazal: '#ガザル #غزل #Ghazal #Poetry #ShortVerseStudio',
+    limerick: '#リメリック #Limerick #Poetry #ShortVerseStudio',
+    epigram: '#エピグラム #Epigram #名言 #詩 #ShortVerseStudio',
+    suncatcher: '#SpaceHaiku #宇宙俳句 #Haiku #ProjectSuncatcher #ShortVerseStudio'
+  };
+
+  const BG_THEME_HASHTAGS_MAP = {
+    default: '',
+    spring_sakura: '#春 #桜 #Sakura',
+    summer_green: '#夏 #新緑 #Summer',
+    autumn_momiji: '#秋 #紅葉 #Autumn',
+    winter_tsubaki: '#冬 #雪椿 #Winter',
+    rain_ajisai: '#雨 #紫陽花 #Rain',
+    star_night: '#星月夜 #夜空 #StarryNight',
+    persian_emerald: '#PersianArt #IslamicArt #Poetry',
+    arabian_night: '#ArabianNights #Starlight #Poetry',
+    chinese_sansui: '#漢詩 #水墨 #ChineseArt',
+    chinese_plum: '#紅梅 #PlumBlossom #ChinesePoetry',
+    korean_celadon: '#韓紙 #高麗青磁 #KoreanArt',
+    western_quill: '#Quill #ClassicPoetry #Literature',
+    cafe_fountainpen: '#万年筆 #珈琲 #FountainPen',
+    ocean_sunset: '#夕凪 #海 #OceanSunset',
+    classic_alt: '#和紙 #書道'
+  };
+
+  function getAutoHashtagsString() {
+    const genreTags = GENRE_HASHTAGS_MAP[currentGenreKey] || '#Poetry #ShortVerseStudio';
+    const bgTags = BG_THEME_HASHTAGS_MAP[currentBgThemeKey] || '';
+    return bgTags ? `${genreTags} ${bgTags}` : genreTags;
+  }
+
   // 「📤 共有」ボタン：ダウンロードは行わず、OS標準の共有メニュー（X / Instagram / LINE 等）のみを1タップ目で即座に開く
   shareNowBtn.addEventListener('click', async () => {
     trackAnalyticsEvent('share_video');
     // プレビュー表示時に latestGeneratedMp4File が事前生成されているため、
     // ブラウザのユーザー操作有効期限（Transient Activation）を消費しないよう await なしで即座に navigator.share を呼ぶ
     const file = latestGeneratedMp4File || await ensureMp4FileReady();
+    const hashtags = getAutoHashtagsString();
+    const authorPart = currentAuthor ? ` — ${currentAuthor}` : '';
+    const shareText = `${currentLines.join(' ')}${authorPart}\n${hashtags}\nhttps://wasabikarashi.com/tanka/`;
     recordVideoBtn.disabled = true;
     shareNowBtn.disabled = true;
     try {
@@ -2150,16 +2247,16 @@
         await navigator.share({
           files: [file],
           title: 'Short Verse Studio',
-          text: `${currentLines.join(' ')} — ${currentAuthor}`
+          text: shareText
         });
       } else if (typeof navigator !== 'undefined' && navigator.share) {
         await navigator.share({
           title: 'Short Verse Studio',
-          text: `${currentLines.join(' ')} — ${currentAuthor}`,
+          text: shareText,
           url: window.location.href
         });
       } else {
-        const tweetText = encodeURIComponent(`${currentLines.join(' ')} — ${currentAuthor}\n#ShortVerseStudio`);
+        const tweetText = encodeURIComponent(shareText);
         window.open(`https://twitter.com/intent/tweet?text=${tweetText}`, '_blank', 'noopener');
       }
     } catch (err) {
@@ -2211,14 +2308,21 @@
       progressBox.style.display = 'block';
 
       const poemJoined = currentLines.join(' ');
-      const videoTitle = `${poemJoined.slice(0, 75)} #Shorts`;
-      const videoDescription = `${currentAuthor}\n\nShort Verse Studio (${GENRE_CONFIGS[currentGenreKey].label})\n#Shorts`;
+      const hashtags = getAutoHashtagsString();
+      const videoTitle = `${poemJoined.slice(0, 65)} #Shorts`;
+      const videoDescription = `${poemJoined}\n${currentAuthor ? `— ${currentAuthor}\n` : ''}\n${hashtags} #Shorts\nhttps://wasabikarashi.com/tanka/`;
+
+      const tagList = hashtags
+        .split(/\s+/)
+        .map((t) => t.replace(/^#/, '').trim())
+        .filter((t) => t.length > 0);
+      if (!tagList.includes('Shorts')) tagList.unshift('Shorts');
 
       const metadata = {
         snippet: {
           title: videoTitle,
           description: videoDescription,
-          tags: ["Shorts", currentGenreKey, "ShortVerseStudio"]
+          tags: tagList
         },
         status: {
           privacyStatus: youtubePrivacyStatus,
