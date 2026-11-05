@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>『三國志』巻17（魏書・張楽于張徐伝／五将軍伝）歴史地図＆原文・書き下し・現代語訳リーダー</title>
+  <title>『正史三國志』</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="陳寿『三國志』巻17（魏書・張遼・楽進・于禁・張郃・徐晃伝）の原文・書き下し文・現代語訳を、当時の州郡エリア・地点ピン・河川地図および官職・歴史用語辞典と連動して読めるインタラクティブ史料データベース。">
   <link rel="icon" href="favicon.png">
@@ -101,14 +101,18 @@
     }
     .map-column {
       flex: 1.15;
+      display: flex;
+      flex-direction: column;
       height: 100%;
       position: relative;
       border-right: 2px solid #8c6d46;
       background: #e6e2d8;
+      overflow: hidden;
     }
     #map {
+      flex: 1;
       width: 100%;
-      height: 100%;
+      min-height: 0;
       background: #e6e2d8;
     }
     .reader-panel {
@@ -119,45 +123,71 @@
       background: #faf8f5;
       overflow: hidden;
     }
-    .pager-btn {
-      background: #d4af37;
-      color: #1f1812;
-      border: 1px solid #fff176;
+    /* 地図上の巻切り替えバー ＆ 地図と本文の間の段落切り替えバー */
+    .vol-nav-bar,
+    .para-nav-bar {
+      height: 38px;
+      min-height: 38px;
+      background: #2c241b;
+      color: #f7f1e5;
+      border-bottom: 1.5px solid #8c6d46;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      padding: 0 12px;
+      z-index: 2000;
+      user-select: none;
+    }
+    .vol-nav-title {
+      font-family: "Yu Mincho", "MS PMincho", serif;
+      font-size: 0.98rem;
+      font-weight: bold;
+      letter-spacing: 0.06em;
+      color: #f7f1e5;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .slim-nav-btn {
+      background: #4e342e;
+      color: #ffd54f;
+      border: 1px solid #8c6d46;
       border-radius: 4px;
-      padding: 5px 12px;
-      font-size: 0.84rem;
+      padding: 2px 10px;
+      font-size: 0.85rem;
       font-weight: bold;
       cursor: pointer;
+      line-height: 1.3;
       transition: 0.15s;
     }
-    .pager-btn:hover:not(:disabled) {
-      background: #ffe082;
+    .slim-nav-btn:hover:not(:disabled) {
+      background: #6d4c41;
+      color: #fff;
     }
-    .pager-btn:disabled {
-      background: #6d5d4b;
-      color: #b0a392;
-      border-color: #6d5d4b;
+    .slim-nav-btn:disabled {
+      background: transparent;
+      color: #6d5d4b;
+      border-color: #4e342e;
       cursor: not-allowed;
     }
     .para-select {
-      background: #2c241b;
-      color: #fff;
-      border: 1px solid #d4af37;
+      background: #3e2723;
+      color: #f7f1e5;
+      border: 1px solid #8c6d46;
       border-radius: 4px;
-      padding: 5px 10px;
-      font-size: 0.84rem;
+      padding: 2px 10px;
+      font-size: 0.88rem;
       font-weight: bold;
       cursor: pointer;
-      max-width: 100%;
+      text-align: center;
     }
     .para-bottom-nav {
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 8px;
       margin-top: 6px;
-      padding: 12px 14px;
+      padding: 10px 14px;
       background: #eee8dc;
       border: 1px solid #d4cbb8;
       border-radius: 6px;
@@ -730,6 +760,11 @@
 
 <div class="main-container">
   <div class="map-column">
+    <div class="vol-nav-bar">
+      <button class="slim-nav-btn" disabled title="前の巻（準備中）">←</button>
+      <span class="vol-nav-title">魏書十七　張樂于張徐傳</span>
+      <button class="slim-nav-btn" disabled title="次の巻（準備中）">→</button>
+    </div>
     <div id="map" style="position:relative;">
       <div class="map-toast" id="mapToast"></div>
     </div>
@@ -776,6 +811,7 @@
   </div>
 
   <div class="reader-panel">
+    <div class="para-nav-bar" id="paraTopNav"></div>
     <div class="record-list" id="recordList"></div>
   </div>
 </div>
@@ -1106,27 +1142,19 @@
 
   // 7. 本文・裴注リーダー描画（「1段落＝本文＋裴注」ずつの切り替え表示）
   const recordListEl = document.getElementById('recordList');
+  const paraTopNavEl = document.getElementById('paraTopNav');
   let currentParaIndex = 1;
-
-  const SECTION_HEADERS = {
-    1: '📖 『三國志』魏書十七 張遼傳',
-    5: '📖 『三國志』魏書十七 樂進傳',
-    7: '📖 『三國志』魏書十七 于禁傳',
-    10: '📖 『三國志』魏書十七 張郃傳',
-    15: '📖 『三國志』魏書十七 徐晃傳',
-    20: '📖 『三國志』魏書十七 朱靈傳（附）',
-    21: '📖 『三國志』魏書十七 【評】陳寿の論評'
-  };
 
   function getSectionLabelForPara(paraIdx) {
     const rec = RECORDS.find(r => r.para_index === paraIdx);
-    if (!rec) return `第${paraIdx}段落`;
-    const shortSec = (rec.section_title || '').replace('張樂于張徐傳（', '').replace('）', '');
     const maxVis = getMaxVisibleParagraph();
-    const pubBadge = isEditModeActive()
-      ? (paraIdx <= PUBLISHED_MAX_PARA ? '✅公開済 ' : '🔧未公開 ')
-      : '';
-    return `${pubBadge}第 ${paraIdx} / ${maxVis} 段落 【${shortSec}】`;
+    if (isEditModeActive() && rec) {
+      const shortSec = (rec.section_title || '').replace('張樂于張徐傳（', '').replace('）', '');
+      const pubBadge = paraIdx <= PUBLISHED_MAX_PARA ? '✅' : '🔧';
+      return `${pubBadge} 第 ${paraIdx} / ${maxVis} （${shortSec}）`;
+    }
+    const denomLabel = PUBLISHED_MAX_PARA < TOTAL_PARAGRAPHS ? '○' : maxVis;
+    return `第 ${paraIdx} / ${denomLabel}`;
   }
 
   function goToParagraph(paraIdx) {
@@ -1155,6 +1183,27 @@
     if (currentParaIndex > maxVis) {
       currentParaIndex = maxVis;
     }
+
+    // 地図と本文の間の段落切り替えバー（← 第 1 / ○ →）を更新
+    if (paraTopNavEl) {
+      if (!showAll) {
+        const prevDisabled = currentParaIndex <= 1 ? 'disabled' : '';
+        const nextDisabled = currentParaIndex >= maxVis ? 'disabled' : '';
+        let optionsHtml = '';
+        for (let p = 1; p <= maxVis; p++) {
+          const selectedAttr = p === currentParaIndex ? 'selected' : '';
+          optionsHtml += `<option value="${p}" ${selectedAttr}>${getSectionLabelForPara(p)}</option>`;
+        }
+        paraTopNavEl.innerHTML = `
+          <button class="slim-nav-btn" onclick="changeParagraph(-1)" ${prevDisabled}>←</button>
+          <select class="para-select" onchange="goToParagraph(parseInt(this.value, 10))">${optionsHtml}</select>
+          <button class="slim-nav-btn" onclick="changeParagraph(1)" ${nextDisabled}>→</button>
+        `;
+      } else {
+        paraTopNavEl.innerHTML = `<span class="vol-nav-title">全段落連続表示（第 1 〜 ${maxVis} 段落）</span>`;
+      }
+    }
+
     recordListEl.innerHTML = '';
 
     // 読書履歴スタックがある場合は最上部に「元の場所に戻る」ボタンを表示
@@ -1173,25 +1222,7 @@
       ? visibleRecs
       : visibleRecs.filter(rec => rec.para_index === currentParaIndex);
 
-    let lastRenderedPara = -1;
     targetRecords.forEach(rec => {
-      if (rec.para_index !== lastRenderedPara) {
-        lastRenderedPara = rec.para_index;
-        let headerText = SECTION_HEADERS[rec.para_index];
-        if (!headerText && !showAll) {
-          const secKeys = Object.keys(SECTION_HEADERS).map(Number).sort((a, b) => a - b);
-          for (const k of secKeys) {
-            if (k <= rec.para_index) headerText = SECTION_HEADERS[k];
-          }
-        }
-        if (headerText) {
-          const div = document.createElement('div');
-          div.className = 'section-divider';
-          div.innerHTML = `<span>${headerText}</span>`;
-          recordListEl.appendChild(div);
-        }
-      }
-
       const isPei = rec.type === '裴注';
       const card = document.createElement('div');
       card.className = `record-card ${isPei ? 'pei-note' : 'main-text'}`;
@@ -1215,31 +1246,12 @@
       recordListEl.appendChild(card);
     });
 
-    // 本文末尾のナビゲーション＆索引バー
+    // 本文末尾の索引ボタンバー
     const bottomNav = document.createElement('div');
     bottomNav.className = 'para-bottom-nav';
-    if (!showAll && (maxVis > 1 || isEditModeActive())) {
-      const prevDisabled = currentParaIndex <= 1 ? 'disabled' : '';
-      const nextDisabled = currentParaIndex >= maxVis ? 'disabled' : '';
-      let optionsHtml = '';
-      for (let p = 1; p <= maxVis; p++) {
-        const selectedAttr = p === currentParaIndex ? 'selected' : '';
-        optionsHtml += `<option value="${p}" ${selectedAttr}>${getSectionLabelForPara(p)}</option>`;
-      }
-      bottomNav.innerHTML = `
-        <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
-          <button class="pager-btn" onclick="changeParagraph(-1)" ${prevDisabled}>◀ 前段</button>
-          <select class="para-select" onchange="goToParagraph(parseInt(this.value, 10))">${optionsHtml}</select>
-          <button class="pager-btn" onclick="changeParagraph(1)" ${nextDisabled}>次段 ▶</button>
-        </div>
-        <button class="nav-btn" onclick="openTocModal()">📑 登場人物・地名・官職 索引</button>
-      `;
-    } else {
-      bottomNav.style.justifyContent = 'center';
-      bottomNav.innerHTML = `
-        <button class="nav-btn" onclick="openTocModal()">📑 登場人物・地名・官職 索引を開く</button>
-      `;
-    }
+    bottomNav.innerHTML = `
+      <button class="nav-btn" onclick="openTocModal()">📑 登場人物・地名・官職 索引</button>
+    `;
     recordListEl.appendChild(bottomNav);
 
     // 本文の一番下に配置する Google AdSense 広告スペース
