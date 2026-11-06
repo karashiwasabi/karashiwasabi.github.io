@@ -822,6 +822,12 @@
   const INTRO_SILENCE_MS = 1400;
   const LINE_APPEAR_INTERVAL_MS = 2000;
   const FADE_DURATION_MS = 1000;
+  const LINE_WRITE_SPAN_MS = 1350; // 1行の先頭文字から末尾文字まで順番に書き進める時間
+  const AUTHOR_WRITE_SPAN_MS = 700; // 作者名を先頭から順番に書き進める時間
+  const CHAR_FADE_DURATION_MS = 450; // 各文字が筆致のように浮かび上がるフェード時間
+  const RTL_CLIP_FEATHER_STEPS = 8; // アラビア・ペルシャ文字(RTL)を右から左へ滑らかに書き進めるグラデーション分割数
+  const RTL_CLIP_FEATHER_WIDTH_PX = 48; // RTL書き進め先端のフェザー幅
+  const BG_IMAGE_LOAD_TIMEOUT_MS = 4000; // 背景画像のロード完了待機上限
   const OUTRO_HOLD_MS = 3000;
 
   // 動画エンコード品質定数（スマホでも固まらず超高速・高画質に処理できる設定）
@@ -1116,6 +1122,19 @@
     } catch (e) {
       console.warn("Font preload warning:", e);
     }
+  }
+
+  // 初回アクセス時や通信が細い環境でも背景画像が確実にロードされてから動画生成・描画を行う待機関数
+  async function ensureBgImageLoaded(bgPath) {
+    if (!bgPath) return;
+    const img = preloadBgImage(bgPath);
+    if (!img || (img.complete && img.naturalWidth > 0)) return;
+    await new Promise((resolve) => {
+      const done = () => resolve();
+      img.addEventListener('load', done, { once: true });
+      img.addEventListener('error', done, { once: true });
+      setTimeout(done, BG_IMAGE_LOAD_TIMEOUT_MS);
+    });
   }
 
   const goldParticles = Array.from({ length: GOLD_PARTICLE_COUNT }, (_, i) => ({
@@ -1639,6 +1658,7 @@
       recordVideoBtn.disabled = true;
       shareNowBtn.disabled = true;
       try {
+        await ensureBgImageLoaded(getEffectiveConfig().bgPath);
         await ensureMp4FileReady();
       } finally {
         uploadBtn.disabled = false;
@@ -1819,6 +1839,7 @@
     shareNowBtn.disabled = true;
     try {
       await ensureGenreFontsLoaded(config);
+      await ensureBgImageLoaded(getEffectiveConfig().bgPath);
       await ensureMp4FileReady();
     } finally {
       uploadBtn.disabled = false;
@@ -1867,67 +1888,119 @@
 
     if (config.layoutMode === 'vertical') {
       // 【縦書きジャンル：俳句・短歌・絶句】
+      // 全行の中で最も文字数が多い行に合わせて本文全体のフォントサイズを統一し、行ごとの文字サイズ不揃いを防ぐ
+      const unifiedVerticalFontSize = computeUnifiedVerticalFontSize(currentLines, config);
       // 自由律俳句（1行のみ）など入力行数が少ない場合でも紙面の左右中央に美しく配置されるようX座標を自動補正する
       const totalCols = config.lineXCoords.length;
       const activeCols = Math.max(1, currentLines.length);
       const centerOffsetX = (config.lineXCoords[totalCols - 1] - config.lineXCoords[activeCols - 1]) / 2;
       for (let i = 0; i < currentLines.length; i++) {
-        const alpha = getFadeAlpha(textElapsed, i * LINE_APPEAR_INTERVAL_MS);
-        if (alpha > 0) {
+        const lineElapsedMs = textElapsed - (i * LINE_APPEAR_INTERVAL_MS);
+        if (lineElapsedMs > 0) {
           const x = config.lineXCoords[i] + centerOffsetX;
           const startY = PAPER_SAFE_TOP_Y_PX + config.lineIndentsY[i];
-          drawSafeVerticalLine(currentLines[i], x, startY, config, alpha);
+          drawSafeVerticalLine(currentLines[i], x, startY, config, lineElapsedMs, unifiedVerticalFontSize);
         }
       }
       if (currentAuthor) {
-        const authorAlpha = getFadeAlpha(textElapsed, currentLines.length * LINE_APPEAR_INTERVAL_MS);
-        if (authorAlpha > 0) {
-          drawSafeVerticalAuthor(currentAuthor, config.authorX, config, authorAlpha);
+        const authorElapsedMs = textElapsed - (currentLines.length * LINE_APPEAR_INTERVAL_MS);
+        if (authorElapsedMs > 0) {
+          drawSafeVerticalAuthor(currentAuthor, config.authorX, config, authorElapsedMs);
         }
       }
     } else {
-      // 【横書きジャンル：時調・ルバイヤート(RTL対応)・ガザル(RTL対応)・リメリック・エピグラム】
+      // 【横書きジャンル：時調・ルバイヤート(RTL対応)・ガザル(RTL対応)・リメリック・エピグラム・宇宙俳句】
+      // 全行の中で最も横幅が長い行に合わせて本文全体のフォントサイズを統一する（時調などで2行目だけ大きくなる現象を防止）
+      const unifiedHorizontalFontSize = computeUnifiedHorizontalFontSize(currentLines, config);
       // 4行枠に2行だけ入力された場合などでも紙面の上下中央に美しく収まるよう開始Y座標を自動補正する
       const missingLineCount = Math.max(0, config.fields.length - currentLines.length);
       const dynamicStartY = config.startY + (missingLineCount * config.linePitchY) / 2;
       for (let i = 0; i < currentLines.length; i++) {
-        const alpha = getFadeAlpha(textElapsed, i * LINE_APPEAR_INTERVAL_MS);
-        if (alpha > 0) {
+        const lineElapsedMs = textElapsed - (i * LINE_APPEAR_INTERVAL_MS);
+        if (lineElapsedMs > 0) {
           const y = dynamicStartY + (i * config.linePitchY);
-          drawSafeHorizontalLine(currentLines[i], y, config, alpha);
+          drawSafeHorizontalLine(currentLines[i], y, config, lineElapsedMs, unifiedHorizontalFontSize);
         }
       }
       if (currentAuthor) {
-        const authorAlpha = getFadeAlpha(textElapsed, currentLines.length * LINE_APPEAR_INTERVAL_MS);
-        if (authorAlpha > 0) {
+        const authorElapsedMs = textElapsed - (currentLines.length * LINE_APPEAR_INTERVAL_MS);
+        if (authorElapsedMs > 0) {
           const authorY = (config.layoutMode === 'horizontal_suncatcher') ? SUNCATCHER_AUTHOR_Y_PX : HORIZONTAL_AUTHOR_Y_PX;
-          drawSafeHorizontalAuthor(currentAuthor, authorY, config, authorAlpha);
+          drawSafeHorizontalAuthor(currentAuthor, authorY, config, authorElapsedMs);
         }
       }
     }
   }
 
-  function getFadeAlpha(elapsed, startTimeMs) {
-    if (elapsed < startTimeMs) return 0;
-    const progress = (elapsed - startTimeMs) / FADE_DURATION_MS;
-    return Math.min(1, Math.max(0, progress));
+  // 1行内の各文字が先頭から順番に筆致のように浮かび上がるアルファ値（0.0〜1.0）を計算する
+  function getCharWriteAlpha(lineElapsedMs, charIndex, totalChars, writeSpanMs) {
+    if (lineElapsedMs <= 0) return 0;
+    const effectiveSpanMs = totalChars > 1 ? writeSpanMs : 0;
+    const charStartDelayMs = totalChars > 1
+      ? (charIndex / (totalChars - 1)) * effectiveSpanMs
+      : 0;
+    const charElapsedMs = lineElapsedMs - charStartDelayMs;
+    if (charElapsedMs <= 0) return 0;
+    return Math.min(1, charElapsedMs / CHAR_FADE_DURATION_MS);
   }
 
-  // 縦書き本文1行を紙面の安全領域内に絶対収めて描画する
-  function drawSafeVerticalLine(text, x, startY, config, alpha) {
+  // 縦書き全行で統一されたフォントサイズを算出する
+  function computeUnifiedVerticalFontSize(lines, config) {
+    let unifiedFontSize = config.baseFontSize;
+    for (let i = 0; i < lines.length; i++) {
+      const chars = Array.from(lines[i] || '');
+      const charCount = chars.length;
+      const indentY = (config.lineIndentsY && config.lineIndentsY[i]) ? config.lineIndentsY[i] : 0;
+      const startY = PAPER_SAFE_TOP_Y_PX + indentY;
+      const availableHeight = PAPER_SAFE_BOTTOM_Y_PX - startY;
+      if (charCount > 1 && (charCount - 1) * config.baseCharSpacing > availableHeight) {
+        const neededSpacing = Math.floor(availableHeight / (charCount - 1));
+        const neededFontSize = Math.max(VERTICAL_MIN_FONT_SIZE_PX, Math.floor(neededSpacing * VERTICAL_FONT_SPACING_RATIO));
+        unifiedFontSize = Math.min(unifiedFontSize, neededFontSize);
+      }
+    }
+    return unifiedFontSize;
+  }
+
+  // 横書き全行で統一されたフォントサイズを算出する（全行を同じ文字サイズに揃える）
+  function computeUnifiedHorizontalFontSize(lines, config) {
+    const isLimerick = (config.layoutMode === 'horizontal_limerick');
+    const isSuncatcher = (config.layoutMode === 'horizontal_suncatcher');
+    const maxWidth = isSuncatcher
+      ? SUNCATCHER_SAFE_WIDTH_PX
+      : (isLimerick ? LIMERICK_SAFE_WIDTH_PX : PAPER_SAFE_WIDTH_PX);
+
+    let unifiedFontSize = config.baseFontSize;
+    ctx.save();
+    for (const line of lines) {
+      if (!line) continue;
+      ctx.font = `${config.fontWeight} ${unifiedFontSize}px ${config.fontFamily}`;
+      let measuredWidth = ctx.measureText(line).width;
+      while (measuredWidth > maxWidth && unifiedFontSize > HORIZONTAL_MIN_FONT_SIZE_PX) {
+        unifiedFontSize -= HORIZONTAL_FONT_SHRINK_STEP_PX;
+        ctx.font = `${config.fontWeight} ${unifiedFontSize}px ${config.fontFamily}`;
+        measuredWidth = ctx.measureText(line).width;
+      }
+    }
+    ctx.restore();
+    return unifiedFontSize;
+  }
+
+  // 縦書き本文1行を上から下へ1文字ずつ順番に書き進めながら紙面の安全領域内に描画する
+  function drawSafeVerticalLine(text, x, startY, config, lineElapsedMs, unifiedFontSize) {
     if (!text) return;
-    const charCount = text.length;
+    const chars = Array.from(text);
+    const charCount = chars.length;
     const availableHeight = PAPER_SAFE_BOTTOM_Y_PX - startY;
 
-    let spacing = config.baseCharSpacing;
-    let fontSize = config.baseFontSize;
+    const fontSize = unifiedFontSize || config.baseFontSize;
+    const proportionalSpacing = Math.round(config.baseCharSpacing * (fontSize / config.baseFontSize));
+    let spacing = proportionalSpacing;
     if (charCount > 1 && (charCount - 1) * spacing > availableHeight) {
       spacing = Math.floor(availableHeight / (charCount - 1));
-      fontSize = Math.max(VERTICAL_MIN_FONT_SIZE_PX, Math.floor(spacing * VERTICAL_FONT_SPACING_RATIO));
     }
 
     ctx.save();
-    ctx.globalAlpha = alpha;
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
     ctx.font = `${config.fontWeight} ${fontSize}px ${config.fontFamily}`;
@@ -1936,16 +2009,21 @@
     ctx.textBaseline = 'middle';
 
     for (let i = 0; i < charCount; i++) {
-      const y = startY + (i * spacing);
-      ctx.fillText(text[i], x, y);
+      const charAlpha = getCharWriteAlpha(lineElapsedMs, i, charCount, LINE_WRITE_SPAN_MS);
+      if (charAlpha > 0) {
+        ctx.globalAlpha = charAlpha;
+        const y = startY + (i * spacing);
+        ctx.fillText(chars[i], x, y);
+      }
     }
     ctx.restore();
   }
 
-  // 縦書き雅号を紙面左下の安全領域に下揃え基準で描画する
-  function drawSafeVerticalAuthor(authorText, x, config, alpha) {
+  // 縦書き雅号を上から下へ1文字ずつ順番に紙面左下の安全領域に描画する
+  function drawSafeVerticalAuthor(authorText, x, config, authorElapsedMs) {
     if (!authorText) return;
-    const charCount = authorText.length;
+    const chars = Array.from(authorText);
+    const charCount = chars.length;
 
     let spacing = VERTICAL_AUTHOR_BASE_SPACING_PX;
     let fontSize = VERTICAL_AUTHOR_BASE_FONT_SIZE_PX;
@@ -1958,21 +2036,24 @@
     const startY = (PAPER_SAFE_BOTTOM_Y_PX - VERTICAL_AUTHOR_BOTTOM_OFFSET_PX) - totalHeight;
 
     ctx.save();
-    ctx.globalAlpha = alpha;
     ctx.font = `${config.fontWeight} ${fontSize}px ${config.fontFamily}`;
     ctx.fillStyle = config.authorColor;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
     for (let i = 0; i < charCount; i++) {
-      const y = startY + (i * spacing);
-      ctx.fillText(authorText[i], x, y);
+      const charAlpha = getCharWriteAlpha(authorElapsedMs, i, charCount, AUTHOR_WRITE_SPAN_MS);
+      if (charAlpha > 0) {
+        ctx.globalAlpha = charAlpha;
+        const y = startY + (i * spacing);
+        ctx.fillText(chars[i], x, y);
+      }
     }
     ctx.restore();
   }
 
-  // 横書き本文1行（LTRおよびイスラム圏のアラビア・ペルシャ文字RTL、宇宙ホログラムHUDに完全対応し、枠内に絶対収める）
-  function drawSafeHorizontalLine(text, y, config, alpha) {
+  // 横書き本文1行（全行統一フォントサイズ＋左から右へ1文字ずつ実際に書いているように現れる演出、アラビア・ペルシャ文字は右から左へ滑らかに表示）
+  function drawSafeHorizontalLine(text, y, config, lineElapsedMs, unifiedFontSize) {
     if (!text) return;
     const isLimerick = (config.layoutMode === 'horizontal_limerick');
     const isSuncatcher = (config.layoutMode === 'horizontal_suncatcher');
@@ -1983,39 +2064,84 @@
       ? SUNCATCHER_SAFE_WIDTH_PX
       : (isLimerick ? LIMERICK_SAFE_WIDTH_PX : PAPER_SAFE_WIDTH_PX);
     const isRtlText = RTL_CHAR_REGEX.test(text);
+    const fontSize = unifiedFontSize || config.baseFontSize;
 
     ctx.save();
-    ctx.globalAlpha = alpha;
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
     ctx.fillStyle = config.textColor;
     ctx.textBaseline = 'middle';
+    ctx.font = `${config.fontWeight} ${fontSize}px ${config.fontFamily}`;
 
     if (isSuncatcher) {
       ctx.shadowColor = '#00e5ff';
       ctx.shadowBlur = SUNCATCHER_GLOW_BLUR_PX;
     }
 
-    // アラビア語・ペルシャ語が含まれる場合はCanvasの書字方向をRTLに設定し、リガチャ（文字連結）と語順を正しく保ったまま紙面中央に配置
-    ctx.direction = isRtlText ? 'rtl' : 'ltr';
-    ctx.textAlign = 'center';
+    const rawWidth = ctx.measureText(text).width;
+    const scaleX = rawWidth > maxWidth ? (maxWidth / rawWidth) : 1;
+    const renderedWidth = rawWidth * scaleX;
 
-    // 紙面幅（maxWidth）をはみ出さないようにフォントサイズを自動縮小
-    let fontSize = config.baseFontSize;
-    ctx.font = `${config.fontWeight} ${fontSize}px ${config.fontFamily}`;
-    let measuredWidth = ctx.measureText(text).width;
-    while (measuredWidth > maxWidth && fontSize > HORIZONTAL_MIN_FONT_SIZE_PX) {
-      fontSize -= HORIZONTAL_FONT_SHRINK_STEP_PX;
-      ctx.font = `${config.fontWeight} ${fontSize}px ${config.fontFamily}`;
-      measuredWidth = ctx.measureText(text).width;
+    if (isRtlText) {
+      // アラビア語・ペルシャ語（RTL）は文字連結（リガチャ）を一切崩さないよう、右端から左端へ滑らかに書き進める
+      ctx.direction = 'rtl';
+      ctx.textAlign = 'center';
+      const totalWriteMs = LINE_WRITE_SPAN_MS + CHAR_FADE_DURATION_MS;
+      const progress = Math.min(1, Math.max(0, lineElapsedMs / totalWriteMs));
+      const rightEdgeX = centerX + (renderedWidth / 2) + RTL_CLIP_FEATHER_WIDTH_PX;
+      const leftEdgeX = centerX - (renderedWidth / 2) - RTL_CLIP_FEATHER_WIDTH_PX;
+      const currentRevealLeftX = rightEdgeX - (rightEdgeX - leftEdgeX) * progress;
+
+      if (progress >= 1) {
+        ctx.globalAlpha = 1;
+        ctx.fillText(text, centerX, y, maxWidth);
+      } else {
+        for (let s = 0; s < RTL_CLIP_FEATHER_STEPS; s++) {
+          const stepStartX = currentRevealLeftX + (s / RTL_CLIP_FEATHER_STEPS) * RTL_CLIP_FEATHER_WIDTH_PX;
+          const stepEndX = (s === RTL_CLIP_FEATHER_STEPS - 1)
+            ? rightEdgeX
+            : currentRevealLeftX + ((s + 1) / RTL_CLIP_FEATHER_STEPS) * RTL_CLIP_FEATHER_WIDTH_PX;
+          if (stepEndX <= stepStartX) continue;
+          ctx.save();
+          ctx.beginPath();
+          ctx.rect(stepStartX, y - fontSize, stepEndX - stepStartX, fontSize * 2);
+          ctx.clip();
+          ctx.globalAlpha = (s + 1) / RTL_CLIP_FEATHER_STEPS;
+          ctx.fillText(text, centerX, y, maxWidth);
+          ctx.restore();
+        }
+      }
+    } else {
+      // 韓国語（時調）・英語・日本語等の横書き（LTR）：中央揃えの最終位置を保ったまま、左から右へ1文字ずつ順番に浮かび上がる
+      ctx.direction = 'ltr';
+      ctx.textAlign = 'left';
+      const chars = Array.from(text);
+      const charCount = chars.length;
+      const lineLeftX = centerX - (renderedWidth / 2);
+
+      for (let i = 0; i < charCount; i++) {
+        const charAlpha = getCharWriteAlpha(lineElapsedMs, i, charCount, LINE_WRITE_SPAN_MS);
+        if (charAlpha <= 0) continue;
+        const prefixText = chars.slice(0, i).join('');
+        const charOffsetX = ctx.measureText(prefixText).width * scaleX;
+        ctx.globalAlpha = charAlpha;
+        if (scaleX < 1) {
+          ctx.save();
+          ctx.translate(lineLeftX + charOffsetX, y);
+          ctx.scale(scaleX, 1);
+          ctx.fillText(chars[i], 0, 0);
+          ctx.restore();
+        } else {
+          ctx.fillText(chars[i], lineLeftX + charOffsetX, y);
+        }
+      }
     }
 
-    ctx.fillText(text, centerX, y, maxWidth);
     ctx.restore();
   }
 
-  // 横書き作者名を紙面下部に描画する（ペルシャ文字RTLや韓国・時調では欧文ダッシュを付けず原典表記を尊重）
-  function drawSafeHorizontalAuthor(authorText, y, config, alpha) {
+  // 横書き作者名を紙面下部に左から右へ（RTLは右から左へ）順番に書き進めて描画する
+  function drawSafeHorizontalAuthor(authorText, y, config, authorElapsedMs) {
     if (!authorText) return;
     const isLimerick = (config.layoutMode === 'horizontal_limerick');
     const isSuncatcher = (config.layoutMode === 'horizontal_suncatcher');
@@ -2032,9 +2158,6 @@
       : (useWesternDash ? `— ${authorText}` : authorText);
 
     ctx.save();
-    ctx.globalAlpha = alpha;
-    ctx.direction = isRtlText ? 'rtl' : 'ltr';
-    ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = config.authorColor;
     if (isSuncatcher) {
@@ -2042,7 +2165,33 @@
       ctx.shadowBlur = SUNCATCHER_AUTHOR_GLOW_BLUR_PX;
     }
     ctx.font = `${config.fontWeight} ${HORIZONTAL_AUTHOR_FONT_SIZE_PX}px ${config.fontFamily}`;
-    ctx.fillText(displayAuthor, centerX, y, maxWidth);
+
+    const rawWidth = ctx.measureText(displayAuthor).width;
+    const scaleX = rawWidth > maxWidth ? (maxWidth / rawWidth) : 1;
+    const renderedWidth = rawWidth * scaleX;
+
+    if (isRtlText) {
+      ctx.direction = 'rtl';
+      ctx.textAlign = 'center';
+      const progress = Math.min(1, Math.max(0, authorElapsedMs / (AUTHOR_WRITE_SPAN_MS + CHAR_FADE_DURATION_MS)));
+      ctx.globalAlpha = progress;
+      ctx.fillText(displayAuthor, centerX, y, maxWidth);
+    } else {
+      ctx.direction = 'ltr';
+      ctx.textAlign = 'left';
+      const chars = Array.from(displayAuthor);
+      const charCount = chars.length;
+      const lineLeftX = centerX - (renderedWidth / 2);
+
+      for (let i = 0; i < charCount; i++) {
+        const charAlpha = getCharWriteAlpha(authorElapsedMs, i, charCount, AUTHOR_WRITE_SPAN_MS);
+        if (charAlpha <= 0) continue;
+        const prefixText = chars.slice(0, i).join('');
+        const charOffsetX = ctx.measureText(prefixText).width * scaleX;
+        ctx.globalAlpha = charAlpha;
+        ctx.fillText(chars[i], lineLeftX + charOffsetX, y);
+      }
+    }
     ctx.restore();
   }
 
@@ -2088,6 +2237,7 @@
     try {
       const config = GENRE_CONFIGS[currentGenreKey];
       await ensureGenreFontsLoaded(config);
+      await ensureBgImageLoaded(getEffectiveConfig().bgPath);
 
       const totalCycleMs = getTotalCycleMs();
       const totalFrames = Math.ceil((totalCycleMs / MS_PER_SECOND) * VIDEO_CAPTURE_FPS);
