@@ -355,7 +355,7 @@
       box-shadow: none;
     }
 
-    /* 統一モーダル（左半分の地図カラム上にのみ表示し、右側の本文には一切かぶらない） */
+    /* 統一モーダル（PC・スマホともに地図カラム上にのみ表示し、本文には一切かぶらない） */
     .modal-overlay {
       position: absolute;
       inset: 0;
@@ -364,13 +364,13 @@
       align-items: center;
       justify-content: center;
       z-index: 6000;
-      padding: 16px;
+      padding: 12px;
     }
     .modal-box {
       background: #fffdf9;
       width: 96%;
       max-width: 720px;
-      max-height: 92%;
+      max-height: 94%;
       border-radius: 8px;
       border: 2px solid #8c6d46;
       display: flex;
@@ -381,52 +381,95 @@
     .modal-header {
       background: #2c241b;
       color: #fff;
-      padding: 12px 18px;
+      padding: 9px 14px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
     }
-    .modal-header h3 { font-size: 1.02rem; }
+    .modal-header h3 {
+      font-size: 0.96rem;
+      line-height: 1.3;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
     .modal-close {
       background: transparent;
       color: #fff;
       border: 1px solid #aaa;
       border-radius: 4px;
-      padding: 3px 10px;
+      padding: 2px 9px;
       cursor: pointer;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
     .modal-close:hover { background: #c62828; border-color: #c62828; }
     .modal-body {
-      padding: 16px 18px;
+      padding: 12px 14px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 12px;
-    }
-    .mapping-alert-box {
-      background: #fff8e1;
-      border-left: 4px solid #f57f17;
-      padding: 9px 12px;
-      border-radius: 4px;
-      font-size: 0.86rem;
-      color: #4e342e;
+      gap: 8px;
+      -webkit-overflow-scrolling: touch;
     }
     .wiki-standard-box {
       background: #f3f6f9;
       border-left: 4px solid #1565c0;
-      padding: 12px 14px;
+      padding: 10px 12px;
       border-radius: 4px;
-      line-height: 1.6;
-      font-size: 0.9rem;
+      line-height: 1.55;
+      font-size: 0.88rem;
     }
     .ai-special-box {
       background: #f8f4fc;
       border-left: 4px solid #6a1b9a;
-      padding: 11px 14px;
+      padding: 10px 12px;
       border-radius: 4px;
-      line-height: 1.6;
-      font-size: 0.89rem;
+      line-height: 1.55;
+      font-size: 0.88rem;
+    }
+    .occurrence-details {
+      border: 1px solid #d4cbb8;
+      border-radius: 6px;
+      background: #f7f3eb;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .occurrence-summary {
+      padding: 7px 12px;
+      font-size: 0.86rem;
+      font-weight: bold;
+      color: #3d2f1d;
+      cursor: pointer;
+      user-select: none;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .occurrence-summary::-webkit-details-marker { display: none; }
+    .occurrence-summary::before {
+      content: '▶';
+      font-size: 0.72rem;
+      color: #8c6d46;
+      transition: transform 0.15s;
+    }
+    .occurrence-details[open] .occurrence-summary::before {
+      transform: rotate(90deg);
+    }
+    .occurrence-details[open] .occurrence-summary {
+      border-bottom: 1px solid #d4cbb8;
+      background: #efe9dc;
+    }
+    .occurrence-list {
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: #fffdf9;
     }
     .wiki-link-btn {
       display: inline-block;
@@ -743,9 +786,39 @@
         overflow-y: auto;
       }
       .modal-overlay {
-        position: fixed;
+        position: absolute;
         inset: 0;
-        z-index: 9500;
+        padding: 4px;
+        z-index: 6000;
+      }
+      .modal-box {
+        width: 99%;
+        max-height: 98%;
+        border-radius: 6px;
+      }
+      .modal-header {
+        padding: 6px 10px;
+      }
+      .modal-header h3 {
+        font-size: 0.84rem;
+      }
+      .modal-close {
+        padding: 2px 7px;
+        font-size: 0.76rem;
+      }
+      .modal-body {
+        padding: 8px 10px;
+        gap: 6px;
+      }
+      .wiki-standard-box,
+      .ai-special-box {
+        padding: 7px 10px;
+        font-size: 0.81rem;
+        line-height: 1.48;
+      }
+      .occurrence-summary {
+        padding: 5px 10px;
+        font-size: 0.8rem;
       }
       .feedback-tray {
         width: calc(100% - 16px);
@@ -1331,10 +1404,6 @@
     document.getElementById('modalTitle').textContent = `${headerTitle} （出現：${matched.length} 件）`;
     const bodyEl = document.getElementById('modalBody');
 
-    const mappingHtml = mappingNote
-      ? `<div class="mapping-alert-box">🔗 <strong>【特別キーワード紐づけ明示】</strong> ${mappingNote}</div>`
-      : '';
-
     const specialDescHtml = specialGlossaryDesc
       ? `<div class="ai-special-box">
            <div style="font-weight:bold; color:#4a148c; margin-bottom:4px;">📖 【語句・故事の意味解説】</div>
@@ -1349,16 +1418,21 @@
       : '';
 
     bodyEl.innerHTML = `
-      ${mappingHtml}
       ${specialDescHtml}
       ${wikiBoxHtml}
-      <h4 style="color:#3d2f1d; margin-top:4px;">📖 出現箇所一覧（全 ${matched.length} 件）</h4>
+      <details class="occurrence-details">
+        <summary class="occurrence-summary">📖 出現箇所一覧（全 ${matched.length} 件）</summary>
+        <div class="occurrence-list" id="modalOccurrenceList"></div>
+      </details>
     `;
 
     if (wikiTargetTitle) {
       fetchWikipediaSummary(wikiTargetTitle, 'unifiedWikiBox');
     }
-    appendOccurrencesToModal(bodyEl, matched, searchTerms);
+    const occListEl = document.getElementById('modalOccurrenceList');
+    if (occListEl) {
+      appendOccurrencesToModal(occListEl, matched, searchTerms);
+    }
     document.getElementById('modalOverlay').style.display = 'flex';
   }
 
