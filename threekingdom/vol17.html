@@ -894,18 +894,11 @@
     maxNativeZoom: 8,
     maxZoom: 13
   });
-  const blankPositronLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; OpenStreetMap &copy; CARTO',
-    maxNativeZoom: 18,
-    maxZoom: 18
-  });
-
   physicalLayer.addTo(map);
 
   L.control.layers({
     "① 自然地形図（山脈と川のみ・道路なし）": physicalLayer,
-    "② 陰影白地図（山の凹凸のみ・詳細ズーム可）": shadedReliefLayer,
-    "③ シンプル白地図（水系と輪郭のみ）": blankPositronLayer
+    "② 陰影白地図（山の凹凸のみ・詳細ズーム可）": shadedReliefLayer
   }).addTo(map);
 
   // 2. 山脈・大河
