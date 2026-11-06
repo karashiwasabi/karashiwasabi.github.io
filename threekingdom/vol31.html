@@ -1,0 +1,1990 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>『正史三國志』</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="陳寿『三國志』巻31（蜀書一・劉二牧伝：劉焉・劉璋）の原文・書き下し文・現代語訳を、当時の州郡エリア・地点ピン・河川地図および官職・歴史用語辞典と連動して読めるインタラクティブ史料データベース。">
+  <link rel="icon" href="favicon.png">
+  <!-- Google Analytics (G-310XSTTWSM) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-310XSTTWSM"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-310XSTTWSM');
+  </script>
+  <!-- Google AdSense (ca-pub-4382223240782332) -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4382223240782332" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      height: 100dvh;
+      background: #f5f5f0;
+      color: #222;
+      overflow: hidden;
+    }
+    .nav-btn {
+      background: #8c6d46;
+      color: #fff;
+      border: 1px solid #d4af37;
+      border-radius: 4px;
+      padding: 5px 12px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.15s;
+    }
+    .nav-btn:hover { background: #a88457; }
+    .back-btn {
+      background: #c62828;
+      color: #fff;
+      border: 1px solid #ff8a80;
+      border-radius: 4px;
+      padding: 6px 12px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      font-weight: bold;
+      display: none;
+      margin-bottom: 4px;
+      align-self: flex-start;
+    }
+
+    /* 文中インラインリンク（4分類） */
+    .inline-place {
+      border-bottom: 1.5px solid #2e7d32;
+      color: #1b5e20;
+      cursor: pointer;
+      padding-bottom: 1px;
+      transition: background 0.15s;
+    }
+    .inline-place:hover { background: #c8e6c9; }
+    .inline-person {
+      border-bottom: 1.5px dotted #d84315;
+      color: #bf360c;
+      cursor: pointer;
+      padding-bottom: 1px;
+      transition: background 0.15s;
+    }
+    .inline-person:hover { background: #ffe0b2; }
+    .inline-office {
+      border-bottom: 1.5px dashed #1565c0;
+      color: #0d47a1;
+      cursor: pointer;
+      padding-bottom: 1px;
+      transition: background 0.15s;
+    }
+    .inline-office:hover { background: #bbdefb; }
+    .inline-special {
+      border-bottom: 1.5px dotted #6a1b9a;
+      color: #4a148c;
+      cursor: pointer;
+      padding-bottom: 1px;
+      transition: background 0.15s;
+    }
+    .inline-special:hover { background: #e1bee7; }
+
+    /* メイン分割コンテナ（PC：左右分割100% ／ スマホ：上下分割100%） */
+    .main-container {
+      display: flex;
+      flex-direction: row;
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+    .map-column {
+      flex: 1.15;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      position: relative;
+      border-right: 2px solid #8c6d46;
+      background: #e6e2d8;
+      overflow: hidden;
+    }
+    #map {
+      flex: 1;
+      width: 100%;
+      min-height: 0;
+      background: #e6e2d8;
+    }
+    .reader-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      background: #faf8f5;
+      overflow: hidden;
+    }
+    /* 地図上の巻切り替えバー ＆ 地図と本文の間の段落切り替えバー */
+    .vol-nav-bar,
+    .para-nav-bar {
+      height: 38px;
+      min-height: 38px;
+      background: #2c241b;
+      color: #f7f1e5;
+      border-bottom: 1.5px solid #8c6d46;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      padding: 0 12px;
+      z-index: 2000;
+      user-select: none;
+    }
+    .vol-nav-title {
+      font-family: "Yu Mincho", "MS PMincho", serif;
+      font-size: 0.98rem;
+      font-weight: bold;
+      letter-spacing: 0.06em;
+      color: #f7f1e5;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .slim-nav-btn {
+      background: #4e342e;
+      color: #ffd54f;
+      border: 1px solid #8c6d46;
+      border-radius: 4px;
+      padding: 2px 10px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      cursor: pointer;
+      line-height: 1.3;
+      transition: 0.15s;
+    }
+    .slim-nav-btn:hover:not(:disabled) {
+      background: #6d4c41;
+      color: #fff;
+    }
+    .slim-nav-btn:disabled {
+      background: transparent;
+      color: #6d5d4b;
+      border-color: #4e342e;
+      cursor: not-allowed;
+    }
+    .para-select {
+      background: #3e2723;
+      color: #f7f1e5;
+      border: 1px solid #8c6d46;
+      border-radius: 4px;
+      padding: 2px 10px;
+      font-size: 0.88rem;
+      font-weight: bold;
+      cursor: pointer;
+      text-align: center;
+    }
+    .para-bottom-nav {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 6px;
+      padding: 10px 14px;
+      background: #eee8dc;
+      border: 1px solid #d4cbb8;
+      border-radius: 6px;
+    }
+    /* 本文下部の広告スペース */
+    .ad-footer-box {
+      margin-top: 6px;
+      padding: 12px 14px;
+      background: #f3efe6;
+      border: 1px solid #ded6c6;
+      border-radius: 6px;
+      text-align: center;
+      min-height: 90px;
+    }
+    .ad-footer-label {
+      font-size: 0.72rem;
+      color: #887d6b;
+      margin-bottom: 6px;
+      letter-spacing: 0.05em;
+    }
+    .record-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px 16px 24px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+    }
+    .section-divider {
+      background: #3d2f1d;
+      color: #f7f1e5;
+      padding: 9px 14px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 1.06rem;
+      border-left: 5px solid #d4af37;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .record-card {
+      border: 1px solid #ddd5c7;
+      border-radius: 6px;
+      padding: 16px 18px;
+      background: #fffdf9;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .record-card.active-card {
+      border: 2px solid #8c6d46;
+      background: #fffef7;
+    }
+    .record-card.pei-note {
+      background: #f4f7fa;
+      border-left: 4px solid #4a76a8;
+      margin-left: 16px;
+    }
+    .record-card.main-text {
+      border-left: 4px solid #2e7d32;
+    }
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+      color: #555;
+    }
+    .badge {
+      padding: 2px 9px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 0.8rem;
+      color: #fff;
+    }
+    .badge.main { background: #2e7d32; }
+    .badge.pei { background: #4a76a8; }
+    .raw-text {
+      font-family: "Yu Mincho", "MS PMincho", serif;
+      font-size: 1.22rem;
+      font-weight: bold;
+      color: #111;
+      margin-bottom: 10px;
+      line-height: 1.75;
+    }
+    .kakikudashi {
+      font-size: 1.08rem;
+      color: #333;
+      margin-bottom: 10px;
+      line-height: 1.8;
+      padding-left: 10px;
+      border-left: 3px solid #cbbda6;
+    }
+    .translation {
+      font-size: 1.1rem;
+      color: #1a1a1a;
+      line-height: 1.85;
+      background: rgba(255,255,255,0.8);
+      padding: 8px 10px;
+      border-radius: 4px;
+    }
+
+    /* 地図ラベル */
+    .custom-label {
+      background: rgba(44, 36, 27, 0.92);
+      color: #fff;
+      border: 1px solid #d4af37;
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 12.5px;
+      font-weight: bold;
+      white-space: nowrap;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.45);
+    }
+    .custom-label.selected-pin {
+      background: #c62828;
+      border-color: #fff176;
+      font-size: 13.5px;
+    }
+    .area-banner-label {
+      background: rgba(230, 81, 0, 0.94);
+      color: #fff;
+      border: 2px solid #fff176;
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 13px;
+      font-weight: bold;
+      white-space: nowrap;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+    .parent-area-banner-label {
+      background: rgba(46, 125, 50, 0.88);
+      color: #fff;
+      border: 1.5px solid #ffd54f;
+      border-radius: 5px;
+      padding: 2px 8px;
+      font-size: 11.5px;
+      font-weight: bold;
+      white-space: nowrap;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+    }
+    .nature-label-mountain {
+      color: #4e342e;
+      font-family: "Yu Mincho", serif;
+      font-weight: bold;
+      font-size: 13px;
+      text-shadow: 1px 1px 2px #fff, -1px -1px 2px #fff, 1px -1px 2px #fff, -1px 1px 2px #fff;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .nature-label-river {
+      color: #0d47a1;
+      font-family: "Yu Mincho", serif;
+      font-weight: bold;
+      font-size: 12.5px;
+      text-shadow: 1px 1px 2px #fff, -1px -1px 2px #fff, 1px -1px 2px #fff, -1px 1px 2px #fff;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .leaflet-tooltip.transparent-box {
+      background: transparent;
+      border: none;
+      box-shadow: none;
+    }
+
+    /* 統一モーダル（PC・スマホともに地図カラム上にのみ表示し、本文には一切かぶらない） */
+    .modal-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.48);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 6000;
+      padding: 12px;
+    }
+    .modal-box {
+      background: #fffdf9;
+      width: 96%;
+      max-width: 720px;
+      max-height: 94%;
+      border-radius: 8px;
+      border: 2px solid #8c6d46;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+      overflow: hidden;
+    }
+    .modal-header {
+      background: #2c241b;
+      color: #fff;
+      padding: 9px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .modal-header h3 {
+      font-size: 0.96rem;
+      line-height: 1.3;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .modal-close {
+      background: transparent;
+      color: #fff;
+      border: 1px solid #aaa;
+      border-radius: 4px;
+      padding: 2px 9px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .modal-close:hover { background: #c62828; border-color: #c62828; }
+    .modal-body {
+      padding: 12px 14px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .wiki-standard-box {
+      background: #f3f6f9;
+      border-left: 4px solid #1565c0;
+      padding: 10px 12px;
+      border-radius: 4px;
+      line-height: 1.55;
+      font-size: 0.88rem;
+    }
+    .ai-special-box {
+      background: #f8f4fc;
+      border-left: 4px solid #6a1b9a;
+      padding: 10px 12px;
+      border-radius: 4px;
+      line-height: 1.55;
+      font-size: 0.88rem;
+    }
+    .occurrence-details {
+      border: 1px solid #d4cbb8;
+      border-radius: 6px;
+      background: #f7f3eb;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .occurrence-summary {
+      padding: 7px 12px;
+      font-size: 0.86rem;
+      font-weight: bold;
+      color: #3d2f1d;
+      cursor: pointer;
+      user-select: none;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .occurrence-summary::-webkit-details-marker { display: none; }
+    .occurrence-summary::before {
+      content: '▶';
+      font-size: 0.72rem;
+      color: #8c6d46;
+      transition: transform 0.15s;
+    }
+    .occurrence-details[open] .occurrence-summary::before {
+      transform: rotate(90deg);
+    }
+    .occurrence-details[open] .occurrence-summary {
+      border-bottom: 1px solid #d4cbb8;
+      background: #efe9dc;
+    }
+    .occurrence-list {
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: #fffdf9;
+    }
+    .wiki-link-btn {
+      display: inline-block;
+      margin-top: 6px;
+      background: #1565c0;
+      color: #fff;
+      text-decoration: none;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 0.78rem;
+      font-weight: bold;
+    }
+    .wiki-link-btn:hover { background: #0d47a1; }
+    .modal-occurrence {
+      border: 1px solid #d4cbb8;
+      border-radius: 6px;
+      padding: 10px 14px;
+      background: #fff;
+    }
+    .jump-btn {
+      background: #2e7d32;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 4px 10px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .jump-btn:hover { background: #1b5e20; }
+    .highlight {
+      background: #fff176;
+      font-weight: bold;
+      padding: 0 2px;
+      border-radius: 2px;
+    }
+    .map-toast {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      z-index: 5000;
+      background: rgba(44, 36, 27, 0.95);
+      color: #fff;
+      border: 2px solid #d4af37;
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-size: 0.86rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+      display: none;
+      max-width: 440px;
+    }
+    .toast-special-badge {
+      display: inline-block;
+      background: #f57f17;
+      color: #fff;
+      font-weight: bold;
+      font-size: 0.75rem;
+      padding: 1px 6px;
+      border-radius: 3px;
+      margin-top: 4px;
+    }
+    .toast-feedback-bar {
+      margin-top: 8px;
+      padding-top: 6px;
+      border-top: 1px solid rgba(255,255,255,0.25);
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .toast-fb-btn {
+      background: #3e2723;
+      color: #ffe082;
+      border: 1px solid #d4af37;
+      border-radius: 4px;
+      padding: 3px 8px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .toast-fb-btn:hover {
+      background: #5d4037;
+      color: #fff;
+    }
+
+    /* ワンクリック指摘フローティングバー（文字選択・タグクリック時） */
+    .selection-feedback-bar {
+      position: fixed;
+      z-index: 12000;
+      background: #211a14;
+      color: #fff;
+      border: 2px solid #ffb300;
+      border-radius: 8px;
+      padding: 8px 10px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.45);
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 320px;
+      max-width: 520px;
+    }
+    .sfb-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      color: #ffe082;
+      border-bottom: 1px solid #4e342e;
+      padding-bottom: 4px;
+    }
+    .sfb-target-word {
+      font-weight: bold;
+      color: #fff;
+      background: #c62828;
+      padding: 1px 6px;
+      border-radius: 3px;
+      margin: 0 3px;
+    }
+    .sfb-close {
+      background: transparent;
+      border: none;
+      color: #ccc;
+      cursor: pointer;
+      font-size: 0.9rem;
+      padding: 0 4px;
+    }
+    .sfb-close:hover { color: #fff; }
+    .sfb-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+    .sfb-btn {
+      border: none;
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 0.76rem;
+      font-weight: bold;
+      cursor: pointer;
+      color: #fff;
+      transition: transform 0.1s, opacity 0.15s;
+    }
+    .sfb-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .sfb-btn.area { background: #d84315; }
+    .sfb-btn.point { background: #2e7d32; }
+    .sfb-btn.person { background: #ad1457; }
+    .sfb-btn.office { background: #1565c0; }
+    .sfb-btn.special { background: #6a1b9a; }
+    .sfb-btn.split { background: #00838f; }
+    .sfb-btn.remove { background: #546e7a; }
+    .sfb-btn.note { background: #f57f17; color: #111; }
+
+    /* 左半分の地図エリア右下に配置する指摘リストパネル（右側の本文には一切かぶらない） */
+    .feedback-tray {
+      position: absolute;
+      bottom: 14px;
+      right: 14px;
+      z-index: 5500;
+      width: 390px;
+      max-height: 45vh;
+      background: #2c241b;
+      color: #f7f1e5;
+      border: 2px solid #ffb300;
+      border-radius: 8px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.4);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      font-size: 0.82rem;
+    }
+    .feedback-tray.minimized .feedback-tray-body,
+    .feedback-tray.minimized .feedback-tray-footer {
+      display: none;
+    }
+    .feedback-tray-header {
+      background: #3e2723;
+      padding: 8px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      border-bottom: 1px solid #5d4037;
+    }
+    .feedback-tray-title {
+      font-weight: bold;
+      color: #ffd54f;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .feedback-count-badge {
+      background: #c62828;
+      color: #fff;
+      border-radius: 10px;
+      padding: 1px 7px;
+      font-size: 0.74rem;
+    }
+    .feedback-tray-body {
+      padding: 8px 10px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 240px;
+    }
+    .feedback-empty {
+      color: #bdbdbd;
+      font-size: 0.78rem;
+      line-height: 1.5;
+      padding: 4px 2px;
+    }
+    .feedback-item {
+      background: rgba(255,255,255,0.08);
+      border-left: 3px solid #ffb300;
+      border-radius: 4px;
+      padding: 5px 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 6px;
+      line-height: 1.4;
+    }
+    .feedback-item-del {
+      background: transparent;
+      border: none;
+      color: #ef9a9a;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 0.85rem;
+      padding: 0 3px;
+    }
+    .feedback-item-del:hover { color: #ff5252; }
+    .feedback-tray-footer {
+      padding: 8px 10px;
+      background: #211a14;
+      border-top: 1px solid #4e342e;
+      display: flex;
+      gap: 6px;
+    }
+    .feedback-copy-btn {
+      flex: 1;
+      background: #ffb300;
+      color: #111;
+      border: none;
+      border-radius: 4px;
+      padding: 6px 10px;
+      font-weight: bold;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    .feedback-copy-btn:hover { background: #ffca28; }
+    .feedback-clear-btn {
+      background: #4e342e;
+      color: #ddd;
+      border: 1px solid #795548;
+      border-radius: 4px;
+      padding: 6px 10px;
+      font-size: 0.76rem;
+      cursor: pointer;
+    }
+    .feedback-clear-btn:hover { background: #c62828; color: #fff; }
+    .proofread-mode-label {
+      background: #ff8f00;
+      color: #111;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .feedback-tray-subbar {
+      background: #2c2018;
+      padding: 6px 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      border-bottom: 1px solid #4e342e;
+      font-size: 0.75rem;
+    }
+    /* スマホ・縦長タブレット対応（上40%：地図 ／ 下60%：本文スクロール＋末尾広告） */
+    @media (max-width: 900px) {
+      .main-container {
+        flex-direction: column;
+      }
+      .map-column {
+        flex: 0 0 40%;
+        height: 40%;
+        width: 100%;
+        border-right: none;
+        border-bottom: 2px solid #8c6d46;
+      }
+      .reader-panel {
+        flex: 1;
+        height: 60%;
+        width: 100%;
+      }
+      .record-list {
+        padding: 10px 12px 20px 12px;
+        gap: 10px;
+      }
+      .record-card.pei-note {
+        margin-left: 8px;
+      }
+      .map-toast {
+        bottom: 8px;
+        left: 8px;
+        right: 8px;
+        max-width: none;
+        padding: 7px 10px;
+        font-size: 0.78rem;
+        max-height: 48%;
+        overflow-y: auto;
+      }
+      .modal-overlay {
+        position: absolute;
+        inset: 0;
+        padding: 4px;
+        z-index: 6000;
+      }
+      .modal-box {
+        width: 99%;
+        max-height: 98%;
+        border-radius: 6px;
+      }
+      .modal-header {
+        padding: 6px 10px;
+      }
+      .modal-header h3 {
+        font-size: 0.84rem;
+      }
+      .modal-close {
+        padding: 2px 7px;
+        font-size: 0.76rem;
+      }
+      .modal-body {
+        padding: 8px 10px;
+        gap: 6px;
+      }
+      .wiki-standard-box,
+      .ai-special-box {
+        padding: 7px 10px;
+        font-size: 0.81rem;
+        line-height: 1.48;
+      }
+      .occurrence-summary {
+        padding: 5px 10px;
+        font-size: 0.8rem;
+      }
+      .feedback-tray {
+        width: calc(100% - 16px);
+        right: 8px;
+        bottom: 8px;
+        max-height: 36vh;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="main-container">
+  <div class="map-column">
+    <div class="vol-nav-bar">
+      <button class="slim-nav-btn" onclick="window.location.href='vol17.html'" title="前の公開巻（魏書十七　張樂于張徐傳）へ移動">←</button>
+      <select class="para-select" style="font-family:'Yu Mincho','MS PMincho',serif; font-size:0.95rem; letter-spacing:0.05em;" onchange="if(this.value) window.location.href=this.value" title="巻を切り替え">
+        <option value="vol17.html">魏書十七　張樂于張徐傳</option>
+        <option value="vol31.html" selected>蜀書一　劉二牧傳</option>
+      </select>
+      <button class="slim-nav-btn" disabled title="次の巻（準備中）">→</button>
+    </div>
+    <div id="map" style="position:relative;">
+      <div class="map-toast" id="mapToast"></div>
+    </div>
+    <!-- 手元PC・制作時のみ表示される指摘リスト＆プレビュー切替パネル（一般公開時は完全非表示） -->
+    <div class="feedback-tray" id="feedbackTray" style="display:none;">
+      <div class="feedback-tray-header" onclick="toggleFeedbackTray()">
+        <div class="feedback-tray-title">
+          <span>📝 ピンポイント指摘リスト</span>
+          <span class="feedback-count-badge" id="feedbackCountBadge">0件</span>
+        </div>
+        <span id="feedbackTrayToggleIcon" style="font-size:0.78rem; color:#ffe082;">▼ 折りたたむ</span>
+      </div>
+      <div class="feedback-tray-subbar">
+        <label style="background:#00695c; color:#fff; padding:2px 7px; border-radius:4px; font-weight:bold; cursor:pointer; display:flex; align-items:center; gap:4px;" title="ONにすると、本番公開時と同じ表示（第21段落まで）を確認できます">
+          <input type="checkbox" id="togglePublicPreview" onchange="applyEnvironmentModeUI()"> 🌐 公開画面プレビュー
+        </label>
+        <label class="proofread-mode-label" id="proofreadModeLabel" title="ONにすると、色付き単語を左クリックするだけで指摘メニューが出ます">
+          <input type="checkbox" id="toggleProofreadMode"> 🛠️ 1クリック指摘
+        </label>
+        <label id="showAllParasLabel" style="color:#ffe082; cursor:pointer; display:flex; align-items:center; gap:4px;">
+          <input type="checkbox" id="toggleShowAllParas" onchange="renderReaderList()"> 📜 全段落連続
+        </label>
+      </div>
+      <div class="feedback-tray-body" id="feedbackTrayBody">
+        <div class="feedback-empty">
+          本文の気になる文字を<strong>なぞって選択</strong>（または色付き語を<strong>右クリック</strong>）すると、ここに指摘が溜まります。
+        </div>
+      </div>
+      <div class="feedback-tray-footer" id="feedbackTrayFooter">
+        <button class="feedback-copy-btn" id="feedbackCopyBtn" onclick="copyAllFeedbackToClipboard()">📋 指摘をまとめてコピー（チャット貼付用）</button>
+        <button class="feedback-clear-btn" onclick="clearAllFeedback()">🗑️ 全消去</button>
+      </div>
+    </div>
+    <!-- 統一モーダル（PCでは左側の地図上に重ねて本文を隠さず、スマホでは全画面で見やすく表示） -->
+    <div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this) closeModal()">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h3 id="modalTitle">詳細</h3>
+          <button class="modal-close" onclick="closeModal()">× 閉じる</button>
+        </div>
+        <div class="modal-body" id="modalBody"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="reader-panel">
+    <div class="para-nav-bar" id="paraTopNav"></div>
+    <div class="record-list" id="recordList"></div>
+  </div>
+</div>
+
+<!-- ワンクリック指摘フローティングバー -->
+<div class="selection-feedback-bar" id="selectionFeedbackBar">
+  <div class="sfb-header">
+    <div>
+      <span id="sfbMetaLabel">[v31_p1_1]</span>
+      選択語: <span class="sfb-target-word" id="sfbTargetWord">〇〇</span>
+      <span id="sfbCurrentTagInfo" style="color:#b0bec5; font-size:0.74rem;"></span>
+    </div>
+    <button class="sfb-close" onclick="hideSelectionFeedbackBar()" title="閉じる">✕</button>
+  </div>
+  <div class="sfb-buttons">
+    <button class="sfb-btn area" onclick="addFeedbackFromBar('🗺️ 地名（エリア：州・郡・広域）にする')">🗺️ 地名(エリア)にする</button>
+    <button class="sfb-btn point" onclick="addFeedbackFromBar('📍 地名（地点：県・城・関・山）にする')">📍 地名(地点)にする</button>
+    <button class="sfb-btn person" onclick="addFeedbackFromBar('👤 人名にする')">👤 人名にする</button>
+    <button class="sfb-btn office" onclick="addFeedbackFromBar('👑 官職にする')">👑 官職にする</button>
+    <button class="sfb-btn special" onclick="addFeedbackFromBar('🔖 特別キーワードにする')">🔖 キーワードにする</button>
+    <button class="sfb-btn split" onclick="addFeedbackFromBar('✂️ この区切りで独立させる（前後の語と分離）')">✂️ この区切りで独立</button>
+    <button class="sfb-btn remove" onclick="addFeedbackFromBar('❌ タグ解除（ただの文字に戻す）')">❌ タグ解除</button>
+    <button class="sfb-btn note" onclick="promptCustomFeedbackNote()">✏️ 場所違い・自由メモ</button>
+  </div>
+</div>
+
+<script>
+  const RECORDS = [{"id": "v31_p1_1", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（劉焉）", "para_index": 1, "type": "本文", "raw_text": "劉焉字君郎，江夏竟陵人也，漢魯恭王之後裔，章帝元和中徙封竟陵，支庶家焉。", "kakikudashi": "劉焉、字は君郎、江夏竟陵の人なり。漢の魯恭王の後裔にして、章帝の元和中、竟陵に徙封せられ、支庶、焉に家す。", "translation": "劉焉、字は君郎は、江夏竟陵の人である。前漢の魯恭王の末裔であり、後漢の章帝の元和年間に竟陵へ移封され、その分家の庶流がそこに家を構えた。", "persons": "劉焉,魯恭王,章帝", "places": "江夏,竟陵", "era_year": "元和年間（84年〜87年）", "source_book": "", "keywords": "漢,元和,支庶", "raw_tagged": "{{person:劉焉|劉焉}}字{{person:劉焉|君郎}}，{{place:江夏|江夏}}{{place:竟陵|竟陵}}人也，{{special:漢|漢}}{{person:魯恭王|魯恭王}}之後裔，{{person:章帝|章帝}}{{special:元和|元和中}}徙封{{place:竟陵|竟陵}}，{{special:支庶|支庶}}家焉。", "kakikudashi_tagged": "{{person:劉焉|劉焉}}、字は{{person:劉焉|君郎}}、{{place:江夏|江夏}}{{place:竟陵|竟陵}}の人なり。{{special:漢|漢}}の{{person:魯恭王|魯恭王}}の後裔にして、{{person:章帝|章帝}}の{{special:元和|元和中}}、{{place:竟陵|竟陵}}に徙封せられ、{{special:支庶|支庶}}、焉に家す。", "translation_tagged": "{{person:劉焉|劉焉}}、字は{{person:劉焉|君郎}}は、{{place:江夏|江夏}}{{place:竟陵|竟陵}}の人である。前{{special:漢|漢}}の{{person:魯恭王|魯恭王}}の末裔であり、後漢の{{person:章帝|章帝}}の{{special:元和|元和}}年間に{{place:竟陵|竟陵}}へ移封され、その分家の庶流がそこに家を構えた。"}, {"id": "v31_p2_1", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（劉焉）", "para_index": 2, "type": "本文", "raw_text": "焉少仕州郡，以宗室拜中郎，後以師祝公喪去官。", "kakikudashi": "焉、少くして州郡に仕へ、宗室を以て中郎に拝せられ、後に師の祝公の喪を以て官を去る。", "translation": "劉焉は若い頃に州や郡に仕え、漢の宗室であることから中郎に任じられたが、のちに師である祝公の喪に服するため官を辞した。", "persons": "劉焉,祝恬", "places": "", "era_year": "160年頃", "source_book": "", "keywords": "宗室,中郎", "raw_tagged": "{{person:劉焉|焉}}少仕州郡，以{{special:宗室|宗室}}拜{{office:中郎将|中郎}}，後以師{{person:祝恬|祝公}}喪去官。", "kakikudashi_tagged": "{{person:劉焉|焉}}、少くして州郡に仕へ、{{special:宗室|宗室}}を以て{{office:中郎将|中郎}}に拝せられ、後に師の{{person:祝恬|祝公}}の喪を以て官を去る。", "translation_tagged": "{{person:劉焉|劉焉}}は若い頃に州や郡に仕え、漢の{{special:宗室|宗室}}であることから{{office:中郎将|中郎}}に任じられたが、のちに師である{{person:祝恬|祝公}}の喪に服するため官を辞した。"}, {"id": "v31_p2_2", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（劉焉）", "para_index": 2, "type": "裴注", "raw_text": "臣松之案：祝公，司徒祝恬也。", "kakikudashi": "臣松之案ずるに、祝公とは、司徒祝恬なり。", "translation": "臣裴松之が考えるに、祝公とは、司徒の祝恬のことである。", "persons": "裴松之,祝恬", "places": "", "era_year": "延熹3年（160年）頃", "source_book": "", "keywords": "司徒", "raw_tagged": "{{person:裴松之|臣松之}}案：{{person:祝恬|祝公}}，{{office:司徒|司徒}}{{person:祝恬|祝恬}}也。", "kakikudashi_tagged": "{{person:裴松之|臣松之}}案ずるに、{{person:祝恬|祝公}}とは、{{office:司徒|司徒}}{{person:祝恬|祝恬}}なり。", "translation_tagged": "臣{{person:裴松之|裴松之}}が考えるに、{{person:祝恬|祝公}}とは、{{office:司徒|司徒}}の{{person:祝恬|祝恬}}のことである。"}, {"id": "v31_p2_3", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（劉焉）", "para_index": 2, "type": "本文", "raw_text": "居陽城山，積學教授，舉賢良方正，闢司徒府，歷雒陽令、冀州刺史、南陽太守、宗正、太常。焉睹靈帝政治衰缺，王室多故，乃建議言：「刺史、太守，貨賂為官，割剝百姓，以致離叛。可選清名重臣以為牧伯，鎮安方夏。」焉內求交阯牧，欲避世難。議未即行，侍中廣漢董扶私謂焉曰：「京師將亂，益州分野有天子氣。」焉聞扶言，意更在益州。", "kakikudashi": "陽城山に居り、学を積みて教授し、賢良方正に挙げられ、司徒府に闢せられ、雒陽令・冀州刺史・南陽太守・宗正・太常を歴たり。焉、霊帝の政治衰欠し、王室多故なるを睹て、乃ち建議して言ふ、「刺史・太守、貨賂もて官と為り、百姓を割剥し、以て離叛を致す。清名の重臣を選びて以て牧伯と為し、方夏を鎮安すべし」と。焉、内には交阯牧を求め、世難を避けんと欲す。議、未だ即ちには行はれざるに、侍中広漢の董扶、私かに焉に謂ひて曰く、「京師、将に乱れんとす、益州の分野に天子の気有り」と。焉、扶の言を聞き、意、更に益州に在り。", "translation": "陽城山に隠居して学問を積み門徒に教え、やがて賢良方正に推挙され、司徒府に辟召されて、雒陽令・冀州刺史・南陽太守・宗正・太常を歴任した。劉焉は霊帝の政治が衰微し、王室に多事多難が続くのを見て、建言して言った。「刺史や太守が賄賂によって官職を得、民衆から厳しく搾取するため、民心の離反を招いております。清廉な名声ある重臣を選んで州牧とし、四方の地を鎮め安んじるべきでございます」。劉焉は内心では交阯牧となることを求め、世の動乱を避けようと望んでいた。その建議がまだ実行に移されないうち、侍中で広漢出身の董扶がひそかに劉焉に告げて言った。「京師はまもなく乱れましょう。益州に対応する星座の分野に天子の気が出ております」。劉焉は董扶の言葉を聞くと、気持ちは一転して益州へと向いた。", "persons": "劉焉,霊帝,董扶", "places": "陽城山,洛陽,冀州,南陽,交州,広漢,益州", "era_year": "中平5年（188年）", "source_book": "", "keywords": "賢良方正,司徒府,県令,刺史,太守,宗正,太常,貨賂,割剥,牧伯,州牧,方夏,侍中,分野,天子気", "raw_tagged": "居{{place:陽城山|陽城山}}，積學教授，舉{{special:賢良方正|賢良方正}}，闢{{special:司徒府|司徒府}}，歷{{place:洛陽|雒陽}}{{office:県令|令}}、{{place:冀州|冀州}}{{office:刺史|刺史}}、{{place:南陽|南陽}}{{office:太守|太守}}、{{office:宗正|宗正}}、{{office:太常|太常}}。{{person:劉焉|焉}}睹{{person:霊帝|靈帝}}政治衰缺，王室多故，乃建議言：「{{office:刺史|刺史}}、{{office:太守|太守}}，{{special:貨賂|貨賂}}為官，{{special:割剥|割剝}}百姓，以致離叛。可選清名重臣以為{{office:州牧|牧伯}}，鎮安{{special:方夏|方夏}}。」{{person:劉焉|焉}}內求{{place:交州|交阯}}{{office:州牧|牧}}，欲避世難。議未即行，{{office:侍中|侍中}}{{place:広漢|廣漢}}{{person:董扶|董扶}}私謂{{person:劉焉|焉}}曰：「{{place:洛陽|京師}}將亂，{{place:益州|益州}}{{special:分野|分野}}有{{special:分野|天子氣}}。」{{person:劉焉|焉}}聞{{person:董扶|扶}}言，意更在{{place:益州|益州}}。", "kakikudashi_tagged": "{{place:陽城山|陽城山}}に居り、学を積みて教授し、{{special:賢良方正|賢良方正}}に挙げられ、{{special:司徒府|司徒府}}に闢せられ、{{place:洛陽|雒陽}}{{office:県令|令}}・{{place:冀州|冀州}}{{office:刺史|刺史}}・{{place:南陽|南陽}}{{office:太守|太守}}・{{office:宗正|宗正}}・{{office:太常|太常}}を歴たり。{{person:劉焉|焉}}、{{person:霊帝|霊帝}}の政治衰欠し、王室多故なるを睹て、乃ち建議して言ふ、「{{office:刺史|刺史}}・{{office:太守|太守}}、{{special:貨賂|貨賂}}もて官と為り、百姓を{{special:割剥|割剥}}し、以て離叛を致す。清名の重臣を選びて以て{{office:州牧|牧伯}}と為し、{{special:方夏|方夏}}を鎮安すべし」と。{{person:劉焉|焉}}、内には{{place:交州|交阯}}{{office:州牧|牧}}を求め、世難を避けんと欲す。議、未だ即ちには行はれざるに、{{office:侍中|侍中}}{{place:広漢|広漢}}の{{person:董扶|董扶}}、私かに{{person:劉焉|焉}}に謂ひて曰く、「{{place:洛陽|京師}}、将に乱れんとす、{{place:益州|益州}}の{{special:分野|分野}}に{{special:分野|天子の気}}有り」と。{{person:劉焉|焉}}、{{person:董扶|扶}}の言を聞き、意、更に{{place:益州|益州}}に在り。", "translation_tagged": "{{place:陽城山|陽城山}}に隠居して学問を積み門徒に教え、やがて{{special:賢良方正|賢良方正}}に推挙され、{{special:司徒府|司徒府}}に辟召されて、{{place:洛陽|雒陽}}{{office:県令|令}}・{{place:冀州|冀州}}{{office:刺史|刺史}}・{{place:南陽|南陽}}{{office:太守|太守}}・{{office:宗正|宗正}}・{{office:太常|太常}}を歴任した。{{person:劉焉|劉焉}}は{{person:霊帝|霊帝}}の政治が衰微し、王室に多事多難が続くのを見て、建言して言った。「{{office:刺史|刺史}}や{{office:太守|太守}}が{{special:貨賂|賄賂}}によって官職を得、民衆から{{special:割剥|厳しく搾取}}するため、民心の離反を招いております。清廉な名声ある重臣を選んで{{office:州牧|州牧}}とし、{{special:方夏|四方の地}}を鎮め安んじるべきでございます」。{{person:劉焉|劉焉}}は内心では{{place:交州|交阯}}{{office:州牧|牧}}となることを求め、世の動乱を避けようと望んでいた。その建議がまだ実行に移されないうち、{{office:侍中|侍中}}で{{place:広漢|広漢}}出身の{{person:董扶|董扶}}がひそかに{{person:劉焉|劉焉}}に告げて言った。「{{place:洛陽|京師}}はまもなく乱れましょう。{{place:益州|益州}}に対応する星座の{{special:分野|分野}}に{{special:分野|天子の気}}が出ております」。{{person:劉焉|劉焉}}は{{person:董扶|董扶}}の言葉を聞くと、気持ちは一転して{{place:益州|益州}}へと向いた。"}, {"id": "v31_p3_1", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（劉焉）", "para_index": 3, "type": "本文", "raw_text": "會益州刺史郤儉賦斂煩擾，謠言遠聞，", "kakikudashi": "会たま益州刺史郤倹、賦斂煩擾にして、謡言遠く聞こゆ。", "translation": "ちょうどその頃、益州刺史の郤倹による徴税が苛酷を極め、その悪評が遠く中央まで聞こえていた。", "persons": "郤倹", "places": "益州", "era_year": "中平5年（188年）", "source_book": "", "keywords": "刺史,賦斂煩擾", "raw_tagged": "會{{place:益州|益州}}{{office:刺史|刺史}}{{person:郤倹|郤儉}}{{special:賦斂煩擾|賦斂煩擾}}，謠言遠聞，", "kakikudashi_tagged": "会たま{{place:益州|益州}}{{office:刺史|刺史}}{{person:郤倹|郤倹}}、{{special:賦斂煩擾|賦斂煩擾}}にして、謡言遠く聞こゆ。", "translation_tagged": "ちょうどその頃、{{place:益州|益州}}{{office:刺史|刺史}}の{{person:郤倹|郤倹}}による{{special:賦斂煩擾|徴税が苛酷を極め}}、その悪評が遠く中央まで聞こえていた。"}, {"id": "v31_p3_2", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（劉焉）", "para_index": 3, "type": "裴注", "raw_text": "儉，郤正祖也。", "kakikudashi": "倹は、郤正の祖なり。", "translation": "郤倹は、郤正の祖父である。", "persons": "郤倹,郤正", "places": "", "era_year": "", "source_book": "", "keywords": "", "raw_tagged": "{{person:郤倹|儉}}，{{person:郤正|郤正}}祖也。", "kakikudashi_tagged": "{{person:郤倹|倹}}は、{{person:郤正|郤正}}の祖なり。", "translation_tagged": "{{person:郤倹|郤倹}}は、{{person:郤正|郤正}}の祖父である。"}, {"id": "v31_p3_3", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（劉焉）", "para_index": 3, "type": "本文", "raw_text": "而并州殺刺史張壹，涼州殺刺史耿鄙，焉謀得施。出為監軍使者，領益州牧，封陽城侯，當收儉治罪；", "kakikudashi": "而して并州は刺史張壹を殺し、涼州は刺史耿鄙を殺せば、焉の謀、施すを得たり。出でて監軍使者と為り、益州牧を領し、陽城侯に封ぜられ、当に倹を収めて罪を治むべし。", "translation": "さらに并州では刺史の張壹が殺害され、涼州では刺史の耿鄙が殺害されたため、劉焉の建策が採用されることとなった。劉焉は中央から出て監軍使者となり、益州牧を兼領し、陽城侯に封じられ、郤倹を捕らえて処罰するよう命じられた。", "persons": "張壹,耿鄙,劉焉,郤倹", "places": "并州,涼州,益州,陽城山", "era_year": "中平5年（188年）", "source_book": "", "keywords": "刺史,監軍使者,州牧,列侯", "raw_tagged": "而{{place:并州|并州}}殺{{office:刺史|刺史}}{{person:張壹|張壹}}，{{place:涼州|涼州}}殺{{office:刺史|刺史}}{{person:耿鄙|耿鄙}}，{{person:劉焉|焉}}謀得施。出為{{office:監軍使者|監軍使者}}，領{{place:益州|益州}}{{office:州牧|牧}}，封{{place:陽城山|陽城}}{{office:列侯|侯}}，當收{{person:郤倹|儉}}治罪；", "kakikudashi_tagged": "而して{{place:并州|并州}}は{{office:刺史|刺史}}{{person:張壹|張壹}}を殺し、{{place:涼州|涼州}}は{{office:刺史|刺史}}{{person:耿鄙|耿鄙}}を殺せば、{{person:劉焉|焉}}の謀、施すを得たり。出でて{{office:監軍使者|監軍使者}}と為り、{{place:益州|益州}}{{office:州牧|牧}}を領し、{{place:陽城山|陽城}}{{office:列侯|侯}}に封ぜられ、当に{{person:郤倹|倹}}を収めて罪を治むべし。", "translation_tagged": "さらに{{place:并州|并州}}では{{office:刺史|刺史}}の{{person:張壹|張壹}}が殺害され、{{place:涼州|涼州}}では{{office:刺史|刺史}}の{{person:耿鄙|耿鄙}}が殺害されたため、{{person:劉焉|劉焉}}の建策が採用されることとなった。{{person:劉焉|劉焉}}は中央から出て{{office:監軍使者|監軍使者}}となり、{{place:益州|益州}}{{office:州牧|牧}}を兼領し、{{place:陽城山|陽城}}{{office:列侯|侯}}に封じられ、{{person:郤倹|郤倹}}を捕らえて処罰するよう命じられた。"}, {"id": "v31_p3_4", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（劉焉）", "para_index": 3, "type": "裴注", "raw_text": "《續漢書》曰：是時用劉虞為幽州，劉焉為益州，劉表為荊州，賈琮為冀州。虞等皆海內清名之士，或從列卿尚書以選為牧伯，各以本秩居任。舊典：傳車參駕，施赤為帷裳。臣松之按：靈帝崩後，義軍起，孫堅殺荊州刺史王叡，然後劉表為荊州，不與焉同時也。《漢靈帝紀》曰：帝引見焉，宣示方略，加以賞賜，敕焉為益州刺史。前刺史劉雋、郤儉皆貪殘放濫，取受狼籍，元元無聊，呼嗟充野，焉到便收攝行法，以示萬姓，勿令漏露，使癰疽決潰，為國生梗。焉受命而行，以道路不通，住荊州東界。", "kakikudashi": "『続漢書』に曰く、是の時、劉虞を用ひて幽州と為し、劉焉を益州と為し、劉表を荊州と為し、賈琮を冀州と為す。虞等、皆海内清名の士にして、或いは列卿・尚書より以て選ばれて牧伯と為り、各おの本秩を以て任に居る。旧典に、伝車は参駕し、赤を施して帷裳と為す。臣松之按ずるに、霊帝崩ずるの後、義軍起り、孫堅、荊州刺史王叡を殺し、然る後に劉表、荊州と為れば、焉と時を同じくせざるなり。『漢霊帝紀』に曰く、帝、焉を引見し、方略を宣示し、加ふるに賞賜を以てし、焉に敕して益州刺史と為す。前の刺史劉雋・郤倹、皆貪残放濫にして、取受狼藉、元元無聊にして、呼嗟野に充つ。焉到らば便ち収摂して法を行ひ、以て万姓に示し、漏露せしむる勿かれ、癰疽をして決潰し、国の為に梗を生ぜしめん、と。焉、命を受けて行くも、道路通ぜざるを以て、荊州の東界に住まる。", "translation": "『続漢書』にいう。この時、劉虞を起用して幽州牧とし、劉焉を益州牧とし、劉表を荊州牧とし、賈琮を冀州牧とした。劉虞らはみな海内で清廉な名声ある人物であり、ある者は列卿や尚書から選ばれて牧伯となり、それぞれ元の官秩のまま任に就いた。旧来の典制では、その伝車は三頭立ての馬車とし、赤い布を垂らして車の帷裳とした。臣裴松之が考えるに、霊帝が崩御した後、義軍が蜂起し、孫堅が荊州刺史の王叡を殺害し、その後に劉表が荊州刺史となったのであるから、劉焉と同時ではない。『漢霊帝紀』にいう。霊帝は劉焉を引見して方略を示し、恩賞を下賜し、劉焉に勅命を下して益州刺史とした。「前任の刺史である劉雋や郤倹はいずれも強欲残忍で放埒を極め、賄賂の収受が目に余り、民衆は頼るすべを失って嘆き悲しむ声が野に満ちている。劉焉が着任したならば、ただちに彼らを捕らえて法に照らして処罰し、万民に知らしめよ。事前に漏洩して、腫れ物が潰れるように反乱を招き、国の禍根を生じさせることのないようにせよ」。劉焉は命を受けて出発したが、道路が不通であったため、荊州の東境に留まった。", "persons": "劉虞,劉焉,劉表,賈琮,裴松之,霊帝,孫堅,王叡,劉雋,郤倹", "places": "幽州,益州,荊州,冀州", "era_year": "中平5年〜初平元年（188年〜190年）", "source_book": "続漢書,漢霊帝紀", "keywords": "海内,列卿,尚書,牧伯,旧典,伝車参駕,刺史", "raw_tagged": "《{{special:続漢書|續漢書}}》曰：是時用{{person:劉虞|劉虞}}為{{place:幽州|幽州}}，{{person:劉焉|劉焉}}為{{place:益州|益州}}，{{person:劉表|劉表}}為{{place:荊州|荊州}}，{{person:賈琮|賈琮}}為{{place:冀州|冀州}}。{{person:劉虞|虞}}等皆{{special:海内|海內}}清名之士，或從{{office:列卿|列卿}}{{office:尚書|尚書}}以選為{{office:州牧|牧伯}}，各以本秩居任。{{special:旧典|舊典}}：{{special:伝車参駕|傳車參駕，施赤為帷裳}}。{{person:裴松之|臣松之}}按：{{person:霊帝|靈帝}}崩後，義軍起，{{person:孫堅|孫堅}}殺{{place:荊州|荊州}}{{office:刺史|刺史}}{{person:王叡|王叡}}，然後{{person:劉表|劉表}}為{{place:荊州|荊州}}，不與{{person:劉焉|焉}}同時也。《{{special:続漢書|漢靈帝紀}}》曰：帝引見{{person:劉焉|焉}}，宣示方略，加以賞賜，敕{{person:劉焉|焉}}為{{place:益州|益州}}{{office:刺史|刺史}}。前{{office:刺史|刺史}}{{person:劉雋|劉雋}}、{{person:郤倹|郤儉}}皆貪殘放濫，取受狼籍，元元無聊，呼嗟充野，{{person:劉焉|焉}}到便收攝行法，以示萬姓，勿令漏露，使癰疽決潰，為國生梗。{{person:劉焉|焉}}受命而行，以道路不通，住{{place:荊州|荊州}}東界。", "kakikudashi_tagged": "『{{special:続漢書|続漢書}}』に曰く、是の時、{{person:劉虞|劉虞}}を用ひて{{place:幽州|幽州}}と為し、{{person:劉焉|劉焉}}を{{place:益州|益州}}と為し、{{person:劉表|劉表}}を{{place:荊州|荊州}}と為し、{{person:賈琮|賈琮}}を{{place:冀州|冀州}}と為す。{{person:劉虞|虞}}等、皆{{special:海内|海内}}清名の士にして、或いは{{office:列卿|列卿}}・{{office:尚書|尚書}}より以て選ばれて{{office:州牧|牧伯}}と為り、各おの本秩を以て任に居る。{{special:旧典|旧典}}に、{{special:伝車参駕|伝車は参駕し、赤を施して帷裳と為す}}。{{person:裴松之|臣松之}}按ずるに、{{person:霊帝|霊帝}}崩ずるの後、義軍起り、{{person:孫堅|孫堅}}、{{place:荊州|荊州}}{{office:刺史|刺史}}{{person:王叡|王叡}}を殺し、然る後に{{person:劉表|劉表}}、{{place:荊州|荊州}}と為れば、{{person:劉焉|焉}}と時を同じくせざるなり。『{{special:続漢書|漢霊帝紀}}』に曰く、帝、{{person:劉焉|焉}}を引見し、方略を宣示し、加ふるに賞賜を以てし、{{person:劉焉|焉}}に敕して{{place:益州|益州}}{{office:刺史|刺史}}と為す。前の{{office:刺史|刺史}}{{person:劉雋|劉雋}}・{{person:郤倹|郤倹}}、皆貪残放濫にして、取受狼藉、元元無聊にして、呼嗟野に充つ。{{person:劉焉|焉}}到らば便ち収摂して法を行ひ、以て万姓に示し、漏露せしむる勿かれ、癰疽をして決潰し、国の為に梗を生ぜしめん、と。{{person:劉焉|焉}}、命を受けて行くも、道路通ぜざるを以て、{{place:荊州|荊州}}の東界に住まる。", "translation_tagged": "『{{special:続漢書|続漢書}}』にいう。この時、{{person:劉虞|劉虞}}を起用して{{place:幽州|幽州}}{{office:州牧|牧}}とし、{{person:劉焉|劉焉}}を{{place:益州|益州}}{{office:州牧|牧}}とし、{{person:劉表|劉表}}を{{place:荊州|荊州}}{{office:州牧|牧}}とし、{{person:賈琮|賈琮}}を{{place:冀州|冀州}}{{office:州牧|牧}}とした。{{person:劉虞|劉虞}}らはみな{{special:海内|海内}}で清廉な名声ある人物であり、ある者は{{office:列卿|列卿}}や{{office:尚書|尚書}}から選ばれて{{office:州牧|牧伯}}となり、それぞれ元の官秩のまま任に就いた。{{special:旧典|旧来の典制}}では、{{special:伝車参駕|その伝車は三頭立ての馬車とし、赤い布を垂らして車の帷裳とした}}。臣{{person:裴松之|裴松之}}が考えるに、{{person:霊帝|霊帝}}が崩御した後、義軍が蜂起し、{{person:孫堅|孫堅}}が{{place:荊州|荊州}}{{office:刺史|刺史}}の{{person:王叡|王叡}}を殺害し、その後に{{person:劉表|劉表}}が{{place:荊州|荊州}}{{office:刺史|刺史}}となったのであるから、{{person:劉焉|劉焉}}と同時ではない。『{{special:続漢書|漢霊帝紀}}』にいう。{{person:霊帝|霊帝}}は{{person:劉焉|劉焉}}を引見して方略を示し、恩賞を下賜し、{{person:劉焉|劉焉}}に勅命を下して{{place:益州|益州}}{{office:刺史|刺史}}とした。「前任の{{office:刺史|刺史}}である{{person:劉雋|劉雋}}や{{person:郤倹|郤倹}}はいずれも強欲残忍で放埒を極め、賄賂の収受が目に余り、民衆は頼るすべを失って嘆き悲しむ声が野に満ちている。{{person:劉焉|劉焉}}が着任したならば、ただちに彼らを捕らえて法に照らして処罰し、万民に知らしめよ。事前に漏洩して、腫れ物が潰れるように反乱を招き、国の禍根を生じさせることのないようにせよ」。{{person:劉焉|劉焉}}は命を受けて出発したが、道路が不通であったため、{{place:荊州|荊州}}の東境に留まった。"}, {"id": "v31_p3_5", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（劉焉）", "para_index": 3, "type": "本文", "raw_text": "扶亦求為蜀郡西部屬國都尉，及太倉令（會）巴西趙韙去官，俱隨焉。", "kakikudashi": "扶も亦た求めて蜀郡西部属国都尉と為り、及び太倉令会たま巴西の趙韙、官を去り、倶に焉に随ふ。", "translation": "董扶もまた自ら願い出て蜀郡西部属国都尉となり、また太倉令であった巴西出身の趙韙もちょうど官を辞し、ともに劉焉に従って益州へ入った。", "persons": "董扶,趙韙,劉焉", "places": "蜀郡,巴西", "era_year": "中平5年（188年）", "source_book": "", "keywords": "属国都尉,太倉令", "raw_tagged": "{{person:董扶|扶}}亦求為{{place:蜀郡|蜀郡}}{{office:属国都尉|西部屬國都尉}}，及{{office:太倉令|太倉令}}（會）{{place:巴西|巴西}}{{person:趙韙|趙韙}}去官，俱隨{{person:劉焉|焉}}。", "kakikudashi_tagged": "{{person:董扶|扶}}も亦た求めて{{place:蜀郡|蜀郡}}{{office:属国都尉|西部属国都尉}}と為り、及び{{office:太倉令|太倉令}}会たま{{place:巴西|巴西}}の{{person:趙韙|趙韙}}、官を去り、倶に{{person:劉焉|焉}}に随ふ。", "translation_tagged": "{{person:董扶|董扶}}もまた自ら願い出て{{place:蜀郡|蜀郡}}{{office:属国都尉|西部属国都尉}}となり、また{{office:太倉令|太倉令}}であった{{place:巴西|巴西}}出身の{{person:趙韙|趙韙}}もちょうど官を辞し、ともに{{person:劉焉|劉焉}}に従って益州へ入った。"}, {"id": "v31_p3_6", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（劉焉）", "para_index": 3, "type": "裴注", "raw_text": "陳壽《益部耆舊傳》曰：董扶字茂安。少從師學，兼通數經，善歐陽尚書，又事聘士楊厚，究極圖讖。遂至京師，遊覽太學，還家講授，弟子自遠而至。永康元年，日有蝕之，詔舉賢良方正之士，策問得失。左馮翊趙謙等舉扶，扶以病不詣，遙於長安上封事，遂稱疾篤歸家。前後宰府十闢，公車三徵，再舉賢良方正、博士、有道皆不就，名稱尤重。大將軍何進表薦扶曰：「資遊、夏之德，述孔氏之風，內懷焦、董消復之術。方今并、涼騷擾，西戎蠢叛，宜敕公車特召，待以異禮，諮謀奇策。」於是靈帝徵扶，即拜侍中。在朝稱為儒宗，甚見器重。求為蜀郡屬國都尉。扶出一歲而靈帝崩，天下大亂。後去官，年八十二卒於家。始扶發辭抗論，益部少雙，故號曰（致止）〔至止〕，言人莫能當，所至而談止也。後丞相諸葛亮問秦宓以扶所長，宓曰：「董扶褒秋毫之善，貶纖芥之惡。」", "kakikudashi": "陳寿の『益部耆旧伝』に曰く、董扶、字は茂安。少くして師に従ひて学び、兼ねて数経に通じ、欧陽尚書を善くし、又聘士の楊厚に事へ、図讖を究極す。遂に京師に至り、太学に遊覧し、家に還りて講授するに、弟子、遠きよりして至る。永康元年、日、之を蝕する有り、詔して賢良方正の士を挙げしめ、得失を策問す。左馮翊趙謙等、扶を挙ぐるも、扶、病を以て詣らず、遥かに長安に於て封事を上り、遂に疾篤しと称して家に帰る。前後、宰府より十たび闢せられ、公車より三たび徴され、再び賢良方正・博士・有道に挙げらるるも皆就かず、名称尤も重し。大将軍何進、扶を表薦して曰く、「游・夏の徳を資け、孔氏の風を述べ、内に焦・董消復の術を懐く。方今、并・涼騒擾し、西戎蠢叛すれば、宜しく公車に敕して特に召し、待つに異礼を以てし、奇策を諮謀すべし」と。是に於て霊帝、扶を徴し、即ち侍中に拝す。朝に在りて儒宗と称せられ、甚だ器重せらる。求めて蜀郡属国都尉と為る。扶出でて一歳にして霊帝崩じ、天下大いに乱る。後に官を去り、年八十二にして家に卒す。始め扶、辞を発し論を抗ぐるに、益部に双び少なし、故に号して至止と曰ふ、人の能く当る莫く、至る所にして談止むを言ふなり。後に丞相諸葛亮、秦宓に問ふに扶の長ずる所を以てす、宓曰く、「董扶は秋毫の善を褒め、繊芥の悪を貶す」と。", "translation": "陳寿の『益部耆旧伝』にいう。董扶、字は茂安。若い頃から師について学び、多くの経書に通暁し、とりわけ欧陽尚書に詳しく、また聘士の楊厚に師事して図讖の学を極めた。やがて京師へ上って太学に学び、帰郷して教授すると、門弟が遠方から集まってきた。永康元年、日食があり、詔によって賢良方正の士を推挙させ、政治の得失を策問した。左馮翊の趙謙らが董扶を推挙したが、董扶は病を理由に出頭せず、はるか長安から封事（密封した上奏文）を奉り、重病と称して帰郷した。前後して三公の府から十度辟召され、公車から三度召還され、賢良方正・博士・有道に二度推挙されたがいずれも就かず、その名声はきわめて重かった。大将軍の何進は董扶を上表して推薦して言った。「子游・子夏の徳を備え、孔子の遺風を伝え、胸中には焦延寿・董仲舒の災異消復の術を秘めております。いま并州・涼州が騒乱に揺れ、西戎が蠢動して反乱を起こしておりますので、公車に勅命を下して特別に召し出し、破格の礼遇をもって迎え、奇策を諮問されるべきでございます」。そこで霊帝は董扶を召し出し、ただちに侍中に任じた。朝廷において儒学の宗師と称えられ、大いに重んじられた。のち自ら願い出て蜀郡属国都尉となった。董扶が地方へ出て一年後に霊帝が崩御し、天下は大乱に陥った。のち官を辞し、八十二歳で家にて死去した。かつて董扶が議論を戦わせると、益州に並ぶ者がなかったため、「至止」と号された。誰も太刀打ちできず、董扶が来ると議論が止んでしまうという意味である。のちに丞相の諸葛亮が秦宓に董扶の長所を尋ねたところ、秦宓は「董扶は秋毫のようなわずかな善行でも褒め称え、塵芥のようなわずかな悪事でも厳しく批判しました」と答えた。", "persons": "陳寿,董扶,楊厚,趙謙,何進,言偃,卜商,孔子,焦延寿,董仲舒,霊帝,諸葛亮,秦宓", "places": "洛陽,長安,并州,涼州,蜀郡,益州", "era_year": "永康元年〜中平6年（167年〜189年）", "source_book": "益部耆旧伝", "keywords": "欧陽尚書,図讖,太学,永康,賢良方正,左馮翊,博士,有道,大将軍,西戎,侍中,属国都尉,至止,丞相", "raw_tagged": "{{person:陳寿|陳壽}}《{{special:続漢書|益部耆舊傳}}》曰：{{person:董扶|董扶}}字{{person:董扶|茂安}}。少從師學，兼通數經，善{{special:欧陽尚書|歐陽尚書}}，又事聘士{{person:楊厚|楊厚}}，究極{{special:図讖|圖讖}}。遂至{{place:洛陽|京師}}，遊覽{{special:太学|太學}}，還家講授，弟子自遠而至。{{special:永康|永康元年}}，日有蝕之，詔舉{{special:賢良方正|賢良方正}}之士，策問得失。{{office:左馮翊|左馮翊}}{{person:趙謙|趙謙}}等舉{{person:董扶|扶}}，{{person:董扶|扶}}以病不詣，遙於{{place:長安|長安}}上封事，遂稱疾篤歸家。前後{{special:司徒府|宰府}}十闢，公車三徵，再舉{{special:賢良方正|賢良方正}}、{{office:博士|博士}}、{{special:賢良方正|有道}}皆不就，名稱尤重。{{office:大将軍|大將軍}}{{person:何進|何進}}表薦{{person:董扶|扶}}曰：「資{{person:言偃|遊}}、{{person:卜商|夏}}之德，述{{person:孔子|孔氏}}之風，內懷{{person:焦延寿|焦}}、{{person:董仲舒|董}}消復之術。方今{{place:并州|并}}、{{place:涼州|涼}}騷擾，{{special:西戎|西戎}}蠢叛，宜敕公車特召，待以異禮，諮謀奇策。」於是{{person:霊帝|靈帝}}徵{{person:董扶|扶}}，即拜{{office:侍中|侍中}}。在朝稱為儒宗，甚見器重。求為{{place:蜀郡|蜀郡}}{{office:属国都尉|屬國都尉}}。{{person:董扶|扶}}出一歲而{{person:霊帝|靈帝}}崩，天下大亂。後去官，年八十二卒於家。始{{person:董扶|扶}}發辭抗論，{{place:益州|益部}}少雙，故號曰（{{special:至止|致止}}）〔{{special:至止|至止}}〕，言人莫能當，所至而談止也。後{{office:丞相|丞相}}{{person:諸葛亮|諸葛亮}}問{{person:秦宓|秦宓}}以{{person:董扶|扶}}所長，{{person:秦宓|宓}}曰：「{{person:董扶|董扶}}褒秋毫之善，貶纖芥之惡。」", "kakikudashi_tagged": "{{person:陳寿|陳寿}}の『{{special:続漢書|益部耆旧伝}}』に曰く、{{person:董扶|董扶}}、字は{{person:董扶|茂安}}。少くして師に従ひて学び、兼ねて数経に通じ、{{special:欧陽尚書|欧陽尚書}}を善くし、又聘士の{{person:楊厚|楊厚}}に事へ、{{special:図讖|図讖}}を究極す。遂に{{place:洛陽|京師}}に至り、{{special:太学|太学}}に遊覧し、家に還りて講授するに、弟子、遠きよりして至る。{{special:永康|永康元年}}、日、之を蝕する有り、詔して{{special:賢良方正|賢良方正}}の士を挙げしめ、得失を策問す。{{office:左馮翊|左馮翊}}{{person:趙謙|趙謙}}等、{{person:董扶|扶}}を挙ぐるも、{{person:董扶|扶}}、病を以て詣らず、遥かに{{place:長安|長安}}に於て封事を上り、遂に疾篤しと称して家に帰る。前後、{{special:司徒府|宰府}}より十たび闢せられ、公車より三たび徴され、再び{{special:賢良方正|賢良方正}}・{{office:博士|博士}}・{{special:賢良方正|有道}}に挙げらるるも皆就かず、名称尤も重し。{{office:大将軍|大将軍}}{{person:何進|何進}}、{{person:董扶|扶}}を表薦して曰く、「{{person:言偃|游}}・{{person:卜商|夏}}の徳を資け、{{person:孔子|孔氏}}の風を述べ、内に{{person:焦延寿|焦}}・{{person:董仲舒|董}}消復の術を懐く。方今、{{place:并州|并}}・{{place:涼州|涼}}騒擾し、{{special:西戎|西戎}}蠢叛すれば、宜しく公車に敕して特に召し、待つに異礼を以てし、奇策を諮謀すべし」と。是に於て{{person:霊帝|霊帝}}、{{person:董扶|扶}}を徴し、即ち{{office:侍中|侍中}}に拝す。朝に在りて儒宗と称せられ、甚だ器重せらる。求めて{{place:蜀郡|蜀郡}}{{office:属国都尉|属国都尉}}と為る。{{person:董扶|扶}}出でて一歳にして{{person:霊帝|霊帝}}崩じ、天下大いに乱る。後に官を去り、年八十二にして家に卒す。始め{{person:董扶|扶}}、辞を発し論を抗ぐるに、{{place:益州|益部}}に双び少なし、故に号して{{special:至止|至止}}と曰ふ、人の能く当る莫く、至る所にして談止むを言ふなり。後に{{office:丞相|丞相}}{{person:諸葛亮|諸葛亮}}、{{person:秦宓|秦宓}}に問ふに{{person:董扶|扶}}の長ずる所を以てす、{{person:秦宓|宓}}曰く、「{{person:董扶|董扶}}は秋毫の善を褒め、繊芥の悪を貶す」と。", "translation_tagged": "{{person:陳寿|陳寿}}の『{{special:続漢書|益部耆旧伝}}』にいう。{{person:董扶|董扶}}、字は{{person:董扶|茂安}}。若い頃から師について学び、多くの経書に通暁し、とりわけ{{special:欧陽尚書|欧陽尚書}}に詳しく、また聘士の{{person:楊厚|楊厚}}に師事して{{special:図讖|図讖}}の学を極めた。やがて{{place:洛陽|京師}}へ上って{{special:太学|太学}}に学び、帰郷して教授すると、門弟が遠方から集まってきた。{{special:永康|永康元年}}、日食があり、詔によって{{special:賢良方正|賢良方正}}の士を推挙させ、政治の得失を策問した。{{office:左馮翊|左馮翊}}の{{person:趙謙|趙謙}}らが{{person:董扶|董扶}}を推挙したが、{{person:董扶|董扶}}は病を理由に出頭せず、はるか{{place:長安|長安}}から封事（密封した上奏文）を奉り、重病と称して帰郷した。前後して三公の府から十度辟召され、公車から三度召還され、{{special:賢良方正|賢良方正}}・{{office:博士|博士}}・{{special:賢良方正|有道}}に二度推挙されたがいずれも就かず、その名声はきわめて重かった。{{office:大将軍|大将軍}}の{{person:何進|何進}}は{{person:董扶|董扶}}を上表して推薦して言った。「{{person:言偃|子游}}・{{person:卜商|子夏}}の徳を備え、{{person:孔子|孔子}}の遺風を伝え、胸中には{{person:焦延寿|焦延寿}}・{{person:董仲舒|董仲舒}}の災異消復の術を秘めております。いま{{place:并州|并州}}・{{place:涼州|涼州}}が騒乱に揺れ、{{special:西戎|西戎}}が蠢動して反乱を起こしておりますので、公車に勅命を下して特別に召し出し、破格の礼遇をもって迎え、奇策を諮問されるべきでございます」。そこで{{person:霊帝|霊帝}}は{{person:董扶|董扶}}を召し出し、ただちに{{office:侍中|侍中}}に任じた。朝廷において儒学の宗師と称えられ、大いに重んじられた。のち自ら願い出て{{place:蜀郡|蜀郡}}{{office:属国都尉|属国都尉}}となった。{{person:董扶|董扶}}が地方へ出て一年後に{{person:霊帝|霊帝}}が崩御し、天下は大乱に陥った。のち官を辞し、八十二歳で家にて死去した。かつて{{person:董扶|董扶}}が議論を戦わせると、{{place:益州|益州}}に並ぶ者がなかったため、「{{special:至止|至止}}」と号された。誰も太刀打ちできず、{{person:董扶|董扶}}が来ると議論が止んでしまうという意味である。のちに{{office:丞相|丞相}}の{{person:諸葛亮|諸葛亮}}が{{person:秦宓|秦宓}}に{{person:董扶|董扶}}の長所を尋ねたところ、{{person:秦宓|秦宓}}は「{{person:董扶|董扶}}は秋毫のようなわずかな善行でも褒め称え、塵芥のようなわずかな悪事でも厳しく批判しました」と答えた。"}, {"id": "v31_p4_1", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（劉焉）", "para_index": 4, "type": "本文", "raw_text": "是時〔益〕州逆賊馬相、趙祗等於綿竹縣自號黃巾，合聚疲役之民，一二日中得數千人，先殺綿竹令李升，吏民翕集，合萬餘人，便前破雒縣，攻益州殺儉，又到蜀郡、犍為，旬月之間，破壞三郡。相自稱天子，眾以萬數。州從事賈龍（素）領兵數百人在犍為東界，攝斂吏民，得千餘人，攻相等，數日破走，州界清靜。龍乃選吏卒迎焉。焉徙治綿竹，撫納離叛，務行寬惠，陰圖異計。張魯母始以鬼道，又有少容，常往來焉家，故焉遣魯為督義司馬，住漢中，斷絕谷閣，殺害漢使。焉上書言米賊斷道，不得復通，又託他事殺州中豪強王咸、李權等十餘人，以立威刑。", "kakikudashi": "是の時、益州の逆賊馬相・趙祗等、綿竹県に於て自ら黄巾と号し、疲役の民を合聚し、一二日の中に数千人を得、先づ綿竹令李升を殺し、吏民翕集して、合せて万余人、便ち前みて雒県を破り、益州を攻めて倹を殺し、又蜀郡・犍為に到り、旬月の間に、三郡を破壊す。相、自ら天子と称し、衆、万を以て数ふ。州従事賈龍、素より兵数百人を領して犍為の東界に在り、吏民を摂斂して、千余人を得、相等を攻め、数日にして破り走らせ、州界清静なり。龍、乃ち吏卒を選びて焉を迎ふ。焉、治を綿竹に徙し、離叛を撫納し、務めて寛恵を行ひ、陰かに異計を図る。張魯の母、始め鬼道を以てし、又少容有り、常に焉の家に往来す、故に焉、魯を遣はして督義司馬と為し、漢中に住まらしめ、谷閣を断絶し、漢の使ひを殺害す。焉、上書して米賊道を断ち、復た通ずるを得ずと言ひ、又他事に託して州中の豪強王咸・李権等十余人を殺し、以て威刑を立つ。", "translation": "この時、益州の逆賊である馬相・趙祗らが綿竹県において自ら黄巾と号し、労役に疲弊した民衆を糾合して一、二日のうちに数千人を集め、まず綿竹令の李升を殺害した。官吏や民衆が次々と集まって一万余人に膨れ上がると、そのまま進撃して雒県を破り、益州の州治を攻めて刺史の郤倹を殺害し、さらに蜀郡・犍為郡へなだれ込み、わずか一か月ほどの間に三郡を破壊した。馬相は自ら天子を称し、その軍勢は数万に上った。州従事の賈龍は、もともと数百人の兵を率いて犍為郡の東境にいたが、官吏や民衆を糾合して千余人を得ると、馬相らを攻撃して数日のうちに撃破・敗走させ、益州一帯は平静を取り戻した。そこで賈龍は官吏や兵卒を選んで劉焉を出迎えた。劉焉は州の治所を綿竹へ移し、離反していた人々を慰撫して受け入れ、努めて寛大で情け深い政治を行いつつ、ひそかに自立の野心を企てた。張魯の母は、早くから鬼道を用い、また若々しい美貌を保っていたため、いつも劉焉の家に出入りしていた。その縁で劉焉は張魯を督義司馬に任じて派遣し、漢中に駐屯させて褒斜道などの桟道（谷閣）を遮断させ、漢朝の使者を殺害させた。劉焉は朝廷に上書して「米賊が街道を遮断しており、もはや連絡を通じることができません」と報告し、また別の罪状に託けて州内の豪族である王咸・李権ら十余人を処刑し、自らの威厳と刑罰を確立した。", "persons": "馬相,趙祗,李升,郤倹,賈龍,劉焉,張魯,王咸,李権", "places": "益州,綿竹,雒,蜀郡,犍為,漢中", "era_year": "中平5年〜初平2年（188年〜191年）", "source_book": "", "keywords": "黄巾,県令,天子,従事,鬼道,督義司馬,谷閣,米賊", "raw_tagged": "是時〔益〕州逆賊{{person:馬相|馬相}}、{{person:趙祗|趙祗}}等於{{place:綿竹|綿竹縣}}自號{{special:黄巾|黃巾}}，合聚疲役之民，一二日中得數千人，先殺{{place:綿竹|綿竹}}{{office:県令|令}}{{person:李升|李升}}，吏民翕集，合萬餘人，便前破{{place:雒|雒縣}}，攻{{place:益州|益州}}殺{{person:郤倹|儉}}，又到{{place:蜀郡|蜀郡}}、{{place:犍為|犍為}}，旬月之間，破壞三郡。{{person:馬相|相}}自稱天子，眾以萬數。{{office:従事|州從事}}{{person:賈龍|賈龍}}（素）領兵數百人在{{place:犍為|犍為}}東界，攝斂吏民，得千餘人，攻{{person:馬相|相}}等，數日破走，州界清靜。{{person:賈龍|龍}}乃選吏卒迎{{person:劉焉|焉}}。{{person:劉焉|焉}}徙治{{place:綿竹|綿竹}}，撫納離叛，務行寬惠，陰圖異計。{{person:張魯|張魯}}母始以{{special:鬼道|鬼道}}，又有少容，常往來{{person:劉焉|焉}}家，故{{person:劉焉|焉}}遣{{person:張魯|魯}}為{{office:司馬|督義司馬}}，住{{place:漢中|漢中}}，斷絕{{special:谷閣|谷閣}}，殺害{{special:漢|漢}}使。{{person:劉焉|焉}}上書言{{special:鬼道|米賊}}斷道，不得復通，又託他事殺州中豪強{{person:王咸|王咸}}、{{person:李権|李權}}等十餘人，以立威刑。", "kakikudashi_tagged": "是の時、{{place:益州|益州}}の逆賊{{person:馬相|馬相}}・{{person:趙祗|趙祗}}等、{{place:綿竹|綿竹県}}に於て自ら{{special:黄巾|黄巾}}と号し、疲役の民を合聚し、一二日の中に数千人を得、先づ{{place:綿竹|綿竹}}{{office:県令|令}}{{person:李升|李升}}を殺し、吏民翕集して、合せて万余人、便ち前みて{{place:雒|雒県}}を破り、{{place:益州|益州}}を攻めて{{person:郤倹|倹}}を殺し、又{{place:蜀郡|蜀郡}}・{{place:犍為|犍為}}に到り、旬月の間に、三郡を破壊す。{{person:馬相|相}}、自ら天子と称し、衆、万を以て数ふ。{{office:従事|州従事}}{{person:賈龍|賈龍}}、素より兵数百人を領して{{place:犍為|犍為}}の東界に在り、吏民を摂斂して、千余人を得、{{person:馬相|相}}等を攻め、数日にして破り走らせ、州界清静なり。{{person:賈龍|龍}}、乃ち吏卒を選びて{{person:劉焉|焉}}を迎ふ。{{person:劉焉|焉}}、治を{{place:綿竹|綿竹}}に徙し、離叛を撫納し、務めて寛恵を行ひ、陰かに異計を図る。{{person:張魯|張魯}}の母、始め{{special:鬼道|鬼道}}を以てし、又少容有り、常に{{person:劉焉|焉}}の家に往来す、故に{{person:劉焉|焉}}、{{person:張魯|魯}}を遣はして{{office:司馬|督義司馬}}と為し、{{place:漢中|漢中}}に住まらしめ、{{special:谷閣|谷閣}}を断絶し、{{special:漢|漢}}の使ひを殺害す。{{person:劉焉|焉}}、上書して{{special:鬼道|米賊}}道を断ち、復た通ずるを得ずと言ひ、又他事に託して州中の豪強{{person:王咸|王咸}}・{{person:李権|李権}}等十余人を殺し、以て威刑を立つ。", "translation_tagged": "この時、{{place:益州|益州}}の逆賊である{{person:馬相|馬相}}・{{person:趙祗|趙祗}}らが{{place:綿竹|綿竹県}}において自ら{{special:黄巾|黄巾}}と号し、労役に疲弊した民衆を糾合して一、二日のうちに数千人を集め、まず{{place:綿竹|綿竹}}{{office:県令|令}}の{{person:李升|李升}}を殺害した。官吏や民衆が次々と集まって一万余人に膨れ上がると、そのまま進撃して{{place:雒|雒県}}を破り、{{place:益州|益州}}の州治を攻めて{{office:刺史|刺史}}の{{person:郤倹|郤倹}}を殺害し、さらに{{place:蜀郡|蜀郡}}・{{place:犍為|犍為}}郡へなだれ込み、わずか一か月ほどの間に三郡を破壊した。{{person:馬相|馬相}}は自ら天子を称し、その軍勢は数万に上った。{{office:従事|州従事}}の{{person:賈龍|賈龍}}は、もともと数百人の兵を率いて{{place:犍為|犍為}}郡の東境にいたが、官吏や民衆を糾合して千余人を得ると、{{person:馬相|馬相}}らを攻撃して数日のうちに撃破・敗走させ、{{place:益州|益州}}一帯は平静を取り戻した。そこで{{person:賈龍|賈龍}}は官吏や兵卒を選んで{{person:劉焉|劉焉}}を出迎えた。{{person:劉焉|劉焉}}は州の治所を{{place:綿竹|綿竹}}へ移し、離反していた人々を慰撫して受け入れ、努めて寛大で情け深い政治を行いつつ、ひそかに自立の野心を企てた。{{person:張魯|張魯}}の母は、早くから{{special:鬼道|鬼道}}を用い、また若々しい美貌を保っていたため、いつも{{person:劉焉|劉焉}}の家に出入りしていた。その縁で{{person:劉焉|劉焉}}は{{person:張魯|張魯}}を{{office:司馬|督義司馬}}に任じて派遣し、{{place:漢中|漢中}}に駐屯させて褒斜道などの桟道（{{special:谷閣|谷閣}}）を遮断させ、{{special:漢|漢朝}}の使者を殺害させた。{{person:劉焉|劉焉}}は朝廷に上書して「{{special:鬼道|米賊}}が街道を遮断しており、もはや連絡を通じることができません」と報告し、また別の罪状に託けて州内の豪族である{{person:王咸|王咸}}・{{person:李権|李権}}ら十余人を処刑し、自らの威厳と刑罰を確立した。"}, {"id": "v31_p4_2", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（劉焉）", "para_index": 4, "type": "裴注", "raw_text": "《益部耆舊雜記》曰：李權字伯豫，為臨邛長。子福。見犍為楊戲《輔臣贊》。", "kakikudashi": "『益部耆旧雑記』に曰く、李権、字は伯豫、臨邛長と為る。子は福。犍為の楊戯の『輔臣賛』に見ゆ。", "translation": "『益部耆旧雑記』にいう。李権、字は伯豫は、臨邛長となった。その子が李福である。犍為出身の楊戯が著した『季漢輔臣賛』に見える。", "persons": "李権,李福,楊戯", "places": "臨邛,犍為", "era_year": "", "source_book": "益部耆旧雑記,季漢輔臣賛", "keywords": "県長", "raw_tagged": "《{{special:続漢書|益部耆舊雜記}}》曰：{{person:李権|李權}}字{{person:李権|伯豫}}，為{{place:臨邛|臨邛}}{{office:県長|長}}。子{{person:李福|福}}。見{{place:犍為|犍為}}{{person:楊戯|楊戲}}《{{special:続漢書|輔臣贊}}》。", "kakikudashi_tagged": "『{{special:続漢書|益部耆旧雑記}}』に曰く、{{person:李権|李権}}、字は{{person:李権|伯豫}}、{{place:臨邛|臨邛}}{{office:県長|長}}と為る。子は{{person:李福|福}}。{{place:犍為|犍為}}の{{person:楊戯|楊戯}}の『{{special:続漢書|輔臣賛}}』に見ゆ。", "translation_tagged": "『{{special:続漢書|益部耆旧雑記}}』にいう。{{person:李権|李権}}、字は{{person:李権|伯豫}}は、{{place:臨邛|臨邛}}{{office:県長|長}}となった。その子が{{person:李福|李福}}である。{{place:犍為|犍為}}出身の{{person:楊戯|楊戯}}が著した『季漢{{special:続漢書|輔臣賛}}』に見える。"}, {"id": "v31_p4_3", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（劉焉）", "para_index": 4, "type": "本文", "raw_text": "犍為太守任岐及賈龍由此反攻焉，焉擊殺岐、龍。", "kakikudashi": "犍為太守任岐及び賈龍、此に由りて反して焉を攻むるも、焉、撃ちて岐・龍を殺す。", "translation": "犍為太守の任岐および賈龍は、これが原因で反旗を翻して劉焉を攻めたが、劉焉は迎え撃って任岐と賈龍を殺害した。", "persons": "任岐,賈龍,劉焉", "places": "犍為", "era_year": "初平2年（191年）", "source_book": "", "keywords": "太守", "raw_tagged": "{{place:犍為|犍為}}{{office:太守|太守}}{{person:任岐|任岐}}及{{person:賈龍|賈龍}}由此反攻{{person:劉焉|焉}}，{{person:劉焉|焉}}擊殺{{person:任岐|岐}}、{{person:賈龍|龍}}。", "kakikudashi_tagged": "{{place:犍為|犍為}}{{office:太守|太守}}{{person:任岐|任岐}}及び{{person:賈龍|賈龍}}、此に由りて反して{{person:劉焉|焉}}を攻むるも、{{person:劉焉|焉}}、撃ちて{{person:任岐|岐}}・{{person:賈龍|龍}}を殺す。", "translation_tagged": "{{place:犍為|犍為}}{{office:太守|太守}}の{{person:任岐|任岐}}および{{person:賈龍|賈龍}}は、これが原因で反旗を翻して{{person:劉焉|劉焉}}を攻めたが、{{person:劉焉|劉焉}}は迎え撃って{{person:任岐|任岐}}と{{person:賈龍|賈龍}}を殺害した。"}, {"id": "v31_p4_4", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（劉焉）", "para_index": 4, "type": "裴注", "raw_text": "《英雄記》曰：劉焉起兵，不與天下討董卓，保州自守。犍為太守任岐自稱將軍，與從事陳超舉兵擊焉，焉擊破之。董卓使司徒趙謙將兵向州，說校尉賈龍，使引兵還擊焉，焉出青羌與戰，故能破殺。岐、龍等皆蜀郡人。", "kakikudashi": "『英雄記』に曰く、劉焉、兵を起すも、天下と与に董卓を討たず、州を保ちて自ら守る。犍為太守任岐、自ら将軍と称し、従事陳超と兵を挙げて焉を撃つも、焉、撃ちて之を破る。董卓、司徒趙謙をして兵を将ゐて州に向はしめ、校尉賈龍に説き、兵を引きて還りて焉を撃たしむるも、焉、青羌を出だして与に戦ひ、故に能く破りて殺す。岐・龍等、皆蜀郡の人なり。", "translation": "『英雄記』にいう。劉焉は兵を起こしたものの、天下の諸侯とともに董卓を討とうとはせず、益州を保って自らの領地を守った。犍為太守の任岐は自ら将軍と称し、従事の陳超とともに挙兵して劉焉を攻撃したが、劉焉は迎え撃ってこれを打ち破った。また董卓は司徒の趙謙に兵を率いて益州へ向かわせ、校尉の賈龍を説得して軍を引き返させて劉焉を討たせたが、劉焉は青羌の兵を繰り出して戦い、そのため彼らを撃破して殺害することができた。任岐・賈龍らはみな蜀郡の人である。", "persons": "劉焉,董卓,任岐,陳超,趙謙,賈龍", "places": "犍為,蜀郡", "era_year": "初平2年（191年）", "source_book": "英雄記", "keywords": "太守,従事,司徒,校尉,青羌", "raw_tagged": "《{{special:続漢書|英雄記}}》曰：{{person:劉焉|劉焉}}起兵，不與天下討{{person:董卓|董卓}}，保州自守。{{place:犍為|犍為}}{{office:太守|太守}}{{person:任岐|任岐}}自稱將軍，與{{office:従事|從事}}{{person:陳超|陳超}}舉兵擊{{person:劉焉|焉}}，{{person:劉焉|焉}}擊破之。{{person:董卓|董卓}}使{{office:司徒|司徒}}{{person:趙謙|趙謙}}將兵向州，說{{office:校尉|校尉}}{{person:賈龍|賈龍}}，使引兵還擊{{person:劉焉|焉}}，{{person:劉焉|焉}}出{{special:青羌|青羌}}與戰，故能破殺。{{person:任岐|岐}}、{{person:賈龍|龍}}等皆{{place:蜀郡|蜀郡}}人。", "kakikudashi_tagged": "『{{special:続漢書|英雄記}}』に曰く、{{person:劉焉|劉焉}}、兵を起すも、天下と与に{{person:董卓|董卓}}を討たず、州を保ちて自ら守る。{{place:犍為|犍為}}{{office:太守|太守}}{{person:任岐|任岐}}、自ら将軍と称し、{{office:従事|従事}}{{person:陳超|陳超}}と兵を挙げて{{person:劉焉|焉}}を撃つも、{{person:劉焉|焉}}、撃ちて之を破る。{{person:董卓|董卓}}、{{office:司徒|司徒}}{{person:趙謙|趙謙}}をして兵を将ゐて州に向はしめ、{{office:校尉|校尉}}{{person:賈龍|賈龍}}に説き、兵を引きて還りて{{person:劉焉|焉}}を撃たしむるも、{{person:劉焉|焉}}、{{special:青羌|青羌}}を出だして与に戦ひ、故に能く破りて殺す。{{person:任岐|岐}}・{{person:賈龍|龍}}等、皆{{place:蜀郡|蜀郡}}の人なり。", "translation_tagged": "『{{special:続漢書|英雄記}}』にいう。{{person:劉焉|劉焉}}は兵を起こしたものの、天下の諸侯とともに{{person:董卓|董卓}}を討とうとはせず、益州を保って自らの領地を守った。{{place:犍為|犍為}}{{office:太守|太守}}の{{person:任岐|任岐}}は自ら将軍と称し、{{office:従事|従事}}の{{person:陳超|陳超}}とともに挙兵して{{person:劉焉|劉焉}}を攻撃したが、{{person:劉焉|劉焉}}は迎え撃ってこれを打ち破った。また{{person:董卓|董卓}}は{{office:司徒|司徒}}の{{person:趙謙|趙謙}}に兵を率いて益州へ向かわせ、{{office:校尉|校尉}}の{{person:賈龍|賈龍}}を説得して軍を引き返させて{{person:劉焉|劉焉}}を討たせたが、{{person:劉焉|劉焉}}は{{special:青羌|青羌}}の兵を繰り出して戦い、そのため彼らを撃破して殺害することができた。{{person:任岐|任岐}}・{{person:賈龍|賈龍}}らはみな{{place:蜀郡|蜀郡}}の人である。"}, {"id": "v31_p5_1", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（劉焉）", "para_index": 5, "type": "本文", "raw_text": "焉意漸盛，造作乘輿車具千餘乘。荊州牧劉表表上焉有似子夏在西河疑聖人之論。時焉子範為左中郎將，誕治書御史，璋為奉車都尉，皆從獻帝在長安，", "kakikudashi": "焉の意、漸く盛んにして、乗輿の車具千余乗を造作す。荊州牧劉表、表上すらく、焉に子夏が西河に在りて聖人と疑はれしの論に似たる有り、と。時に焉の子の範は左中郎将と為り、誕は治書御史、璋は奉車都尉と為り、皆献帝に従ひて長安に在り。", "translation": "劉焉の野心はしだいに膨れ上がり、天子専用の乗輿や車具千余乗を造作した。荊州牧の劉表は、「劉焉には、かつて子夏が西河にいたとき人々に聖人ではないかと擬せられたという故事に似た振る舞いがございます」と朝廷に上表した。当時、劉焉の子の劉範は左中郎将、劉誕は治書御史、劉璋は奉車都尉となっており、みな献帝に従って長安にいた。", "persons": "劉焉,劉表,卜商,劉範,劉誕,劉璋,献帝", "places": "荊州,西河,長安", "era_year": "初平3年〜興平元年（192年〜194年）", "source_book": "", "keywords": "乗輿,州牧,左中郎将,治書御史,奉車都尉", "raw_tagged": "{{person:劉焉|焉}}意漸盛，造作{{special:乗輿|乘輿}}車具千餘乘。{{place:荊州|荊州}}{{office:州牧|牧}}{{person:劉表|劉表}}表上{{person:劉焉|焉}}有似{{person:卜商|子夏}}在{{place:西河|西河}}疑聖人之論。時{{person:劉焉|焉}}子{{person:劉範|範}}為{{office:中郎将|左中郎將}}，{{person:劉誕|誕}}{{office:御史中丞|治書御史}}，{{person:劉璋|璋}}為{{office:奉車都尉|奉車都尉}}，皆從{{person:献帝|獻帝}}在{{place:長安|長安}}，", "kakikudashi_tagged": "{{person:劉焉|焉}}の意、漸く盛んにして、{{special:乗輿|乗輿}}の車具千余乗を造作す。{{place:荊州|荊州}}{{office:州牧|牧}}{{person:劉表|劉表}}、表上すらく、{{person:劉焉|焉}}に{{person:卜商|子夏}}が{{place:西河|西河}}に在りて聖人と疑はれしの論に似たる有り、と。時に{{person:劉焉|焉}}の子の{{person:劉範|範}}は{{office:中郎将|左中郎将}}と為り、{{person:劉誕|誕}}は{{office:御史中丞|治書御史}}、{{person:劉璋|璋}}は{{office:奉車都尉|奉車都尉}}と為り、皆{{person:献帝|献帝}}に従ひて{{place:長安|長安}}に在り。", "translation_tagged": "{{person:劉焉|劉焉}}の野心はしだいに膨れ上がり、天子専用の{{special:乗輿|乗輿}}や車具千余乗を造作した。{{place:荊州|荊州}}{{office:州牧|牧}}の{{person:劉表|劉表}}は、「{{person:劉焉|劉焉}}には、かつて{{person:卜商|子夏}}が{{place:西河|西河}}にいたとき人々に聖人ではないかと擬せられたという故事に似た振る舞いがございます」と朝廷に上表した。当時、{{person:劉焉|劉焉}}の子の{{person:劉範|劉範}}は{{office:中郎将|左中郎将}}、{{person:劉誕|劉誕}}は{{office:御史中丞|治書御史}}、{{person:劉璋|劉璋}}は{{office:奉車都尉|奉車都尉}}となっており、みな{{person:献帝|献帝}}に従って{{place:長安|長安}}にいた。"}, {"id": "v31_p5_2", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（劉焉）", "para_index": 5, "type": "裴注", "raw_text": "《英雄記》曰：範（聞）父焉為益州牧，董卓所徵發，皆不至。收範兄弟三人，鎖械於郿塢，為陰獄以繫之。", "kakikudashi": "『英雄記』に曰く、範、父の焉が益州牧と為り、董卓の徴発する所、皆至らざるを聞く。範の兄弟三人を収め、郿塢に鎖械し、陰獄を為りて以て之を繋ぐ。", "translation": "『英雄記』にいう。劉範の父である劉焉が益州牧となり、董卓が徴発を命じても一切応じなかったため、董卓は劉範ら兄弟三人を捕らえ、郿塢に鎖と足枷で監禁し、地下牢を作って彼らを繋いだ。", "persons": "劉範,劉焉,董卓", "places": "益州,郿", "era_year": "初平3年（192年）", "source_book": "英雄記", "keywords": "州牧", "raw_tagged": "《{{special:続漢書|英雄記}}》曰：{{person:劉範|範}}（聞）父{{person:劉焉|焉}}為{{place:益州|益州}}{{office:州牧|牧}}，{{person:董卓|董卓}}所徵發，皆不至。收{{person:劉範|範}}兄弟三人，鎖械於{{place:郿|郿塢}}，為陰獄以繫之。", "kakikudashi_tagged": "『{{special:続漢書|英雄記}}』に曰く、{{person:劉範|範}}、父の{{person:劉焉|焉}}が{{place:益州|益州}}{{office:州牧|牧}}と為り、{{person:董卓|董卓}}の徴発する所、皆至らざるを聞く。{{person:劉範|範}}の兄弟三人を収め、{{place:郿|郿塢}}に鎖械し、陰獄を為りて以て之を繋ぐ。", "translation_tagged": "『{{special:続漢書|英雄記}}』にいう。{{person:劉範|劉範}}の父である{{person:劉焉|劉焉}}が{{place:益州|益州}}{{office:州牧|牧}}となり、{{person:董卓|董卓}}が徴発を命じても一切応じなかったため、{{person:董卓|董卓}}は{{person:劉範|劉範}}ら兄弟三人を捕らえ、{{place:郿|郿塢}}に鎖と足枷で監禁し、地下牢を作って彼らを繋いだ。"}, {"id": "v31_p5_3", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（劉焉）", "para_index": 5, "type": "本文", "raw_text": "惟（小）子別部司馬瑁素隨焉。獻帝使璋曉諭焉，焉留璋不遣。", "kakikudashi": "惟だ小子の別部司馬瑁のみ素より焉に随ふ。献帝、璋をして焉を暁諭せしむるに、焉、璋を留めて遣らず。", "translation": "ただ末子の別部司馬・劉瑁だけが以前から劉焉の手元に随行していた。献帝は劉璋を使者として遣わし、劉焉を諭させたが、劉焉は劉璋を益州に引き留めて長安へ帰さなかった。", "persons": "劉瑁,劉焉,献帝,劉璋", "places": "", "era_year": "初平3年〜4年（192年〜193年）", "source_book": "", "keywords": "別部司馬", "raw_tagged": "惟（小）子{{office:司馬|別部司馬}}{{person:劉瑁|瑁}}素隨{{person:劉焉|焉}}。{{person:献帝|獻帝}}使{{person:劉璋|璋}}曉諭{{person:劉焉|焉}}，{{person:劉焉|焉}}留{{person:劉璋|璋}}不遣。", "kakikudashi_tagged": "惟だ小子の{{office:司馬|別部司馬}}{{person:劉瑁|瑁}}のみ素より{{person:劉焉|焉}}に随ふ。{{person:献帝|献帝}}、{{person:劉璋|璋}}をして{{person:劉焉|焉}}を暁諭せしむるに、{{person:劉焉|焉}}、{{person:劉璋|璋}}を留めて遣らず。", "translation_tagged": "ただ末子の{{office:司馬|別部司馬}}・{{person:劉瑁|劉瑁}}だけが以前から{{person:劉焉|劉焉}}の手元に随行していた。{{person:献帝|献帝}}は{{person:劉璋|劉璋}}を使者として遣わし、{{person:劉焉|劉焉}}を諭させたが、{{person:劉焉|劉焉}}は{{person:劉璋|劉璋}}を益州に引き留めて長安へ帰さなかった。"}, {"id": "v31_p5_4", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（劉焉）", "para_index": 5, "type": "裴注", "raw_text": "《典略》曰：時璋為奉車都尉，在京師。焉託疾召璋，璋自表省焉，焉遂留璋不還。", "kakikudashi": "『典略』に曰く、時に璋は奉車都尉と為り、京師に在り。焉、疾に託して璋を召し、璋、自ら表して焉を省みるに、焉、遂に璋を留めて還さず。", "translation": "『典略』にいう。当時、劉璋は奉車都尉として京師にいた。劉焉が病気を口実に劉璋を呼び寄せたため、劉璋は自ら上表して父の見舞いに赴いたところ、劉焉はそのまま劉璋を引き留めて帰さなかった。", "persons": "劉璋,劉焉", "places": "洛陽", "era_year": "初平3年〜4年（192年〜193年）", "source_book": "典略", "keywords": "奉車都尉", "raw_tagged": "《{{special:続漢書|典略}}》曰：時{{person:劉璋|璋}}為{{office:奉車都尉|奉車都尉}}，在{{place:洛陽|京師}}。{{person:劉焉|焉}}託疾召{{person:劉璋|璋}}，{{person:劉璋|璋}}自表省{{person:劉焉|焉}}，{{person:劉焉|焉}}遂留{{person:劉璋|璋}}不還。", "kakikudashi_tagged": "『{{special:続漢書|典略}}』に曰く、時に{{person:劉璋|璋}}は{{office:奉車都尉|奉車都尉}}と為り、{{place:洛陽|京師}}に在り。{{person:劉焉|焉}}、疾に託して{{person:劉璋|璋}}を召し、{{person:劉璋|璋}}、自ら表して{{person:劉焉|焉}}を省みるに、{{person:劉焉|焉}}、遂に{{person:劉璋|璋}}を留めて還さず。", "translation_tagged": "『{{special:続漢書|典略}}』にいう。当時、{{person:劉璋|劉璋}}は{{office:奉車都尉|奉車都尉}}として{{place:洛陽|京師}}にいた。{{person:劉焉|劉焉}}が病気を口実に{{person:劉璋|劉璋}}を呼び寄せたため、{{person:劉璋|劉璋}}は自ら上表して父の見舞いに赴いたところ、{{person:劉焉|劉焉}}はそのまま{{person:劉璋|劉璋}}を引き留めて帰さなかった。"}, {"id": "v31_p5_5", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（劉焉）", "para_index": 5, "type": "本文", "raw_text": "時征西將軍馬騰屯郿而反，焉及範與騰通謀，引兵襲長安。範謀洩，奔槐里，騰敗，退還涼州，範應時見殺，於是收誕行刑。", "kakikudashi": "時に征西将軍馬騰、郿に屯して反す。焉及び範、騰と謀を通じ、兵を引きて長安を襲はんとす。範の謀洩れ、槐里に奔り、騰敗れて、涼州に退き還り、範、時に応じて殺され、是に於て誕を収めて刑を行ふ。", "translation": "この時、征西将軍の馬騰が郿に駐屯して反乱を起こした。劉焉および劉範は馬騰と内通し、兵を率いて長安を奇襲しようと謀った。しかし劉範の計画は事前に露見して槐里へ逃走し、馬騰も敗れて涼州へ退却したため、劉範はその場で殺害され、続いて劉誕も捕らえられて処刑された。", "persons": "馬騰,劉焉,劉範,劉誕", "places": "郿,長安,槐里,涼州", "era_year": "興平元年（194年）", "source_book": "", "keywords": "征西将軍", "raw_tagged": "時{{office:征西将軍|征西將軍}}{{person:馬騰|馬騰}}屯{{place:郿|郿}}而反，{{person:劉焉|焉}}及{{person:劉範|範}}與{{person:馬騰|騰}}通謀，引兵襲{{place:長安|長安}}。{{person:劉範|範}}謀洩，奔{{place:槐里|槐里}}，{{person:馬騰|騰}}敗，退還{{place:涼州|涼州}}，{{person:劉範|範}}應時見殺，於是收{{person:劉誕|誕}}行刑。", "kakikudashi_tagged": "時に{{office:征西将軍|征西将軍}}{{person:馬騰|馬騰}}、{{place:郿|郿}}に屯して反す。{{person:劉焉|焉}}及び{{person:劉範|範}}、{{person:馬騰|騰}}と謀を通じ、兵を引きて{{place:長安|長安}}を襲はんとす。{{person:劉範|範}}の謀洩れ、{{place:槐里|槐里}}に奔り、{{person:馬騰|騰}}敗れて、{{place:涼州|涼州}}に退き還り、{{person:劉範|範}}、時に応じて殺され、是に於て{{person:劉誕|誕}}を収めて刑を行ふ。", "translation_tagged": "この時、{{office:征西将軍|征西将軍}}の{{person:馬騰|馬騰}}が{{place:郿|郿}}に駐屯して反乱を起こした。{{person:劉焉|劉焉}}および{{person:劉範|劉範}}は{{person:馬騰|馬騰}}と内通し、兵を率いて{{place:長安|長安}}を奇襲しようと謀った。しかし{{person:劉範|劉範}}の計画は事前に露見して{{place:槐里|槐里}}へ逃走し、{{person:馬騰|馬騰}}も敗れて{{place:涼州|涼州}}へ退却したため、{{person:劉範|劉範}}はその場で殺害され、続いて{{person:劉誕|劉誕}}も捕らえられて処刑された。"}, {"id": "v31_p5_6", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（劉焉）", "para_index": 5, "type": "裴注", "raw_text": "《英雄記》曰：範從長安亡之馬騰營，從焉求兵。焉使校尉孫肇將兵往助之，敗於長安。", "kakikudashi": "『英雄記』に曰く、範、長安より亡げて馬騰の営に之き、焉より兵を求む。焉、校尉孫肇をして兵を将ゐて往きて之を助けしむるも、長安に敗る。", "translation": "『英雄記』にいう。劉範は長安から脱出して馬騰の陣営へ赴き、父の劉焉に援兵を求めた。劉焉は校尉の孫肇に兵を率いて救援に向かわせたが、長安で敗北した。", "persons": "劉範,馬騰,劉焉,孫肇", "places": "長安", "era_year": "興平元年（194年）", "source_book": "英雄記", "keywords": "校尉", "raw_tagged": "《{{special:続漢書|英雄記}}》曰：{{person:劉範|範}}從{{place:長安|長安}}亡之{{person:馬騰|馬騰}}營，從{{person:劉焉|焉}}求兵。{{person:劉焉|焉}}使{{office:校尉|校尉}}{{person:孫肇|孫肇}}將兵往助之，敗於{{place:長安|長安}}。", "kakikudashi_tagged": "『{{special:続漢書|英雄記}}』に曰く、{{person:劉範|範}}、{{place:長安|長安}}より亡げて{{person:馬騰|馬騰}}の営に之き、{{person:劉焉|焉}}より兵を求む。{{person:劉焉|焉}}、{{office:校尉|校尉}}{{person:孫肇|孫肇}}をして兵を将ゐて往きて之を助けしむるも、{{place:長安|長安}}に敗る。", "translation_tagged": "『{{special:続漢書|英雄記}}』にいう。{{person:劉範|劉範}}は{{place:長安|長安}}から脱出して{{person:馬騰|馬騰}}の陣営へ赴き、父の{{person:劉焉|劉焉}}に援兵を求めた。{{person:劉焉|劉焉}}は{{office:校尉|校尉}}の{{person:孫肇|孫肇}}に兵を率いて救援に向かわせたが、{{place:長安|長安}}で敗北した。"}, {"id": "v31_p5_7", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（劉焉）", "para_index": 5, "type": "本文", "raw_text": "議郎河南龐羲與焉通家，乃募將焉諸孫入蜀。", "kakikudashi": "議郎河南の龐羲、焉と通家なれば、乃ち募りて焉の諸孫を将ゐて蜀に入る。", "translation": "議郎で河南出身の龐羲は、劉焉の家と代々の親交（通家）があったため、私兵を募って劉焉の孫たちを救出し、彼らを連れて蜀へ入った。", "persons": "龐羲,劉焉", "places": "河南,蜀", "era_year": "興平元年（194年）", "source_book": "", "keywords": "議郎,通家", "raw_tagged": "{{office:議郎|議郎}}{{place:河南|河南}}{{person:龐羲|龐羲}}與{{person:劉焉|焉}}通家，乃募將{{person:劉焉|焉}}諸孫入{{place:蜀|蜀}}。", "kakikudashi_tagged": "{{office:議郎|議郎}}{{place:河南|河南}}の{{person:龐羲|龐羲}}、{{person:劉焉|焉}}と通家なれば、乃ち募りて{{person:劉焉|焉}}の諸孫を将ゐて{{place:蜀|蜀}}に入る。", "translation_tagged": "{{office:議郎|議郎}}で{{place:河南|河南}}出身の{{person:龐羲|龐羲}}は、{{person:劉焉|劉焉}}の家と代々の親交（通家）があったため、私兵を募って{{person:劉焉|劉焉}}の孫たちを救出し、彼らを連れて{{place:蜀|蜀}}へ入った。"}, {"id": "v31_p6_1", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（劉焉）", "para_index": 6, "type": "本文", "raw_text": "時焉被天火燒城，車具蕩盡，延及民家。焉徙治成都，既痛其子，又感祅災，興平元年，癰疽發背而卒。州大吏趙韙等貪璋溫仁，共上璋為益州刺史，詔書因以為監軍使者，領益州牧，以韙為征東中郎將，率眾擊劉表。", "kakikudashi": "時に焉、天火の城を焼くを被り、車具蕩尽し、民家に延及す。焉、治を成都に徙し、既に其の子を痛惜し、又祅災に感じ、興平元年、癰疽背に発して卒す。州の大吏趙韙等、璋の温仁なるを貪り、共に璋を上りて益州刺史と為し、詔書、因りて以て監軍使者と為し、益州牧を領せしめ、韙を以て征東中郎将と為し、衆を率ゐて劉表を撃たしむ。", "translation": "この頃、劉焉は落雷による火災（天火）で綿竹の城を焼かれ、造作した車具もことごとく焼失し、火は民家にまで燃え広がった。劉焉は治所を成都へ移したが、二人の息子を失った悲痛さに加え、不吉な災異（祅災）に衝撃を受け、興平元年、背中に悪性の腫れ物（癰疽）ができて死去した。益州の高官である趙韙らは、劉璋が温和で情け深い性格であるのに乗じて思い通りに動かそうと考え、こぞって劉璋を益州刺史として上表した。朝廷も詔書によってそのまま劉璋を監軍使者とし、益州牧を兼領させ、趙韙を征東中郎将に任じ、軍勢を率いて荊州の劉表を攻撃させた。", "persons": "劉焉,趙韙,劉璋,劉表", "places": "成都,益州", "era_year": "興平元年（194年）", "source_book": "", "keywords": "天火,癰疽,興平,刺史,監軍使者,州牧,征東中郎将", "raw_tagged": "時{{person:劉焉|焉}}被天火燒城，車具蕩盡，延及民家。{{person:劉焉|焉}}徙治{{place:成都|成都}}，既痛其子，又感祅災，{{special:興平|興平元年}}，癰疽發背而卒。州大吏{{person:趙韙|趙韙}}等貪{{person:劉璋|璋}}溫仁，共上{{person:劉璋|璋}}為{{place:益州|益州}}{{office:刺史|刺史}}，詔書因以為{{office:監軍使者|監軍使者}}，領{{place:益州|益州}}{{office:州牧|牧}}，以{{person:趙韙|韙}}為{{office:中郎将|征東中郎將}}，率眾擊{{person:劉表|劉表}}。", "kakikudashi_tagged": "時に{{person:劉焉|焉}}、天火の城を焼くを被り、車具蕩尽し、民家に延及す。{{person:劉焉|焉}}、治を{{place:成都|成都}}に徙し、既に其の子を痛惜し、又祅災に感じ、{{special:興平|興平元年}}、癰疽背に発して卒す。州の大吏{{person:趙韙|趙韙}}等、{{person:劉璋|璋}}の温仁なるを貪り、共に{{person:劉璋|璋}}を上りて{{place:益州|益州}}{{office:刺史|刺史}}と為し、詔書、因りて以て{{office:監軍使者|監軍使者}}と為し、{{place:益州|益州}}{{office:州牧|牧}}を領せしめ、{{person:趙韙|韙}}を以て{{office:中郎将|征東中郎将}}と為し、衆を率ゐて{{person:劉表|劉表}}を撃たしむ。", "translation_tagged": "この頃、{{person:劉焉|劉焉}}は落雷による火災（天火）で綿竹の城を焼かれ、造作した車具もことごとく焼失し、火は民家にまで燃え広がった。{{person:劉焉|劉焉}}は治所を{{place:成都|成都}}へ移したが、二人の息子を失った悲痛さに加え、不吉な災異（祅災）に衝撃を受け、{{special:興平|興平元年}}、背中に悪性の腫れ物（癰疽）ができて死去した。{{place:益州|益州}}の高官である{{person:趙韙|趙韙}}らは、{{person:劉璋|劉璋}}が温和で情け深い性格であるのに乗じて思い通りに動かそうと考え、こぞって{{person:劉璋|劉璋}}を{{place:益州|益州}}{{office:刺史|刺史}}として上表した。朝廷も詔書によってそのまま{{person:劉璋|劉璋}}を{{office:監軍使者|監軍使者}}とし、{{place:益州|益州}}{{office:州牧|牧}}を兼領させ、{{person:趙韙|趙韙}}を{{office:中郎将|征東中郎将}}に任じ、軍勢を率いて荊州の{{person:劉表|劉表}}を攻撃させた。"}, {"id": "v31_p6_2", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（劉焉）", "para_index": 6, "type": "裴注", "raw_text": "《英雄記》曰：焉死，子璋代為刺史。會長安拜潁川扈瑁為刺史，入漢中。荊州別駕劉闔，璋將沈彌、婁發、甘寧反，擊璋不勝，走入荊州。璋使趙韙進攻荊州，屯朐䏰。上蠢，下如振反。", "kakikudashi": "『英雄記』に曰く、焉死し、子の璋、代りて刺史と為る。会たま長安、潁川の扈瑁を拝して刺史と為し、漢中に入らしむ。荊州別駕劉闔、璋の将沈弥・婁発・甘寧と反し、璋を撃つも勝たず、走りて荊州に入る。璋、趙韙をして進みて荊州を攻めしめ、朐䏰に屯す。上は蠢、下は如振の反なり。", "translation": "『英雄記』にいう。劉焉が死去すると、子の劉璋が代わって刺史となった。ちょうどその時、長安の朝廷は潁川出身の扈瑁を益州刺史に任じ、漢中へ入らせた。荊州別駕の劉闔は、劉璋の部将である沈弥・婁発・甘寧らとともに反乱を起こし、劉璋を攻撃したが勝てず、荊州へ逃走した。劉璋は趙韙を進軍させて荊州を攻めさせ、朐䏰に駐屯させた。「朐䏰」の上の字の音は「蠢（しゅん）」、下の字の音は「如（じょ）」と「振（しん）」の反切（じゅん）である。", "persons": "劉焉,劉璋,扈瑁,劉闔,沈弥,婁発,甘寧,趙韙", "places": "長安,潁川,漢中,荊州,朐䏰", "era_year": "興平元年〜建安初年（194年〜196年頃）", "source_book": "英雄記", "keywords": "刺史,別駕", "raw_tagged": "《{{special:続漢書|英雄記}}》曰：{{person:劉焉|焉}}死，子{{person:劉璋|璋}}代為{{office:刺史|刺史}}。會{{place:長安|長安}}拜{{place:潁川|潁川}}{{person:扈瑁|扈瑁}}為{{office:刺史|刺史}}，入{{place:漢中|漢中}}。{{place:荊州|荊州}}{{office:別駕|別駕}}{{person:劉闔|劉闔}}，{{person:劉璋|璋}}將沈彌、{{person:婁発|婁發}}、{{person:甘寧|甘寧}}反，擊{{person:劉璋|璋}}不勝，走入{{place:荊州|荊州}}。{{person:劉璋|璋}}使{{person:趙韙|趙韙}}進攻{{place:荊州|荊州}}，屯{{place:朐䏰|朐䏰}}。上蠢，下如振反。", "kakikudashi_tagged": "『{{special:続漢書|英雄記}}』に曰く、{{person:劉焉|焉}}死し、子の{{person:劉璋|璋}}、代りて{{office:刺史|刺史}}と為る。会たま{{place:長安|長安}}、{{place:潁川|潁川}}の{{person:扈瑁|扈瑁}}を拝して{{office:刺史|刺史}}と為し、{{place:漢中|漢中}}に入らしむ。{{place:荊州|荊州}}{{office:別駕|別駕}}{{person:劉闔|劉闔}}、{{person:劉璋|璋}}の将{{person:沈弥|沈弥}}・{{person:婁発|婁発}}・{{person:甘寧|甘寧}}と反し、{{person:劉璋|璋}}を撃つも勝たず、走りて{{place:荊州|荊州}}に入る。{{person:劉璋|璋}}、{{person:趙韙|趙韙}}をして進みて{{place:荊州|荊州}}を攻めしめ、{{place:朐䏰|朐䏰}}に屯す。上は蠢、下は如振の反なり。", "translation_tagged": "『{{special:続漢書|英雄記}}』にいう。{{person:劉焉|劉焉}}が死去すると、子の{{person:劉璋|劉璋}}が代わって{{office:刺史|刺史}}となった。ちょうどその時、{{place:長安|長安}}の朝廷は{{place:潁川|潁川}}出身の{{person:扈瑁|扈瑁}}を益州{{office:刺史|刺史}}に任じ、{{place:漢中|漢中}}へ入らせた。{{place:荊州|荊州}}{{office:別駕|別駕}}の{{person:劉闔|劉闔}}は、{{person:劉璋|劉璋}}の部将である{{person:沈弥|沈弥}}・{{person:婁発|婁発}}・{{person:甘寧|甘寧}}らとともに反乱を起こし、{{person:劉璋|劉璋}}を攻撃したが勝てず、{{place:荊州|荊州}}へ逃走した。{{person:劉璋|劉璋}}は{{person:趙韙|趙韙}}を進軍させて{{place:荊州|荊州}}を攻めさせ、{{place:朐䏰|朐䏰}}に駐屯させた。「{{place:朐䏰|朐䏰}}」の上の字の音は「蠢（しゅん）」、下の字の音は「如（じょ）」と「振（しん）」の反切（じゅん）である。"}, {"id": "v31_p7_1", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（劉璋）", "para_index": 7, "type": "本文", "raw_text": "璋字季玉，既襲焉位，而張魯稍驕恣，不承順璋，璋殺魯母及弟，遂為讎敵。璋累遣龐羲等攻魯，〔數為〕所破。魯部曲多在巴西，故以羲為巴西太守，領兵禦魯。", "kakikudashi": "璋、字は季玉。既に焉の位を襲ぐも、張魯、稍く驕恣にして、璋に承順せず。璋、魯の母及び弟を殺せば、遂に讎敵と為る。璋、累りに龐羲等を遣はして魯を攻めしむるも、しばしば破る所と為る。魯の部曲、多く巴西に在り、故に羲を以て巴西太守と為し、兵を領して魯を禦がしむ。", "translation": "劉璋、字は季玉。父・劉焉の地位を継いだものの、漢中の張魯がしだいに驕慢になり、劉璋の命に従わなくなった。そこで劉璋が成都にいた張魯の母と弟を殺害したため、ついに不倶戴天の仇敵となった。劉璋はたびたび龐羲らを派遣して張魯を攻めさせたが、そのつど撃破された。張魯の部曲（私兵集団）が多く巴西郡にいたため、劉璋は龐羲を巴西太守に任じ、兵を率いて張魯を防がせた。", "persons": "劉璋,劉焉,張魯,龐羲", "places": "巴西", "era_year": "建安5年（200年）頃", "source_book": "", "keywords": "部曲,太守", "raw_tagged": "{{person:劉璋|璋}}字{{person:劉璋|季玉}}，既襲{{person:劉焉|焉}}位，而{{person:張魯|張魯}}稍驕恣，不承順{{person:劉璋|璋}}，{{person:劉璋|璋}}殺{{person:張魯|魯}}母及弟，遂為讎敵。{{person:劉璋|璋}}累遣{{person:龐羲|龐羲}}等攻{{person:張魯|魯}}，〔數為〕所破。{{person:張魯|魯}}部曲多在{{place:巴西|巴西}}，故以{{person:龐羲|羲}}為{{place:巴西|巴西}}{{office:太守|太守}}，領兵禦{{person:張魯|魯}}。", "kakikudashi_tagged": "{{person:劉璋|璋}}、字は{{person:劉璋|季玉}}。既に{{person:劉焉|焉}}の位を襲ぐも、{{person:張魯|張魯}}、稍く驕恣にして、{{person:劉璋|璋}}に承順せず。{{person:劉璋|璋}}、{{person:張魯|魯}}の母及び弟を殺せば、遂に讎敵と為る。{{person:劉璋|璋}}、累りに{{person:龐羲|龐羲}}等を遣はして{{person:張魯|魯}}を攻めしむるも、しばしば破る所と為る。{{person:張魯|魯}}の部曲、多く{{place:巴西|巴西}}に在り、故に{{person:龐羲|羲}}を以て{{place:巴西|巴西}}{{office:太守|太守}}と為し、兵を領して{{person:張魯|魯}}を禦がしむ。", "translation_tagged": "{{person:劉璋|劉璋}}、字は{{person:劉璋|季玉}}。父・{{person:劉焉|劉焉}}の地位を継いだものの、漢中の{{person:張魯|張魯}}がしだいに驕慢になり、{{person:劉璋|劉璋}}の命に従わなくなった。そこで{{person:劉璋|劉璋}}が成都にいた{{person:張魯|張魯}}の母と弟を殺害したため、ついに不倶戴天の仇敵となった。{{person:劉璋|劉璋}}はたびたび{{person:龐羲|龐羲}}らを派遣して{{person:張魯|張魯}}を攻めさせたが、そのつど撃破された。{{person:張魯|張魯}}の部曲（私兵集団）が多く{{place:巴西|巴西}}郡にいたため、{{person:劉璋|劉璋}}は{{person:龐羲|龐羲}}を{{place:巴西|巴西}}{{office:太守|太守}}に任じ、兵を率いて{{person:張魯|張魯}}を防がせた。"}, {"id": "v31_p7_2", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（劉璋）", "para_index": 7, "type": "裴注", "raw_text": "《英雄記》曰：龐羲與璋有舊，又免璋諸子於難，故璋厚德羲，以羲為巴西太守，遂專權勢。", "kakikudashi": "『英雄記』に曰く、龐羲、璋と旧有り、又璋の諸子を難より免れしむ、故に璋、厚く羲を徳とし、羲を以て巴西太守と為し、遂に権勢を専らにす。", "translation": "『英雄記』にいう。龐羲は劉璋と旧交があり、また劉璋の子供たちを長安の危難から救い出した功績があったため、劉璋は龐羲に深く恩義を感じ、龐羲を巴西太守に任じた。こうして龐羲は権勢をほしいままにするようになった。", "persons": "龐羲,劉璋", "places": "巴西", "era_year": "建安5年（200年）頃", "source_book": "英雄記", "keywords": "太守", "raw_tagged": "《{{special:続漢書|英雄記}}》曰：{{person:龐羲|龐羲}}與{{person:劉璋|璋}}有舊，又免{{person:劉璋|璋}}諸子於難，故{{person:劉璋|璋}}厚德{{person:龐羲|羲}}，以{{person:龐羲|羲}}為{{place:巴西|巴西}}{{office:太守|太守}}，遂專權勢。", "kakikudashi_tagged": "『{{special:続漢書|英雄記}}』に曰く、{{person:龐羲|龐羲}}、{{person:劉璋|璋}}と旧有り、又{{person:劉璋|璋}}の諸子を難より免れしむ、故に{{person:劉璋|璋}}、厚く{{person:龐羲|羲}}を徳とし、{{person:龐羲|羲}}を以て{{place:巴西|巴西}}{{office:太守|太守}}と為し、遂に権勢を専らにす。", "translation_tagged": "『{{special:続漢書|英雄記}}』にいう。{{person:龐羲|龐羲}}は{{person:劉璋|劉璋}}と旧交があり、また{{person:劉璋|劉璋}}の子供たちを長安の危難から救い出した功績があったため、{{person:劉璋|劉璋}}は{{person:龐羲|龐羲}}に深く恩義を感じ、{{person:龐羲|龐羲}}を{{place:巴西|巴西}}{{office:太守|太守}}に任じた。こうして{{person:龐羲|龐羲}}は権勢をほしいままにするようになった。"}, {"id": "v31_p7_3", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（劉璋）", "para_index": 7, "type": "本文", "raw_text": "後羲與璋情好攜隙，趙韙稱兵內向，眾散見殺，皆由璋明斷少而外言入故也。", "kakikudashi": "後に羲、璋と情好携隙し、趙韙、兵を称げて内に向ひ、衆散じて殺さる。皆、璋の明断少なくして外言入るに由るが故なり。", "translation": "のちに龐羲と劉璋の仲が険悪となり、また趙韙が挙兵して成都へ攻め上ったものの部衆が離散して殺害されるなど、こうした内乱はすべて劉璋に聡明な決断力が乏しく、外部の中傷や讒言を受け入れてしまったために起きたのである。", "persons": "龐羲,劉璋,趙韙", "places": "", "era_year": "建安5年〜6年（200年〜201年）", "source_book": "", "keywords": "", "raw_tagged": "後{{person:龐羲|羲}}與{{person:劉璋|璋}}情好攜隙，{{person:趙韙|趙韙}}稱兵內向，眾散見殺，皆由{{person:劉璋|璋}}明斷少而外言入故也。", "kakikudashi_tagged": "後に{{person:龐羲|羲}}、{{person:劉璋|璋}}と情好携隙し、{{person:趙韙|趙韙}}、兵を称げて内に向ひ、衆散じて殺さる。皆、{{person:劉璋|璋}}の明断少なくして外言入るに由るが故なり。", "translation_tagged": "のちに{{person:龐羲|龐羲}}と{{person:劉璋|劉璋}}の仲が険悪となり、また{{person:趙韙|趙韙}}が挙兵して成都へ攻め上ったものの部衆が離散して殺害されるなど、こうした内乱はすべて{{person:劉璋|劉璋}}に聡明な決断力が乏しく、外部の中傷や讒言を受け入れてしまったために起きたのである。"}, {"id": "v31_p7_4", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（劉璋）", "para_index": 7, "type": "裴注", "raw_text": "《英雄記》曰：先是，南陽、三輔人流入益州數萬家，收以為兵，名曰東州兵。璋性寬柔，無威略，東州人侵暴舊民，璋不能禁，政令多闕，益州頗怨。趙韙素得人心，璋委任之。韙因民怨謀叛，乃厚賂荊州請和，陰結州中大姓，與俱起兵，還擊璋。蜀郡、廣漢、犍為皆應韙。璋馳入成都城守，東州人畏（威），咸同心並力助璋，皆殊死戰，遂破反者，進攻韙於江州。韙將龐樂、李異反殺韙軍，斬韙。《漢獻帝春秋》曰：漢朝聞益州亂，遣五官中郎將牛亶為益州刺史；徵璋為卿，不至。", "kakikudashi": "『英雄記』に曰く、是より先、南陽・三輔の人、益州に流入すること数万家、収めて以て兵と為し、名づけて東州兵と曰ふ。璋、性寛柔にして、威略無く、東州人、旧民を侵暴するも、璋、禁ずる能はず、政令多く闕け、益州頗る怨む。趙韙、素より人心を得、璋、之に委任す。韙、民の怨みに因りて叛を謀り、乃ち厚く荊州に賂ひて和を請ひ、陰かに州中の大姓と結び、与に倶に兵を起し、還りて璋を撃つ。蜀郡・広漢・犍為、皆韙に応ず。璋、馳せて成都に入りて城守し、東州人、威を畏れ、咸く心を同じくし力を並せて璋を助け、皆殊死して戦ひ、遂に反者を破り、進みて韙を江州に攻む。韙の将龐楽・李異、反して韙の軍を殺し、韙を斬る。『漢献帝春秋』に曰く、漢朝、益州の乱るるを聞き、五官中郎将牛亶を遣はして益州刺史と為し、璋を徴して卿と為すも、至らず。", "translation": "『英雄記』にいう。これより以前、南陽や三輔から益州へ流入した避難民が数万家に上り、これを収容して兵士とし、「東州兵」と名づけた。劉璋は性格が寛大で柔和であり、威厳や計略に欠けていたため、東州人が益州の旧住民を侵害・暴行しても取り締まることができず、政令には手落ちが多く、益州の人々は大いに怨みを抱いた。趙韙は日頃から人望を得ており、劉璋も彼に政治を委任していた。ところが趙韙は民衆の怨嗟に乗じて反乱を企て、荊州に手厚い賄賂を送って和睦を結び、ひそかに益州内の大豪族（大姓）と結託して一斉に挙兵し、引き返して劉璋を攻撃した。蜀郡・広漢・犍為の三郡はみな趙韙に呼応した。劉璋は成都へ駆け込んで籠城すると、東州人たちは趙韙に討滅されることを恐れ、みな心を一つにし力を合わせて劉璋を助け、決死の覚悟で戦った。かくて反乱軍を撃破し、進んで江州に趙韙を攻めた。すると趙韙の部将である龐楽と李異が寝返って趙韙の軍を攻撃し、趙韙を斬った。『漢献帝春秋』にいう。漢の朝廷は益州の動乱を聞き、五官中郎将の牛亶を派遣して益州刺史とし、劉璋を中央へ召し出して九卿に任じようとしたが、劉璋は応じなかった。", "persons": "劉璋,趙韙,龐楽,李異,牛亶", "places": "南陽,三輔,益州,荊州,蜀郡,広漢,犍為,成都,江州", "era_year": "建安5年〜6年（200年〜201年）", "source_book": "英雄記,漢献帝春秋", "keywords": "東州兵,東州人,五官中郎将,刺史,列卿", "raw_tagged": "《{{special:続漢書|英雄記}}》曰：先是，{{place:南陽|南陽}}、{{place:三輔|三輔}}人流入{{place:益州|益州}}數萬家，收以為兵，名曰{{special:東州兵|東州兵}}。{{person:劉璋|璋}}性寬柔，無威略，{{special:東州兵|東州人}}侵暴舊民，{{person:劉璋|璋}}不能禁，政令多闕，{{place:益州|益州}}頗怨。{{person:趙韙|趙韙}}素得人心，{{person:劉璋|璋}}委任之。{{person:趙韙|韙}}因民怨謀叛，乃厚賂{{place:荊州|荊州}}請和，陰結州中大姓，與俱起兵，還擊{{person:劉璋|璋}}。{{place:蜀郡|蜀郡}}、{{place:広漢|廣漢}}、{{place:犍為|犍為}}皆應{{person:趙韙|韙}}。{{person:劉璋|璋}}馳入{{place:成都|成都}}城守，{{special:東州兵|東州人}}畏（威），咸同心並力助{{person:劉璋|璋}}，皆殊死戰，遂破反者，進攻{{person:趙韙|韙}}於{{place:江州|江州}}。{{person:趙韙|韙}}將{{person:龐楽|龐樂}}、{{person:李異|李異}}反殺{{person:趙韙|韙}}軍，斬{{person:趙韙|韙}}。《{{special:続漢書|漢獻帝春秋}}》曰：{{special:漢|漢朝}}聞{{place:益州|益州}}亂，遣{{office:中郎将|五官中郎將}}{{person:牛亶|牛亶}}為{{place:益州|益州}}{{office:刺史|刺史}}；徵{{person:劉璋|璋}}為卿，不至。", "kakikudashi_tagged": "『{{special:続漢書|英雄記}}』に曰く、是より先、{{place:南陽|南陽}}・{{place:三輔|三輔}}の人、{{place:益州|益州}}に流入すること数万家、収めて以て兵と為し、名づけて{{special:東州兵|東州兵}}と曰ふ。{{person:劉璋|璋}}、性寛柔にして、威略無く、{{special:東州兵|東州人}}、旧民を侵暴するも、{{person:劉璋|璋}}、禁ずる能はず、政令多く闕け、{{place:益州|益州}}頗る怨む。{{person:趙韙|趙韙}}、素より人心を得、{{person:劉璋|璋}}、之に委任す。{{person:趙韙|韙}}、民の怨みに因りて叛を謀り、乃ち厚く{{place:荊州|荊州}}に賂ひて和を請ひ、陰かに州中の大姓と結び、与に倶に兵を起し、還りて{{person:劉璋|璋}}を撃つ。{{place:蜀郡|蜀郡}}・{{place:広漢|広漢}}・{{place:犍為|犍為}}、皆{{person:趙韙|韙}}に応ず。{{person:劉璋|璋}}、馳せて{{place:成都|成都}}に入りて城守し、{{special:東州兵|東州人}}、威を畏れ、咸く心を同じくし力を並せて{{person:劉璋|璋}}を助け、皆殊死して戦ひ、遂に反者を破り、進みて{{person:趙韙|韙}}を{{place:江州|江州}}に攻む。{{person:趙韙|韙}}の将{{person:龐楽|龐楽}}・{{person:李異|李異}}、反して{{person:趙韙|韙}}の軍を殺し、{{person:趙韙|韙}}を斬る。『{{special:続漢書|漢献帝春秋}}』に曰く、{{special:漢|漢朝}}、{{place:益州|益州}}の乱るるを聞き、{{office:中郎将|五官中郎将}}{{person:牛亶|牛亶}}を遣はして{{place:益州|益州}}{{office:刺史|刺史}}と為し、{{person:劉璋|璋}}を徴して卿と為すも、至らず。", "translation_tagged": "『{{special:続漢書|英雄記}}』にいう。これより以前、{{place:南陽|南陽}}や{{place:三輔|三輔}}から{{place:益州|益州}}へ流入した避難民が数万家に上り、これを収容して兵士とし、「{{special:東州兵|東州兵}}」と名づけた。{{person:劉璋|劉璋}}は性格が寛大で柔和であり、威厳や計略に欠けていたため、{{special:東州兵|東州人}}が{{place:益州|益州}}の旧住民を侵害・暴行しても取り締まることができず、政令には手落ちが多く、{{place:益州|益州}}の人々は大いに怨みを抱いた。{{person:趙韙|趙韙}}は日頃から人望を得ており、{{person:劉璋|劉璋}}も彼に政治を委任していた。ところが{{person:趙韙|趙韙}}は民衆の怨嗟に乗じて反乱を企て、{{place:荊州|荊州}}に手厚い賄賂を送って和睦を結び、ひそかに{{place:益州|益州}}内の大豪族（大姓）と結託して一斉に挙兵し、引き返して{{person:劉璋|劉璋}}を攻撃した。{{place:蜀郡|蜀郡}}・{{place:広漢|広漢}}・{{place:犍為|犍為}}の三郡はみな{{person:趙韙|趙韙}}に呼応した。{{person:劉璋|劉璋}}は{{place:成都|成都}}へ駆け込んで籠城すると、{{special:東州兵|東州人}}たちは{{person:趙韙|趙韙}}に討滅されることを恐れ、みな心を一つにし力を合わせて{{person:劉璋|劉璋}}を助け、決死の覚悟で戦った。かくて反乱軍を撃破し、進んで{{place:江州|江州}}に{{person:趙韙|趙韙}}を攻めた。すると{{person:趙韙|趙韙}}の部将である{{person:龐楽|龐楽}}と{{person:李異|李異}}が寝返って{{person:趙韙|趙韙}}の軍を攻撃し、{{person:趙韙|趙韙}}を斬った。『{{special:続漢書|漢献帝春秋}}』にいう。{{special:漢|漢}}の朝廷は{{place:益州|益州}}の動乱を聞き、{{office:中郎将|五官中郎将}}の{{person:牛亶|牛亶}}を派遣して{{place:益州|益州}}{{office:刺史|刺史}}とし、{{person:劉璋|劉璋}}を中央へ召し出して九卿に任じようとしたが、{{person:劉璋|劉璋}}は応じなかった。"}, {"id": "v31_p8_1", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（劉璋）", "para_index": 8, "type": "本文", "raw_text": "璋聞曹公征荊州，已定漢中，遣河內陰溥致敬於曹公。加璋振威將軍，兄瑁平寇將軍。瑁狂疾物故。", "kakikudashi": "璋、曹公の荊州を征し、已に漢中を定むと聞き、河内の陰溥を遣はして敬を曹公に致さしむ。璋に振威将軍を加へ、兄の瑁を平寇将軍とす。瑁、狂疾して物故す。", "translation": "劉璋は、曹公（曹操）が荊州を征討し、すでに漢中方面も平定しようとしていると聞き、河内出身の陰溥を使者として派遣し、曹公に敬意を表させた。曹公は劉璋に振威将軍を加官し、兄の劉瑁を平寇将軍とした。劉瑁は精神を病んで死去（物故）した。", "persons": "劉璋,曹操,陰溥,劉瑁", "places": "荊州,漢中,河内", "era_year": "建安13年（208年）", "source_book": "", "keywords": "振威将軍,平寇将軍,物故", "raw_tagged": "{{person:劉璋|璋}}聞{{person:曹操|曹公}}征{{place:荊州|荊州}}，已定{{place:漢中|漢中}}，遣{{place:河内|河內}}{{person:陰溥|陰溥}}致敬於{{person:曹操|曹公}}。加{{person:劉璋|璋}}{{office:雑号将軍|振威將軍}}，兄{{person:劉瑁|瑁}}{{office:雑号将軍|平寇將軍}}。{{person:劉瑁|瑁}}狂疾{{special:物故|物故}}。", "kakikudashi_tagged": "{{person:劉璋|璋}}、{{person:曹操|曹公}}の{{place:荊州|荊州}}を征し、已に{{place:漢中|漢中}}を定むと聞き、{{place:河内|河内}}の{{person:陰溥|陰溥}}を遣はして敬を{{person:曹操|曹公}}に致さしむ。{{person:劉璋|璋}}に{{office:雑号将軍|振威将軍}}を加へ、兄の{{person:劉瑁|瑁}}を{{office:雑号将軍|平寇将軍}}とす。{{person:劉瑁|瑁}}、狂疾して{{special:物故|物故}}す。", "translation_tagged": "{{person:劉璋|劉璋}}は、{{person:曹操|曹公}}（{{person:曹操|曹操}}）が{{place:荊州|荊州}}を征討し、すでに{{place:漢中|漢中}}方面も平定しようとしていると聞き、{{place:河内|河内}}出身の{{person:陰溥|陰溥}}を使者として派遣し、{{person:曹操|曹公}}に敬意を表させた。{{person:曹操|曹公}}は{{person:劉璋|劉璋}}に{{office:雑号将軍|振威将軍}}を加官し、兄の{{person:劉瑁|劉瑁}}を{{office:雑号将軍|平寇将軍}}とした。{{person:劉瑁|劉瑁}}は精神を病んで死去（{{special:物故|物故}}）した。"}, {"id": "v31_p8_2", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（劉璋）", "para_index": 8, "type": "裴注", "raw_text": "臣松之案：魏臺訪「物故」之義，高堂隆答曰：「聞之先師：物，無也；故，事也；言無復所能於事也。」", "kakikudashi": "臣松之案ずるに、魏臺、「物故」の義を訪ふに、高堂隆答へて曰く、「之を先師に聞く、物とは無なり、故とは事なり、復た事に於て能くする所無きを言ふなり」と。", "translation": "臣裴松之が考えるに、魏の尚書台（魏臺）が「物故」という言葉の意味を下問した際、高堂隆は次のように答えている。「先師から聞いたところによれば、『物』とは無（なくなる）の意であり、『故』とは事（仕事・物事）の意であって、もはや何事もなすことができなくなったという意味でございます」。", "persons": "裴松之,高堂隆", "places": "", "era_year": "", "source_book": "", "keywords": "魏臺,物故", "raw_tagged": "{{person:裴松之|臣松之}}案：魏臺訪「{{special:物故|物故}}」之義，{{person:高堂隆|高堂隆}}答曰：「聞之先師：物，無也；故，事也；言無復所能於事也。」", "kakikudashi_tagged": "{{person:裴松之|臣松之}}案ずるに、魏臺、「{{special:物故|物故}}」の義を訪ふに、{{person:高堂隆|高堂隆}}答へて曰く、「之を先師に聞く、物とは無なり、故とは事なり、復た事に於て能くする所無きを言ふなり」と。", "translation_tagged": "臣{{person:裴松之|裴松之}}が考えるに、魏の{{office:尚書|尚書}}台（魏臺）が「{{special:物故|物故}}」という言葉の意味を下問した際、{{person:高堂隆|高堂隆}}は次のように答えている。「先師から聞いたところによれば、『物』とは無（なくなる）の意であり、『故』とは事（仕事・物事）の意であって、もはや何事もなすことができなくなったという意味でございます」。"}, {"id": "v31_p8_3", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（劉璋）", "para_index": 8, "type": "本文", "raw_text": "璋復遣別駕從事蜀郡張肅送叟兵三百人並雜御物於曹公，曹公拜肅為廣漢太守。璋復遣別駕張松詣曹公，曹公時已定荊州，走先主，不復存錄松，松以此怨。會曹公軍不利於赤壁，兼以疫死。松還，疵毀曹公，勸璋自絕，", "kakikudashi": "璋、復た別駕従事蜀郡の張粛を遣はして叟兵三百人並びに雑御物を曹公に送らしめ、曹公、粛を拝して広漢太守と為す。璋、復た別駕張松を遣はして曹公に詣らしむるに、曹公、時に已に荊州を定め、先主を走らせ、復た松を存録せず、松、此を以て怨む。会たま曹公の軍、赤壁に利あらず、兼ぬるに疫死を以てす。松還り、曹公を疵毀し、璋に自ら絶つを勧む。", "translation": "劉璋はまた別駕従事で蜀郡出身の張粛を派遣し、叟兵（益州の異民族兵）三百人と種々の献上品（雑御物）を曹公に送らせたところ、曹公は張粛を広漢太守に任じた。劉璋がさらに別駕の張松を派遣して曹公のもとへ参上させたとき、曹公はすでに荊州を平定して先主（劉備）を敗走させた直後であったため、もはや張松を手厚く遇しようとはせず、張松はこれを恨みに思った。ちょうどその時、曹公の軍は赤壁で敗北を喫し、加えて疫病で多くの死者を出した。張松は帰還すると、曹公を厳しく非難し、劉璋に曹公と断交するよう勧めた。", "persons": "劉璋,張粛,曹操,張松,劉備", "places": "蜀郡,広漢,荊州,赤壁", "era_year": "建安13年（208年）", "source_book": "", "keywords": "別駕,従事,叟兵,太守", "raw_tagged": "{{person:劉璋|璋}}復遣{{office:別駕|別駕從事}}{{place:蜀郡|蜀郡}}{{person:張粛|張肅}}送{{special:叟兵|叟兵}}三百人並雜御物於{{person:曹操|曹公}}，{{person:曹操|曹公}}拜{{person:張粛|肅}}為{{place:広漢|廣漢}}{{office:太守|太守}}。{{person:劉璋|璋}}復遣{{office:別駕|別駕}}{{person:張松|張松}}詣{{person:曹操|曹公}}，{{person:曹操|曹公}}時已定{{place:荊州|荊州}}，走{{person:劉備|先主}}，不復存錄{{person:張松|松}}，{{person:張松|松}}以此怨。會{{person:曹操|曹公}}軍不利於{{place:赤壁|赤壁}}，兼以疫死。{{person:張松|松}}還，疵毀{{person:曹操|曹公}}，勸{{person:劉璋|璋}}自絕，", "kakikudashi_tagged": "{{person:劉璋|璋}}、復た{{office:別駕|別駕従事}}{{place:蜀郡|蜀郡}}の{{person:張粛|張粛}}を遣はして{{special:叟兵|叟兵}}三百人並びに雑御物を{{person:曹操|曹公}}に送らしめ、{{person:曹操|曹公}}、{{person:張粛|粛}}を拝して{{place:広漢|広漢}}{{office:太守|太守}}と為す。{{person:劉璋|璋}}、復た{{office:別駕|別駕}}{{person:張松|張松}}を遣はして{{person:曹操|曹公}}に詣らしむるに、{{person:曹操|曹公}}、時に已に{{place:荊州|荊州}}を定め、{{person:劉備|先主}}を走らせ、復た{{person:張松|松}}を存録せず、{{person:張松|松}}、此を以て怨む。会たま{{person:曹操|曹公}}の軍、{{place:赤壁|赤壁}}に利あらず、兼ぬるに疫死を以てす。{{person:張松|松}}還り、{{person:曹操|曹公}}を疵毀し、{{person:劉璋|璋}}に自ら絶つを勧む。", "translation_tagged": "{{person:劉璋|劉璋}}はまた{{office:別駕|別駕従事}}で{{place:蜀郡|蜀郡}}出身の{{person:張粛|張粛}}を派遣し、{{special:叟兵|叟兵}}（益州の異民族兵）三百人と種々の献上品（雑御物）を{{person:曹操|曹公}}に送らせたところ、{{person:曹操|曹公}}は{{person:張粛|張粛}}を{{place:広漢|広漢}}{{office:太守|太守}}に任じた。{{person:劉璋|劉璋}}がさらに{{office:別駕|別駕}}の{{person:張松|張松}}を派遣して{{person:曹操|曹公}}のもとへ参上させたとき、{{person:曹操|曹公}}はすでに{{place:荊州|荊州}}を平定して{{person:劉備|先主}}（{{person:劉備|劉備}}）を敗走させた直後であったため、もはや{{person:張松|張松}}を手厚く遇しようとはせず、{{person:張松|張松}}はこれを恨みに思った。ちょうどその時、{{person:曹操|曹公}}の軍は{{place:赤壁|赤壁}}で敗北を喫し、加えて疫病で多くの死者を出した。{{person:張松|張松}}は帰還すると、{{person:曹操|曹公}}を厳しく非難し、{{person:劉璋|劉璋}}に{{person:曹操|曹公}}と断交するよう勧めた。"}, {"id": "v31_p8_4", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（劉璋）", "para_index": 8, "type": "裴注", "raw_text": "《漢書春秋》曰：張松見曹公，曹公方自矜伐，不存錄松。松歸，乃勸璋自絕。習鑿齒曰：昔齊桓一矜其功而叛者九國，曹操暫自驕伐而天下三分，皆勤之於數十年之內而棄之於俯仰之頃，豈不惜乎！是以君子勞謙日昃，慮以下人，功高而居之以讓，勢尊而守之以卑。情近於物，故雖貴而人不厭其重；德洽群生，故業廣而天下愈欣其慶。夫然，故能有其富貴，保其功業，隆顯當時，傳福百世，何驕矜之有哉！君子是以知曹操之不能遂兼天下者也。", "kakikudashi": "『漢晋春秋』に曰く、張松、曹公に見ゆるに、曹公、方に自ら矜伐し、松を存録せず。松帰り、乃ち璋に自ら絶つを勧む。習鑿歯曰く、昔、斉の桓公、一たび其の功に矜りて叛く者九国、曹操、暫く自ら驕伐して天下三分す、皆之を数十年の内に勤めて之を俯仰の頃に棄つ、豈に惜しからずや！是を以て君子は労謙して日昃くまでし、慮りて以て人に下り、功高きも之に居るに譲を以てし、勢尊きも之を守るに卑を以てす。情、物に近し、故に貴しと雖も人其の重きを厭はず、徳、群生に洽し、故に業広きも天下愈よ其の慶びを欣ぶ。夫れ然り、故に能く其の富貴を有ち、其の功業を保ち、当時に隆顕し、福を百世に伝ふ、何の驕矜か之れ有らんや！君子は是を以て曹操の遂に天下を兼ぬる能はざるを知るなり。", "translation": "『漢晋春秋』にいう。張松が曹公に拝謁したとき、曹公はまさに自らの武功に驕り高ぶっており、張松を心に留めて遇しようとしなかった。張松は帰国すると、劉璋に曹公と断交するよう勧めた。習鑿歯は論じていう。昔、斉の桓公はひとたび自らの功績に驕ったために九か国が離反し、曹操もひととき自ら驕り高ぶったために天下は三分された。いずれも数十年の歳月をかけて築き上げたものを、ほんの一瞬のうちに投げ出してしまったのであり、なんと惜しいことではないか！それゆえ君子は日が傾くまで労苦して謙虚に努め、思慮深く他者にへりくだり、功績が高くとも謙譲の心をもってその場に居り、勢威が尊くとも卑下の態度をもってその地位を守るのである。心情が人々に寄り添っているからこそ、身分が貴くとも人々はその重みを嫌がらず、徳が生きとし生けるものに行き渡っているからこそ、事業が広がるほど天下はますますその慶福を喜ぶのである。そうであってこそ、富貴を保ち、功業を守り、当時の世に栄誉を輝かせ、幸福を百代の後まで伝えることができるのであり、どうして驕り高ぶることなどあろうか！君子はこれによって、曹操がついに天下を統一できなかった理由を知るのである。", "persons": "張松,曹操,劉璋,習鑿歯,斉桓公", "places": "", "era_year": "建安13年（208年）", "source_book": "漢晋春秋", "keywords": "漢書春秋", "raw_tagged": "《{{special:続漢書|漢書春秋}}》曰：{{person:張松|張松}}見{{person:曹操|曹公}}，{{person:曹操|曹公}}方自矜伐，不存錄{{person:張松|松}}。{{person:張松|松}}歸，乃勸{{person:劉璋|璋}}自絕。{{person:習鑿歯|習鑿齒}}曰：昔{{person:斉桓公|齊桓}}一矜其功而叛者九國，{{person:曹操|曹操}}暫自驕伐而天下三分，皆勤之於數十年之內而棄之於俯仰之頃，豈不惜乎！是以君子勞謙日昃，慮以下人，功高而居之以讓，勢尊而守之以卑。情近於物，故雖貴而人不厭其重；德洽群生，故業廣而天下愈欣其慶。夫然，故能有其富貴，保其功業，隆顯當時，傳福百世，何驕矜之有哉！君子是以知{{person:曹操|曹操}}之不能遂兼天下者也。", "kakikudashi_tagged": "『{{special:続漢書|漢晋春秋}}』に曰く、{{person:張松|張松}}、{{person:曹操|曹公}}に見ゆるに、{{person:曹操|曹公}}、方に自ら矜伐し、{{person:張松|松}}を存録せず。{{person:張松|松}}帰り、乃ち{{person:劉璋|璋}}に自ら絶つを勧む。{{person:習鑿歯|習鑿歯}}曰く、昔、{{person:斉桓公|斉の桓公}}、一たび其の功に矜りて叛く者九国、{{person:曹操|曹操}}、暫く自ら驕伐して天下三分す、皆之を数十年の内に勤めて之を俯仰の頃に棄つ、豈に惜しからずや！是を以て君子は労謙して日昃くまでし、慮りて以て人に下り、功高きも之に居るに譲を以てし、勢尊きも之を守るに卑を以てす。情、物に近し、故に貴しと雖も人其の重きを厭はず、徳、群生に洽し、故に業広きも天下愈よ其の慶びを欣ぶ。夫れ然り、故に能く其の富貴を有ち、其の功業を保ち、当時に隆顕し、福を百世に伝ふ、何の驕矜か之れ有らんや！君子は是を以て{{person:曹操|曹操}}の遂に天下を兼ぬる能はざるを知るなり。", "translation_tagged": "『{{special:続漢書|漢晋春秋}}』にいう。{{person:張松|張松}}が{{person:曹操|曹公}}に拝謁したとき、{{person:曹操|曹公}}はまさに自らの武功に驕り高ぶっており、{{person:張松|張松}}を心に留めて遇しようとしなかった。{{person:張松|張松}}は帰国すると、{{person:劉璋|劉璋}}に{{person:曹操|曹公}}と断交するよう勧めた。{{person:習鑿歯|習鑿歯}}は論じていう。昔、{{person:斉桓公|斉の桓公}}はひとたび自らの功績に驕ったために九か国が離反し、{{person:曹操|曹操}}もひととき自ら驕り高ぶったために天下は三分された。いずれも数十年の歳月をかけて築き上げたものを、ほんの一瞬のうちに投げ出してしまったのであり、なんと惜しいことではないか！それゆえ君子は日が傾くまで労苦して謙虚に努め、思慮深く他者にへりくだり、功績が高くとも謙譲の心をもってその場に居り、勢威が尊くとも卑下の態度をもってその地位を守るのである。心情が人々に寄り添っているからこそ、身分が貴くとも人々はその重みを嫌がらず、徳が生きとし生けるものに行き渡っているからこそ、事業が広がるほど天下はますますその慶福を喜ぶのである。そうであってこそ、富貴を保ち、功業を守り、当時の世に栄誉を輝かせ、幸福を百代の後まで伝えることができるのであり、どうして驕り高ぶることなどあろうか！君子はこれによって、{{person:曹操|曹操}}がついに天下を統一できなかった理由を知るのである。"}, {"id": "v31_p8_5", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（劉璋）", "para_index": 8, "type": "本文", "raw_text": "因說璋曰：「劉豫州，使君之肺腑，可與交通。」璋皆然之，遣法正連好先主，尋又令正及孟達送兵數千助先主守禦，正遂還。後松復說璋曰：「今州中諸將龐羲、李異等皆恃功驕豪，欲有外意，不得豫州，則敵攻其外，民攻其內，必敗之道也。」璋又從之，遣法正請先主。璋主簿黃權陳其利害，從事廣漢王累自倒縣於州門以諫，璋一無所納，敕在所供奉先主，先主入境如歸。先主至江州北，由墊江水", "kakikudashi": "因りて璋に説きて曰く、「劉豫州は、使君の肺腑なり、与に交通すべし」と。璋、皆之を然りとす。法正を遣はして先主と好みを連ねしめ、尋いで又正及び孟達をして兵数千を送りて先主の守禦を助けしめ、正、遂に還る。後に松、復た璋に説きて曰く、「今、州中の諸将龐羲・李異等、皆功を恃みて驕豪、外意有らんと欲す。豫州を得ざれば、則ち敵、其の外を攻め、民、其の内を攻め、必敗の道なり」と。璋、又之に従ひ、法正を遣はして先主を請ず。璋の主簿黄権、其の利害を陳べ、従事広漢の王累、自ら州門に倒懸して以て諫むるも、璋、一として納るる所無く、在所に敕して先主を供奉せしむれば、先主、境に入ること帰するが如し。先主、江州の北に至り、墊江水に由りて", "translation": "そこで張松は劉璋に説いて言った。「劉豫州（劉備）は、使君（劉璋）にとって同宗の親族（肺腑）にあたられますゆえ、よしみを結ばれるべきです」。劉璋はもっともだと考え、法正を派遣して先主と友好を結ばせ、ついでまた法正と孟達に兵数千を送らせて先主の防衛を援助させ、法正は役目を終えて帰還した。その後、張松は再び劉璋に説いて言った。「いま州内の諸将である龐羲や李異らは、みな自らの功績を恃んで驕り高ぶり、外部と通じる二心を抱いております。もし劉豫州を味方に迎え入れなければ、敵が外から攻め、民が内から攻めることになり、必敗の道でございます」。劉璋はまたしてもこれに従い、法正を派遣して先主を益州へ招請させた。劉璋の主簿である黄権はその利害得失を述べて反対し、従事で広漢出身の王累は自ら州門に逆さ吊り（倒懸）になってまで諫言したが、劉璋は何一つ聞き入れず、各地の役所に命じて先主を手厚くもてなさせたため、先主はまるで我が家へ帰るかのように益州の境へ入った。先主は江州の北に到着すると、墊江水に沿って", "persons": "張松,劉璋,劉備,法正,孟達,龐羲,李異,黄権,王累", "places": "豫州,広漢,江州,墊江水", "era_year": "建安13年〜16年（208年〜211年）", "source_book": "", "keywords": "使君,肺腑,主簿,従事,倒懸", "raw_tagged": "因說{{person:劉璋|璋}}曰：「{{person:劉備|劉豫州}}，{{special:使君|使君}}之{{special:肺腑|肺腑}}，可與交通。」{{person:劉璋|璋}}皆然之，遣{{person:法正|法正}}連好{{person:劉備|先主}}，尋又令{{person:法正|正}}及{{person:孟達|孟達}}送兵數千助{{person:劉備|先主}}守禦，{{person:法正|正}}遂還。後{{person:張松|松}}復說{{person:劉璋|璋}}曰：「今州中諸將{{person:龐羲|龐羲}}、{{person:李異|李異}}等皆恃功驕豪，欲有外意，不得{{place:豫州|豫州}}，則敵攻其外，民攻其內，必敗之道也。」{{person:劉璋|璋}}又從之，遣{{person:法正|法正}}請{{person:劉備|先主}}。{{person:劉璋|璋}}{{office:主簿|主簿}}{{person:黄権|黃權}}陳其利害，{{office:従事|從事}}{{place:広漢|廣漢}}{{person:王累|王累}}自{{special:倒懸|倒縣}}於州門以諫，{{person:劉璋|璋}}一無所納，敕在所供奉{{person:劉備|先主}}，{{person:劉備|先主}}入境如歸。{{person:劉備|先主}}至{{place:江州|江州}}北，由{{place:墊江水|墊江水}}", "kakikudashi_tagged": "因りて{{person:劉璋|璋}}に説きて曰く、「{{person:劉備|劉豫州}}は、{{special:使君|使君}}の{{special:肺腑|肺腑}}なり、与に交通すべし」と。{{person:劉璋|璋}}、皆之を然りとす。{{person:法正|法正}}を遣はして{{person:劉備|先主}}と好みを連ねしめ、尋いで又{{person:法正|正}}及び{{person:孟達|孟達}}をして兵数千を送りて{{person:劉備|先主}}の守禦を助けしめ、{{person:法正|正}}、遂に還る。後に{{person:張松|松}}、復た{{person:劉璋|璋}}に説きて曰く、「今、州中の諸将{{person:龐羲|龐羲}}・{{person:李異|李異}}等、皆功を恃みて驕豪、外意有らんと欲す。{{place:豫州|豫州}}を得ざれば、則ち敵、其の外を攻め、民、其の内を攻め、必敗の道なり」と。{{person:劉璋|璋}}、又之に従ひ、{{person:法正|法正}}を遣はして{{person:劉備|先主}}を請ず。{{person:劉璋|璋}}の{{office:主簿|主簿}}{{person:黄権|黄権}}、其の利害を陳べ、{{office:従事|従事}}{{place:広漢|広漢}}の{{person:王累|王累}}、自ら州門に{{special:倒懸|倒懸}}して以て諫むるも、{{person:劉璋|璋}}、一として納るる所無く、在所に敕して{{person:劉備|先主}}を供奉せしむれば、{{person:劉備|先主}}、境に入ること帰するが如し。{{person:劉備|先主}}、{{place:江州|江州}}の北に至り、{{place:墊江水|墊江水}}に由りて", "translation_tagged": "そこで{{person:張松|張松}}は{{person:劉璋|劉璋}}に説いて言った。「{{person:劉備|劉豫州}}（{{person:劉備|劉備}}）は、{{special:使君|使君}}（{{person:劉璋|劉璋}}）にとって同宗の親族（{{special:肺腑|肺腑}}）にあたられますゆえ、よしみを結ばれるべきです」。{{person:劉璋|劉璋}}はもっともだと考え、{{person:法正|法正}}を派遣して{{person:劉備|先主}}と友好を結ばせ、ついでまた{{person:法正|法正}}と{{person:孟達|孟達}}に兵数千を送らせて{{person:劉備|先主}}の防衛を援助させ、{{person:法正|法正}}は役目を終えて帰還した。その後、{{person:張松|張松}}は再び{{person:劉璋|劉璋}}に説いて言った。「いま州内の諸将である{{person:龐羲|龐羲}}や{{person:李異|李異}}らは、みな自らの功績を恃んで驕り高ぶり、外部と通じる二心を抱いております。もし{{person:劉備|劉豫州}}を味方に迎え入れなければ、敵が外から攻め、民が内から攻めることになり、必敗の道でございます」。{{person:劉璋|劉璋}}はまたしてもこれに従い、{{person:法正|法正}}を派遣して{{person:劉備|先主}}を益州へ招請させた。{{person:劉璋|劉璋}}の{{office:主簿|主簿}}である{{person:黄権|黄権}}はその利害得失を述べて反対し、{{office:従事|従事}}で{{place:広漢|広漢}}出身の{{person:王累|王累}}は自ら州門に逆さ吊り（{{special:倒懸|倒懸}}）になってまで諫言したが、{{person:劉璋|劉璋}}は何一つ聞き入れず、各地の役所に命じて{{person:劉備|先主}}を手厚くもてなさせたため、{{person:劉備|先主}}はまるで我が家へ帰るかのように益州の境へ入った。{{person:劉備|先主}}は{{place:江州|江州}}の北に到着すると、{{place:墊江水|墊江水}}に沿って"}, {"id": "v31_p8_6", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（劉璋）", "para_index": 8, "type": "裴注", "raw_text": "墊音徒協反。", "kakikudashi": "墊の音は徒協の反なり。", "translation": "「墊」の音は「徒」と「協」の反切（てふ）である。", "persons": "", "places": "", "era_year": "", "source_book": "", "keywords": "", "raw_tagged": "墊音徒協反。", "kakikudashi_tagged": "墊の音は徒協の反なり。", "translation_tagged": "「墊」の音は「徒」と「協」の反切（てふ）である。"}, {"id": "v31_p8_7", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（劉璋）", "para_index": 8, "type": "本文", "raw_text": "詣涪，", "kakikudashi": "涪に詣る。", "translation": "涪へ進んだ。", "persons": "劉備", "places": "涪", "era_year": "建安16年（211年）", "source_book": "", "keywords": "", "raw_tagged": "詣{{place:涪|涪}}，", "kakikudashi_tagged": "{{place:涪|涪}}に詣る。", "translation_tagged": "{{place:涪|涪}}へ進んだ。"}, {"id": "v31_p8_8", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（劉璋）", "para_index": 8, "type": "裴注", "raw_text": "音浮。", "kakikudashi": "音は浮なり。", "translation": "「涪」の音は「浮（ふ）」である。", "persons": "", "places": "", "era_year": "", "source_book": "", "keywords": "", "raw_tagged": "音浮。", "kakikudashi_tagged": "音は浮なり。", "translation_tagged": "「涪」の音は「浮（ふ）」である。"}, {"id": "v31_p8_9", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（劉璋）", "para_index": 8, "type": "本文", "raw_text": "去成都三百六十里，是歲建安十六年也。璋率步騎三萬餘人，車乘帳幔，精光曜日，往就與會；先主所將將士，更相之適，歡飲百餘日。璋資給先主，使討張魯，然後分別。", "kakikudashi": "成都を去ること三百六十里、是の歳、建安十六年なり。璋、歩騎三万余人を率ゐ、車乗帳幔、精光日を曜かし、往きて就きて与に会す。先主の将ゐる所の将士、更ごも相ひ之き適き、歓飲すること百余日。璋、先主に資給し、張魯を討たしめ、然る後に分別す。", "translation": "涪は成都から三百六十里の距離にあり、この年は建安十六年であった。劉璋は歩兵・騎兵三万余人を率い、車馬や幕舎のきらびやかな輝きは太陽を照り映えさせるほどであり、自ら涪へ赴いて先主と会見した。先主が率いる将兵たちとも互いに往来して親交を深め、百余日にわたって歓待の酒宴を開いた。劉璋は先主に軍需物資を給与して張魯を討伐に向かわせ、それから別れた。", "persons": "劉璋,劉備,張魯", "places": "成都", "era_year": "建安16年（211年）", "source_book": "", "keywords": "建安", "raw_tagged": "去{{place:成都|成都}}三百六十里，是歲{{special:建安|建安十六年}}也。{{person:劉璋|璋}}率步騎三萬餘人，車乘帳幔，精光曜日，往就與會；{{person:劉備|先主}}所將將士，更相之適，歡飲百餘日。{{person:劉璋|璋}}資給{{person:劉備|先主}}，使討{{person:張魯|張魯}}，然後分別。", "kakikudashi_tagged": "{{place:成都|成都}}を去ること三百六十里、是の歳、{{special:建安|建安十六年}}なり。{{person:劉璋|璋}}、歩騎三万余人を率ゐ、車乗帳幔、精光日を曜かし、往きて就きて与に会す。{{person:劉備|先主}}の将ゐる所の将士、更ごも相ひ之き適き、歓飲すること百余日。{{person:劉璋|璋}}、{{person:劉備|先主}}に資給し、{{person:張魯|張魯}}を討たしめ、然る後に分別す。", "translation_tagged": "涪は{{place:成都|成都}}から三百六十里の距離にあり、この年は{{special:建安|建安十六年}}であった。{{person:劉璋|劉璋}}は歩兵・騎兵三万余人を率い、車馬や幕舎のきらびやかな輝きは太陽を照り映えさせるほどであり、自ら涪へ赴いて{{person:劉備|先主}}と会見した。{{person:劉備|先主}}が率いる将兵たちとも互いに往来して親交を深め、百余日にわたって歓待の酒宴を開いた。{{person:劉璋|劉璋}}は{{person:劉備|先主}}に軍需物資を給与して{{person:張魯|張魯}}を討伐に向かわせ、それから別れた。"}, {"id": "v31_p8_10", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（劉璋）", "para_index": 8, "type": "裴注", "raw_text": "《吳書》曰：璋以米二十萬斛，騎千匹，車千乘，繒絮錦帛，以資送劉備。", "kakikudashi": "『呉書』に曰く、璋、米二十万斛、騎千匹、車千乗、繒絮錦帛を以て、以て劉備に資送す。", "translation": "『呉書』にいう。劉璋は米二十万斛、騎馬千匹、車千乗、および絹や真綿・錦などの布帛を劉備に支給して送り出した。", "persons": "劉璋,劉備", "places": "", "era_year": "建安16年（211年）", "source_book": "呉書", "keywords": "", "raw_tagged": "《{{special:続漢書|吳書}}》曰：{{person:劉璋|璋}}以米二十萬斛，騎千匹，車千乘，繒絮錦帛，以資送{{person:劉備|劉備}}。", "kakikudashi_tagged": "『{{special:続漢書|呉書}}』に曰く、{{person:劉璋|璋}}、米二十万斛、騎千匹、車千乗、繒絮錦帛を以て、以て{{person:劉備|劉備}}に資送す。", "translation_tagged": "『{{special:続漢書|呉書}}』にいう。{{person:劉璋|劉璋}}は米二十万斛、騎馬千匹、車千乗、および絹や真綿・錦などの布帛を{{person:劉備|劉備}}に支給して送り出した。"}, {"id": "v31_p9_1", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（劉璋）", "para_index": 9, "type": "本文", "raw_text": "明年，先主至葭萌，還兵南向，所在皆克。十九年，進圍成都數十日，城中尚有精兵三萬人，穀帛支一年，吏民咸欲死戰。璋言：「父子在州二十餘年，無恩德以加百姓。百姓攻戰三年，肌膏草野者，以璋故也，何心能安！」遂開城出降，群下莫不流涕。先主遷璋於南郡公安，盡歸其財物及故佩振威將軍印綬。孫權殺關羽，取荊州，以璋為益州牧，駐秭歸。", "kakikudashi": "明年、先主、葭萌に至り、兵を還して南に向ひ、在る所皆克つ。十九年、進みて成都を囲むこと数十日、城中、尚ほ精兵三万人有り、穀帛一年を支へ、吏民、咸く死戦せんと欲す。璋言ふ、「父子、州に在ること二十余年、恩徳の以て百姓に加ふる無し。百姓、攻戦すること三年、肌、草野を膏す者は、璋が故を以てなり、何の心ありてか能く安んぜん！」と。遂に城を開きて出で降り、群下、流涕せざるは莫し。先主、璋を南郡の公安に遷し、尽く其の財物及び故と佩ぶる振威将軍の印綬を帰す。孫権、関羽を殺し、荊州を取るや、璋を以て益州牧と為し、秭帰に駐まらしむ。", "translation": "翌年、先主は葭萌まで進んだところで、軍を反転させて南へ向かい、各地をことごとく攻略した。建安十九年、進んで成都を包囲すること数十日に及んだが、城内にはなお精鋭の兵が三万人おり、穀物や布帛も一年間持ちこたえられるだけ蓄えられており、官吏も民衆もみな決死の防戦を望んでいた。しかし劉璋は言った。「私たち父子は益州に在ること二十余年になるが、民草に施せた恩徳は何一つない。民草が三年間も戦火に苦しみ、その肉体で草野を肥やすことになったのは、すべてこの劉璋のせいなのだ。どうして心が安らかでいられようか！」。かくて城門を開いて降伏すると、家臣たちはみな涙を流さぬ者はなかった。先主は劉璋を南郡の公安へ移住させ、その財物および以前から帯びていた振威将軍の印綬をすべて返還した。のちに孫権が関羽を殺害して荊州を奪取すると、孫権は劉璋を益州牧に任じ、秭帰に駐屯させた。", "persons": "劉備,劉璋,孫権,関羽", "places": "葭萌,成都,南郡,公安,荊州,益州,秭帰", "era_year": "建安17年〜24年（212年〜219年）", "source_book": "", "keywords": "振威将軍,印綬,州牧", "raw_tagged": "明年，{{person:劉備|先主}}至{{place:葭萌|葭萌}}，還兵南向，所在皆克。{{special:建安|十九年}}，進圍{{place:成都|成都}}數十日，城中尚有精兵三萬人，穀帛支一年，吏民咸欲死戰。{{person:劉璋|璋}}言：「父子在州二十餘年，無恩德以加百姓。百姓攻戰三年，肌膏草野者，以{{person:劉璋|璋}}故也，何心能安！」遂開城出降，群下莫不流涕。{{person:劉備|先主}}遷{{person:劉璋|璋}}於{{place:南郡|南郡}}{{place:公安|公安}}，盡歸其財物及故佩{{office:雑号将軍|振威將軍}}印綬。{{person:孫権|孫權}}殺{{person:関羽|關羽}}，取{{place:荊州|荊州}}，以{{person:劉璋|璋}}為{{place:益州|益州}}{{office:州牧|牧}}，駐{{place:秭帰|秭歸}}。", "kakikudashi_tagged": "明年、{{person:劉備|先主}}、{{place:葭萌|葭萌}}に至り、兵を還して南に向ひ、在る所皆克つ。{{special:建安|十九年}}、進みて{{place:成都|成都}}を囲むこと数十日、城中、尚ほ精兵三万人有り、穀帛一年を支へ、吏民、咸く死戦せんと欲す。{{person:劉璋|璋}}言ふ、「父子、州に在ること二十余年、恩徳の以て百姓に加ふる無し。百姓、攻戦すること三年、肌、草野を膏す者は、{{person:劉璋|璋}}が故を以てなり、何の心ありてか能く安んぜん！」と。遂に城を開きて出で降り、群下、流涕せざるは莫し。{{person:劉備|先主}}、{{person:劉璋|璋}}を{{place:南郡|南郡}}の{{place:公安|公安}}に遷し、尽く其の財物及び故と佩ぶる{{office:雑号将軍|振威将軍}}の印綬を帰す。{{person:孫権|孫権}}、{{person:関羽|関羽}}を殺し、{{place:荊州|荊州}}を取るや、{{person:劉璋|璋}}を以て{{place:益州|益州}}{{office:州牧|牧}}と為し、{{place:秭帰|秭帰}}に駐まらしむ。", "translation_tagged": "翌年、{{person:劉備|先主}}は{{place:葭萌|葭萌}}まで進んだところで、軍を反転させて南へ向かい、各地をことごとく攻略した。{{special:建安|建安}}{{special:建安|十九年}}、進んで{{place:成都|成都}}を包囲すること数十日に及んだが、城内にはなお精鋭の兵が三万人おり、穀物や布帛も一年間持ちこたえられるだけ蓄えられており、官吏も民衆もみな決死の防戦を望んでいた。しかし{{person:劉璋|劉璋}}は言った。「私たち父子は{{place:益州|益州}}に在ること二十余年になるが、民草に施せた恩徳は何一つない。民草が三年間も戦火に苦しみ、その肉体で草野を肥やすことになったのは、すべてこの{{person:劉璋|劉璋}}のせいなのだ。どうして心が安らかでいられようか！」。かくて城門を開いて降伏すると、家臣たちはみな涙を流さぬ者はなかった。{{person:劉備|先主}}は{{person:劉璋|劉璋}}を{{place:南郡|南郡}}の{{place:公安|公安}}へ移住させ、その財物および以前から帯びていた{{office:雑号将軍|振威将軍}}の印綬をすべて返還した。のちに{{person:孫権|孫権}}が{{person:関羽|関羽}}を殺害して{{place:荊州|荊州}}を奪取すると、{{person:孫権|孫権}}は{{person:劉璋|劉璋}}を{{place:益州|益州}}{{office:州牧|牧}}に任じ、{{place:秭帰|秭帰}}に駐屯させた。"}, {"id": "v31_p10_1", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（劉璋）", "para_index": 10, "type": "本文", "raw_text": "璋卒，南中豪率雍闓據益郡反，附於吳。權復以璋子闡為益州刺史，處交、益界首。丞相諸葛亮平南土，闡還吳，為御史中丞。", "kakikudashi": "璋卒し、南中の豪率雍闓、益郡に拠りて反し、呉に附く。権、復た璋の子の闡を以て益州刺史と為し、交・益の界首に処らしむ。丞相諸葛亮、南土を平らぐるや、闡、呉に還り、御史中丞と為る。", "translation": "劉璋が死去すると、南中の豪族の首領である雍闓が益州郡に拠って反乱を起こし、呉に服属した。孫権は再び劉璋の子の劉闡を益州刺史に任じ、交州と益州の境界付近に駐在させた。その後、丞相の諸葛亮が南中を平定すると、劉闡は呉へ帰還し、御史中丞となった。", "persons": "劉璋,雍闓,孫権,劉闡,諸葛亮", "places": "南中,益州郡,呉,益州,交州", "era_year": "建安24年〜建興3年（219年〜225年）", "source_book": "", "keywords": "刺史,丞相,御史中丞", "raw_tagged": "{{person:劉璋|璋}}卒，{{place:南中|南中}}豪率{{person:雍闓|雍闓}}據{{place:益州郡|益郡}}反，附於{{place:呉|吳}}。{{person:孫権|權}}復以{{person:劉璋|璋}}子{{person:劉闡|闡}}為{{place:益州|益州}}{{office:刺史|刺史}}，處交、益界首。{{office:丞相|丞相}}{{person:諸葛亮|諸葛亮}}平{{place:南中|南土}}，{{person:劉闡|闡}}還{{place:呉|吳}}，為{{office:御史中丞|御史中丞}}。", "kakikudashi_tagged": "{{person:劉璋|璋}}卒し、{{place:南中|南中}}の豪率{{person:雍闓|雍闓}}、{{place:益州郡|益郡}}に拠りて反し、{{place:呉|呉}}に附く。{{person:孫権|権}}、復た{{person:劉璋|璋}}の子の{{person:劉闡|闡}}を以て{{place:益州|益州}}{{office:刺史|刺史}}と為し、交・益の界首に処らしむ。{{office:丞相|丞相}}{{person:諸葛亮|諸葛亮}}、{{place:南中|南土}}を平らぐるや、{{person:劉闡|闡}}、{{place:呉|呉}}に還り、{{office:御史中丞|御史中丞}}と為る。", "translation_tagged": "{{person:劉璋|劉璋}}が死去すると、{{place:南中|南中}}の豪族の首領である{{person:雍闓|雍闓}}が{{place:益州郡|益州郡}}に拠って反乱を起こし、{{place:呉|呉}}に服属した。{{person:孫権|孫権}}は再び{{person:劉璋|劉璋}}の子の{{person:劉闡|劉闡}}を{{place:益州|益州}}{{office:刺史|刺史}}に任じ、交州と{{place:益州|益州}}の境界付近に駐在させた。その後、{{office:丞相|丞相}}の{{person:諸葛亮|諸葛亮}}が{{place:南中|南中}}を平定すると、{{person:劉闡|劉闡}}は{{place:呉|呉}}へ帰還し、{{office:御史中丞|御史中丞}}となった。"}, {"id": "v31_p10_2", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（劉璋）", "para_index": 10, "type": "裴注", "raw_text": "《吳書》曰：闡一名緯，為人恭恪，輕財愛義，有仁讓之風，後疾終於家。", "kakikudashi": "『呉書』に曰く、闡、一名は緯、人と為り恭恪にして、財を軽んじ義を愛し、仁譲の風有り、後に疾もて家に終ふ。", "translation": "『呉書』にいう。劉闡、別名は緯といい、人柄は恭順で謹み深く、財貨を軽んじて義を愛し、仁愛と謙譲の気風があった。のちに病のため家で死去した。", "persons": "劉闡", "places": "", "era_year": "", "source_book": "呉書", "keywords": "", "raw_tagged": "《{{special:続漢書|吳書}}》曰：{{person:劉闡|闡}}一名{{person:劉闡|緯}}，為人恭恪，輕財愛義，有仁讓之風，後疾終於家。", "kakikudashi_tagged": "『{{special:続漢書|呉書}}』に曰く、{{person:劉闡|闡}}、一名は{{person:劉闡|緯}}、人と為り恭恪にして、財を軽んじ義を愛し、仁譲の風有り、後に疾もて家に終ふ。", "translation_tagged": "『{{special:続漢書|呉書}}』にいう。{{person:劉闡|劉闡}}、別名は{{person:劉闡|緯}}といい、人柄は恭順で謹み深く、財貨を軽んじて義を愛し、仁愛と謙譲の気風があった。のちに病のため家で死去した。"}, {"id": "v31_p10_3", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（劉璋）", "para_index": 10, "type": "本文", "raw_text": "初，璋長子循妻，龐羲女也。先主定蜀，羲為左將軍司馬，璋時從羲啟留循，先主以為奉車中郎將。是以璋二子之後，分在吳、蜀。", "kakikudashi": "初め、璋の長子の循の妻は、龐羲の女なり。先主、蜀を定むるや、羲は左将軍司馬と為り、璋、時に羲に従ひて啓して循を留めしめ、先主、以て奉車中郎将と為す。是を以て璋の二子の後、分れて呉・蜀に在り。", "translation": "これより以前、劉璋の長男である劉循の妻は、龐羲の娘であった。先主が蜀を平定すると、龐羲は左将軍司馬となり、劉璋はその時、龐羲の勧め従って先主に願い出て劉循を蜀に残させ、先主は劉循を奉車中郎将に任じた。こうした経緯により、劉璋の二人の子の子孫は、呉と蜀に分かれて存続することとなった。", "persons": "劉璋,劉循,龐羲,劉備", "places": "蜀,呉", "era_year": "建安19年（214年）以降", "source_book": "", "keywords": "左将軍,司馬,奉車中郎将", "raw_tagged": "初，{{person:劉璋|璋}}長子{{person:劉循|循}}妻，{{person:龐羲|龐羲}}女也。{{person:劉備|先主}}定{{place:蜀|蜀}}，{{person:龐羲|羲}}為{{office:左将軍|左將軍}}{{office:司馬|司馬}}，{{person:劉璋|璋}}時從{{person:龐羲|羲}}啟留{{person:劉循|循}}，{{person:劉備|先主}}以為{{office:中郎将|奉車中郎將}}。是以{{person:劉璋|璋}}二子之後，分在{{place:呉|吳}}、{{place:蜀|蜀}}。", "kakikudashi_tagged": "初め、{{person:劉璋|璋}}の長子の{{person:劉循|循}}の妻は、{{person:龐羲|龐羲}}の女なり。{{person:劉備|先主}}、{{place:蜀|蜀}}を定むるや、{{person:龐羲|羲}}は{{office:左将軍|左将軍}}{{office:司馬|司馬}}と為り、{{person:劉璋|璋}}、時に{{person:龐羲|羲}}に従ひて啓して{{person:劉循|循}}を留めしめ、{{person:劉備|先主}}、以て{{office:中郎将|奉車中郎将}}と為す。是を以て{{person:劉璋|璋}}の二子の後、分れて{{place:呉|呉}}・{{place:蜀|蜀}}に在り。", "translation_tagged": "これより以前、{{person:劉璋|劉璋}}の長男である{{person:劉循|劉循}}の妻は、{{person:龐羲|龐羲}}の娘であった。{{person:劉備|先主}}が{{place:蜀|蜀}}を平定すると、{{person:龐羲|龐羲}}は{{office:左将軍|左将軍}}{{office:司馬|司馬}}となり、{{person:劉璋|劉璋}}はその時、{{person:龐羲|龐羲}}の勧め従って{{person:劉備|先主}}に願い出て{{person:劉循|劉循}}を{{place:蜀|蜀}}に残させ、{{person:劉備|先主}}は{{person:劉循|劉循}}を{{office:中郎将|奉車中郎将}}に任じた。こうした経緯により、{{person:劉璋|劉璋}}の二人の子の子孫は、{{place:呉|呉}}と{{place:蜀|蜀}}に分かれて存続することとなった。"}, {"id": "v31_p11_1", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（【評】）", "para_index": 11, "type": "本文", "raw_text": "評曰：昔魏豹聞許負之言則納薄姬於室，", "kakikudashi": "評に曰く、昔、魏豹は許負の言を聞けば則ち薄姫を室に納れ、", "translation": "評にいう。昔、魏豹は人相見の許負の予言を聞くと薄姫を側室に迎え入れ、", "persons": "魏豹,許負,薄姫", "places": "", "era_year": "", "source_book": "", "keywords": "", "raw_tagged": "評曰：昔{{person:魏豹|魏豹}}聞{{person:許負|許負}}之言則納薄姬於室，", "kakikudashi_tagged": "評に曰く、昔、{{person:魏豹|魏豹}}は{{person:許負|許負}}の言を聞けば則ち{{person:薄姫|薄姫}}を室に納れ、", "translation_tagged": "評にいう。昔、{{person:魏豹|魏豹}}は人相見の{{person:許負|許負}}の予言を聞くと{{person:薄姫|薄姫}}を側室に迎え入れ、"}, {"id": "v31_p11_2", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（【評】）", "para_index": 11, "type": "裴注", "raw_text": "孔衍《漢魏春秋》曰：許負，河內溫縣之婦人，漢高祖封為明雌亭侯。臣松之以為今東人呼母為負，衍以許負為婦人，如為有似，然漢高祖時封皆列侯，未有鄉亭之爵，疑此封為不然。", "kakikudashi": "孔衍の『漢魏春秋』に曰く、許負は、河内温県の婦人にして、漢の高祖、封じて明雌亭侯と為す。臣松之以為へらく、今、東人、母を呼びて負と為せば、衍の許負を以て婦人と為すは、似たる有りと為すが如きも、然れども漢の高祖の時、封ずるは皆列侯にして、未だ郷亭の爵有らざれば、此の封の然らざるを疑ふ。", "translation": "孔衍の『漢魏春秋』にいう。許負は、河内郡温県の婦人であり、漢の高祖（劉邦）は彼女を封じて明雌亭侯とした。臣裴松之が考えるに、現在、東方の人々は老母のことを「負」と呼ぶため、孔衍が許負を婦人としたのはもっともらしい点があるものの、しかし漢の高祖の時代に封じられたのはすべて県単位の列侯であり、まだ郷侯・亭侯といった爵位は存在しなかったから、この明雌亭侯への封爵は事実ではないと疑われる。", "persons": "孔衍,許負,劉邦,裴松之", "places": "河内,温", "era_year": "", "source_book": "漢魏春秋", "keywords": "漢,亭侯,列侯", "raw_tagged": "{{person:孔衍|孔衍}}《{{special:続漢書|漢魏春秋}}》曰：{{person:許負|許負}}，{{place:河内|河內}}{{place:温|溫縣}}之婦人，{{person:劉邦|漢高祖}}封為{{office:列侯|明雌亭侯}}。{{person:裴松之|臣松之}}以為今東人呼母為負，{{person:孔衍|衍}}以{{person:許負|許負}}為婦人，如為有似，然{{person:劉邦|漢高祖}}時封皆{{office:列侯|列侯}}，未有鄉亭之爵，疑此封為不然。", "kakikudashi_tagged": "{{person:孔衍|孔衍}}の『{{special:続漢書|漢魏春秋}}』に曰く、{{person:許負|許負}}は、{{place:河内|河内}}{{place:温|温県}}の婦人にして、{{special:漢|漢}}の{{person:劉邦|高祖}}、封じて{{office:列侯|明雌亭侯}}と為す。{{person:裴松之|臣松之}}以為へらく、今、東人、母を呼びて負と為せば、{{person:孔衍|衍}}の{{person:許負|許負}}を以て婦人と為すは、似たる有りと為すが如きも、然れども{{special:漢|漢}}の{{person:劉邦|高祖}}の時、封ずるは皆{{office:列侯|列侯}}にして、未だ郷亭の爵有らざれば、此の封の然らざるを疑ふ。", "translation_tagged": "{{person:孔衍|孔衍}}の『{{special:続漢書|漢魏春秋}}』にいう。{{person:許負|許負}}は、{{place:河内|河内}}郡{{place:温|温県}}の婦人であり、{{special:漢|漢}}の{{person:劉邦|高祖}}（{{person:劉邦|劉邦}}）は彼女を封じて{{office:列侯|明雌亭侯}}とした。臣{{person:裴松之|裴松之}}が考えるに、現在、東方の人々は老母のことを「負」と呼ぶため、{{person:孔衍|孔衍}}が{{person:許負|許負}}を婦人としたのはもっともらしい点があるものの、しかし{{special:漢|漢}}の{{person:劉邦|高祖}}の時代に封じられたのはすべて県単位の{{office:列侯|列侯}}であり、まだ郷侯・{{office:列侯|亭侯}}といった爵位は存在しなかったから、この{{office:列侯|明雌亭侯}}への封爵は事実ではないと疑われる。"}, {"id": "v31_p11_3", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（【評】）", "para_index": 11, "type": "本文", "raw_text": "劉歆見圖讖之文則名字改易，終於不免其身，而慶鍾二主。此則神明不可虛要，天命不可妄冀，必然之驗也。而劉焉聞董扶之辭則心存益土，聽相者之言則求婚吳氏，遽造輿服，圖竊神器，其惑甚矣。璋才非人雄，而據土亂世，負乘致寇，自然之理，其見奪取，非不幸也。", "kakikudashi": "劉歆は図讖の文を見れば則ち名字を改易するも、終に其の身を免れずして、慶びは二主に鍾まる。此れ則ち神明は虚しく要むべからず、天命は妄りに冀ふべからざるの必然の験なり。而るに劉焉は董扶の辞を聞けば則ち心を益土に存し、相者の言を聴けば則ち婚を呉氏に求め、遽かに輿服を造り、神器を窃まんと図る、其の惑ひ甚だし。璋は才、人雄に非ざるに、土に乱世に拠り、乗を負ひて寇を致すは、自然の理にして、其の奪取せらるるは、不幸に非ざるなり。", "translation": "また前漢末の劉歆は図讖の予言文を見て自らの名前を「秀」と改めたが、結局どちらも我が身の破滅を免れることはできず、天子の慶福は文帝と光武帝の二人の君主に集まった。これはすなわち、神明の加護は空虚な作為で求められるものではなく、天命はみだりに僥倖を願って得られるものではないという必然の証拠である。それなのに劉焉は、董扶の言葉を聞くと益州の地に野心を抱き、人相見の言葉を聞くと呉氏との婚姻を求め、にわかに天子の輿服を造作して帝位（神器）を盗み取ろうと企てたのであり、その迷妄は甚だしいものであった。劉璋は英雄の器量ではないにもかかわらず、乱世において広大な領土に拠った。「小人が乗物に乗れば盗賊を招く（負乗致寇）」というのは自然の道理であり、その領土を奪い取られたのは、決して不運だったわけではないのである。", "persons": "劉歆,劉焉,董扶,呉皇后,劉璋", "places": "益州", "era_year": "", "source_book": "", "keywords": "図讖,二主,神器,負乗致寇", "raw_tagged": "{{person:劉歆|劉歆}}見{{special:図讖|圖讖}}之文則名字改易，終於不免其身，而慶鍾二主。此則神明不可虛要，天命不可妄冀，必然之驗也。而{{person:劉焉|劉焉}}聞{{person:董扶|董扶}}之辭則心存{{place:益州|益土}}，聽相者之言則求婚{{person:呉皇后|吳氏}}，遽造{{special:乗輿|輿服}}，圖竊神器，其惑甚矣。{{person:劉璋|璋}}才非人雄，而據土亂世，{{special:負乗致寇|負乘致寇}}，自然之理，其見奪取，非不幸也。", "kakikudashi_tagged": "{{person:劉歆|劉歆}}は{{special:図讖|図讖}}の文を見れば則ち名字を改易するも、終に其の身を免れずして、慶びは二主に鍾まる。此れ則ち神明は虚しく要むべからず、天命は妄りに冀ふべからざるの必然の験なり。而るに{{person:劉焉|劉焉}}は{{person:董扶|董扶}}の辞を聞けば則ち心を{{place:益州|益土}}に存し、相者の言を聴けば則ち婚を{{person:呉皇后|呉氏}}に求め、遽かに{{special:乗輿|輿服}}を造り、神器を窃まんと図る、其の惑ひ甚だし。{{person:劉璋|璋}}は才、人雄に非ざるに、土に乱世に拠り、{{special:負乗致寇|乗を負ひて寇を致す}}は、自然の理にして、其の奪取せらるるは、不幸に非ざるなり。", "translation_tagged": "また前漢末の{{person:劉歆|劉歆}}は{{special:図讖|図讖}}の予言文を見て自らの名前を「秀」と改めたが、結局どちらも我が身の破滅を免れることはできず、天子の慶福は文帝と光武帝の二人の君主に集まった。これはすなわち、神明の加護は空虚な作為で求められるものではなく、天命はみだりに僥倖を願って得られるものではないという必然の証拠である。それなのに{{person:劉焉|劉焉}}は、{{person:董扶|董扶}}の言葉を聞くと{{place:益州|益州}}の地に野心を抱き、人相見の言葉を聞くと{{person:呉皇后|呉氏}}との婚姻を求め、にわかに天子の{{special:乗輿|輿服}}を造作して帝位（神器）を盗み取ろうと企てたのであり、その迷妄は甚だしいものであった。{{person:劉璋|劉璋}}は英雄の器量ではないにもかかわらず、乱世において広大な領土に拠った。「小人が乗物に乗れば盗賊を招く（{{special:負乗致寇|負乗致寇}}）」というのは自然の道理であり、その領土を奪い取られたのは、決して不運だったわけではないのである。"}, {"id": "v31_p11_4", "volume": 31, "book": "蜀書", "section_title": "劉二牧傳（【評】）", "para_index": 11, "type": "裴注", "raw_text": "張璠曰：劉璋愚弱而守善言，斯亦宋襄公、徐偃王之徒，未為無道之主也。張松、法正，雖有君臣之義不正，然固以委名附質，進不顯陳事勢，若韓嵩、（劉光）〔劉先〕之說劉表，退不告絕奔亡，若陳平、韓信之去項羽，而兩端攜貳，為謀不忠，罪之次也。", "kakikudashi": "張璠曰く、劉璋は愚弱なるも善言を守る、斯れ亦た宋の襄公・徐の偃王の徒にして、未だ無道の主とは為さざるなり。張松・法正は、君臣の義正しからざる有りと雖も、然れども固より以て名を委ね質を附しながら、進みては事勢を顕陳すること、韓嵩・劉先が劉表に説きしが若くせず、退きては告絶して奔亡すること、陳平・韓信が項羽を去りしが若くせず、而して両端携貳し、謀を為すこと不忠なるは、罪の次なり。", "translation": "張璠は論じていう。劉璋は愚かで気弱いところがあったとはいえ、仁義の善言を守り抜いた人物であり、これもまた古の宋の襄公や徐の偃王のたぐいであって、決して無道の君主とは言えない。一方、張松と法正は、たとえ劉璋との君臣の義に正しからざる点があったとしても、もともと臣下として名簿を捧げ仕えていた以上、進んでは韓嵩や劉先が劉表に説いたように天下の情勢を公然と進言することもせず、退いては陳平や韓信が項羽のもとを去ったように絶縁を告げて亡命することもせず、二股をかけて裏切り、不忠の謀略を巡らせたのであって、その罪は重大である。", "persons": "張璠,劉璋,宋襄公,徐偃王,張松,法正,韓嵩,劉先,劉表,陳平,韓信,項羽", "places": "", "era_year": "", "source_book": "後漢紀", "keywords": "", "raw_tagged": "{{person:張璠|張璠}}曰：{{person:劉璋|劉璋}}愚弱而守善言，斯亦{{person:宋襄公|宋襄公}}、{{person:徐偃王|徐偃王}}之徒，未為無道之主也。{{person:張松|張松}}、{{person:法正|法正}}，雖有君臣之義不{{person:法正|正}}，然固以委名附質，進不顯陳事勢，若{{person:韓嵩|韓嵩}}、（劉光）〔{{person:劉先|劉先}}〕之說{{person:劉表|劉表}}，退不告絕奔亡，若{{person:陳平|陳平}}、{{person:韓信|韓信}}之去{{person:項羽|項羽}}，而兩端攜貳，為謀不忠，罪之次也。", "kakikudashi_tagged": "{{person:張璠|張璠}}曰く、{{person:劉璋|劉璋}}は愚弱なるも善言を守る、斯れ亦た{{person:宋襄公|宋の襄公}}・{{person:徐偃王|徐の偃王}}の徒にして、未だ無道の主とは為さざるなり。{{person:張松|張松}}・{{person:法正|法正}}は、君臣の義正しからざる有りと雖も、然れども固より以て名を委ね質を附しながら、進みては事勢を顕陳すること、{{person:韓嵩|韓嵩}}・{{person:劉先|劉先}}が{{person:劉表|劉表}}に説きしが若くせず、退きては告絶して奔亡すること、{{person:陳平|陳平}}・{{person:韓信|韓信}}が{{person:項羽|項羽}}を去りしが若くせず、而して両端携貳し、謀を為すこと不忠なるは、罪の次なり。", "translation_tagged": "{{person:張璠|張璠}}は論じていう。{{person:劉璋|劉璋}}は愚かで気弱いところがあったとはいえ、仁義の善言を守り抜いた人物であり、これもまた古の{{person:宋襄公|宋の襄公}}や{{person:徐偃王|徐の偃王}}のたぐいであって、決して無道の君主とは言えない。一方、{{person:張松|張松}}と{{person:法正|法正}}は、たとえ{{person:劉璋|劉璋}}との君臣の義に正しからざる点があったとしても、もともと臣下として名簿を捧げ仕えていた以上、進んでは{{person:韓嵩|韓嵩}}や{{person:劉先|劉先}}が{{person:劉表|劉表}}に説いたように天下の情勢を公然と進言することもせず、退いては{{person:陳平|陳平}}や{{person:韓信|韓信}}が{{person:項羽|項羽}}のもとを去ったように絶縁を告げて亡命することもせず、二股をかけて裏切り、不忠の謀略を巡らせたのであって、その罪は重大である。"}];
+  const PLACES = [{"key": "益州", "label": "益州・益部（えきしゅう：漢中・巴・蜀・南中を統括する南西の広域州）", "place_type": "area", "category": "州（広域エリア）", "province": "益州", "modern": "四川省・重慶市・陝西省南部（漢中）・雲南省・貴州省一帯", "lat": 30.65, "lng": 105.2, "zoom": 6, "bounds": [24.5, 33.6, 101.5, 110.2], "match_terms": ["益州", "益部", "益土"], "area_polygon": [[33.6, 101.5], [33.6, 110.2], [24.5, 110.2], [24.5, 101.5]], "is_pin": false, "is_area": true, "is_river": false}, {"key": "荊州", "label": "荊州（けいしゅう：南陽盆地から長江中流域・江南に至る州）", "place_type": "area", "category": "州（広域エリア）", "province": "荊州", "modern": "湖北省・湖南省・河南省南西部", "lat": 31.2, "lng": 112.3, "zoom": 6, "bounds": [26.0, 33.5, 109.5, 115.2], "match_terms": ["荊州", "荆州"], "area_polygon": [[33.5, 109.5], [33.5, 115.2], [26.0, 115.2], [26.0, 109.5]], "is_pin": false, "is_area": true, "is_river": false}, {"key": "冀州", "label": "冀州（きしゅう：黄河以北の河北平原を中心とする州）", "place_type": "area", "category": "州（広域エリア）", "province": "冀州", "modern": "河北省中南部・河南省北部・山東省北西部", "lat": 37.4, "lng": 115.3, "zoom": 6, "bounds": [35.5, 39.3, 113.8, 117.5], "match_terms": ["冀州"], "area_polygon": [[39.3, 113.8], [39.3, 117.5], [35.5, 117.5], [35.5, 113.8]], "is_pin": false, "is_area": true, "is_river": false}, {"key": "并州", "label": "并州（へいしゅう：山西高原・北方辺境を統括する州）", "place_type": "area", "category": "州（広域エリア）", "province": "并州", "modern": "山西省中北部・陝西省北東部・内モンゴル自治区南部", "lat": 37.8, "lng": 112.2, "zoom": 6, "bounds": [35.5, 40.2, 109.8, 114.2], "match_terms": ["并州", "并"], "area_polygon": [[40.2, 109.8], [40.2, 114.2], [35.5, 114.2], [35.5, 109.8]], "is_pin": false, "is_area": true, "is_river": false}, {"key": "涼州", "label": "涼州（りょうしゅう：隴右から河西回廊に至る西方辺境の州）", "place_type": "area", "category": "州（広域エリア）", "province": "涼州", "modern": "甘粛省・寧夏回族自治区・青海省東部", "lat": 35.8, "lng": 104.5, "zoom": 6, "bounds": [33.5, 39.0, 100.5, 107.8], "match_terms": ["涼州", "涼"], "area_polygon": [[39.0, 100.5], [39.0, 107.8], [33.5, 107.8], [33.5, 100.5]], "is_pin": false, "is_area": true, "is_river": false}, {"key": "幽州", "label": "幽州（ゆうしゅう：燕山山脈から遼東・北方辺境に至る州）", "place_type": "area", "category": "州（広域エリア）", "province": "幽州", "modern": "北京市・天津市・河北省北部・遼寧省", "lat": 40.0, "lng": 117.5, "zoom": 6, "bounds": [38.5, 42.2, 114.5, 123.5], "match_terms": ["幽州"], "area_polygon": [[42.2, 114.5], [42.2, 123.5], [38.5, 123.5], [38.5, 114.5]], "is_pin": false, "is_area": true, "is_river": false}, {"key": "交州", "label": "交州・交阯（こうしゅう／こうし：嶺南・ベトナム北部を統括する最南方の州）", "place_type": "area", "category": "州（広域エリア）", "province": "交州", "modern": "広東省・広西チワン族自治区・ベトナム北部", "lat": 22.8, "lng": 108.5, "zoom": 6, "bounds": [20.5, 25.2, 105.0, 114.5], "match_terms": ["交阯", "交州"], "area_polygon": [[25.2, 105.0], [25.2, 114.5], [20.5, 114.5], [20.5, 105.0]], "is_pin": false, "is_area": true, "is_river": false}, {"key": "豫州", "label": "豫州（よしゅう：河南省中南部〜山東南西部・安徽省北部を統括する州）", "place_type": "area", "category": "州（広域エリア）", "province": "豫州", "modern": "河南省中南部・東部・山東省南西部・安徽省北部", "lat": 33.8, "lng": 114.4, "zoom": 6, "bounds": [32.5, 35.85, 112.8, 117.5], "match_terms": ["豫州"], "area_polygon": [[35.85, 112.8], [35.85, 117.5], [32.5, 117.5], [32.5, 112.8]], "is_pin": false, "is_area": true, "is_river": false}, {"key": "呉", "label": "呉（ご：長江下流・江東を中心とする地域および孫氏政権領域）", "place_type": "area", "category": "国・地域（広域エリア）", "province": "揚州", "modern": "江蘇省南部・浙江省・安徽省南部・江西省・湖北省東部", "lat": 31.2, "lng": 118.8, "zoom": 6, "bounds": [28.0, 32.4, 115.5, 121.2], "match_terms": ["呉", "吳"], "area_polygon": [[32.4, 115.5], [32.4, 121.2], [28.0, 121.2], [28.0, 115.5]], "is_pin": false, "is_area": true, "is_river": false}, {"key": "蜀", "label": "蜀（しょく：四川盆地を中心とする益州中西部および政権領域）", "place_type": "area", "category": "国・地域（広域エリア）", "province": "益州", "modern": "四川省中西部", "lat": 30.65, "lng": 104.1, "zoom": 6, "bounds": [29.2, 32.5, 102.8, 105.5], "match_terms": ["蜀"], "area_polygon": [[32.5, 102.8], [32.5, 105.5], [29.2, 105.5], [29.2, 102.8]], "is_pin": false, "is_area": true, "is_river": false}, {"key": "南中", "label": "南中・南土（なんちゅう／なんど：益州南部の益州郡・牂牁郡・越巂郡・永昌郡一帯）", "place_type": "area", "category": "地域（広域エリア）", "province": "益州", "modern": "雲南省・貴州省・四川省涼山イ族自治州一帯", "lat": 25.8, "lng": 103.2, "zoom": 6, "bounds": [24.0, 28.5, 100.5, 106.5], "match_terms": ["南中", "南土"], "area_polygon": [[28.5, 100.5], [28.5, 106.5], [24.0, 106.5], [24.0, 100.5]], "is_pin": false, "is_area": true, "is_river": false}, {"key": "江夏", "label": "江夏（こうか：長江中流・荊州東部の江夏郡エリア）", "place_type": "area", "category": "郡（中域エリア）", "province": "荊州", "modern": "湖北省武漢市・天門市（竟陵）・孝感市・黄岡市一帯", "lat": 30.65, "lng": 113.8, "zoom": 8, "bounds": [30.0, 31.5, 112.8, 115.0], "match_terms": ["江夏"], "area_polygon": [[31.5, 112.8], [31.5, 115.0], [30.0, 115.0], [30.0, 112.8]], "is_pin": false, "is_area": true, "is_river": false}, {"key": "河南", "label": "河南（かなん：黄河の南岸・洛陽を中心とする司隷河南尹エリア）", "place_type": "area", "category": "郡（中域エリア）", "province": "司隷", "modern": "河南省洛陽市・鄭州市・鞏義市一帯", "lat": 34.72, "lng": 112.95, "zoom": 8, "bounds": [34.35, 35.05, 112.1, 113.95], "match_terms": ["河南"], "area_polygon": [[35.05, 112.1], [35.05, 113.95], [34.35, 113.95], [34.35, 112.1]], "is_pin": false, "is_area": true, "is_river": false}, {"key": "河内", "label": "河内（かだい：黄河の北岸・太行山脈南麓の司隷河内郡エリア）", "place_type": "area", "category": "郡（中域エリア）", "province": "司隷", "modern": "河南省焦作市（温県・懐県）・新郷市・済源市一帯", "lat": 35.15, "lng": 113.2, "zoom": 8, "bounds": [34.8, 35.6, 112.4, 114.1], "match_terms": ["河内", "河內"], "area_polygon": [[35.6, 112.4], [35.6, 114.1], [34.8, 114.1], [34.8, 112.4]], "is_pin": false, "is_area": true, "is_river": false}, {"key": "潁川", "label": "潁川（えいせん：嵩山南麓〜潁水流域の豫州潁川郡エリア）", "place_type": "area", "category": "郡（中域エリア）", "province": "豫州", "modern": "河南省許昌市・禹州市（陽翟）・登封市（陽城）一帯", "lat": 34.2, "lng": 113.45, "zoom": 8, "bounds": [33.75, 34.6, 112.85, 114.15], "match_terms": ["潁川", "穎川"], "area_polygon": [[34.6, 112.85], [34.6, 114.15], [33.75, 114.15], [33.75, 112.85]], "is_pin": false, "is_area": true, "is_river": false}, {"key": "南陽", "label": "南陽（なんよう：宛を中心とする荊州北部の南陽郡エリア）", "place_type": "area", "category": "郡（中域エリア）", "province": "荊州", "modern": "河南省南陽市・鄧州市一帯", "lat": 32.95, "lng": 112.5, "zoom": 8, "bounds": [32.35, 33.5, 111.55, 113.45], "match_terms": ["南陽"], "area_polygon": [[33.5, 111.55], [33.5, 113.45], [32.35, 113.45], [32.35, 111.55]], "is_pin": false, "is_area": true, "is_river": false}, {"key": "南郡", "label": "南郡（なんぐん：江陵・公安・秭帰を含む荊州中枢の郡エリア）", "place_type": "area", "category": "郡（中域エリア）", "province": "荊州", "modern": "湖北省荊州市（江陵・公安）・宜昌市（秭帰）一帯", "lat": 30.45, "lng": 111.75, "zoom": 8, "bounds": [29.8, 31.35, 110.5, 112.75], "match_terms": ["南郡"], "area_polygon": [[31.35, 110.5], [31.35, 112.75], [29.8, 112.75], [29.8, 110.5]], "is_pin": false, "is_area": true, "is_river": false}, {"key": "三輔", "label": "三輔（さんぽ：長安を中心とする関中の京兆尹・左馮翊・右扶風エリア）", "place_type": "area", "category": "地域・郡（中域エリア）", "province": "司隷", "modern": "陝西省西安市（長安）・咸陽市（槐里）・宝鶏市（郿）・渭南市一帯", "lat": 34.45, "lng": 108.6, "zoom": 8, "bounds": [33.95, 35.4, 107.2, 110.2], "match_terms": ["三輔"], "area_polygon": [[35.4, 107.2], [35.4, 110.2], [33.95, 110.2], [33.95, 107.2]], "is_pin": false, "is_area": true, "is_river": false}, {"key": "西河", "label": "西河（せいが：黄河中流の西岸〜汾水西方にあたる并州西河郡・古西河エリア）", "place_type": "area", "category": "郡・地域（中域エリア）", "province": "并州", "modern": "山西省呂梁市汾陽市・離石区〜陝西省韓城市一帯", "lat": 37.15, "lng": 111.2, "zoom": 8, "bounds": [36.5, 37.8, 110.4, 112.0], "match_terms": ["西河"], "area_polygon": [[37.8, 110.4], [37.8, 112.0], [36.5, 112.0], [36.5, 110.4]], "is_pin": false, "is_area": true, "is_river": false}, {"key": "漢中", "label": "漢中（かんちゅう：秦嶺山脈と大巴山脈の間の漢水上流盆地・漢中郡エリア）", "place_type": "area", "category": "郡（中域エリア）", "province": "益州", "modern": "陝西省漢中市・安康市一帯", "lat": 33.1, "lng": 107.05, "zoom": 8, "bounds": [32.65, 33.55, 106.15, 108.2], "match_terms": ["漢中"], "area_polygon": [[33.55, 106.15], [33.55, 108.2], [32.65, 108.2], [32.65, 106.15]], "is_pin": false, "is_area": true, "is_river": false}, {"key": "広漢", "label": "広漢（こうかん：成都の北〜剣門・白水に至る益州北部の広漢郡エリア）", "place_type": "area", "category": "郡（中域エリア）", "province": "益州", "modern": "四川省徳陽市（広漢・綿竹）・綿陽市（涪）・広元市（葭萌）・遂寧市一帯", "lat": 31.65, "lng": 105.0, "zoom": 8, "bounds": [30.85, 32.6, 104.05, 105.95], "match_terms": ["広漢", "廣漢"], "area_polygon": [[32.6, 104.05], [32.6, 105.95], [30.85, 105.95], [30.85, 104.05]], "is_pin": false, "is_area": true, "is_river": false}, {"key": "蜀郡", "label": "蜀郡（しょくぐん：成都平原および西方の岷山・邛崍山系を管轄する益州中枢の郡エリア）", "place_type": "area", "category": "郡（中域エリア）", "province": "益州", "modern": "四川省成都市（成都・臨邛）・雅安市・阿壩チベット族チャン族自治州一帯", "lat": 30.6, "lng": 103.65, "zoom": 8, "bounds": [29.85, 31.45, 102.5, 104.45], "match_terms": ["蜀郡"], "area_polygon": [[31.45, 102.5], [31.45, 104.45], [29.85, 104.45], [29.85, 102.5]], "is_pin": false, "is_area": true, "is_river": false}, {"key": "犍為", "label": "犍為（けんい：成都の南・岷江下流〜長江合流部を管轄する益州犍為郡エリア）", "place_type": "area", "category": "郡（中域エリア）", "province": "益州", "modern": "四川省眉山市（武陽）・楽山市・宜賓市・内江市・瀘州市一帯", "lat": 29.35, "lng": 104.55, "zoom": 8, "bounds": [28.4, 30.25, 103.6, 105.6], "match_terms": ["犍為", "犍爲"], "area_polygon": [[30.25, 103.6], [30.25, 105.6], [28.4, 105.6], [28.4, 103.6]], "is_pin": false, "is_area": true, "is_river": false}, {"key": "巴郡", "label": "巴郡（はぐん：江州［重慶］から長江三峡方面に至る益州東部の郡エリア）", "place_type": "area", "category": "郡（中域エリア）", "province": "益州", "modern": "重慶市渝中区（江州）・涪陵区・万州区・雲陽県（朐䏰）一帯", "lat": 29.95, "lng": 107.6, "zoom": 8, "bounds": [29.1, 31.2, 106.2, 109.5], "match_terms": ["巴郡"], "area_polygon": [[31.2, 106.2], [31.2, 109.5], [29.1, 109.5], [29.1, 106.2]], "is_pin": false, "is_area": true, "is_river": false}, {"key": "巴西", "label": "巴西（はせい：四川盆地北東部・閬中および墊江水［嘉陵江］流域の巴西郡エリア）", "place_type": "area", "category": "郡（中域エリア）", "province": "益州", "modern": "四川省南充市閬中市・広安市・達州市・巴中市一帯", "lat": 31.35, "lng": 106.4, "zoom": 8, "bounds": [30.5, 32.1, 105.65, 107.4], "match_terms": ["巴西"], "area_polygon": [[32.1, 105.65], [32.1, 107.4], [30.5, 107.4], [30.5, 105.65]], "is_pin": false, "is_area": true, "is_river": false}, {"key": "益州郡", "label": "益州郡・益郡（えきしゅうぐん／えきぐん：滇池［昆明］を中心とする南中の中心郡エリア）", "place_type": "area", "category": "郡（中域エリア）", "province": "益州", "modern": "雲南省昆明市・晋寧区・曲靖市西部一帯", "lat": 25.05, "lng": 102.75, "zoom": 8, "bounds": [24.3, 25.8, 102.0, 103.6], "match_terms": ["益州郡", "益郡"], "area_polygon": [[25.8, 102.0], [25.8, 103.6], [24.3, 103.6], [24.3, 102.0]], "is_pin": false, "is_area": true, "is_river": false}, {"key": "竟陵", "label": "竟陵（きょうりょう：荊州江夏郡西部の属県）", "parent_area": "江夏", "category": "県（地点ピン）", "province": "荊州", "modern": "湖北省天門市（竟陵街道）", "lat": 30.66, "lng": 113.16, "match_terms": ["竟陵"], "place_type": "point", "zoom": 9, "is_pin": true, "is_area": false, "is_river": false}, {"key": "赤壁", "label": "赤壁（せきへき：荊州江夏郡・南郡境の長江南岸にある戦場）", "parent_area": "荊州", "category": "戦場（地点ピン）", "province": "荊州", "modern": "湖北省咸寧市赤壁市北西（赤壁鎮）", "lat": 29.88, "lng": 113.62, "match_terms": ["赤壁"], "place_type": "point", "zoom": 9, "is_pin": true, "is_area": false, "is_river": false}, {"key": "公安", "label": "公安（こうあん：荊州南郡油江口［孱陵県］に置かれた要衝都市）", "parent_area": "南郡", "category": "県・拠点（地点ピン）", "province": "荊州", "modern": "湖北省荊州市公安県北東（斗湖堤鎮）", "lat": 30.06, "lng": 112.23, "match_terms": ["公安"], "place_type": "point", "zoom": 9, "is_pin": true, "is_area": false, "is_river": false}, {"key": "秭帰", "label": "秭帰（しき：荊州南郡西端・長江三峡の出口に位置する属県）", "parent_area": "南郡", "category": "県・要衝（地点ピン）", "province": "荊州", "modern": "湖北省宜昌市秭帰県", "lat": 30.82, "lng": 110.96, "match_terms": ["秭帰", "秭歸"], "place_type": "point", "zoom": 9, "is_pin": true, "is_area": false, "is_river": false}, {"key": "洛陽", "label": "雒陽・洛陽・京師（らくよう：司隷河南尹の治所、後漢の帝都）", "parent_area": "河南", "category": "帝都（地点ピン）", "province": "司隷", "modern": "河南省洛陽市瀍河回族区東郊", "lat": 34.726, "lng": 112.601, "match_terms": ["雒陽", "洛陽", "京師"], "place_type": "point", "zoom": 9, "is_pin": true, "is_area": false, "is_river": false}, {"key": "陽城山", "label": "陽城・陽城山（ようじょうざん：豫州潁川郡陽城県北の山岳、嵩山南麓）", "parent_area": "潁川", "category": "山・県（地点ピン）", "province": "豫州", "modern": "河南省鄭州市登封市告成鎮北", "lat": 34.45, "lng": 113.14, "match_terms": ["陽城山", "陽城"], "place_type": "point", "zoom": 9, "is_pin": true, "is_area": false, "is_river": false}, {"key": "温", "label": "温・温県（おん：司隷河内郡の属県、黄河の北岸）", "parent_area": "河内", "category": "県（地点ピン）", "province": "司隷", "modern": "河南省焦作市温県南西", "lat": 34.94, "lng": 113.08, "match_terms": ["温県", "温縣", "溫縣", "溫県", "温"], "place_type": "point", "zoom": 9, "is_pin": true, "is_area": false, "is_river": false}, {"key": "長安", "label": "長安（ちょうあん：司隷京兆尹の中心都市、前漢の旧都・献帝期の遷都先）", "parent_area": "三輔", "category": "帝都・都市（地点ピン）", "province": "司隷", "modern": "陝西省西安市未央区", "lat": 34.305, "lng": 108.895, "match_terms": ["長安"], "place_type": "point", "zoom": 9, "is_pin": true, "is_area": false, "is_river": false}, {"key": "槐里", "label": "槐里（かいり：司隷右扶風の治所、長安の北西・渭水北岸の要衝）", "parent_area": "三輔", "category": "県・郡治（地点ピン）", "province": "司隷", "modern": "陝西省咸陽市興平市南東", "lat": 34.28, "lng": 108.48, "match_terms": ["槐里"], "place_type": "point", "zoom": 9, "is_pin": true, "is_area": false, "is_river": false}, {"key": "郿", "label": "郿・郿塢（び／びお：司隷右扶風の属県、董卓が巨大な城塞［郿塢］を築いた地）", "parent_area": "三輔", "category": "県・城塞（地点ピン）", "province": "司隷", "modern": "陝西省宝鶏市眉県北（常興鎮）", "lat": 34.29, "lng": 107.75, "match_terms": ["郿塢", "郿"], "place_type": "point", "zoom": 9, "is_pin": true, "is_area": false, "is_river": false}, {"key": "綿竹", "label": "綿竹（めんちく：益州広漢郡の属県、劉焉が最初に益州の治所を置いた都市）", "parent_area": "広漢", "category": "県・州治（地点ピン）", "province": "益州", "modern": "四川省徳陽市綿竹市南東（孝徳鎮）", "lat": 31.28, "lng": 104.22, "match_terms": ["綿竹県", "綿竹縣", "綿竹"], "place_type": "point", "zoom": 9, "is_pin": true, "is_area": false, "is_river": false}, {"key": "雒", "label": "雒・雒県（らく：益州広漢郡の治所、成都の北を守る要衝都市）", "parent_area": "広漢", "category": "県・郡治（地点ピン）", "province": "益州", "modern": "四川省徳陽市広漢市（雒城街道）", "lat": 30.99, "lng": 104.28, "match_terms": ["雒県", "雒縣", "雒"], "place_type": "point", "zoom": 9, "is_pin": true, "is_area": false, "is_river": false}, {"key": "涪", "label": "涪（ふ：益州広漢郡の属県、墊江水［涪江］水路と剣門街道が交わる軍事要衝）", "parent_area": "広漢", "category": "県・要衝（地点ピン）", "province": "益州", "modern": "四川省綿陽市涪城区", "lat": 31.47, "lng": 104.74, "match_terms": ["涪"], "place_type": "point", "zoom": 9, "is_pin": true, "is_area": false, "is_river": false}, {"key": "葭萌", "label": "葭萌（かぼう：益州広漢郡北部の属県、漢中から蜀へ入る白水関・剣門の北の要塞）", "parent_area": "広漢", "category": "県・要塞（地点ピン）", "province": "益州", "modern": "四川省広元市昭化区（昭化古城）", "lat": 32.33, "lng": 105.71, "match_terms": ["葭萌"], "place_type": "point", "zoom": 9, "is_pin": true, "is_area": false, "is_river": false}, {"key": "成都", "label": "成都（せいと：益州蜀郡の治所であり、劉焉・劉璋および蜀漢の中心都市）", "parent_area": "蜀郡", "category": "州治・王都（地点ピン）", "province": "益州", "modern": "四川省成都市青羊区・錦江区", "lat": 30.66, "lng": 104.065, "match_terms": ["成都"], "place_type": "point", "zoom": 9, "is_pin": true, "is_area": false, "is_river": false}, {"key": "臨邛", "label": "臨邛（りんきょう：益州蜀郡南西部の属県、製鉄と塩井で栄えた都市）", "parent_area": "蜀郡", "category": "県（地点ピン）", "province": "益州", "modern": "四川省成都市邛崍市", "lat": 30.41, "lng": 103.46, "match_terms": ["臨邛"], "place_type": "point", "zoom": 9, "is_pin": true, "is_area": false, "is_river": false}, {"key": "江州", "label": "江州（こうしゅう：益州巴郡の治所、長江と墊江水［嘉陵江］の合流点にある水陸の要衝）", "parent_area": "巴郡", "category": "県・郡治（地点ピン）", "province": "益州", "modern": "重慶市渝中区・江北区", "lat": 29.565, "lng": 106.575, "match_terms": ["江州"], "place_type": "point", "zoom": 9, "is_pin": true, "is_area": false, "is_river": false}, {"key": "朐䏰", "label": "朐䏰（じゅんじん：益州巴郡東部の属県、荊州との境に近い長江三峡沿いの要地）", "parent_area": "巴郡", "category": "県・戦場（地点ピン）", "province": "益州", "modern": "重慶市雲陽県西（双江街道付近）", "lat": 30.95, "lng": 108.68, "match_terms": ["朐䏰"], "place_type": "point", "zoom": 9, "is_pin": true, "is_area": false, "is_river": false}, {"key": "墊江水", "label": "墊江水（てんこうすい：江州［重慶］で長江に合流する嘉陵江および支流の涪江水系）", "place_type": "river", "category": "河川（水路ハイライト）", "province": "益州", "modern": "嘉陵江〜涪江（重慶市〜合川区〜遂寧市〜綿陽市［涪］）", "lat": 30.5, "lng": 105.6, "zoom": 7, "is_pin": false, "is_area": false, "is_river": true, "match_terms": ["墊江水"]}];
+  const PLACE_NOTES = {"雒陽": "原文の「雒陽」を「洛陽」と同一の帝都として地図表示しています。", "京師": "原文の「京師（みやこ）」を、当時の帝都である「洛陽」として地図表示しています。", "益部": "原文の「益部」を「益州」と同一の広域エリアとして地図表示しています。", "益土": "原文の「益土」を「益州」と同一の広域エリアとして地図表示しています。", "益郡": "原文の「益郡」を南中の「益州郡」として地図表示しています。", "南土": "原文の「南土」を益州南部の「南中」として地図表示しています。", "交阯": "原文の「交阯」を「交州」と同一の広域エリアとして地図表示しています。", "郿塢": "原文の「郿塢」を右扶風の「郿」と同一地点として地図表示しています。"};
+  const OFFICES = {"州牧": {"title": "牧・州牧・牧伯（ぼく／しゅうぼく／ぼくはく）", "wiki_title": "州牧", "mapping_note": "", "rank": "二千石・秩中二千石（一州の軍政・民政を統括する最高長官）", "ai_desc": "刺史に代わって一州の行政・軍事を一手に統括した最高地方長官。中平5年（188年）、劉焉の建議により重臣が州牧（牧伯）として派遣された（『後漢書』巻75・劉焉伝、『続漢書』百官志五）。", "match_terms": ["牧伯", "州牧"]}, "刺史": {"title": "刺史（しし：益州刺史・冀州刺史・并州刺史・涼州刺史・荊州刺史）", "wiki_title": "刺史", "mapping_note": "", "rank": "六百石（州の監察官・長官）", "ai_desc": "全国を複数の州に分け、州内の郡太守以下を監察・統括した地方長官。", "match_terms": ["刺史"]}, "太守": {"title": "太守（たいしゅ：南陽太守・犍為太守・巴西太守・広漢太守）", "wiki_title": "太守", "mapping_note": "", "rank": "二千石（郡の最高行政・軍事長官）", "ai_desc": "一郡の民政・軍事・司法を統括する地方長官。", "match_terms": ["太守"]}, "司徒": {"title": "司徒（しと：三公の一）", "wiki_title": "司徒", "mapping_note": "", "rank": "一万石（最高位の三公の一）", "ai_desc": "太尉・司空とともに「三公」を構成し、天下の民政・教化を統括した宰相職。", "match_terms": ["司徒"]}, "丞相": {"title": "丞相（じょうしょう）", "wiki_title": "丞相", "mapping_note": "", "rank": "百官の最高位（宰相）", "ai_desc": "皇帝を補佐して国政全般を総覧する最高官職。", "match_terms": ["丞相"]}, "大将軍": {"title": "大将軍（だいしょうぐん）", "wiki_title": "大将軍", "mapping_note": "", "rank": "武官の最高位（三公と同等以上）", "ai_desc": "全軍を統帥する最高位の将軍号。", "match_terms": ["大将軍", "大將軍"]}, "征西将軍": {"title": "征西将軍（せいせいしょうぐん：四征将軍の一）", "wiki_title": "", "mapping_note": "", "rank": "高位重号将軍（二品）", "ai_desc": "「征東・征南・征西・征北」の四方を冠する高位将軍号（四征将軍）の一。後漢末〜三国時代には西方方面の征討を司る最高司令官（魏の九品官人法では第二品）として大将軍・三公・驃騎将軍・車騎将軍・衛将軍に次ぎ、四鎮将軍や前後左右将軍の上位に位置づけられた（『宋書』巻39・百官志上、『通典』巻29・職官十一）。", "match_terms": ["征西将軍", "征西將軍"]}, "左将軍": {"title": "左将軍（さしょうぐん：四方将軍の一）", "wiki_title": "前後左右将軍", "mapping_note": "", "rank": "重号将軍（三公・四征に次ぐ高位武官）", "ai_desc": "前・左・右・後の四方将軍の一つ。", "match_terms": ["左将軍", "左將軍"]}, "雑号将軍": {"title": "雑号将軍（振威将軍・平寇将軍）", "wiki_title": "雑号将軍", "mapping_note": "", "rank": "征討・威号将軍", "ai_desc": "「振威将軍」「平寇将軍」など、特定の威名や征討任務を冠した将軍号。", "match_terms": ["振威将軍", "振威將軍", "平寇将軍", "平寇將軍"]}, "宗正": {"title": "宗正（そうせい：九卿の一）", "wiki_title": "宗正", "mapping_note": "", "rank": "中二千石（九卿の一）", "ai_desc": "皇族（漢の劉氏宗室）の戸籍（宗室属籍）や叙爵・親族関係を管轄する中央の大臣（『続漢書』百官志三）。", "match_terms": ["宗正"]}, "太常": {"title": "太常（たいじょう：九卿の筆頭）", "wiki_title": "太常", "mapping_note": "", "rank": "中二千石（九卿の筆頭）", "ai_desc": "国家の祭祀・宗廟の礼儀および太学・博士の学術試験を総管する九卿筆頭の大臣（『続漢書』百官志二）。", "match_terms": ["太常"]}, "列卿": {"title": "列卿・卿（れっきょう：九卿）", "wiki_title": "九卿", "mapping_note": "", "rank": "中二千石（中央政府の閣僚級高官）", "ai_desc": "三公の下で中央の各省庁を統括した九卿（太常・光禄勲・衛尉・太僕・廷尉・大鴻臚・宗正・大司農・少府）の総称。", "match_terms": ["列卿"]}, "左馮翊": {"title": "左馮翊（さふうよく：三輔の長官）", "wiki_title": "左馮翊", "mapping_note": "", "rank": "二千石（長安北東の三輔長官）", "ai_desc": "京兆尹・右扶風とともに長安周辺（三輔）を管轄した行政区域およびその長官。", "match_terms": ["左馮翊"]}, "侍中": {"title": "侍中（じちゅう）", "wiki_title": "侍中", "mapping_note": "", "rank": "比二千石（皇帝の側近・顧問官）", "ai_desc": "皇帝の側近くに侍り、乗輿に陪乗して献策・下問に応じる高位の側近官。", "match_terms": ["侍中"]}, "尚書": {"title": "尚書（しょうしょ）", "wiki_title": "", "mapping_note": "", "rank": "六百石（機密文書・詔勅を司る中枢官）", "ai_desc": "宮中の尚書台（中台）において天子の詔勅や上奏文書の起草・決裁を司った政務中枢官（『続漢書』百官志三）。", "match_terms": ["尚書", "尙書"]}, "御史中丞": {"title": "御史中丞・治書御史（ぎょしちゅうじょう／ちしょぎょし）", "wiki_title": "御史中丞", "mapping_note": "", "rank": "千石〜六百石（監察・法制官）", "ai_desc": "御史台の長として百官の弾劾・監察を司る「御史中丞」および法律文書・罪状審査を司る「治書御史」。", "match_terms": ["御史中丞", "治書御史"]}, "監軍使者": {"title": "監軍使者（かんぐんししゃ）", "wiki_title": "", "mapping_note": "", "rank": "勅命により諸軍を監督する特派使節", "ai_desc": "皇帝の勅命を帯びて地方の軍務を監察・統括する特命使節。劉焉・劉璋は「監軍使者・領益州牧」として益州の軍政大権を授けられた（『後漢書』巻75・劉焉伝）。", "match_terms": ["監軍使者"]}, "中郎将": {"title": "中郎将（五官中郎将・左中郎将・征東中郎将・奉車中郎将・中郎）", "wiki_title": "中郎将", "mapping_note": "", "rank": "比二千石（禁軍指揮官・部隊将領）、中郎は比六百石", "ai_desc": "宮中の宿衛官（郎官）を統率する「五官・左・右中郎将」や、征討・陪乗を担う中郎将。「中郎」は光禄勲に属する宮中宿衛官。", "match_terms": ["五官中郎将", "五官中郎將", "征東中郎将", "征東中郎將", "奉車中郎将", "奉車中郎將", "左中郎将", "左中郎將", "中郎将", "中郎將", "中郎"]}, "議郎": {"title": "議郎（ぎろう）", "wiki_title": "", "mapping_note": "", "rank": "六百石（光禄勲属官・政策顧問官）", "ai_desc": "宿衛の当直を行わず、もっぱら朝廷の重要政策の議論・顧問に参画する文官（『続漢書』百官志二）。", "match_terms": ["議郎"]}, "博士": {"title": "博士（はくし：五経博士）", "wiki_title": "五経博士", "mapping_note": "", "rank": "比六百石（太常属官・国立大学教授）", "ai_desc": "太常に属し、太学において五経の教授および典礼・経義の考証を司る学官。", "match_terms": ["博士"]}, "奉車都尉": {"title": "奉車都尉（ほうしゃとい）", "wiki_title": "奉車都尉", "mapping_note": "", "rank": "比二千石（天子の乗輿を掌る側近武官）", "ai_desc": "皇帝の乗輿（天子の車駕）を管理・侍従する側近の官職。", "match_terms": ["奉車都尉"]}, "属国都尉": {"title": "属国都尉（ぞっこくとい：蜀郡西部属国都尉・蜀郡属国都尉）", "wiki_title": "", "mapping_note": "", "rank": "比二千石（辺境の帰順異民族を統治する準郡級長官）", "ai_desc": "辺境において帰順した異民族（属国）および属県を統括する長官で、太守に準じる権限を持った（『続漢書』百官志五）。", "match_terms": ["西部属国都尉", "西部属國都尉", "西部屬国都尉", "西部屬國都尉", "属国都尉", "属國都尉", "屬国都尉", "屬國都尉"]}, "校尉": {"title": "校尉（こうい）", "wiki_title": "校尉", "mapping_note": "", "rank": "比二千石（将軍に次ぐ部隊指揮官）", "ai_desc": "一部隊を率いる高級武官。", "match_terms": ["校尉"]}, "司馬": {"title": "別部司馬・督義司馬・司馬（べつぶしば／とくぎしば）", "wiki_title": "司馬", "mapping_note": "", "rank": "比千石（将軍幕下の部隊指揮官）", "ai_desc": "将軍の下で軍務や別動部隊（別部）を統率する武官。「督義司馬」は劉焉が張魯に授けた独自の軍職名。", "match_terms": ["別部司馬", "督義司馬", "司馬"]}, "太倉令": {"title": "太倉令（たいそうれい：中央の国立穀物庫長官）", "wiki_title": "", "mapping_note": "", "rank": "六百石（大司農の属官）", "ai_desc": "地方の県令ではなく、中央の大司農に属し、帝都の中央穀物倉庫（太倉）の搬入・貯蔵・支給を管理する長官（『続漢書』百官志三）。", "match_terms": ["太倉令"]}, "別駕": {"title": "別駕・別駕従事（べつが／べつがじゅうじ）", "wiki_title": "", "mapping_note": "", "rank": "州牧・刺史の筆頭幕僚（総務長）", "ai_desc": "州牧や刺史が州内を巡察する際、別の専用車（別駕）に乗って随行することから名づけられた州庁の筆頭属官（『続漢書』百官志五）。", "match_terms": ["別駕従事", "別駕從事", "別駕"]}, "従事": {"title": "従事・州従事（じゅうじ）", "wiki_title": "", "mapping_note": "", "rank": "州牧・刺史が辟召する幕僚・属官", "ai_desc": "州牧や刺史の下で州内の行政・監察・軍務を分担する幕僚。", "match_terms": ["州従事", "州從事", "従事", "從事"]}, "主簿": {"title": "主簿（しゅぼ）", "wiki_title": "", "mapping_note": "", "rank": "州・郡・将軍府の文書・記録統括官", "ai_desc": "長官の側近として庁内の公文書・帳簿（簿書）および機密事務を統括する要職。", "match_terms": ["主簿"]}, "県令": {"title": "令・県令（れい／けんれい：雒陽令・綿竹令）", "wiki_title": "県令", "mapping_note": "", "rank": "千石〜六百石（大県の長官）", "ai_desc": "人口一万戸以上の大きな県（または帝都の雒陽県など）を治める長官（『続漢書』百官志五）。", "match_terms": ["県令", "縣令"]}, "県長": {"title": "長・県長（ちょう／けんちょう：臨邛長）", "wiki_title": "県令", "mapping_note": "", "rank": "四百石〜三百石（小県の長官）", "ai_desc": "人口一万戸未満の県を治める長官（『続漢書』百官志五）。", "match_terms": ["県長", "縣長"]}, "列侯": {"title": "列侯・亭侯（陽城侯・明雌亭侯）", "wiki_title": "列侯", "mapping_note": "", "rank": "最高位の爵位（県侯・郷侯・亭侯）", "ai_desc": "功臣や皇族に授けられる最上位の爵位。", "match_terms": ["明雌亭侯", "列侯", "亭侯"]}};
+  const SPECIAL_KW = {"漢": {"title": "漢・漢朝（かん：前漢・後漢王朝）", "category": "王朝・国号", "wiki_title": "漢", "mapping_note": "", "ai_desc": "劉邦が創始した前漢および光武帝（劉秀）が再興した後漢王朝。", "match_terms": ["漢朝", "漢"]}, "元和": {"title": "元和（げんな：84年〜87年）", "category": "年号（後漢・章帝）", "wiki_title": "元和 (漢)", "mapping_note": "", "ai_desc": "後漢の第3代皇帝・章帝（劉炟）の治世に使われた元号（84年〜87年）。『後漢書』巻3・章帝紀および巻75・劉焉伝によれば、元和年間に魯恭王の末裔が江夏郡竟陵県へ移封された。", "match_terms": ["元和中", "元和"]}, "支庶": {"title": "支庶（ししょ：本家から分かれた庶流・分家）", "category": "宗族用語", "wiki_title": "", "mapping_note": "", "ai_desc": "本家を継ぐ嫡長子（宗子）以外の系統である分家・庶流の子孫を指す語。劉焉はその竟陵に移封された魯恭王の末裔の分家（支庶）として竟陵に定住した。", "match_terms": ["支庶"]}, "宗室": {"title": "宗室（そうしつ：漢王室の一族・劉氏皇族）", "category": "身分・制度", "wiki_title": "皇族", "mapping_note": "", "ai_desc": "皇帝と同姓（漢王朝では劉氏）の王室一族。宗正が管理する皇族名簿（宗室属籍）に連なる者は、官途への推挙（任子や郎官拝命）において優遇を受けた。", "match_terms": ["宗室"]}, "賢良方正": {"title": "賢良方正・有道（けんりょうほうせい／ゆうどう：制科の選挙科目）", "category": "選挙・推挙制度", "wiki_title": "", "mapping_note": "", "ai_desc": "日食や地震などの天変地異が起きた際、皇帝が特別に詔を下して三公・九卿・郡国から人格高潔で直言できる知識人を推挙させ、天子自ら政治の得失を策問（試験）した特別登用制度（『後漢書』巻6・順帝紀、巻7・桓帝紀）。", "match_terms": ["賢良方正", "有道"]}, "司徒府": {"title": "司徒府・宰府（しとふ／さいふ：三公の幕府）", "category": "官庁・制度", "wiki_title": "", "mapping_note": "", "ai_desc": "三公の一人である司徒の官府（役所）。後漢では三公の府（宰府）が独自に天下の英才を辟召（招聘）する権限を持っていた。", "match_terms": ["司徒府", "宰府"]}, "貨賂": {"title": "貨賂（かろ：財貨・賄賂による売官と買官）", "category": "政治・制度（売官制）", "wiki_title": "", "mapping_note": "", "ai_desc": "金品・財貨の賄賂（わいろ）。後漢末の霊帝は光和元年（178年）に西園・鴻都門に売官所を設け、公卿・刺史・二千石（太守）から県令に至るまで官秩に応じた値段（二千石は二千万銭など）を定めて官職を売買させたため、赴任前に借金をして官を買った地方官が任地で苛酷な収奪を行う弊害が深刻化していた（『後漢書』巻8・霊帝紀、巻78・張譲伝）。", "match_terms": ["貨賂", "賄賂"], "target_records": ["v31_p2_3"]}, "割剥": {"title": "割剥・割剝（かっぱく：民衆の財産を切り剥ぐように苛酷に搾取すること）", "category": "漢文語彙・政治", "wiki_title": "", "mapping_note": "", "ai_desc": "「割」は切り裂く、「剥（剝）」は皮をはぎ取る意。重税や不法な徴発によって、民衆（百姓）の財産や生計の糧を容赦なく削り取り搾取することを表す語（『後漢書』巻75・劉焉伝「刺史・太守，貨賂為官，割剥百姓」）。", "match_terms": ["割剝", "割剥", "厳しく搾取", "嚴しく搾取"], "target_records": ["v31_p2_3"]}, "方夏": {"title": "方夏（ほうか：四方の諸夏・天下の各地）", "category": "古典・地理用語", "wiki_title": "", "mapping_note": "", "ai_desc": "「方」は四方（天下の各地）、「夏」は諸夏・華夏（中国全土）の意。『書経』微子之命や『詩経』大雅・文王之什などに由来する雅語で、中国の四方すべての地域・天下全土を指す（『後漢書』巻75・劉焉伝李賢注に「方猶四方也。夏，華夏也」とある）。", "match_terms": ["方夏", "四方の地"], "target_records": ["v31_p2_3"]}, "賦斂煩擾": {"title": "賦斂煩擾（ふれんはんじょう：租税の取り立てが繁雑・苛酷で民を苦しめること）", "category": "漢文語彙・政治", "wiki_title": "", "mapping_note": "", "ai_desc": "「賦斂（ふれん）」は人頭税や田租などの租税・賦課を徴収すること、「煩擾（はんじょう）」はむやみに多くてわずらわしく、人々をかき乱し苦しめること。益州刺史の郤倹が重い税や不法な徴発を乱発して益州の民衆を疲弊させていた状況を指す（『三國志』巻31・劉焉伝、『後漢書』巻75・劉焉伝）。", "match_terms": ["賦斂煩擾", "徴税が苛酷を極め", "徴稅が苛酷を極め", "徵税が苛酷を極め", "徵稅が苛酷を極め"], "target_records": ["v31_p3_1"]}, "旧典": {"title": "旧典・舊典（きゅうてん：古来定められた朝廷の礼制・故事先例）", "category": "制度・礼制用語", "wiki_title": "", "mapping_note": "", "ai_desc": "漢王朝において古くから定められてきた朝廷の制度・礼制・故事先例（漢家旧典）。ここでは州牧・刺史が赴任・巡察する際に用いる公用馬車（伝車）の格式に関する旧来の規定を指す（司馬彪『続漢書』輿服志上）。", "match_terms": ["舊典", "旧典", "旧来の典制", "旧來の典制", "舊来の典制", "舊來の典制"], "target_records": ["v31_p3_4"]}, "伝車参駕": {"title": "傳車參駕，施赤為帷裳（でんしゃはさんがありし、あかをほどこしてびしょうとなす：州牧・刺史の公用馬車の格式）", "category": "輿服制度（『続漢書』）", "wiki_title": "", "mapping_note": "", "ai_desc": "州牧・刺史の公用車に関する漢代の輿服規定。「伝車（でんしゃ）」は宿駅を利用して赴任・巡行する公用馬車、「参駕（さんが）」は馬三頭立て（驂駕）で牽くこと、「帷裳（びしょう）」は車箱の周囲に垂らす帳（とばり）。漢制では高官（公卿・二千石・刺史・州牧）の車には威儀を示す赤い布の帷（赤帷裳・赤屏泥）を垂らすことが定められていた（『続漢書』輿服志上「刺史得施赤帷裳」、『後漢書』巻31・賈琮伝「旧典、伝車驂駕、垂赤帷裳」）。", "match_terms": ["傳車參駕，施赤為帷裳", "傳車參駕，施赤爲帷裳", "傳車参駕，施赤為帷裳", "傳車参駕，施赤爲帷裳", "伝車參駕，施赤為帷裳", "伝車參駕，施赤爲帷裳", "伝車参駕，施赤為帷裳", "伝車参駕，施赤爲帷裳", "伝車は参駕し、赤を施して帷裳と為す", "伝車は参駕し、赤を施して帷裳と爲す", "伝車は參駕し、赤を施して帷裳と為す", "伝車は參駕し、赤を施して帷裳と爲す", "傳車は参駕し、赤を施して帷裳と為す", "傳車は参駕し、赤を施して帷裳と爲す", "傳車は參駕し、赤を施して帷裳と為す", "傳車は參駕し、赤を施して帷裳と爲す", "その伝車は三頭立ての馬車とし、赤い布を垂らして車の帷裳とした", "その傳車は三頭立ての馬車とし、赤い布を垂らして車の帷裳とした"], "target_records": ["v31_p3_4"]}, "分野": {"title": "分野・天子気（ぶんや／てんしのき：星占術における地域対応と帝王の瑞気）", "category": "天文・図讖思想", "wiki_title": "", "mapping_note": "", "ai_desc": "古代中国の天文思想（分野説）において、天上の二十八宿・十二次を地上の州国に割り当て、その星座の異変や雲気（天子気）によって対応する地上の地域（益州＝参・井宿の分野）の吉凶や帝王出現を予知する説（『周礼』春官・保章氏、『晋書』巻11・天文志上）。", "match_terms": ["天子気", "天子氣", "天子の気", "天子の氣", "分野"]}, "続漢書": {"title": "『続漢書』・『漢霊帝紀』・『益部耆旧伝』・『益部耆旧雑記』・『英雄記』・『典略』・『漢献帝春秋』・『漢晋春秋』・『呉書』・『漢魏春秋』", "category": "引用史料（裴松之注・本文）", "wiki_title": "", "mapping_note": "", "ai_desc": "司馬彪『続漢書』、劉艾『漢霊帝紀』、陳寿『益部耆旧伝』『益部耆旧雑記』、楊戯『季漢輔臣賛』、王粲『英雄記』、魚豢『典略』、袁曄『漢献帝春秋』、習鑿歯『漢晋春秋』（原文表記「漢書春秋」）、韋昭『呉書』、孔衍『漢魏春秋』など、裴松之が注に引用した一次史料群。", "match_terms": ["益部耆旧雑記", "益部耆旧雜記", "益部耆舊雑記", "益部耆舊雜記", "漢献帝春秋", "漢獻帝春秋", "益部耆旧伝", "益部耆旧傳", "益部耆舊伝", "益部耆舊傳", "漢霊帝紀", "漢靈帝紀", "漢書春秋", "漢晋春秋", "漢魏春秋", "続漢書", "續漢書", "英雄記", "輔臣贊", "輔臣賛", "典略", "呉書", "吳書"]}, "欧陽尚書": {"title": "欧陽尚書（おうようしょうしょ：今文『尚書』の代表学派）", "category": "経学・学術", "wiki_title": "", "mapping_note": "", "ai_desc": "前漢の伏生から欧陽生（字は和伯）に伝えられた『尚書（書経）』の学統（欧陽氏学）。後漢の太学で五経博士に立てられ、最も広く学ばれた（『後漢書』巻79上・儒林列伝上）。", "match_terms": ["欧陽尚書", "欧陽尙書", "歐陽尚書", "歐陽尙書"]}, "図讖": {"title": "図讖（としん：河図・洛書および未来予言の緯書）", "category": "思想・学術", "wiki_title": "讖緯", "mapping_note": "", "ai_desc": "経書（五経）の裏付けとして未来の王朝交代や天命・災異を予言した秘伝書（河図・洛書・七経緯）。後漢時代に官学に準ずる重みを持ったが、野心家が改名や簒奪の根拠に用いることも多かった。", "match_terms": ["図讖", "圖讖"]}, "太学": {"title": "太学（たいがく：帝都洛陽の国立最高学府）", "category": "教育機関", "wiki_title": "太学", "mapping_note": "", "ai_desc": "帝都・洛陽の南郊（開陽門外）に設置された国立大学。太常の管轄のもと五経博士が経書を講じ、後漢後半には太学生（諸生）が三万人を超えた（『後漢書』巻79上・儒林列伝序）。", "match_terms": ["太学", "太學"]}, "永康": {"title": "永康（えいこう：167年）", "category": "年号（後漢・桓帝）", "wiki_title": "永康 (漢)", "mapping_note": "", "ai_desc": "後漢の第11代皇帝・桓帝（劉志）の最後の元号（167年6月〜12月）。永康元年5月壬子に日食があり、賢良方正の士が詔挙された（『後漢書』巻7・桓帝紀）。", "match_terms": ["永康元年", "永康"]}, "至止": {"title": "至止（しし：董扶の評号「所至而談止」）", "category": "人物評語", "wiki_title": "", "mapping_note": "", "ai_desc": "董扶の議論があまりに見事で誰も反論できず、「彼がその場に至ると、周囲の談論がピタリと止む（所至而談止）」ことから益州の人々が贈った渾名（『後漢書』巻82下・方術列伝下・董扶伝）。", "match_terms": ["至止", "致止"]}, "黄巾": {"title": "黄巾（こうきん：馬相・趙祗の益州黄巾蜂起）", "category": "反乱・勢力", "wiki_title": "黄巾の乱", "mapping_note": "", "ai_desc": "中平5年（188年）、益州広漢郡綿竹県において馬相・趙祗らが「黄巾」を名乗って蜂起した大反乱。綿竹令・李升や益州刺史・郤倹を殺害し、蜀郡・犍為郡まで席巻して馬相は天子を自称したが、州従事の賈龍によって鎮圧された。", "match_terms": ["黄巾", "黃巾"]}, "鬼道": {"title": "鬼道・米賊（きどう／べいぞく：五斗米道）", "category": "宗教・勢力", "wiki_title": "五斗米道", "mapping_note": "", "ai_desc": "張陵・張衡・張魯の三代が巴蜀・漢中で広めた初期道教教団（五斗米道）。入信者から五斗の米を納めさせたため朝廷や外部からは「米賊」「鬼道」と呼ばれた（『三國志』巻8・張魯伝）。", "match_terms": ["鬼道", "米賊"]}, "谷閣": {"title": "谷閣（こくかく：漢中と関中・巴蜀を結ぶ渓谷の桟道）", "category": "交通・軍事要衝", "wiki_title": "", "mapping_note": "", "ai_desc": "秦嶺山脈や大巴山脈の険しい渓谷（褒斜道・子午道・陳倉道など）の断崖に木材を渡して構築された桟道（閣道）。これを焼き落とすことで中央朝廷（長安）との通行を完全に遮断した。", "match_terms": ["谷閣"]}, "青羌": {"title": "青羌（せいきょう：劉焉麾下の精鋭羌族部隊）", "category": "軍事・異民族部隊", "wiki_title": "", "mapping_note": "", "ai_desc": "益州北西境（蜀郡北部・汶山方面）に居住し、青い衣や旗印を用いた羌族の精鋭兵（『後漢書』巻75・劉焉伝注）。", "match_terms": ["青羌", "靑羌"]}, "乗輿": {"title": "乗輿・輿服（じょうよ／よふく：天子専用の車駕と装束）", "category": "帝室制度", "wiki_title": "", "mapping_note": "", "ai_desc": "本来は天子（皇帝）のみが使用を許される専用の車馬（乗輿）と衣服・儀仗。臣下がこれを私造することは帝位簒奪（謀反）の最大の証拠とされた（『後漢書』輿服志上）。", "match_terms": ["乗輿", "乘輿", "輿服"]}, "興平": {"title": "興平（こうへい：194年〜195年）", "category": "年号（後漢・献帝）", "wiki_title": "興平 (漢)", "mapping_note": "", "ai_desc": "後漢の献帝の元号（194年〜195年）。興平元年（194年）に馬騰・劉範の長安襲撃事件と綿竹の大火が相次ぎ、劉焉は背中に癰疽を発して死去した。", "match_terms": ["興平元年", "興平"]}, "東州兵": {"title": "東州兵・東州人（とうしゅうへい：南陽・三輔からの流民軍団）", "category": "軍事・社会集団", "wiki_title": "東州兵", "mapping_note": "", "ai_desc": "後漢末の戦乱を避けて益州の東方にあたる南陽郡（荊州）や三輔（長安周辺）から益州へ流入した数万家の流民から編成された親衛軍団。劉焉・劉璋父子の軍事的支柱となったが、益州土着の豪族（旧民）との間に激しい対立を生んだ。", "match_terms": ["東州兵", "東州人"]}, "物故": {"title": "物故（ぶっこ：死去することの語源故事）", "category": "故事・語源（裴注）", "wiki_title": "", "mapping_note": "", "ai_desc": "人が死去することを指す漢代の慣用語。裴松之注によれば、魏の尚書台（魏臺）がその語源を下問した際、碩学の高堂隆が「物とは無（なくなる）、故とは事（物事）であり、もはや何事もなすことができなくなる意である」と答えたとされる（『釈名』等では「鬼物となって故（ふる）くなる」とも解される）。", "match_terms": ["物故"]}, "叟兵": {"title": "叟兵（そうへい：益州・南中の精強な異民族兵）", "category": "軍事・異民族部隊", "wiki_title": "", "mapping_note": "", "ai_desc": "益州（特に蜀郡西部や南中・青衣方面）の「叟（そう）族」から編成された精強な歩兵部隊（『後漢書』巻75・劉焉伝注）。", "match_terms": ["叟兵"]}, "使君": {"title": "使君（しくん：州牧・刺史に対する敬称）", "category": "敬称・呼称", "wiki_title": "", "mapping_note": "", "ai_desc": "天子の勅命を奉じて地方へ派遣された長官（特に州牧・州刺史）に対する尊称。ここでは益州牧の劉璋を指す。", "match_terms": ["使君"]}, "肺腑": {"title": "肺腑（はいふ：肺と臓腑、転じて皇室の近親・心を許す親族）", "category": "故事成語", "wiki_title": "", "mapping_note": "", "ai_desc": "肺や内臓のように体の最も奥深くにあるものから転じて、帝室・同宗のきわめて近い親族関係（劉璋と劉備がともに漢王室の末裔であること）、または腹心の関係を意味する語（『史記』巻107・魏其武安侯列伝）。", "match_terms": ["肺腑"]}, "倒懸": {"title": "倒懸・倒縣（とうけん：逆さ吊りになって諫言すること）", "category": "故事（王累の死諫）", "wiki_title": "", "mapping_note": "", "ai_desc": "原典表記「倒縣」は「倒懸」に同じ。広漢出身の従事・王累が、劉備を益州に招き入れることの危険性を劉璋に必死で諫めるため、成都の州門で自らの足を縄で縛って逆さ吊りになり、片手に刀、片手に諫言書を握って諫めた故事（『華陽国志』巻5・劉二牧志）。", "match_terms": ["倒縣", "倒県", "倒懸"]}, "建安": {"title": "建安（けんあん：196年〜220年）", "category": "年号（後漢・献帝）", "wiki_title": "建安 (漢)", "mapping_note": "", "ai_desc": "後漢最後の皇帝・献帝の元号（196年〜220年）。建安16年（211年）に劉備が益州へ入り、建安19年（214年）に劉璋が成都を開城して降伏した。", "match_terms": ["建安十六年", "十九年", "建安"]}, "負乗致寇": {"title": "負乗致寇（ふじょうちこう：『周易』繋辞上伝の故事）", "category": "経書典故（『易経』）", "wiki_title": "", "mapping_note": "", "ai_desc": "『周易（易経）』解卦・六三の爻辞「負且乗、致寇至（荷物を背負うべき小人が、貴人の乗る馬車に乗っていれば、必ず盗賊を呼び寄せて奪われる）」および繋辞上伝の孔子の解説に基づく成語。器量のない者が分不相応な高位・大領土に居座れば、必ず外敵の侵略を招くという戒め。", "match_terms": ["負乘致寇", "負乗致寇", "乗を負ひて寇を致す", "乘を負ひて寇を致す"]}, "海内": {"title": "海内・海內（かいだい：四海の内・天下全体）", "category": "漢文語彙・地理概念", "wiki_title": "", "mapping_note": "", "ai_desc": "古代中国において、大地（中華）の四方を囲むとされた「四海」の内側、すなわち中国全土・天下全体を指す語（『書経』大禹謨、『孟子』梁恵王上、『爾雅』釈地）。", "match_terms": ["海內", "海内"]}, "西戎": {"title": "西戎（せいじゅう：中国西方・隴右方面の異民族の総称）", "category": "民族・歴史用語", "wiki_title": "西戎", "mapping_note": "", "ai_desc": "中国西方（涼州・隴右一帯）に居住していた異民族（羌族など）の古典的総称。霊帝の治世末期には北宮伯玉・李文侯や辺章・韓遂・王国らが先零羌・湟中義従胡らとともに涼州・三輔で大規模な反乱を起こしていた（『後漢書』巻87・西羌伝）。", "match_terms": ["西戎"]}};
+  const PERSONS_INFO = {"劉焉": {"wiki_title": "劉焉", "ai_desc": "劉焉（りゅうえん）：字は君郎。江夏竟陵の人。前漢の魯恭王の末裔。中平5年（188年）に州牧の設置を建議し、自ら監軍使者・益州牧となって巴蜀に割拠した。"}, "劉璋": {"wiki_title": "劉璋", "ai_desc": "劉璋（りゅうしょう）：字は季玉。劉焉の末子。興平元年（194年）に父の跡を継いで益州牧となり、建安19年（214年）に劉備に成都を開城して降伏した。"}, "魯恭王": {"wiki_title": "劉余", "ai_desc": "魯恭王・劉余（りゅうよ）：前漢の第6代皇帝・景帝の皇子。魯王に封じられ、孔子の旧宅を壊して壁中から古文経書（壁中書）を発見したことで知られる（『漢書』巻53・景十三王伝）。"}, "章帝": {"wiki_title": "", "ai_desc": "章帝（しょうてい）：劉炟（りゅうたつ）。後漢の第3代皇帝（在位75年〜88年）。明帝の第五子。寛容な仁政を敷き、白虎観会議を主催して五経の異同を論じさせ、元和年間には魯恭王の末裔を竟陵へ転封した（『後漢書』巻3・章帝紀）。"}, "祝恬": {"wiki_title": "", "ai_desc": "祝恬（しゅくてん）：字は伯休、中山盧奴の人。劉焉の学問の師（祝公）。光禄大夫・太常を経て、桓帝の延熹2年（159年）に司徒となり、延熹3年（160年）夏に在職のまま死去した（『後漢書』巻7・桓帝紀）。"}, "裴松之": {"wiki_title": "裴松之", "ai_desc": "裴松之（はいしょうし）：南朝宋の歴史家。文帝の命を受け、陳寿『三國志』に膨大な一次史料を博引して『三國志注』を完成させた。"}, "霊帝": {"wiki_title": "", "ai_desc": "霊帝（れいてい）：劉宏（りゅうこう）。後漢の第12代皇帝（在位168年〜189年）。治世末期に黄巾の乱（184年）や各地の反乱が相次ぎ、中平5年（188年）に劉焉の建議を容れて主要州の刺史を「州牧」に改めた（『後漢書』巻8・霊帝紀）。"}, "董扶": {"wiki_title": "董扶", "ai_desc": "董扶（とうふ）：字は茂安、広漢綿竹の人。図讖（星占・予言学）の大家で、侍中のとき劉焉に「益州の分野に天子の気がある」と密かに告げ、自らも蜀郡西部属国都尉となって益州へ入った（『後漢書』巻82下・方術列伝下）。"}, "郤倹": {"wiki_title": "", "ai_desc": "郤倹（げきけん）：河南偃師の人。中平年間に益州刺史となったが苛酷な徴税を行って民心と信頼を失い、馬相ら益州黄巾の乱で殺害された。蜀漢の学者・郤正の祖父。"}, "郤正": {"wiki_title": "", "ai_desc": "郤正（げきせい）：字は令先。郤倹の孫。蜀漢の秘書令として後主・劉禅に仕え、のち西晋に仕えた学者（『三國志』巻42・郤正伝）。"}, "張壹": {"wiki_title": "", "ai_desc": "張壹（ちょういつ）：後漢末の并州刺史。『後漢書』霊帝紀・劉焉伝では「張懿（ちょうい）」と記され、中平5年（188年）に休屠各胡（南匈奴系部族）の反乱によって殺害された。"}, "耿鄙": {"wiki_title": "", "ai_desc": "耿鄙（こうひ）：後漢末の涼州刺史。中平4年（187年）、王国・韓遂・馬騰らの反乱を討つため出兵したが、隴西郡狄道で部下の反乱に遭って殺害された（『後漢書』巻8・霊帝紀、巻72・董卓伝）。"}, "劉虞": {"wiki_title": "劉虞", "ai_desc": "劉虞（りゅうぐ）：字は伯安、東海恭王の後裔。清廉な名声と徳望によって中平5年（188年）に幽州牧となり、北方異民族の懐柔に大きな功績を挙げた（『後漢書』巻73・劉虞伝）。"}, "劉表": {"wiki_title": "劉表", "ai_desc": "劉表（りゅうひょう）：字は景升、山陽高平の人。魯恭王の後裔。荊州刺史・荊州牧として襄陽を拠点に荊州を統治した（『三國志』巻6・劉表伝）。"}, "賈琮": {"wiki_title": "賈琮", "ai_desc": "賈琮（かそう）：字は孟堅、東郡聊城の人。交阯刺史・冀州刺史として清廉な統治を行い、赴任しただけで汚職官吏が自ら印綬を解いて逃亡したという名臣（『後漢書』巻31・賈琮伝）。"}, "孫堅": {"wiki_title": "孫堅", "ai_desc": "孫堅（そんけん）：字は文台、呉郡富春の人。反董卓連合軍の挙兵時に荊州刺史・王叡を殺害した（『三國志』巻46・孫破虜伝）。"}, "王叡": {"wiki_title": "", "ai_desc": "王叡（おうえい）：字は通耀、琅邪臨沂の人。荊州刺史として孫堅と対立し、初平元年（190年）に孫堅に逼られて金を飲んで自殺した（『三國志』巻46・孫破虜伝注引『王氏譜』）。"}, "劉雋": {"wiki_title": "", "ai_desc": "劉雋（りゅうしゅん）：郤倹の前任の益州刺史。『漢霊帝紀』によれば郤倹とともに苛斂誅求を行ったとされる。"}, "趙韙": {"wiki_title": "", "ai_desc": "趙韙（ちょうい）：益州巴西郡の人。太倉令を辞して劉焉に従い、劉焉の死後は劉璋を擁立して征東中郎将となったが、のち益州の大姓と結んで反乱を起こし、江州で部下の龐楽・李異に斬られた。"}, "陳寿": {"wiki_title": "陳寿", "ai_desc": "陳寿（ちんじゅ）：字は承祚、巴西郡安漢の人。『三國志』の著者であり、『益部耆旧伝』なども著した。"}, "楊厚": {"wiki_title": "", "ai_desc": "楊厚（ようこう）：字は仲桓、広漢新都の人。図讖・天文の学を家学とし、朝廷からの招聘を辞して門徒に教授した高士で、董扶や任安らの師（『後漢書』巻30上・楊厚伝）。"}, "趙謙": {"wiki_title": "趙謙", "ai_desc": "趙謙（ちょうけん）：字は彦信、蜀郡成都の人。左馮翊・前将軍・司徒・太尉を歴任した蜀郡の名門出身の重臣（『後漢書』巻27・趙典伝附伝）。"}, "何進": {"wiki_title": "何進", "ai_desc": "何進（かしん）：字は遂高、南陽宛の人。霊帝の皇后・何氏の兄として大将軍となり、董扶ら名士を朝廷に招聘した。"}, "言偃": {"wiki_title": "言偃", "ai_desc": "言偃（げんえん）：字は子游（しゆう）。孔子の高弟（孔門十哲の一人）で、文学（礼楽・制度の学）に優れた。"}, "卜商": {"wiki_title": "卜商", "ai_desc": "卜商（ぼくしょう）：字は子夏（しか）。孔子の高弟（孔門十哲の一人）。孔子の死後、魏の西河で教授し、曽子から「西河の民があなたを夫子（孔子）と擬している」と責められた故事（『礼記』檀弓上）で知られる。"}, "孔子": {"wiki_title": "孔子", "ai_desc": "孔子（こうし）：春秋時代の魯の思想家、儒家の始祖。"}, "焦延寿": {"wiki_title": "", "ai_desc": "焦延寿（しょうえんじゅ）：名は贛、字は延寿。前漢の易学者で『焦氏易林』の著者。京房の師であり、易占による災異消復の術で知られた（『漢書』巻75・京房伝）。"}, "董仲舒": {"wiki_title": "董仲舒", "ai_desc": "董仲舒（とうちゅうじょ）：前漢武帝期の公羊学者。『春秋』の災異説と陰陽五行説を統合し、儒学の官学化を基礎づけた（『漢書』巻56・董仲舒伝）。"}, "諸葛亮": {"wiki_title": "諸葛亮", "ai_desc": "諸葛亮（しょかつりょう）：字は孔明。蜀漢の丞相。"}, "秦宓": {"wiki_title": "秦宓", "ai_desc": "秦宓（しんぷく）：字は子勅、広漢綿竹の人。博学と弁舌で知られた益州の学者（『三國志』巻38・秦宓伝）。"}, "馬相": {"wiki_title": "", "ai_desc": "馬相（ばしょう）：中平5年（188年）、益州広漢郡綿竹で趙祗らとともに「黄巾」を称して蜂起した首領。綿竹令・李升、益州刺史・郤倹を殺害し、蜀郡・犍為郡を席巻して自ら天子を称したが、州従事・賈龍に撃破された。"}, "趙祗": {"wiki_title": "", "ai_desc": "趙祗（ちょうし）：馬相とともに益州広漢郡綿竹県で黄巾を称して蜂起した反乱指導者の一人。"}, "李升": {"wiki_title": "", "ai_desc": "李升（りしょう）：後漢末の広漢郡綿竹県令。馬相・趙祗らの蜂起の最初に殺害された。"}, "賈龍": {"wiki_title": "", "ai_desc": "賈龍（かりゅう）：字は謙、蜀郡成都の人。益州従事として馬相の乱を平定し、劉焉を益州に迎え入れたが、のち劉焉の豪族粛清と自立志向に反発し、犍為太守・任岐とともに劉焉を攻めて敗死した。"}, "張魯": {"wiki_title": "張魯", "ai_desc": "張魯（ちょうろ）：字は公祺、沛国豊の人。母が鬼道（五斗米道）と美貌によって劉焉の家に出入りした縁から督義司馬に任じられ、漢中に拠って約三十年間自立政権を築いた（『三國志』巻8・張魯伝）。"}, "王咸": {"wiki_title": "", "ai_desc": "王咸（おうかん）：益州の有力豪族（州中豪強）の一人。劉焉が威刑を立てるため李権ら十余人とともに処刑された。"}, "李権": {"wiki_title": "", "ai_desc": "李権（りけん）：字は伯豫、梓潼郡涪県の人。臨邛長を務めた益州の有力豪族で、劉焉によって王咸らとともに処刑された。蜀漢の尚書僕射・李福の父（『三國志』巻45・楊戯伝『季漢輔臣賛』注）。"}, "李福": {"wiki_title": "李福", "ai_desc": "李福（りふく）：字は孫徳、梓潼涪の人。李権の子。蜀漢に仕えて成都令・巴西太守・江州都督・尚書僕射を歴任した（『三國志』巻45・楊戯伝注引『益部耆旧雑記』）。"}, "楊戯": {"wiki_title": "楊戯", "ai_desc": "楊戯（ようぎ）：字は文然、犍為武陽の人。蜀漢の治中従事・射声校尉を務め、蜀漢の名臣たちを讃えた『季漢輔臣賛』を著した（『三國志』巻45・楊戯伝）。"}, "任岐": {"wiki_title": "任岐", "ai_desc": "任岐（じんき）：蜀郡成都の人。犍為太守を務め、劉焉が王咸・李権ら益州豪族を処刑して自立を図ると、自ら将軍と称し賈龍・陳超とともに挙兵して劉焉を攻めたが、劉焉の青羌兵に敗れて殺害された。"}, "董卓": {"wiki_title": "董卓", "ai_desc": "董卓（とうたく）：字は仲穎、隴西臨洮の人。"}, "陳超": {"wiki_title": "", "ai_desc": "陳超（ちんちょう）：益州の従事。犍為太守・任岐とともに挙兵して劉焉を攻撃したが敗れた（『英雄記』）。"}, "劉範": {"wiki_title": "劉範", "ai_desc": "劉範（りゅうはん）：劉焉の長男。左中郎将として長安の献帝に仕え、興平元年（194年）に父・劉焉および征西将軍・馬騰と結んで長安の李傕らを討とうとしたが、計画が漏れて槐里へ逃れ、敗死した。"}, "劉誕": {"wiki_title": "", "ai_desc": "劉誕（りゅうたん）：劉焉の次男。治書御史として長安にいたが、興平元年（194年）に兄の劉範と馬騰による長安襲撃計画が敗れると、捕らえられて処刑された。"}, "献帝": {"wiki_title": "献帝 (漢)", "ai_desc": "献帝（けんてい）：劉協（りゅうきょう）。後漢の第14代（最後）の皇帝（在位189年〜220年）。"}, "劉瑁": {"wiki_title": "劉瑁", "ai_desc": "劉瑁（りゅうぼう）：劉焉の三男（劉璋の同母兄）。別部司馬として早くから父・劉焉に随行して益州に入り、曹操から平寇将軍を授けられたが、狂疾を発して死去した。その未亡人・呉氏が後に劉備の穆皇后となった（『三國志』巻34・穆皇后伝）。"}, "馬騰": {"wiki_title": "馬騰", "ai_desc": "馬騰（ばとう）：字は寿成、右扶風茂陵の人。征西将軍として郿に駐屯し、興平元年（194年）に劉焉・劉範父子と内通して長安の李傕政権を攻めたが敗れ、涼州へ退却した。"}, "孫肇": {"wiki_title": "", "ai_desc": "孫肇（そんちょう）：劉焉配下の校尉。興平元年（194年）、劉焉の命により五千の益州兵を率いて馬騰・劉範の長安襲撃を救援したが、李傕・郭汜・樊稠らに敗れた（『英雄記』、『後漢書』劉焉伝）。"}, "龐羲": {"wiki_title": "ホウ羲", "ai_desc": "龐羲（ほうぎ）：司隷河南尹の人。議郎のとき、代々の親交があった劉焉の孫たちを長安の戦乱から救出して蜀へ送り届けた。劉璋のもとで巴西太守として張魯を防ぎ、劉備の入蜀後は左将軍司馬・営司馬を務めた。"}, "扈瑁": {"wiki_title": "", "ai_desc": "扈瑁（こぼう）：豫州潁川郡の人。劉焉の死後、長安の朝廷（李傕政権）から正規の益州刺史に任命されて漢中へ入ったが、劉璋・趙韙らに阻まれて益州本土へ入れず、荊州へ去った（『英雄記』、『華陽国志』）。"}, "劉闔": {"wiki_title": "", "ai_desc": "劉闔（りゅうこう）：荊州別駕。劉焉の死に乗じて劉璋配下の部将・沈弥、婁発、甘寧らと結んで劉璋に対する反乱を起こしたが、敗れて荊州へ逃走した（『英雄記』）。"}, "沈弥": {"wiki_title": "", "ai_desc": "沈弥（しんび）：劉璋配下の部将。婁発・甘寧および荊州別駕の劉闔とともに反乱を起こして劉璋を攻めたが勝てず、荊州へ走った（『英雄記』）。"}, "婁発": {"wiki_title": "", "ai_desc": "婁発（ろうはつ）：劉璋配下の部将。沈弥・甘寧らとともに劉璋に反旗を翻し、敗れて荊州へ逃れた（『英雄記』）。"}, "甘寧": {"wiki_title": "甘寧", "ai_desc": "甘寧（かんねい）：字は興覇、巴郡臨江の人。若き日に劉璋に対する沈弥・婁発らの反乱に加わって荊州へ逃れ、のちに呉の孫権に仕えて猛将として活躍した（『三國志』巻55・甘寧伝）。"}, "龐楽": {"wiki_title": "", "ai_desc": "龐楽（ほうがく）：趙韙配下の部将。建安6年（201年）、江州まで退却した趙韙に対し、同僚の李異とともに反旗を翻して趙韙の軍を討ち、趙韙を斬った（『英雄記』）。"}, "李異": {"wiki_title": "李異", "ai_desc": "李異（りい）：趙韙配下の部将。龐楽とともに江州で趙韙を斬って劉璋に帰順し、のちも益州の有力将領として功を恃んだ。"}, "牛亶": {"wiki_title": "", "ai_desc": "牛亶（ぎゅうたん）：後漢の五官中郎将。趙韙の乱が起きた際、朝廷から益州刺史に任じられたが赴任に至らなかった（『漢献帝春秋』）。"}, "曹操": {"wiki_title": "曹操", "ai_desc": "曹操（そうそう）：字は孟徳、沛国譙の人。"}, "陰溥": {"wiki_title": "", "ai_desc": "陰溥（いんふ）：司隷河内郡の人。建安13年（208年）、曹操が荊州を征討した際に劉璋の使者として派遣され、その功により劉璋に振威将軍、劉瑁に平寇将軍が授けられた。"}, "高堂隆": {"wiki_title": "高堂隆", "ai_desc": "高堂隆（こうどうりゅう）：字は升平、泰山平陽の人。前漢の礼学者・高堂生の末裔で、魏の文帝・明帝に仕えて光禄勲・侍中となった儒学・典礼の大家（『三國志』巻25・高堂隆伝）。"}, "張粛": {"wiki_title": "", "ai_desc": "張粛（ちょうしゅく）：蜀郡成都の人。張松の兄。別駕従事として曹操のもとへ使者として赴いて広漢太守に任じられ、のち弟の張松が劉備と内通していることを劉璋に密告した（『三國志』巻32・先主伝）。"}, "張松": {"wiki_title": "張松", "ai_desc": "張松（ちょうしょう）：字は永年、蜀郡成都の人。益州別駕として曹操に謁見した際に冷遇されたため、劉璋に曹操との断交と劉備（劉豫州）の招請を進言し、法正・孟達とともに劉備の益州入りを導いた。"}, "劉備": {"wiki_title": "劉備", "ai_desc": "劉備（りゅうび）：字は玄徳、涿郡涿県の人。蜀漢の初代皇帝（先主）。"}, "習鑿歯": {"wiki_title": "習鑿歯", "ai_desc": "習鑿歯（しゅうさくし）：字は彦威、襄陽の人。東晋の歴史家で、蜀漢を正統とする史書『漢晋春秋』を著した。"}, "斉桓公": {"wiki_title": "桓公 (斉)", "ai_desc": "斉の桓公（せいのけいこう）：姓は姜、名は小白。春秋五覇の筆頭。葵丘の会盟の後に功績を誇って驕慢になったため、九か国の諸侯が離反した故事（『国語』晋語四、『公羊伝』僖公九年）で知られる。"}, "法正": {"wiki_title": "法正", "ai_desc": "法正（ほうせい）：字は孝直、右扶風郿の人。劉璋の使者として劉備のもとへ派遣され、張松とともに劉備の益州招請および入蜀作戦の主謀者となった（『三國志』巻37・法正伝）。"}, "孟達": {"wiki_title": "孟達", "ai_desc": "孟達（もうたつ）：字は子度（のち子敬）、右扶風の人。法正とともに兵数千を率いて劉備の援軍として派遣され、のち劉備に帰順した。"}, "黄権": {"wiki_title": "黄権", "ai_desc": "黄権（こうけん）：字は公衡、巴西閬中の人。劉璋の主簿として、劉備を益州へ迎え入れることに「一国に二君は並び立たない」と強く反対して諫言した（『三國志』巻43・黄権伝）。"}, "王累": {"wiki_title": "王累", "ai_desc": "王累（おうるい）：広漢新都の人。劉璋の従事。劉備を益州に招請することに反対し、成都の州門で自らの体を逆さ吊り（倒懸）にしてまで必死に諫言したが、聞き入れられなかった（『華陽国志』巻5）。"}, "孫権": {"wiki_title": "孫権", "ai_desc": "孫権（そんけん）：字は仲謀。呉の初代皇帝。"}, "関羽": {"wiki_title": "関羽", "ai_desc": "関羽（かんう）：字は雲長、河東解の人。"}, "雍闓": {"wiki_title": "", "ai_desc": "雍闓（ようかい）：益州郡（南中）の大豪族で、前漢の什方侯・雍歯の末裔。劉備の死後、益州郡に拠って反乱を起こし呉の孫権に服属したが、諸葛亮の南征に際して高定の部下に殺害された（『三國志』巻43・呂凱伝）。"}, "劉闡": {"wiki_title": "劉闡", "ai_desc": "劉闡（りゅうせん）：別名は緯。劉璋の次男。父の劉璋とともに荊州へ移り、関羽の敗死後は呉の孫権に仕えて益州刺史・御史中丞を務めた。"}, "劉循": {"wiki_title": "劉循", "ai_desc": "劉循（りゅうじゅん）：劉璋の長男。龐羲の娘婿。劉備が成都を平定した際、岳父・龐羲の請願によって蜀に留まり、奉車中郎将に任じられた。"}, "魏豹": {"wiki_title": "魏豹", "ai_desc": "魏豹（ぎひょう）：秦末・楚漢戦争期の魏王。人相見の許負が側室の薄姫を見て「天子を生む相がある」と予言したため、自らが天子になれると思い込んで劉邦に背いたが、韓信に撃破されて滅び、薄姫は劉邦の後宮に入って漢の文帝を生んだ（『史記』巻90・魏豹彭越列伝、巻49・外戚世家）。"}, "許負": {"wiki_title": "", "ai_desc": "許負（きょふ）：秦末〜前漢初期の河内郡温県の人相見の老婦人。薄姫が天子（文帝）を生むことや、周亜夫の栄達と餓死などを的中させたことで名高い（『史記』外戚世家・絳侯周勃世家）。"}, "薄姫": {"wiki_title": "", "ai_desc": "薄姫（はくき）：薄太后。もとは魏王・魏豹の側室であったが、魏豹の滅亡後に漢の高祖（劉邦）の後宮に入り、代王・劉恒（のちの前漢第5代皇帝・文帝）を生んだ（『史記』巻49・外戚世家）。"}, "孔衍": {"wiki_title": "", "ai_desc": "孔衍（こうえん）：字は舒元、魯国曲阜の人。孔子の22代孫にあたる東晋の学者で、『漢魏春秋』などを著した（『晋書』巻91・儒林伝）。"}, "劉邦": {"wiki_title": "劉邦", "ai_desc": "劉邦（りゅうほう）：前漢の初代皇帝（高祖）。"}, "劉歆": {"wiki_title": "劉歆", "ai_desc": "劉歆（りゅうきん）：字は子駿、のち名を秀（しゅう）、字を穎叔と改めた。前漢末の経学者・天文学者で、王莽の建国に協力して国師となった。地皇4年（23年）、図讖に「劉秀が天子となる」とあるのを見て自らのことと思い込み、王莽打倒を謀ったが露見して自殺し、実際に天子となったのは同姓同名の光武帝・劉秀であった（『漢書』巻36・劉歆伝、巻99下・王莽伝下）。"}, "呉皇后": {"wiki_title": "", "ai_desc": "呉氏（ごし）：陳留郡の人、呉懿の妹。人相見から「大貴の相がある」と予言されたため、野心を抱いていた劉焉が三男・劉瑁の妻として迎え入れた。劉瑁の死後、益州を平定した劉備に迎えられて漢中王后、ついで蜀漢の皇后（穆皇后）となった（『三國志』巻34・二主妃子伝）。"}, "張璠": {"wiki_title": "", "ai_desc": "張璠（ちょうはん）：西晋〜東晋の歴史家。後漢の歴史を記した『後漢紀』三十巻を著し、裴松之が『三國志注』に多数引用している。"}, "宋襄公": {"wiki_title": "襄公 (宋)", "ai_desc": "宋の襄公（そうのじょうこう）：春秋時代の宋の君主。楚との泓水の戦い（紀元前638年）において、敵が川を渡り終え陣形を整えるまで攻撃しないという過剰な仁義（宋襄の仁）を守って大敗した（『春秋左氏伝』僖公二十二年）。"}, "徐偃王": {"wiki_title": "徐偃王", "ai_desc": "徐の偃王（じょのえんおう）：周の穆王の時代、淮水流域の徐国を治めた君主。仁義のみを行って武備を廃したため諸侯三十六国が慕って服属したが、楚の攻撃を受けた際に「民を戦わせて傷つけるに忍びない」として戦わずに国を去ったとされる（『韓非子』五蠹、『後漢書』東夷伝）。"}, "韓嵩": {"wiki_title": "韓嵩", "ai_desc": "韓嵩（かんすう）：字は徳高、南陽義陽の人。荊州牧・劉表の別駕として、曹操と袁紹の対立に際し、二股をかけず曹操へ帰順するか自立するかを明確に決断するよう公然と劉表を諫めた（『三國志』巻6・劉表伝）。"}, "劉先": {"wiki_title": "劉先", "ai_desc": "劉先（りゅうせん）：字は始宗、零陵郡の人。劉表の別駕として韓嵩とともに劉表に天下の大勢を説いて曹操への帰順を進言した（『三國志』巻6・劉表伝注引『零陵先賢伝』）。"}, "陳平": {"wiki_title": "陳平", "ai_desc": "陳平（ちんぺい）：前漢建国の功臣。はじめ項羽に仕えたが、項羽が猜疑心が強く諫言を聞かないことを見限り、賜った黄金と官印を封じて返上した上で堂々と項羽のもとを去り、劉邦に帰順した（『史記』巻56・陳丞相世家）。"}, "韓信": {"wiki_title": "韓信", "ai_desc": "韓信（かんしん）：前漢建国の名将。はじめ項羽の郎中となったが献策が用いられなかったため、項羽のもとを去って漢王・劉邦に帰順し、大将軍に拝された（『史記』巻92・淮陰侯列伝）。"}, "項羽": {"wiki_title": "項羽", "ai_desc": "項羽（こうう）：秦末の西楚の覇王。"}};
+  const NATURAL_FEATURES = [{"name": "⛰️ 秦嶺山脈", "lat": 33.85, "lng": 107.8, "type": "mountain"}, {"name": "⛰️ 大巴山脈", "lat": 32.15, "lng": 107.6, "type": "mountain"}, {"name": "⛰️ 岷山山脈", "lat": 32.1, "lng": 103.5, "type": "mountain"}, {"name": "🌊 長江（大江）", "lat": 30.2, "lng": 111.8, "type": "river"}, {"name": "🌊 墊江水（嘉陵江・涪江）", "lat": 30.8, "lng": 105.7, "type": "river"}, {"name": "🌊 漢水", "lat": 32.5, "lng": 110.5, "type": "river"}, {"name": "🌊 黄河", "lat": 35.1, "lng": 112.5, "type": "river"}];
+  const RIVER_LINES = [{"key": "長江", "name": "長江（大江）", "coords": [[28.76, 104.63], [28.89, 105.44], [29.56, 106.55], [30.82, 108.4], [30.95, 108.68], [30.82, 110.96], [30.33, 112.24], [29.88, 113.62], [30.58, 114.3], [29.72, 116.0], [31.2, 118.0]]}, {"key": "墊江水", "name": "墊江水（嘉陵江・涪江水系：江州〜涪）", "coords": [[32.4, 104.5], [31.47, 104.74], [30.52, 105.58], [30.0, 106.27], [29.565, 106.575]]}, {"key": "漢水", "name": "漢水", "coords": [[33.15, 106.62], [33.07, 107.02], [32.68, 109.02], [32.02, 112.14], [30.58, 114.3]]}, {"key": "黄河", "name": "黄河", "coords": [[36.06, 103.8], [38.47, 106.27], [40.15, 111.15], [34.62, 110.28], [34.8, 112.5], [34.95, 113.6], [35.75, 115.05]]}];
+  const PUBLISHED_MAX_PARA = 3;
+
+  // 【方法A：自動切り替え判定】
+  // 手元のPC（file:// または localhost）で開いた時、または URL に ?edit=1 を付けた時だけ制作・指摘環境を有効化。
+  // github.io 等へアップロードして一般読者が開いた時は、自動的に公開モード（指摘リスト非表示＆完了段落のみ表示）になる。
+  const urlParams = new URLSearchParams(window.location.search);
+  const IS_AUTHOR_EDIT_ENV = (
+    window.location.protocol === 'file:' ||
+    window.location.hostname === 'localhost' ||
+    window.location.hostname === '127.0.0.1' ||
+    urlParams.get('edit') === '1'
+  ) && urlParams.get('public') !== '1';
+
+  function isEditModeActive() {
+    if (!IS_AUTHOR_EDIT_ENV) return false;
+    const previewEl = document.getElementById('togglePublicPreview');
+    return !(previewEl && previewEl.checked);
+  }
+
+  const TOTAL_PARAGRAPHS = Math.max(...RECORDS.map(r => r.para_index));
+
+  function getMaxVisibleParagraph() {
+    return isEditModeActive() ? TOTAL_PARAGRAPHS : Math.min(TOTAL_PARAGRAPHS, PUBLISHED_MAX_PARA);
+  }
+
+  function getVisibleRecords() {
+    const maxP = getMaxVisibleParagraph();
+    return RECORDS.filter(r => r.para_index <= maxP);
+  }
+
+  let currentActiveId = "v31_p1_1";
+  let readingHistoryStack = [];
+  let activeHighlightLayers = [];
+
+  // 1. 地図の初期化
+  const map = L.map('map').setView([31.5, 107.8], 6);
+
+  const shadedReliefLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}', {
+    attribution: 'Tiles &copy; Esri',
+    maxNativeZoom: 13,
+    maxZoom: 13
+  });
+  const physicalLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Physical_Map/MapServer/tile/{z}/{y}/{x}', {
+    attribution: 'Tiles &copy; Esri',
+    maxNativeZoom: 8,
+    maxZoom: 13
+  });
+  physicalLayer.addTo(map);
+
+  L.control.layers({
+    "① 自然地形図（山脈と川のみ・道路なし）": physicalLayer,
+    "② 陰影白地図（山の凹凸のみ・詳細ズーム可）": shadedReliefLayer
+  }).addTo(map);
+
+  // 2. 山脈・大河
+  const natureGroup = L.layerGroup().addTo(map);
+  RIVER_LINES.forEach(river => {
+    const rLine = L.polyline(river.coords, { color: '#1976d2', weight: 2.5, opacity: 0.75 }).addTo(natureGroup);
+    rLine.bindTooltip(river.name, { sticky: true });
+  });
+  NATURAL_FEATURES.forEach(feat => {
+    const icon = L.divIcon({
+      className: feat.type === 'mountain' ? 'nature-label-mountain' : 'nature-label-river',
+      html: feat.name,
+      iconSize: [140, 20],
+      iconAnchor: [70, 10]
+    });
+    L.marker([feat.lat, feat.lng], { icon: icon, interactive: false }).addTo(natureGroup);
+  });
+
+  // 3. エリア（郡・州）および地点ピンのレイヤー（公開範囲に応じて自動フィルタリング）
+  const baseAreaGroup = L.layerGroup().addTo(map);
+  const pinMarkerGroup = L.layerGroup().addTo(map);
+
+  function getActivePlaceKeysSet() {
+    if (isEditModeActive()) {
+      return new Set(PLACES.map(p => p.key));
+    }
+    const visibleRecs = getVisibleRecords();
+    const usedKeys = new Set();
+    const tagRegex = /\{\{place:([^|}]+)\|/g;
+    visibleRecs.forEach(rec => {
+      [rec.raw_tagged, rec.kakikudashi_tagged, rec.translation_tagged].forEach(txt => {
+        if (!txt) return;
+        let m;
+        while ((m = tagRegex.exec(txt)) !== null) {
+          usedKeys.add(m[1]);
+        }
+      });
+    });
+    // 使用されている地点ピンの親エリア（parent_area）もあわせて有効化
+    PLACES.forEach(p => {
+      if (p.is_pin && usedKeys.has(p.key) && p.parent_area) {
+        usedKeys.add(p.parent_area);
+      }
+    });
+    return usedKeys;
+  }
+
+  function getShortNameWithReading(labelStr) {
+    if (!labelStr) return '';
+    return labelStr.replace(/：[^）]*）$/, '）');
+  }
+
+  function renderMapLayersForCurrentMode() {
+    baseAreaGroup.clearLayers();
+    pinMarkerGroup.clearLayers();
+    const activeKeys = getActivePlaceKeysSet();
+
+    PLACES.filter(p => p.is_area && p.area_polygon && activeKeys.has(p.key)).forEach(area => {
+      const isCommandery = area.category.includes('郡');
+      const poly = L.polygon(area.area_polygon, {
+        color: isCommandery ? '#5d4037' : '#1565c0',
+        weight: isCommandery ? 1.5 : 1.2,
+        dashArray: isCommandery ? '4, 4' : '8, 6',
+        fillColor: isCommandery ? '#8d6e63' : '#42a5f5',
+        fillOpacity: isCommandery ? 0.06 : 0.03
+      }).addTo(baseAreaGroup);
+      poly.bindTooltip(`🗺️ ${getShortNameWithReading(area.label)}`, { sticky: true });
+      poly.on('click', () => {
+        focusPlaceOnMap(area.key, area.key);
+      });
+    });
+
+    PLACES.filter(p => p.is_pin && activeKeys.has(p.key)).forEach(place => {
+      let fillColor = '#e65100';
+      if (place.province === '益州' || place.province === '涼州') fillColor = '#2e7d32';
+      else if (place.province === '荊州') fillColor = '#1565c0';
+      else if (place.province === '揚州' || place.province === '徐州') fillColor = '#6a1b9a';
+
+      const marker = L.circleMarker([place.lat, place.lng], {
+        radius: 6.5,
+        fillColor: fillColor,
+        color: '#fff',
+        weight: 1.8,
+        fillOpacity: 0.95
+      }).addTo(pinMarkerGroup);
+
+      marker.bindTooltip(`<span class="custom-label" id="pin-label-${place.key}">${place.key}</span>`, {
+        permanent: true,
+        direction: 'top',
+        offset: [0, -7],
+        className: 'transparent-box'
+      });
+
+      marker.on('click', () => {
+        focusPlaceOnMap(place.key, place.key);
+      });
+    });
+  }
+
+  window.addEventListener('resize', () => {
+    map.invalidateSize();
+  });
+
+  // 5. 地名クリック時の移動＆「エリア⊃地点」ハイライト処理
+  function focusPlaceOnMap(placeKey, clickedRawSurface = '') {
+    closeModal();
+    const found = PLACES.find(p => p.key === placeKey);
+    document.querySelectorAll('.custom-label').forEach(el => el.classList.remove('selected-pin'));
+    activeHighlightLayers.forEach(layer => map.removeLayer(layer));
+    activeHighlightLayers = [];
+
+    if (!found) return false;
+
+    const targetZoom = Math.round(found.zoom || 8);
+    map.stop();
+
+    let hierarchyHtml = '';
+    const activeKeys = getActivePlaceKeysSet();
+
+    // (A) エリア（州・郡・河南・河北など）をクリックした場合：領域ポリゴン（面）と中央バナーを表示
+    if (found.is_area && found.area_polygon) {
+      map.fitBounds(found.area_polygon, { padding: [36, 36], maxZoom: 7 });
+
+      const areaPoly = L.polygon(found.area_polygon, {
+        color: '#d84315',
+        weight: 3.5,
+        fillColor: '#ffab40',
+        fillOpacity: 0.25
+      }).addTo(map);
+
+      const bannerIcon = L.divIcon({
+        className: '',
+        html: `<span class="area-banner-label">🗺️ ${found.key}</span>`,
+        iconSize: [140, 28],
+        iconAnchor: [70, 14]
+      });
+      const bannerMarker = L.marker([found.lat, found.lng], { icon: bannerIcon, interactive: false }).addTo(map);
+      activeHighlightLayers.push(areaPoly, bannerMarker);
+    }
+    // (B) 河川をクリックした場合：水系ポリラインをハイライト
+    else if (found.is_river) {
+      map.setView([found.lat, found.lng], 7, { animate: true, duration: 0.5 });
+      RIVER_LINES.filter(r => r.key === found.key).forEach(river => {
+        const hl = L.polyline(river.coords, { color: '#ffeb3b', weight: 7, opacity: 0.85 }).addTo(map);
+        const fg = L.polyline(river.coords, { color: '#d32f2f', weight: 3.5, opacity: 0.95 }).addTo(map);
+        activeHighlightLayers.push(hl, fg);
+      });
+    }
+    // (C) 地点（県・城・関・山）をクリックした場合：親エリア（豫州・徐州・兗州など）全体が見える縮尺に合わせてピン＋親枠を表示
+    else {
+      const labelEl = document.getElementById(`pin-label-${found.key}`);
+      if (labelEl) labelEl.classList.add('selected-pin');
+
+      const parentArea = PLACES.find(a => a.is_area && a.key === found.parent_area);
+      if (parentArea && parentArea.area_polygon) {
+        // 親エリア（例：許なら豫州）の枠全体が画面に収まる縮尺（最大ズーム7）に合わせる
+        map.fitBounds(parentArea.area_polygon, { padding: [36, 36], maxZoom: 7 });
+
+        const parentPoly = L.polygon(parentArea.area_polygon, {
+          color: '#2e7d32',
+          weight: 2.5,
+          dashArray: '6, 4',
+          fillColor: '#66bb6a',
+          fillOpacity: 0.12
+        }).addTo(map);
+        const pLat = parentArea.area_polygon[0][0];
+        const pLng = (parentArea.area_polygon[0][1] + parentArea.area_polygon[1][1]) / 2;
+        const parentBanner = L.marker([pLat, pLng], {
+          icon: L.divIcon({
+            className: '',
+            html: `<span class="parent-area-banner-label">${parentArea.key}</span>`,
+            iconSize: [100, 22],
+            iconAnchor: [50, 11]
+          }),
+          interactive: false
+        }).addTo(map);
+        activeHighlightLayers.push(parentPoly, parentBanner);
+      } else {
+        map.setView([found.lat, found.lng], 7, { animate: true, duration: 0.5 });
+      }
+
+      const ptCircle = L.circle([found.lat, found.lng], {
+        radius: 14000,
+        color: '#c62828',
+        weight: 2.5,
+        fillColor: '#ff5252',
+        fillOpacity: 0.25
+      }).addTo(map);
+      activeHighlightLayers.push(ptCircle);
+    }
+
+    const toast = document.getElementById('mapToast');
+    const safeSurface = (clickedRawSurface || found.key).replace(/'/g, "\'");
+    const safeKey = found.key.replace(/'/g, "\'");
+    const toastFeedbackHtml = isEditModeActive() ? `
+      <div class="toast-feedback-bar">
+        <button class="toast-fb-btn" onclick="addPlaceToastFeedback('${safeKey}', '${safeSurface}', '🔄 場所が違う（同名別地・位置修正）')">🔄 場所が違う</button>
+        <button class="toast-fb-btn" onclick="addPlaceToastFeedback('${safeKey}', '${safeSurface}', '📐 エリア⇔地点の区分変更')">📐 エリア⇔地点変更</button>
+        <button class="toast-fb-btn" onclick="startMapCoordPicker('${safeKey}', '${safeSurface}')">📍 地図クリックで正しい位置を指定</button>
+        <button class="toast-fb-btn" onclick="addPlaceToastFeedback('${safeKey}', '${safeSurface}', '❌ 地名タグ解除')">❌ タグ解除</button>
+      </div>
+    ` : '';
+    const shortTitle = getShortNameWithReading(found.label);
+    toast.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center; gap:10px;"><div>📍 <strong>${shortTitle}</strong> <span style="font-size:0.8rem; color:#ddd;">（現在の${found.modern}）</span></div><button onclick="document.getElementById('mapToast').style.display='none'" style="background:transparent; border:none; color:#ccc; cursor:pointer; font-size:0.9rem; line-height:1; padding:0 2px;" title="閉じる">✕</button></div>${toastFeedbackHtml}`;
+    toast.style.display = 'block';
+    return true;
+  }
+
+  // 6. データベースに埋め込まれた確定タグ（{type:key|surface}）を直接HTMLへ変換
+  function getActivePersonsList() {
+    return Array.from(new Set(
+      getVisibleRecords().flatMap(r => (r.persons || '').split(',').map(s => s.trim()).filter(Boolean))
+    ));
+  }
+
+  function getPlaceSubTypeLabel(placeKey) {
+    const p = PLACES.find(item => item.key === placeKey);
+    if (!p) return `地名(${placeKey})`;
+    if (p.is_area) return `🗺️地名[エリア](${placeKey})`;
+    if (p.is_river) return `🌊地名[河川](${placeKey})`;
+    return `📍地名[地点](${placeKey})`;
+  }
+
+  function renderEmbeddedTags(taggedText, recId) {
+    if (!taggedText) return '';
+    const editHint = isEditModeActive() ? ' ／ 右クリックまたはドラッグ選択で指摘' : '';
+    return taggedText.replace(/\{\{(place|office|person|special):([^|}]+)\|([^}]+)\}\}?/g, (m, tagType, key, surface) => {
+      const safeKey = key.replace(/'/g, "\'");
+      const safeSurface = surface.replace(/'/g, "\'");
+      if (tagType === 'place') {
+        const subLabel = getPlaceSubTypeLabel(key);
+        return `<span class="inline-place" data-tag-type="place" data-tag-key="${key}" onclick="handleInlineTagClick(event, '${recId}', 'place', '${safeKey}', '${safeSurface}')" oncontextmenu="handleInlineTagContextMenu(event, '${recId}', 'place', '${safeKey}', '${safeSurface}')" title="${subLabel}：クリックで地図移動${editHint}">${surface}</span>`;
+      } else if (tagType === 'office') {
+        return `<span class="inline-office" data-tag-type="office" data-tag-key="${key}" onclick="handleInlineTagClick(event, '${recId}', 'office', '${safeKey}', '${safeSurface}')" oncontextmenu="handleInlineTagContextMenu(event, '${recId}', 'office', '${safeKey}', '${safeSurface}')" title="👑官職(${key})：クリックで解説${editHint}">${surface}</span>`;
+      } else if (tagType === 'person') {
+        return `<span class="inline-person" data-tag-type="person" data-tag-key="${key}" onclick="handleInlineTagClick(event, '${recId}', 'person', '${safeKey}', '${safeSurface}')" oncontextmenu="handleInlineTagContextMenu(event, '${recId}', 'person', '${safeKey}', '${safeSurface}')" title="👤人名(${key})：クリックで解説${editHint}">${surface}</span>`;
+      } else if (tagType === 'special') {
+        return `<span class="inline-special" data-tag-type="special" data-tag-key="${key}" onclick="handleInlineTagClick(event, '${recId}', 'special', '${safeKey}', '${safeSurface}')" oncontextmenu="handleInlineTagContextMenu(event, '${recId}', 'special', '${safeKey}', '${safeSurface}')" title="🔖特別キーワード(${key})：クリックで解説${editHint}">${surface}</span>`;
+      }
+      return surface;
+    });
+  }
+
+  // 7. 本文・裴注リーダー描画（「1段落＝本文＋裴注」ずつの切り替え表示）
+  const recordListEl = document.getElementById('recordList');
+  const paraTopNavEl = document.getElementById('paraTopNav');
+  let currentParaIndex = 1;
+
+  function getSectionLabelForPara(paraIdx) {
+    const rec = RECORDS.find(r => r.para_index === paraIdx);
+    const maxVis = getMaxVisibleParagraph();
+    if (isEditModeActive() && rec) {
+      const shortSec = (rec.section_title || '').replace('劉二牧傳（', '').replace('）', '');
+      const pubBadge = paraIdx <= PUBLISHED_MAX_PARA ? '✅' : '🔧';
+      return `${pubBadge} 第 ${paraIdx} / ${maxVis} （${shortSec}）`;
+    }
+    const denomLabel = PUBLISHED_MAX_PARA < TOTAL_PARAGRAPHS ? '○' : maxVis;
+    return `第 ${paraIdx} / ${denomLabel}`;
+  }
+
+  function goToParagraph(paraIdx) {
+    const maxVis = getMaxVisibleParagraph();
+    const clamped = Math.max(1, Math.min(maxVis, paraIdx));
+    currentParaIndex = clamped;
+    const showAllEl = document.getElementById('toggleShowAllParas');
+    if (showAllEl && showAllEl.checked) {
+      showAllEl.checked = false;
+    }
+    renderReaderList();
+    recordListEl.scrollTop = 0;
+    const firstRec = getVisibleRecords().find(r => r.para_index === currentParaIndex);
+    if (firstRec) {
+      setActiveRecord(firstRec.id);
+    }
+  }
+
+  function changeParagraph(delta) {
+    goToParagraph(currentParaIndex + delta);
+  }
+
+  function renderReaderList() {
+    const showAll = isEditModeActive() && document.getElementById('toggleShowAllParas') && document.getElementById('toggleShowAllParas').checked;
+    const maxVis = getMaxVisibleParagraph();
+    if (currentParaIndex > maxVis) {
+      currentParaIndex = maxVis;
+    }
+
+    // 地図と本文の間の段落切り替えバー（← 第 1 / ○ →）を更新
+    if (paraTopNavEl) {
+      if (!showAll) {
+        const prevDisabled = currentParaIndex <= 1 ? 'disabled' : '';
+        const nextDisabled = currentParaIndex >= maxVis ? 'disabled' : '';
+        let optionsHtml = '';
+        for (let p = 1; p <= maxVis; p++) {
+          const selectedAttr = p === currentParaIndex ? 'selected' : '';
+          optionsHtml += `<option value="${p}" ${selectedAttr}>${getSectionLabelForPara(p)}</option>`;
+        }
+        paraTopNavEl.innerHTML = `
+          <button class="slim-nav-btn" onclick="changeParagraph(-1)" ${prevDisabled}>←</button>
+          <select class="para-select" onchange="goToParagraph(parseInt(this.value, 10))">${optionsHtml}</select>
+          <button class="slim-nav-btn" onclick="changeParagraph(1)" ${nextDisabled}>→</button>
+        `;
+      } else {
+        paraTopNavEl.innerHTML = `<span class="vol-nav-title">全段落連続表示（第 1 〜 ${maxVis} 段落）</span>`;
+      }
+    }
+
+    recordListEl.innerHTML = '';
+
+    // 読書履歴スタックがある場合は最上部に「元の場所に戻る」ボタンを表示
+    if (readingHistoryStack.length > 0) {
+      const lastId = readingHistoryStack[readingHistoryStack.length - 1];
+      const backBtnEl = document.createElement('button');
+      backBtnEl.className = 'back-btn';
+      backBtnEl.style.display = 'inline-block';
+      backBtnEl.textContent = `↩ さっき読んでいた場所 (${lastId}) に戻る`;
+      backBtnEl.onclick = goBackToSavedReadingSpot;
+      recordListEl.appendChild(backBtnEl);
+    }
+
+    const visibleRecs = getVisibleRecords();
+    const targetRecords = showAll
+      ? visibleRecs
+      : visibleRecs.filter(rec => rec.para_index === currentParaIndex);
+
+    targetRecords.forEach(rec => {
+      const isPei = rec.type === '裴注';
+      const card = document.createElement('div');
+      card.className = `record-card ${isPei ? 'pei-note' : 'main-text'}`;
+      card.id = `card-${rec.id}`;
+      card.dataset.id = rec.id;
+
+      card.innerHTML = `
+        <div class="card-top">
+          <span><strong>${rec.id}</strong> [${rec.section_title}] （第${rec.para_index}段落） ${rec.era_year ? `｜ 📅 ${rec.era_year}` : ''}</span>
+          <span class="badge ${isPei ? 'pei' : 'main'}">${rec.type}</span>
+        </div>
+        <div class="raw-text">${renderEmbeddedTags(rec.raw_tagged, rec.id)}</div>
+        <div class="kakikudashi">${renderEmbeddedTags(rec.kakikudashi_tagged, rec.id)}</div>
+        <div class="translation">${renderEmbeddedTags(rec.translation_tagged, rec.id)}</div>
+      `;
+
+      card.addEventListener('click', () => {
+        setActiveRecord(rec.id);
+      });
+
+      recordListEl.appendChild(card);
+    });
+
+    // 本文末尾の索引ボタンバー
+    const bottomNav = document.createElement('div');
+    bottomNav.className = 'para-bottom-nav';
+    bottomNav.innerHTML = `
+      <button class="nav-btn" onclick="openTocModal()">📑 登場人物・地名・官職 索引</button>
+    `;
+    recordListEl.appendChild(bottomNav);
+
+    // 本文の一番下に配置する Google AdSense 広告スペース
+    const adBox = document.createElement('div');
+    adBox.className = 'ad-footer-box';
+    adBox.innerHTML = `
+      <div class="ad-footer-label">スポンサーリンク</div>
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-4382223240782332"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+    `;
+    recordListEl.appendChild(adBox);
+    try {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } catch (e) {}
+  }
+
+  function setActiveRecord(recId) {
+    currentActiveId = recId;
+    document.querySelectorAll('.record-card').forEach(c => {
+      c.classList.toggle('active-card', c.dataset.id === recId);
+    });
+  }
+
+  // 8. 全カテゴリ統一モーダル（人物・官職はWikipedia概略＋出現箇所、特別キーワードは語句解説＋出現箇所）
+  function openUnifiedModal(categoryType, itemKey, clickedSurface = '') {
+    let headerTitle = '';
+    let wikiTargetTitle = '';
+    let mappingNote = '';
+    let specialGlossaryDesc = '';
+    let searchTerms = [];
+
+    if (categoryType === 'person') {
+      headerTitle = `👤 【人物】${itemKey}`;
+      const pInfo = PERSONS_INFO[itemKey];
+      if (pInfo) {
+        wikiTargetTitle = pInfo.wiki_title || '';
+        specialGlossaryDesc = pInfo.ai_desc || '';
+      } else {
+        wikiTargetTitle = itemKey.replace(/\(.*?\)/g, '');
+      }
+      if (clickedSurface && clickedSurface !== itemKey) {
+        mappingNote = `原文の「${clickedSurface}」をフルネーム「${itemKey}」に特別変換して紐づけています。`;
+      }
+      searchTerms = [itemKey];
+    } else if (categoryType === 'office') {
+      const info = OFFICES[itemKey];
+      if (!info) return;
+      headerTitle = `👑 【官職】${info.title}`;
+      wikiTargetTitle = info.wiki_title !== undefined ? info.wiki_title : itemKey;
+      mappingNote = info.mapping_note || '';
+      if (!wikiTargetTitle) {
+        specialGlossaryDesc = info.ai_desc || '';
+      }
+      searchTerms = itemKey === '県令' ? ['易陽令', '雒陽令', '綿竹令'] :
+                    (itemKey === '県長' ? ['臨沮長', '旌陽長', '臨邛長'] :
+                    (itemKey === '相' ? ['魯相'] : info.match_terms));
+    } else if (categoryType === 'special') {
+      const info = SPECIAL_KW[itemKey];
+      if (!info) return;
+      headerTitle = `🔖 【${info.category}】${info.title}`;
+      wikiTargetTitle = info.wiki_title !== undefined ? info.wiki_title : itemKey;
+      mappingNote = info.mapping_note || '';
+      specialGlossaryDesc = info.ai_desc || '';
+      searchTerms = info.match_terms;
+    }
+
+    const fallbackAiDesc = (categoryType === 'office' && OFFICES[itemKey]) ? (OFFICES[itemKey].ai_desc || '') : '';
+
+    const matched = getVisibleRecords().filter(rec => {
+      const allText = [rec.raw_text, rec.kakikudashi, rec.translation, rec.persons, rec.keywords, rec.source_book, rec.era_year].join(' ');
+      return searchTerms.some(t => allText.includes(t));
+    });
+
+    document.getElementById('modalTitle').textContent = `${headerTitle} （出現：${matched.length} 件）`;
+    const bodyEl = document.getElementById('modalBody');
+
+    const specialDescHtml = specialGlossaryDesc
+      ? `<div class="ai-special-box">
+           <div style="font-weight:bold; color:#4a148c; margin-bottom:4px;">📖 【語句・故事の意味解説】</div>
+           <div>${specialGlossaryDesc}</div>
+         </div>`
+      : '';
+
+    const wikiBoxHtml = wikiTargetTitle
+      ? `<div class="wiki-standard-box" id="unifiedWikiBox">
+           <div>🌐 Wikipediaから「${wikiTargetTitle}」の概略を取得中...</div>
+         </div>`
+      : '';
+
+    bodyEl.innerHTML = `
+      ${specialDescHtml}
+      ${wikiBoxHtml}
+      <details class="occurrence-details">
+        <summary class="occurrence-summary">📖 出現箇所一覧（全 ${matched.length} 件）</summary>
+        <div class="occurrence-list" id="modalOccurrenceList"></div>
+      </details>
+    `;
+
+    if (wikiTargetTitle) {
+      fetchWikipediaSummary(wikiTargetTitle, 'unifiedWikiBox', fallbackAiDesc, Boolean(specialGlossaryDesc));
+    }
+    const occListEl = document.getElementById('modalOccurrenceList');
+    if (occListEl) {
+      appendOccurrencesToModal(occListEl, matched, searchTerms);
+    }
+    document.getElementById('modalOverlay').style.display = 'flex';
+  }
+
+  async function fetchWikipediaSummary(wikiTitle, containerId, fallbackDesc = '', hasSpecialBox = false) {
+    const box = document.getElementById(containerId);
+    if (!box) return;
+    const encoded = encodeURIComponent(wikiTitle);
+    const wikiUrl = `https://ja.wikipedia.org/wiki/${encoded}`;
+    try {
+      const res = await fetch(`https://ja.wikipedia.org/api/rest_v1/page/summary/${encoded}`);
+      if (!res.ok) throw new Error('Not found');
+      const data = await res.json();
+      if (data.type === 'disambiguation') throw new Error('Disambiguation');
+      box.innerHTML = `
+        <div style="font-weight:bold; color:#0d47a1; margin-bottom:4px;">🌐 【Wikipedia 概略】「${data.title}」</div>
+        <div>${data.extract || '（要約テキストなし）'}</div>
+        <a class="wiki-link-btn" href="${wikiUrl}" target="_blank" rel="noopener">Wikipediaで「${data.title}」のページを開く ↗</a>
+      `;
+    } catch (err) {
+      if (hasSpecialBox) {
+        box.style.display = 'none';
+      } else if (fallbackDesc) {
+        box.className = 'ai-special-box';
+        box.innerHTML = `
+          <div style="font-weight:bold; color:#4a148c; margin-bottom:4px;">📖 【語句・制度の意味解説】</div>
+          <div>${fallbackDesc}</div>
+        `;
+      } else {
+        box.style.display = 'none';
+      }
+    }
+  }
+
+  function appendOccurrencesToModal(container, records, highlightTerms) {
+    records.forEach(rec => {
+      const item = document.createElement('div');
+      item.className = 'modal-occurrence';
+      const isCurrent = rec.id === currentActiveId;
+      item.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <span style="font-size:0.82rem; font-weight:bold; color:#3d2f1d;">
+            ${rec.id} [${rec.section_title}] （第${rec.para_index}段落・${rec.type}） ${isCurrent ? '👈 【現在読書中の行】' : ''}
+          </span>
+          <button class="jump-btn" onclick="jumpToRecordFromModal('${rec.id}')">この段落へ移動して読む</button>
+        </div>
+        <div class="raw-text" style="font-size:0.95rem;">${highlightSimple(rec.raw_text, highlightTerms)}</div>
+        <div class="translation" style="font-size:0.88rem;">${highlightSimple(rec.translation, highlightTerms)}</div>
+      `;
+      container.appendChild(item);
+    });
+  }
+
+  function openTocModal() {
+    document.getElementById('modalTitle').textContent = '📑 巻31（蜀書一・劉二牧伝）目次・エリア＆地点インデックス';
+    const bodyEl = document.getElementById('modalBody');
+    const activeKeys = getActivePlaceKeysSet();
+    const activePersons = getActivePersonsList();
+    const visRecords = getVisibleRecords();
+
+    const activeOffices = Object.keys(OFFICES).filter(k => {
+      if (isEditModeActive()) return true;
+      const info = OFFICES[k];
+      const terms = [k, ...(info.aliases || [])];
+      return visRecords.some(r => terms.some(t => r.raw_text.includes(t) || r.kakikudashi.includes(t) || r.translation.includes(t)));
+    });
+
+    const activeSpecials = Object.keys(SPECIAL_KW).filter(k => {
+      if (isEditModeActive()) return true;
+      const info = SPECIAL_KW[k];
+      const terms = [k, ...(info.aliases || [])];
+      return visRecords.some(r => terms.some(t => r.raw_text.includes(t) || r.kakikudashi.includes(t) || r.translation.includes(t)));
+    });
+
+    const areaButtons = PLACES.filter(p => p.is_area && activeKeys.has(p.key)).map(p => `<button class="nav-btn" style="background:#d84315; margin:2px;" onclick="closeModal(); focusPlaceOnMap('${p.key}', '${p.key}')">🗺️ [エリア] ${p.key}</button>`).join('');
+    const pointButtons = PLACES.filter(p => p.is_pin && activeKeys.has(p.key)).map(p => `<button class="nav-btn" style="background:#2e7d32; margin:2px;" onclick="closeModal(); focusPlaceOnMap('${p.key}', '${p.key}')">📍 ${p.key} (${p.parent_area})</button>`).join('');
+    const riverButtons = PLACES.filter(p => p.is_river && activeKeys.has(p.key)).map(p => `<button class="nav-btn" style="background:#0277bd; margin:2px;" onclick="closeModal(); focusPlaceOnMap('${p.key}', '${p.key}')">🌊 ${p.key}</button>`).join('');
+    const officeButtons = activeOffices.map(k => `<button class="nav-btn" style="background:#1565c0; margin:2px;" onclick="openUnifiedModal('office', '${k}', '${k}')">👑 ${k}</button>`).join('');
+    const personButtons = activePersons.map(p => `<button class="nav-btn" style="background:#bf360c; margin:2px;" onclick="openUnifiedModal('person', '${p}', '${p}')">👤 ${p}</button>`).join('');
+    const specialButtons = activeSpecials.map(k => `<button class="nav-btn" style="background:#6a1b9a; margin:2px;" onclick="openUnifiedModal('special', '${k}', '${k}')">🔖 ${k}</button>`).join('');
+
+    bodyEl.innerHTML = `
+      <div>
+        <h4 style="margin-bottom:6px; color:#3d2f1d;">📌 章立て（各列伝へ移動）</h4>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="nav-btn" onclick="jumpToRecordFromModal('v31_p1_1')">${getMaxVisibleParagraph() >= 6 ? '① 劉焉傳（第1〜6段落）' : '① 劉焉傳'}</button>
+          ${getMaxVisibleParagraph() >= 7 ? `<button class="nav-btn" onclick="jumpToRecordFromModal('v31_p7_1')">② 劉璋傳（第7〜10段落）</button>` : ''}
+          ${getMaxVisibleParagraph() >= 11 ? `<button class="nav-btn" onclick="jumpToRecordFromModal('v31_p11_1')">③ 【評】陳寿の論評（第11段落）</button>` : ''}
+        </div>
+      </div>
+      <div>
+        <h4 style="margin-bottom:6px; color:#d84315;">①-A エリア地名（州・郡・広域地方：面で表示）</h4>
+        <div>${areaButtons}</div>
+      </div>
+      <div>
+        <h4 style="margin-bottom:6px; color:#1b5e20;">①-B 地点地名（県・城・関・山・戦場：ピン＋親エリア枠で表示）</h4>
+        <div>${pointButtons}</div>
+      </div>
+      ${riverButtons ? `
+      <div>
+        <h4 style="margin-bottom:6px; color:#0277bd;">①-C 河川（水系ラインハイライト）</h4>
+        <div>${riverButtons}</div>
+      </div>` : ''}
+      <div>
+        <h4 style="margin-bottom:6px; color:#0d47a1;">② 官職・爵位事典</h4>
+        <div>${officeButtons}</div>
+      </div>
+      <div>
+        <h4 style="margin-bottom:6px; color:#bf360c;">③ 登場人物一覧（${activePersons.length} 名）</h4>
+        <div>${personButtons}</div>
+      </div>
+      <div>
+        <h4 style="margin-bottom:6px; color:#4a148c;">④ 特別キーワード（制度・年号・兵法・引用史料）</h4>
+        <div>${specialButtons}</div>
+      </div>
+    `;
+    document.getElementById('modalOverlay').style.display = 'flex';
+  }
+
+  function closeModal() {
+    document.getElementById('modalOverlay').style.display = 'none';
+  }
+
+  function jumpToRecordFromModal(targetId) {
+    if (targetId !== currentActiveId) {
+      readingHistoryStack.push(currentActiveId);
+    }
+    closeModal();
+    scrollToCard(targetId);
+  }
+
+  function goBackToSavedReadingSpot() {
+    if (readingHistoryStack.length === 0) return;
+    const prevId = readingHistoryStack.pop();
+    scrollToCard(prevId);
+  }
+
+  function scrollToCard(recId) {
+    const rec = getVisibleRecords().find(r => r.id === recId);
+    if (!rec) return;
+    if (currentParaIndex !== rec.para_index) {
+      currentParaIndex = rec.para_index;
+    }
+    renderReaderList();
+    const cardEl = document.getElementById(`card-${recId}`);
+    if (cardEl) {
+      cardEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setActiveRecord(recId);
+    }
+  }
+
+  function highlightSimple(text, terms) {
+    if (!text) return '';
+    let res = text;
+    terms.forEach(t => {
+      if (!t) return;
+      res = res.replace(new RegExp(t, 'g'), `<span class="highlight">${t}</span>`);
+    });
+    return res;
+  }
+
+  // =========================================================================
+  // 9. ワンクリック指摘・校正システム（手元PCまたは ?edit=1 時のみ自動表示）
+  // =========================================================================
+  const FEEDBACK_STORAGE_KEY = 'threekingdom_vol31_feedback_clean_v1';
+  const MAX_SELECTION_CHARS = 50;          // ポップアップを出す最大選択文字数
+  const CONTEXT_SNIPPET_RADIUS_CHARS = 10; // 前後の文脈として切り出す文字数
+  const POPUP_OFFSET_Y_PX = 10;            // 選択箇所からポップアップまでの縦オフセット(px)
+  const POPUP_VIEWPORT_MARGIN_PX = 12;     // 画面端からの最小マージン(px)
+  const COORD_DECIMAL_DIGITS = 2;          // 地図クリック時の緯度・経度の小数桁数
+
+  let feedbackItems = [];
+  let pendingFeedbackContext = null;
+  let mapCoordPickerState = null;
+
+  try {
+    const saved = localStorage.getItem(FEEDBACK_STORAGE_KEY);
+    if (saved) feedbackItems = JSON.parse(saved);
+  } catch (e) {
+    feedbackItems = [];
+  }
+
+  function saveFeedbackItems() {
+    try {
+      localStorage.setItem(FEEDBACK_STORAGE_KEY, JSON.stringify(feedbackItems));
+    } catch (e) {}
+    renderFeedbackTray();
+  }
+
+  function applyEnvironmentModeUI() {
+    const editActive = isEditModeActive();
+    const trayEl = document.getElementById('feedbackTray');
+    const trayBodyEl = document.getElementById('feedbackTrayBody');
+    const trayFooterEl = document.getElementById('feedbackTrayFooter');
+    const proofreadLabelEl = document.getElementById('proofreadModeLabel');
+    const showAllLabelEl = document.getElementById('showAllParasLabel');
+
+    // 手元PCまたは ?edit=1 の時だけ制作トレイを表示（本番Webでは完全非表示）
+    if (trayEl) trayEl.style.display = IS_AUTHOR_EDIT_ENV ? 'flex' : 'none';
+    if (trayBodyEl) trayBodyEl.style.display = editActive ? 'flex' : 'none';
+    if (trayFooterEl) trayFooterEl.style.display = editActive ? 'flex' : 'none';
+    if (proofreadLabelEl) proofreadLabelEl.style.display = editActive ? 'flex' : 'none';
+    if (showAllLabelEl) showAllLabelEl.style.display = editActive ? 'flex' : 'none';
+    if (!editActive) hideSelectionFeedbackBar();
+
+    renderMapLayersForCurrentMode();
+    renderReaderList();
+  }
+
+  function handleInlineTagClick(event, recId, tagType, itemKey, surfaceText) {
+    event.stopPropagation();
+    const sel = window.getSelection();
+    if (sel && sel.toString().trim().length > 0) {
+      return;
+    }
+
+    setActiveRecord(recId);
+    const isProofreadMode = isEditModeActive() && document.getElementById('toggleProofreadMode').checked;
+
+    if (tagType === 'place') {
+      focusPlaceOnMap(itemKey, surfaceText);
+    }
+
+    if (isProofreadMode) {
+      openFeedbackBarForTagElement(event.currentTarget, recId, tagType, itemKey, surfaceText);
+      return;
+    }
+
+    if (tagType !== 'place') {
+      openUnifiedModal(tagType, itemKey, surfaceText);
+    }
+  }
+
+  function handleInlineTagContextMenu(event, recId, tagType, itemKey, surfaceText) {
+    if (!isEditModeActive()) return;
+    event.preventDefault();
+    event.stopPropagation();
+    setActiveRecord(recId);
+    if (tagType === 'place') {
+      focusPlaceOnMap(itemKey, surfaceText);
+    }
+    openFeedbackBarForTagElement(event.currentTarget, recId, tagType, itemKey, surfaceText);
+  }
+
+  function getBlockLabelFromElement(el) {
+    if (!el) return '本文';
+    if (el.closest('.raw-text')) return '原文';
+    if (el.closest('.kakikudashi')) return '書き下し';
+    if (el.closest('.translation')) return '現代語訳';
+    return '本文';
+  }
+
+  function getRangeCharOffsetInContainer(containerEl, range) {
+    if (!containerEl || !range) return -1;
+    try {
+      const preRange = range.cloneRange();
+      preRange.selectNodeContents(containerEl);
+      preRange.setEnd(range.startContainer, range.startOffset);
+      return preRange.toString().length;
+    } catch (e) {
+      return -1;
+    }
+  }
+
+  function extractSurroundingContext(containerEl, targetWord, exactOffset = -1) {
+    if (!containerEl || !targetWord) return targetWord;
+    const fullText = containerEl.innerText || containerEl.textContent || '';
+    const idx = (exactOffset >= 0 && exactOffset <= fullText.length)
+      ? exactOffset
+      : fullText.indexOf(targetWord);
+    if (idx === -1) return `【${targetWord}】`;
+    const start = Math.max(0, idx - CONTEXT_SNIPPET_RADIUS_CHARS);
+    const end = Math.min(fullText.length, idx + targetWord.length + CONTEXT_SNIPPET_RADIUS_CHARS);
+    const prefix = (start > 0 ? '…' : '') + fullText.slice(start, idx);
+    const suffix = fullText.slice(idx + targetWord.length, end) + (end < fullText.length ? '…' : '');
+    return `${prefix}【${targetWord}】${suffix}`;
+  }
+
+  function openFeedbackBarForTagElement(el, recId, tagType, itemKey, surfaceText) {
+    if (!isEditModeActive()) return;
+    const blockEl = el.closest('.raw-text, .kakikudashi, .translation');
+    const blockLabel = getBlockLabelFromElement(el);
+    let exactOffset = -1;
+    if (blockEl && el) {
+      try {
+        const r = document.createRange();
+        r.selectNodeContents(el);
+        exactOffset = getRangeCharOffsetInContainer(blockEl, r);
+      } catch (e) {}
+    }
+    const contextStr = extractSurroundingContext(blockEl, surfaceText, exactOffset);
+    const typeNameMap = {
+      'place': getPlaceSubTypeLabel(itemKey),
+      'person': `👤人名(${itemKey})`,
+      'office': `👑官職(${itemKey})`,
+      'special': `🔖特別語(${itemKey})`
+    };
+
+    pendingFeedbackContext = {
+      recId: recId,
+      blockLabel: blockLabel,
+      word: surfaceText,
+      contextStr: contextStr,
+      currentTag: typeNameMap[tagType] || tagType
+    };
+
+    const rect = el.getBoundingClientRect();
+    showSelectionFeedbackBarAtRect(rect);
+  }
+
+  document.addEventListener('mouseup', (event) => {
+    if (!isEditModeActive()) return;
+    const bar = document.getElementById('selectionFeedbackBar');
+    if (bar && bar.contains(event.target)) return;
+
+    setTimeout(() => {
+      if (!isEditModeActive()) return;
+      const sel = window.getSelection();
+      if (!sel || sel.isCollapsed) return;
+      const selectedText = sel.toString().trim();
+      if (!selectedText || selectedText.length > MAX_SELECTION_CHARS) return;
+
+      const anchorNode = sel.anchorNode;
+      if (!anchorNode) return;
+      const anchorEl = anchorNode.nodeType === 3 ? anchorNode.parentElement : anchorNode;
+      if (!anchorEl) return;
+
+      const cardEl = anchorEl.closest('.record-card');
+      if (!cardEl) return;
+
+      const recId = cardEl.dataset.id || currentActiveId;
+      const blockEl = anchorEl.closest('.raw-text, .kakikudashi, .translation');
+      const blockLabel = getBlockLabelFromElement(anchorEl);
+      const range = sel.getRangeAt(0);
+      const exactOffset = getRangeCharOffsetInContainer(blockEl, range);
+      const contextStr = extractSurroundingContext(blockEl, selectedText, exactOffset);
+
+      // 選択箇所が既存のタグ内かどうかを判定
+      const inlineTagEl = anchorEl.closest('.inline-place, .inline-person, .inline-office, .inline-special');
+      let currentTag = '未タグ';
+      if (inlineTagEl) {
+        const fullTagText = inlineTagEl.textContent || '';
+        const tType = inlineTagEl.dataset.tagType || '';
+        const tKey = inlineTagEl.dataset.tagKey || fullTagText;
+        const detailType = tType === 'place' ? getPlaceSubTypeLabel(tKey) :
+                           (tType === 'person' ? `👤人名(${tKey})` :
+                           (tType === 'office' ? `👑官職(${tKey})` :
+                           (tType === 'special' ? `🔖特別語(${tKey})` : `既タグ「${fullTagText}」`)));
+        currentTag = fullTagText === selectedText ? detailType : `${detailType}の一部`;
+      }
+
+      pendingFeedbackContext = {
+        recId: recId,
+        blockLabel: blockLabel,
+        word: selectedText,
+        contextStr: contextStr,
+        currentTag: currentTag
+      };
+
+      const rect = range.getBoundingClientRect();
+      showSelectionFeedbackBarAtRect(rect);
+    }, 10);
+  });
+
+  function showSelectionFeedbackBarAtRect(rect) {
+    if (!pendingFeedbackContext) return;
+    const bar = document.getElementById('selectionFeedbackBar');
+    document.getElementById('sfbMetaLabel').textContent = `[${pendingFeedbackContext.recId}・${pendingFeedbackContext.blockLabel}]`;
+    document.getElementById('sfbTargetWord').textContent = pendingFeedbackContext.word;
+    document.getElementById('sfbCurrentTagInfo').textContent = `（現在: ${pendingFeedbackContext.currentTag}）`;
+
+    bar.style.display = 'flex';
+    const barRect = bar.getBoundingClientRect();
+
+    let topPx = rect.top - barRect.height - POPUP_OFFSET_Y_PX;
+    if (topPx < POPUP_VIEWPORT_MARGIN_PX) {
+      topPx = rect.bottom + POPUP_OFFSET_Y_PX;
+    }
+    let leftPx = rect.left + (rect.width / 2) - (barRect.width / 2);
+    leftPx = Math.max(POPUP_VIEWPORT_MARGIN_PX, Math.min(window.innerWidth - barRect.width - POPUP_VIEWPORT_MARGIN_PX, leftPx));
+
+    bar.style.top = `${Math.round(topPx)}px`;
+    bar.style.left = `${Math.round(leftPx)}px`;
+  }
+
+  function hideSelectionFeedbackBar() {
+    const bar = document.getElementById('selectionFeedbackBar');
+    if (bar) bar.style.display = 'none';
+  }
+
+  function addFeedbackFromBar(actionText) {
+    if (!pendingFeedbackContext) return;
+    feedbackItems.push({
+      id: Date.now() + Math.random(),
+      recId: pendingFeedbackContext.recId,
+      blockLabel: pendingFeedbackContext.blockLabel,
+      word: pendingFeedbackContext.word,
+      contextStr: pendingFeedbackContext.contextStr,
+      currentTag: pendingFeedbackContext.currentTag,
+      action: actionText
+    });
+    saveFeedbackItems();
+    hideSelectionFeedbackBar();
+    const sel = window.getSelection();
+    if (sel) sel.removeAllRanges();
+  }
+
+  function promptCustomFeedbackNote() {
+    if (!pendingFeedbackContext) return;
+    const note = window.prompt(
+      `[${pendingFeedbackContext.recId}] 「${pendingFeedbackContext.word}」についての指摘・メモを入力してください（例：〇〇郡の同名別地、訳文を〇〇に修正など）：`,
+      ''
+    );
+    if (note && note.trim()) {
+      addFeedbackFromBar(`✏️ メモ指摘: ${note.trim()}`);
+    }
+  }
+
+  // 地図左下の地名トースト内からのワンクリック指摘
+  function addPlaceToastFeedback(placeKey, surfaceText, actionText) {
+    feedbackItems.push({
+      id: Date.now() + Math.random(),
+      recId: currentActiveId,
+      blockLabel: '地図確認',
+      word: surfaceText,
+      contextStr: `現在位置 ${currentActiveId} で「${surfaceText}」(登録キー: ${placeKey}) を確認中`,
+      currentTag: `地名(${placeKey})`,
+      action: actionText
+    });
+    saveFeedbackItems();
+  }
+
+  // 地図上をクリックして「本当の場所（緯度・経度）」をワンクリック指定するモード
+  function startMapCoordPicker(placeKey, surfaceText) {
+    mapCoordPickerState = {
+      recId: currentActiveId,
+      placeKey: placeKey,
+      surfaceText: surfaceText
+    };
+    const toast = document.getElementById('mapToast');
+    toast.innerHTML = `<div style="color:#ffd54f; font-weight:bold;">🎯 【位置指定モード】地図上で「${surfaceText}」の正しい位置をクリックしてください（自動で緯度・経度が指摘リストに入ります）</div>`;
+    document.getElementById('map').style.cursor = 'crosshair';
+  }
+
+  map.on('click', (e) => {
+    if (!mapCoordPickerState) return;
+    const lat = e.latlng.lat.toFixed(COORD_DECIMAL_DIGITS);
+    const lng = e.latlng.lng.toFixed(COORD_DECIMAL_DIGITS);
+    feedbackItems.push({
+      id: Date.now() + Math.random(),
+      recId: mapCoordPickerState.recId,
+      blockLabel: '地図座標指定',
+      word: mapCoordPickerState.surfaceText,
+      contextStr: `登録キー: ${mapCoordPickerState.placeKey}`,
+      currentTag: `地名(${mapCoordPickerState.placeKey})`,
+      action: `📍 正しい座標を地図クリックで指定 ➔ 緯度: ${lat}, 経度: ${lng}`
+    });
+    saveFeedbackItems();
+
+    L.circleMarker([e.latlng.lat, e.latlng.lng], {
+      radius: 8,
+      color: '#ffeb3b',
+      fillColor: '#d50000',
+      fillOpacity: 0.9,
+      weight: 2.5
+    }).addTo(activeHighlightLayers.length >= 0 ? map : map).bindTooltip(`🎯 指摘座標: ${ mapCoordPickerState.surfaceText } (${lat}, ${lng})`, { permanent: true, direction: 'top' });
+
+    document.getElementById('map').style.cursor = '';
+    const toast = document.getElementById('mapToast');
+    toast.innerHTML = `✅ <strong>「${mapCoordPickerState.surfaceText}」の指定座標 (${lat}, ${lng}) を右下の指摘リストに追加しました！</strong>`;
+    mapCoordPickerState = null;
+  });
+
+  function toggleFeedbackTray() {
+    const tray = document.getElementById('feedbackTray');
+    const icon = document.getElementById('feedbackTrayToggleIcon');
+    tray.classList.toggle('minimized');
+    icon.textContent = tray.classList.contains('minimized') ? '▲ 展開する' : '▼ 折りたたむ';
+  }
+
+  function removeFeedbackItem(idx) {
+    feedbackItems.splice(idx, 1);
+    saveFeedbackItems();
+  }
+
+  function clearAllFeedback() {
+    if (feedbackItems.length === 0) return;
+    feedbackItems = [];
+    saveFeedbackItems();
+  }
+
+  function renderFeedbackTray() {
+    const badge = document.getElementById('feedbackCountBadge');
+    const body = document.getElementById('feedbackTrayBody');
+    if (!badge || !body) return;
+
+    badge.textContent = `${feedbackItems.length}件`;
+
+    if (feedbackItems.length === 0) {
+      body.innerHTML = `
+        <div class="feedback-empty">
+          本文の気になる文字を<strong>なぞって選択</strong>するか、色付き単語を<strong>右クリック</strong>（🛠️指摘モードON時は左クリック）すると、ワンクリックでここに指摘が溜まります。
+        </div>
+      `;
+      return;
+    }
+
+    body.innerHTML = feedbackItems.map((item, idx) => `
+      <div class="feedback-item">
+        <div>
+          <div><strong>[${item.recId}・${item.blockLabel}]</strong> 「<span style="color:#ffd54f; font-weight:bold;">${item.word}</span>」 <span style="color:#b0bec5; font-size:0.74rem;">(${item.currentTag})</span></div>
+          <div style="color:#a5d6a7; font-weight:bold; margin-top:2px;">➔ ${item.action}</div>
+          <div style="color:#ccc; font-size:0.74rem; margin-top:1px;">文脈: ${item.contextStr}</div>
+        </div>
+        <button class="feedback-item-del" onclick="removeFeedbackItem(${idx})" title="この指摘を削除">✕</button>
+      </div>
+    `).join('');
+  }
+
+  function copyAllFeedbackToClipboard() {
+    if (feedbackItems.length === 0) {
+      window.alert('まだ指摘リストが空です。本文の文字をドラッグ選択するか、色付き単語を右クリックして指摘を追加してください。');
+      return;
+    }
+
+    const lines = ['【巻31 ピンポイント指摘リスト】'];
+    feedbackItems.forEach((item, i) => {
+      lines.push(`${i + 1}. [${item.recId} / ${item.blockLabel}] 「${item.word}」（現在: ${item.currentTag}｜文脈: ${item.contextStr}） ➔ ${item.action}`);
+    });
+    const textToCopy = lines.join('\n');
+
+    navigator.clipboard.writeText(textToCopy).then(() => {
+      const btn = document.getElementById('feedbackCopyBtn');
+      const origText = btn.textContent;
+      btn.textContent = '✅ コピーしました！そのままチャットに貼り付けてください';
+      btn.style.background = '#66bb6a';
+      setTimeout(() => {
+        btn.textContent = origText;
+        btn.style.background = '';
+      }, 2500);
+    }).catch(() => {
+      window.prompt('以下のテキストをコピーしてチャットに貼り付けてください：', textToCopy);
+    });
+  }
+
+  applyEnvironmentModeUI();
+  renderFeedbackTray();
+  setActiveRecord("v31_p1_1");
+</script>
+</body>
+</html>
