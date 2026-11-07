@@ -1635,10 +1635,13 @@
   // ==========================================
   const GAS_EXEC_URL = 'https://script.google.com/macros/s/AKfycbwmzKUscmWw5_Ku5PdxZpuy8wFdvv4D1QSQJaPpvdhKOX-sh3DkUQaFXnGfIyxfPZA6/exec';
   const MARKETPLACE_INSTALL_URL = 'https://workspace.google.com/marketplace/app/linealigned/435629186234';
-  const BridgeAuthTimeoutMs = 3500;
+  const BridgeIframeWaitMs = 2800;
+  const BridgePopupWaitMs = 5500;
   const BridgeRpcTimeoutMs = 180000;
 
   let gasBridgeIframe = null;
+  let gasBridgeTargetWindow = null;
+  let gasBridgePopupWin = null;
   let gasBridgeReadyConfig = null;
   let gasBridgePendingPromise = null;
   const gasBridgeRpcMap = {};
@@ -1660,6 +1663,21 @@
   window.addEventListener('message', (ev) => {
     const d = ev.data;
     if (!d || typeof d !== 'object') return;
+    if (d.type === 'LINEALIGNED_BRIDGE_READY') {
+      if (d.ok && d.config && d.config.token) {
+        gasBridgeReadyConfig = d.config;
+        if (ev.source && ev.source !== gasBridgePopupWin) {
+          gasBridgeTargetWindow = ev.source;
+        } else if (ev.source && !gasBridgeTargetWindow) {
+          gasBridgeTargetWindow = ev.source;
+        }
+      }
+      if (gasBridgePopupWin && !gasBridgePopupWin.closed) {
+        try { gasBridgePopupWin.close(); } catch (_eClose) {}
+        gasBridgePopupWin = null;
+      }
+      return;
+    }
     if (d.type === 'LINEALIGNED_BRIDGE_RES' && d.reqId && gasBridgeRpcMap[d.reqId]) {
       const handler = gasBridgeRpcMap[d.reqId];
       delete gasBridgeRpcMap[d.reqId];
@@ -1722,7 +1740,101 @@
     modal.style.display = 'flex';
   }
 
-  function ensureGasAuthConfig() {
+  function tryLoadBridgeViaIframe(timeoutMs) {
+    return new Promise((resolve) => {
+      if (gasBridgeReadyConfig && gasBridgeReadyConfig.token) {
+        resolve(gasBridgeReadyConfig);
+        return;
+      }
+      let settled = false;
+      const done = (cfg) => {
+        if (settled) return;
+        settled = true;
+        window.removeEventListener('message', onIframeMsg);
+        clearTimeout(timer);
+        resolve(cfg || null);
+      };
+      const onIframeMsg = (ev) => {
+        const d = ev.data;
+        if (!d || d.type !== 'LINEALIGNED_BRIDGE_READY') return;
+        if (d.ok && d.config && d.config.token) {
+          gasBridgeReadyConfig = d.config;
+          if (ev.source) gasBridgeTargetWindow = ev.source;
+          done(d.config);
+        } else {
+          done(null);
+        }
+      };
+      window.addEventListener('message', onIframeMsg);
+      const timer = setTimeout(() => done(null), timeoutMs || BridgeIframeWaitMs);
+
+      if (gasBridgeIframe && gasBridgeIframe.parentNode) {
+        gasBridgeIframe.parentNode.removeChild(gasBridgeIframe);
+      }
+      gasBridgeIframe = document.createElement('iframe');
+      gasBridgeIframe.style.cssText = 'display:none;width:0;height:0;border:0;';
+      gasBridgeIframe.src = GAS_EXEC_URL + '?action=auth_bridge&t=' + Date.now();
+      document.body.appendChild(gasBridgeIframe);
+    });
+  }
+
+  function tryLoadBridgeViaPopup(timeoutMs) {
+    return new Promise((resolve) => {
+      if (gasBridgeReadyConfig && gasBridgeReadyConfig.token) {
+        resolve(gasBridgeReadyConfig);
+        return;
+      }
+      let settled = false;
+      const done = (cfg) => {
+        if (settled) return;
+        settled = true;
+        window.removeEventListener('message', onPopupMsg);
+        clearTimeout(timer);
+        clearInterval(closeWatchTimer);
+        if (gasBridgePopupWin && !gasBridgePopupWin.closed) {
+          try { gasBridgePopupWin.close(); } catch (_e) {}
+        }
+        gasBridgePopupWin = null;
+        resolve(cfg || null);
+      };
+      const onPopupMsg = (ev) => {
+        const d = ev.data;
+        if (!d || d.type !== 'LINEALIGNED_BRIDGE_READY') return;
+        if (d.ok && d.config && d.config.token) {
+          gasBridgeReadyConfig = d.config;
+          done(d.config);
+        } else {
+          done(null);
+        }
+      };
+      window.addEventListener('message', onPopupMsg);
+      const w = 460;
+      const h = 300;
+      const left = Math.max(0, Math.round((window.screen.width - w) / 2));
+      const top = Math.max(0, Math.round((window.screen.height - h) / 2));
+      try {
+        gasBridgePopupWin = window.open(
+          GAS_EXEC_URL + '?action=auth_bridge&mode=popup&t=' + Date.now(),
+          'linealigned_gas_auth_bridge',
+          'width=' + w + ',height=' + h + ',left=' + left + ',top=' + top + ',menubar=no,toolbar=no,location=no,status=no'
+        );
+      } catch (_eOpen) {
+        gasBridgePopupWin = null;
+      }
+      if (!gasBridgePopupWin) {
+        done(null);
+        return;
+      }
+      const closeWatchTimer = setInterval(() => {
+        if (gasBridgePopupWin && gasBridgePopupWin.closed) {
+          done(gasBridgeReadyConfig || null);
+        }
+      }, 250);
+      const timer = setTimeout(() => done(null), timeoutMs || BridgePopupWaitMs);
+    });
+  }
+
+  function ensureGasAuthConfig(options) {
     if (isGasEnvironment()) {
       return new Promise((resolve, reject) => {
         google.script.run
@@ -1735,53 +1847,133 @@
     if (gasBridgeReadyConfig && gasBridgeReadyConfig.token) {
       return Promise.resolve(gasBridgeReadyConfig);
     }
+    const silentOnly = !!(options && options.silent);
+    if (silentOnly) {
+      return tryLoadBridgeViaIframe(BridgeIframeWaitMs);
+    }
+
     if (gasBridgePendingPromise) {
       return gasBridgePendingPromise;
     }
 
-    gasBridgePendingPromise = new Promise((resolve) => {
-      let settled = false;
-      const finish = (cfg) => {
-        if (settled) return;
-        settled = true;
-        window.removeEventListener('message', onMsg);
-        clearTimeout(timer);
-        gasBridgePendingPromise = null;
+    gasBridgePendingPromise = (async () => {
+      try {
+        // ボタン押下時はユーザージェスチャー有効期間内に即座にポップアップブリッジを起動（事前iframeと並行待ち受け）
+        tryLoadBridgeViaIframe(BridgeIframeWaitMs).catch(() => {});
+        const cfg = await tryLoadBridgeViaPopup(BridgePopupWaitMs);
         if (cfg && cfg.token) {
-          gasBridgeReadyConfig = cfg;
-          resolve(cfg);
-        } else {
-          if (gasBridgeIframe && gasBridgeIframe.parentNode) {
-            gasBridgeIframe.parentNode.removeChild(gasBridgeIframe);
-          }
-          gasBridgeIframe = null;
-          resolve(null);
+          return cfg;
         }
-      };
-
-      const onMsg = (ev) => {
-        const d = ev.data;
-        if (!d || d.type !== 'LINEALIGNED_BRIDGE_READY') return;
-        if (d.ok && d.config && d.config.token) {
-          finish(d.config);
-        } else {
-          finish(null);
-        }
-      };
-
-      window.addEventListener('message', onMsg);
-      const timer = setTimeout(() => finish(null), BridgeAuthTimeoutMs);
-
-      if (gasBridgeIframe && gasBridgeIframe.parentNode) {
-        gasBridgeIframe.parentNode.removeChild(gasBridgeIframe);
+        return (gasBridgeReadyConfig && gasBridgeReadyConfig.token) ? gasBridgeReadyConfig : null;
+      } finally {
+        gasBridgePendingPromise = null;
       }
-      gasBridgeIframe = document.createElement('iframe');
-      gasBridgeIframe.style.cssText = 'display:none;width:0;height:0;border:0;';
-      gasBridgeIframe.src = GAS_EXEC_URL + '?action=auth_bridge&t=' + Date.now();
-      document.body.appendChild(gasBridgeIframe);
-    });
+    })();
 
     return gasBridgePendingPromise;
+  }
+
+  // 非GAS環境（wasabikarashi.com/linealigned）では初回ロード時にバックグラウンドで隠しiframeを事前ウォームアップ
+  window.addEventListener('DOMContentLoaded', () => {
+    if (!isGasEnvironment()) {
+      ensureGasAuthConfig({ silent: true }).catch(() => {});
+    }
+  });
+
+  // ブラウザ直接実行フォールバック（サードパーティCookie制限でiframeが使えずトークンのみ取得済みの場合）
+  async function executeBrowserDirectDocsRpc(method, params, token) {
+    const fileId = params && params.fileId;
+    if (method === 'getDocsChunkPlan') {
+      const docRes = await fetch('https://docs.googleapis.com/v1/documents/' + encodeURIComponent(fileId), {
+        headers: { Authorization: 'Bearer ' + token }
+      });
+      if (!docRes.ok) {
+        throw new Error('Google Docs API 取得エラー (HTTP ' + docRes.status + ')');
+      }
+      const docData = await docRes.json();
+      return {
+        success: true,
+        totalChunks: 1,
+        docTitle: docData.title || 'Untitled',
+        isChunked: false
+      };
+    }
+
+    if (method === 'renderV3PdfBase64') {
+      const docRes = await fetch('https://docs.googleapis.com/v1/documents/' + encodeURIComponent(fileId), {
+        headers: { Authorization: 'Bearer ' + token }
+      });
+      if (!docRes.ok) {
+        throw new Error('Google Docs API 取得エラー (HTTP ' + docRes.status + ')');
+      }
+      const docData = await docRes.json();
+
+      // インライン画像の contentUri を可能な限り data URI 化
+      if (docData.inlineObjects) {
+        const objIds = Object.keys(docData.inlineObjects);
+        for (let i = 0; i < objIds.length; i++) {
+          try {
+            const emb = docData.inlineObjects[objIds[i]].inlineObjectProperties.embeddedObject;
+            if (emb && emb.imageProperties && emb.imageProperties.contentUri && !emb.imageProperties.contentUri.startsWith('data:')) {
+              const imgResp = await fetch(emb.imageProperties.contentUri);
+              if (imgResp.ok) {
+                const imgBuf = await imgResp.arrayBuffer();
+                const mime = imgResp.headers.get('content-type') || 'image/png';
+                emb.imageProperties.contentUri = 'data:' + mime + ';base64,' + arrayBufferToBase64(imgBuf);
+              }
+            }
+          } catch (_eImg) {}
+        }
+      }
+
+      let htmlData = '';
+      try {
+        const htmlRes = await fetch('https://www.googleapis.com/drive/v3/files/' + encodeURIComponent(fileId) + '/export?mimeType=text/html', {
+          headers: { Authorization: 'Bearer ' + token }
+        });
+        if (htmlRes.ok) {
+          htmlData = await htmlRes.text();
+        }
+      } catch (_eHtml) {}
+
+      const apiUrl = STUDIO_CLOUD_RUN_URL.replace(/\/$/, '') + '/v3/render-pdf';
+      const renderRes = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          jobId: params.jobId,
+          documentJson: JSON.stringify(docData),
+          htmlData: htmlData,
+          config: params.config
+        })
+      });
+      if (!renderRes.ok) {
+        const errTxt = await renderRes.text();
+        throw new Error('V3クラウド組版エラー (HTTP ' + renderRes.status + '): ' + errTxt.substring(0, 300));
+      }
+      const pdfBuf = await renderRes.arrayBuffer();
+      return {
+        success: true,
+        base64: arrayBufferToBase64(pdfBuf)
+      };
+    }
+
+    if (method === 'getDocsOriginalPdfBase64') {
+      const exportUrl = 'https://www.googleapis.com/drive/v3/files/' + encodeURIComponent(fileId) + '/export?mimeType=application/pdf';
+      const expRes = await fetch(exportUrl, {
+        headers: { Authorization: 'Bearer ' + token }
+      });
+      if (!expRes.ok) {
+        throw new Error('Docs PDFエクスポートエラー (HTTP ' + expRes.status + ')');
+      }
+      const pdfBuf = await expRes.arrayBuffer();
+      return {
+        success: true,
+        base64: arrayBufferToBase64(pdfBuf)
+      };
+    }
+
+    throw new Error('Unsupported direct RPC method: ' + method);
   }
 
   async function callGasRpc(method, params) {
@@ -1796,25 +1988,34 @@
     }
 
     const cfg = await ensureGasAuthConfig();
-    if (!cfg || !cfg.token || !gasBridgeIframe || !gasBridgeIframe.contentWindow) {
+    if (!cfg || !cfg.token) {
       throw new Error('NOT_INSTALLED');
     }
 
-    return new Promise((resolve, reject) => {
-      const reqId = 'rpc_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9);
-      const timer = setTimeout(() => {
-        delete gasBridgeRpcMap[reqId];
-        reject(new Error('GAS RPC タイムアウト'));
-      }, BridgeRpcTimeoutMs);
+    // 内側ブリッジフレームが生きていればGAS側で実行し、サードパーティCookie制限でトークンのみ保持している場合はブラウザ直接実行にフォールバック
+    if (gasBridgeTargetWindow && !gasBridgeTargetWindow.closed) {
+      try {
+        return await new Promise((resolve, reject) => {
+          const reqId = 'rpc_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9);
+          const timer = setTimeout(() => {
+            delete gasBridgeRpcMap[reqId];
+            reject(new Error('GAS RPC タイムアウト'));
+          }, BridgeRpcTimeoutMs);
 
-      gasBridgeRpcMap[reqId] = { resolve, reject, timer };
-      gasBridgeIframe.contentWindow.postMessage({
-        type: 'LINEALIGNED_BRIDGE_CALL',
-        reqId: reqId,
-        method: method,
-        params: params
-      }, '*');
-    });
+          gasBridgeRpcMap[reqId] = { resolve, reject, timer };
+          gasBridgeTargetWindow.postMessage({
+            type: 'LINEALIGNED_BRIDGE_CALL',
+            reqId: reqId,
+            method: method,
+            params: params
+          }, '*');
+        });
+      } catch (_bridgeErr) {
+        return await executeBrowserDirectDocsRpc(method, params, cfg.token);
+      }
+    }
+
+    return await executeBrowserDirectDocsRpc(method, params, cfg.token);
   }
 
   // Google ドライブ Picker 起動
