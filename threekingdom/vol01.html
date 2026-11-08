@@ -1,0 +1,2175 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>『正史三國志』</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="陳寿『三國志』巻1（魏書一・武帝紀：曹操）の原文・書き下し文・現代語訳を、当時の州郡エリア・地点ピン・河川地図および官職・歴史用語辞典と連動して読めるインタラクティブ史料データベース。">
+  <link rel="icon" href="favicon.png">
+  <!-- Google Analytics (G-310XSTTWSM) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-310XSTTWSM"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-310XSTTWSM');
+  </script>
+  <!-- Google AdSense (ca-pub-4382223240782332) -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4382223240782332" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      height: 100dvh;
+      background: #f5f5f0;
+      color: #222;
+      overflow: hidden;
+    }
+    .nav-btn {
+      background: #8c6d46;
+      color: #fff;
+      border: 1px solid #d4af37;
+      border-radius: 4px;
+      padding: 5px 12px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.15s;
+    }
+    .nav-btn:hover { background: #a88457; }
+    .back-btn {
+      background: #c62828;
+      color: #fff;
+      border: 1px solid #ff8a80;
+      border-radius: 4px;
+      padding: 6px 12px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      font-weight: bold;
+      display: none;
+      margin-bottom: 4px;
+      align-self: flex-start;
+    }
+
+    /* 文中インラインリンク（4分類） */
+    .inline-place {
+      border-bottom: 1.5px solid #2e7d32;
+      color: #1b5e20;
+      cursor: pointer;
+      padding-bottom: 1px;
+      transition: background 0.15s;
+    }
+    .inline-place:hover { background: #c8e6c9; }
+    .inline-person {
+      border-bottom: 1.5px dotted #d84315;
+      color: #bf360c;
+      cursor: pointer;
+      padding-bottom: 1px;
+      transition: background 0.15s;
+    }
+    .inline-person:hover { background: #ffe0b2; }
+    .inline-office {
+      border-bottom: 1.5px dashed #1565c0;
+      color: #0d47a1;
+      cursor: pointer;
+      padding-bottom: 1px;
+      transition: background 0.15s;
+    }
+    .inline-office:hover { background: #bbdefb; }
+    .inline-special {
+      border-bottom: 1.5px dotted #6a1b9a;
+      color: #4a148c;
+      cursor: pointer;
+      padding-bottom: 1px;
+      transition: background 0.15s;
+    }
+    .inline-special:hover { background: #e1bee7; }
+
+    /* メイン分割コンテナ（PC：左右分割100% ／ スマホ：上下分割100%） */
+    .main-container {
+      display: flex;
+      flex-direction: row;
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+    .map-column {
+      flex: 1.15;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      position: relative;
+      border-right: 2px solid #8c6d46;
+      background: #e6e2d8;
+      overflow: hidden;
+    }
+    #map {
+      flex: 1;
+      width: 100%;
+      min-height: 0;
+      background: #e6e2d8;
+    }
+    .reader-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      background: #faf8f5;
+      overflow: hidden;
+    }
+    /* 地図上の巻切り替えバー ＆ 地図と本文の間の段落切り替えバー */
+    .vol-nav-bar,
+    .para-nav-bar {
+      height: 38px;
+      min-height: 38px;
+      background: #2c241b;
+      color: #f7f1e5;
+      border-bottom: 1.5px solid #8c6d46;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      padding: 0 12px;
+      z-index: 2000;
+      user-select: none;
+    }
+    .vol-nav-title {
+      font-family: "Yu Mincho", "MS PMincho", serif;
+      font-size: 0.98rem;
+      font-weight: bold;
+      letter-spacing: 0.06em;
+      color: #f7f1e5;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .slim-nav-btn {
+      background: #4e342e;
+      color: #ffd54f;
+      border: 1px solid #8c6d46;
+      border-radius: 4px;
+      padding: 2px 10px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      cursor: pointer;
+      line-height: 1.3;
+      transition: 0.15s;
+    }
+    .slim-nav-btn:hover:not(:disabled) {
+      background: #6d4c41;
+      color: #fff;
+    }
+    .slim-nav-btn:disabled {
+      background: transparent;
+      color: #6d5d4b;
+      border-color: #4e342e;
+      cursor: not-allowed;
+    }
+    .para-select {
+      background: #3e2723;
+      color: #f7f1e5;
+      border: 1px solid #8c6d46;
+      border-radius: 4px;
+      padding: 2px 10px;
+      font-size: 0.88rem;
+      font-weight: bold;
+      cursor: pointer;
+      text-align: center;
+    }
+    .para-bottom-nav {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 6px;
+      padding: 10px 14px;
+      background: #eee8dc;
+      border: 1px solid #d4cbb8;
+      border-radius: 6px;
+    }
+    /* 本文下部の広告スペース */
+    .ad-footer-box {
+      margin-top: 6px;
+      padding: 12px 14px;
+      background: #f3efe6;
+      border: 1px solid #ded6c6;
+      border-radius: 6px;
+      text-align: center;
+      min-height: 90px;
+    }
+    .ad-footer-label {
+      font-size: 0.72rem;
+      color: #887d6b;
+      margin-bottom: 6px;
+      letter-spacing: 0.05em;
+    }
+    .record-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px 16px 24px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+    }
+    .section-divider {
+      background: #3d2f1d;
+      color: #f7f1e5;
+      padding: 9px 14px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 1.06rem;
+      border-left: 5px solid #d4af37;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .record-card {
+      border: 1px solid #ddd5c7;
+      border-radius: 6px;
+      padding: 16px 18px;
+      background: #fffdf9;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .record-card.active-card {
+      border: 2px solid #8c6d46;
+      background: #fffef7;
+    }
+    .record-card.pei-note {
+      background: #f4f7fa;
+      border-left: 4px solid #4a76a8;
+      margin-left: 16px;
+    }
+    .record-card.main-text {
+      border-left: 4px solid #2e7d32;
+    }
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+      color: #555;
+    }
+    .badge {
+      padding: 2px 9px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 0.8rem;
+      color: #fff;
+    }
+    .badge.main { background: #2e7d32; }
+    .badge.pei { background: #4a76a8; }
+    .raw-text {
+      font-family: "Yu Mincho", "MS PMincho", serif;
+      font-size: 1.22rem;
+      font-weight: bold;
+      color: #111;
+      margin-bottom: 10px;
+      line-height: 1.75;
+    }
+    .kakikudashi {
+      font-size: 1.08rem;
+      color: #333;
+      margin-bottom: 10px;
+      line-height: 1.8;
+      padding-left: 10px;
+      border-left: 3px solid #cbbda6;
+    }
+    .translation {
+      font-size: 1.1rem;
+      color: #1a1a1a;
+      line-height: 1.85;
+      background: rgba(255,255,255,0.8);
+      padding: 8px 10px;
+      border-radius: 4px;
+    }
+
+    /* 地図ラベル */
+    .custom-label {
+      background: rgba(44, 36, 27, 0.92);
+      color: #fff;
+      border: 1px solid #d4af37;
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 12.5px;
+      font-weight: bold;
+      white-space: nowrap;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.45);
+    }
+    .custom-label.selected-pin {
+      background: #c62828;
+      border-color: #fff176;
+      font-size: 13.5px;
+    }
+    .area-banner-label {
+      background: rgba(230, 81, 0, 0.94);
+      color: #fff;
+      border: 2px solid #fff176;
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 13px;
+      font-weight: bold;
+      white-space: nowrap;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+    .parent-area-banner-label {
+      background: rgba(46, 125, 50, 0.88);
+      color: #fff;
+      border: 1.5px solid #ffd54f;
+      border-radius: 5px;
+      padding: 2px 8px;
+      font-size: 11.5px;
+      font-weight: bold;
+      white-space: nowrap;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+    }
+    .nature-label-mountain {
+      color: #4e342e;
+      font-family: "Yu Mincho", serif;
+      font-weight: bold;
+      font-size: 13px;
+      text-shadow: 1px 1px 2px #fff, -1px -1px 2px #fff, 1px -1px 2px #fff, -1px 1px 2px #fff;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .nature-label-river {
+      color: #0d47a1;
+      font-family: "Yu Mincho", serif;
+      font-weight: bold;
+      font-size: 12.5px;
+      text-shadow: 1px 1px 2px #fff, -1px -1px 2px #fff, 1px -1px 2px #fff, -1px 1px 2px #fff;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .leaflet-tooltip.transparent-box {
+      background: transparent;
+      border: none;
+      box-shadow: none;
+    }
+
+    /* 統一モーダル（PC・スマホともに地図カラム上にのみ表示し、本文には一切かぶらない） */
+    .modal-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.48);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 6000;
+      padding: 12px;
+    }
+    .modal-box {
+      background: #fffdf9;
+      width: 96%;
+      max-width: 720px;
+      max-height: 94%;
+      border-radius: 8px;
+      border: 2px solid #8c6d46;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+      overflow: hidden;
+    }
+    .modal-header {
+      background: #2c241b;
+      color: #fff;
+      padding: 9px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .modal-header h3 {
+      font-size: 0.96rem;
+      line-height: 1.3;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .modal-close {
+      background: transparent;
+      color: #fff;
+      border: 1px solid #aaa;
+      border-radius: 4px;
+      padding: 2px 9px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .modal-close:hover { background: #c62828; border-color: #c62828; }
+    .modal-body {
+      padding: 12px 14px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .wiki-standard-box {
+      background: #f3f6f9;
+      border-left: 4px solid #1565c0;
+      padding: 10px 12px;
+      border-radius: 4px;
+      line-height: 1.55;
+      font-size: 0.88rem;
+    }
+    .ai-special-box {
+      background: #f8f4fc;
+      border-left: 4px solid #6a1b9a;
+      padding: 10px 12px;
+      border-radius: 4px;
+      line-height: 1.55;
+      font-size: 0.88rem;
+    }
+    .occurrence-details {
+      border: 1px solid #d4cbb8;
+      border-radius: 6px;
+      background: #f7f3eb;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .occurrence-summary {
+      padding: 7px 12px;
+      font-size: 0.86rem;
+      font-weight: bold;
+      color: #3d2f1d;
+      cursor: pointer;
+      user-select: none;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .occurrence-summary::-webkit-details-marker { display: none; }
+    .occurrence-summary::before {
+      content: '▶';
+      font-size: 0.72rem;
+      color: #8c6d46;
+      transition: transform 0.15s;
+    }
+    .occurrence-details[open] .occurrence-summary::before {
+      transform: rotate(90deg);
+    }
+    .occurrence-details[open] .occurrence-summary {
+      border-bottom: 1px solid #d4cbb8;
+      background: #efe9dc;
+    }
+    .occurrence-list {
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: #fffdf9;
+    }
+    .wiki-link-btn {
+      display: inline-block;
+      margin-top: 6px;
+      background: #1565c0;
+      color: #fff;
+      text-decoration: none;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 0.78rem;
+      font-weight: bold;
+    }
+    .wiki-link-btn:hover { background: #0d47a1; }
+    .modal-occurrence {
+      border: 1px solid #d4cbb8;
+      border-radius: 6px;
+      padding: 10px 14px;
+      background: #fff;
+    }
+    .jump-btn {
+      background: #2e7d32;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 4px 10px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .jump-btn:hover { background: #1b5e20; }
+    .highlight {
+      background: #fff176;
+      font-weight: bold;
+      padding: 0 2px;
+      border-radius: 2px;
+    }
+    .map-toast {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      z-index: 5000;
+      background: rgba(44, 36, 27, 0.95);
+      color: #fff;
+      border: 2px solid #d4af37;
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-size: 0.86rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+      display: none;
+      max-width: 440px;
+    }
+    .toast-special-badge {
+      display: inline-block;
+      background: #f57f17;
+      color: #fff;
+      font-weight: bold;
+      font-size: 0.75rem;
+      padding: 1px 6px;
+      border-radius: 3px;
+      margin-top: 4px;
+    }
+    .toast-feedback-bar {
+      margin-top: 8px;
+      padding-top: 6px;
+      border-top: 1px solid rgba(255,255,255,0.25);
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .toast-fb-btn {
+      background: #3e2723;
+      color: #ffe082;
+      border: 1px solid #d4af37;
+      border-radius: 4px;
+      padding: 3px 8px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .toast-fb-btn:hover {
+      background: #5d4037;
+      color: #fff;
+    }
+
+    /* ワンクリック指摘フローティングバー（文字選択・タグクリック時） */
+    .selection-feedback-bar {
+      position: fixed;
+      z-index: 12000;
+      background: #211a14;
+      color: #fff;
+      border: 2px solid #ffb300;
+      border-radius: 8px;
+      padding: 8px 10px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.45);
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 320px;
+      max-width: 520px;
+    }
+    .sfb-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      color: #ffe082;
+      border-bottom: 1px solid #4e342e;
+      padding-bottom: 4px;
+    }
+    .sfb-target-word {
+      font-weight: bold;
+      color: #fff;
+      background: #c62828;
+      padding: 1px 6px;
+      border-radius: 3px;
+      margin: 0 3px;
+    }
+    .sfb-close {
+      background: transparent;
+      border: none;
+      color: #ccc;
+      cursor: pointer;
+      font-size: 0.9rem;
+      padding: 0 4px;
+    }
+    .sfb-close:hover { color: #fff; }
+    .sfb-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+    .sfb-btn {
+      border: none;
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: 0.76rem;
+      font-weight: bold;
+      cursor: pointer;
+      color: #fff;
+      transition: transform 0.1s, opacity 0.15s;
+    }
+    .sfb-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .sfb-btn.area { background: #d84315; }
+    .sfb-btn.point { background: #2e7d32; }
+    .sfb-btn.person { background: #ad1457; }
+    .sfb-btn.office { background: #1565c0; }
+    .sfb-btn.special { background: #6a1b9a; }
+    .sfb-btn.split { background: #00838f; }
+    .sfb-btn.remove { background: #546e7a; }
+    .sfb-btn.note { background: #f57f17; color: #111; }
+
+    /* 左半分の地図エリア右下に配置する指摘リストパネル（右側の本文には一切かぶらない） */
+    .feedback-tray {
+      position: absolute;
+      bottom: 14px;
+      right: 14px;
+      z-index: 5500;
+      width: 390px;
+      max-height: 45vh;
+      background: #2c241b;
+      color: #f7f1e5;
+      border: 2px solid #ffb300;
+      border-radius: 8px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.4);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      font-size: 0.82rem;
+    }
+    .feedback-tray.minimized .feedback-tray-body,
+    .feedback-tray.minimized .feedback-tray-footer {
+      display: none;
+    }
+    .feedback-tray-header {
+      background: #3e2723;
+      padding: 8px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      border-bottom: 1px solid #5d4037;
+    }
+    .feedback-tray-title {
+      font-weight: bold;
+      color: #ffd54f;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .feedback-count-badge {
+      background: #c62828;
+      color: #fff;
+      border-radius: 10px;
+      padding: 1px 7px;
+      font-size: 0.74rem;
+    }
+    .feedback-tray-body {
+      padding: 8px 10px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 240px;
+    }
+    .feedback-empty {
+      color: #bdbdbd;
+      font-size: 0.78rem;
+      line-height: 1.5;
+      padding: 4px 2px;
+    }
+    .feedback-item {
+      background: rgba(255,255,255,0.08);
+      border-left: 3px solid #ffb300;
+      border-radius: 4px;
+      padding: 5px 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 6px;
+      line-height: 1.4;
+    }
+    .feedback-item-del {
+      background: transparent;
+      border: none;
+      color: #ef9a9a;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 0.85rem;
+      padding: 0 3px;
+    }
+    .feedback-item-del:hover { color: #ff5252; }
+    .feedback-tray-footer {
+      padding: 8px 10px;
+      background: #211a14;
+      border-top: 1px solid #4e342e;
+      display: flex;
+      gap: 6px;
+    }
+    .feedback-copy-btn {
+      flex: 1;
+      background: #ffb300;
+      color: #111;
+      border: none;
+      border-radius: 4px;
+      padding: 6px 10px;
+      font-weight: bold;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    .feedback-copy-btn:hover { background: #ffca28; }
+    .feedback-clear-btn {
+      background: #4e342e;
+      color: #ddd;
+      border: 1px solid #795548;
+      border-radius: 4px;
+      padding: 6px 10px;
+      font-size: 0.76rem;
+      cursor: pointer;
+    }
+    .feedback-clear-btn:hover { background: #c62828; color: #fff; }
+    .proofread-mode-label {
+      background: #ff8f00;
+      color: #111;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .feedback-tray-subbar {
+      background: #2c2018;
+      padding: 6px 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      border-bottom: 1px solid #4e342e;
+      font-size: 0.75rem;
+    }
+    /* スマホ・縦長タブレット対応（上40%：地図 ／ 下60%：本文スクロール＋末尾広告） */
+    @media (max-width: 900px) {
+      .main-container {
+        flex-direction: column;
+      }
+      .map-column {
+        flex: 0 0 40%;
+        height: 40%;
+        width: 100%;
+        border-right: none;
+        border-bottom: 2px solid #8c6d46;
+      }
+      .reader-panel {
+        flex: 1;
+        height: 60%;
+        width: 100%;
+      }
+      .record-list {
+        padding: 10px 12px 20px 12px;
+        gap: 10px;
+      }
+      .record-card.pei-note {
+        margin-left: 8px;
+      }
+      .map-toast {
+        bottom: 8px;
+        left: 8px;
+        right: 8px;
+        max-width: none;
+        padding: 7px 10px;
+        font-size: 0.78rem;
+        max-height: 48%;
+        overflow-y: auto;
+      }
+      .modal-overlay {
+        position: absolute;
+        inset: 0;
+        padding: 4px;
+        z-index: 6000;
+      }
+      .modal-box {
+        width: 99%;
+        max-height: 98%;
+        border-radius: 6px;
+      }
+      .modal-header {
+        padding: 6px 10px;
+      }
+      .modal-header h3 {
+        font-size: 0.84rem;
+      }
+      .modal-close {
+        padding: 2px 7px;
+        font-size: 0.76rem;
+      }
+      .modal-body {
+        padding: 8px 10px;
+        gap: 6px;
+      }
+      .wiki-standard-box,
+      .ai-special-box {
+        padding: 7px 10px;
+        font-size: 0.81rem;
+        line-height: 1.48;
+      }
+      .occurrence-summary {
+        padding: 5px 10px;
+        font-size: 0.8rem;
+      }
+      .feedback-tray {
+        width: calc(100% - 16px);
+        right: 8px;
+        bottom: 8px;
+        max-height: 36vh;
+      }
+    }
+    /* 最新の更新・修正ジャンプバー（制作・校正時のみ表示） */
+    .recent-updates-bar {
+      background: #2b2118;
+      border-bottom: 2px solid #ffb300;
+      padding: 6px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      font-size: 0.78rem;
+      color: #f7f1e5;
+      flex-shrink: 0;
+    }
+    .recent-updates-bar.collapsed .rup-body {
+      display: none;
+    }
+    .rup-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+    .rup-title {
+      font-weight: bold;
+      color: #ffd54f;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .rup-toggle-btn {
+      background: transparent;
+      border: 1px solid #8c6d46;
+      color: #ffe082;
+      border-radius: 4px;
+      padding: 1px 7px;
+      font-size: 0.72rem;
+      cursor: pointer;
+    }
+    .rup-body {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      padding-top: 2px;
+    }
+    .rup-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 5px;
+    }
+    .rup-row-label {
+      color: #bcaaa4;
+      font-weight: bold;
+      font-size: 0.74rem;
+      margin-right: 2px;
+      white-space: nowrap;
+    }
+    .rup-badge {
+      border: 1px solid #d4af37;
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.1s, background 0.15s;
+      white-space: nowrap;
+    }
+    .rup-badge.new-rec {
+      background: #1b5e20;
+      color: #fff;
+      border-color: #81c784;
+    }
+    .rup-badge.new-rec:hover {
+      background: #2e7d32;
+      transform: translateY(-1px);
+    }
+    .rup-badge.fix-item {
+      background: #4a148c;
+      color: #fff;
+      border-color: #ce93d8;
+    }
+    .rup-badge.fix-item:hover {
+      background: #6a1b9a;
+      transform: translateY(-1px);
+    }
+    @keyframes flashUpdatePulse {
+      0%   { background-color: #ffeb3b; color: #000; box-shadow: 0 0 0 4px rgba(213, 0, 0, 0.85); }
+      50%  { background-color: #ff9800; color: #000; box-shadow: 0 0 0 8px rgba(213, 0, 0, 0.35); }
+      100% { background-color: #ffeb3b; color: #000; box-shadow: 0 0 0 0 rgba(213, 0, 0, 0); }
+    }
+    .flash-update-target {
+      animation: flashUpdatePulse 0.9s ease-in-out 3;
+      border-radius: 3px;
+      padding: 1px 3px;
+    }
+    @keyframes flashCardBorderPulse {
+      0%   { box-shadow: 0 0 0 4px rgba(255, 179, 0, 0.95); }
+      50%  { box-shadow: 0 0 0 8px rgba(46, 125, 50, 0.65); }
+      100% { box-shadow: 0 0 0 0 rgba(255, 179, 0, 0); }
+    }
+    .flash-card-target {
+      animation: flashCardBorderPulse 0.9s ease-in-out 3;
+    }
+  </style>
+</head>
+<body>
+
+<div class="main-container">
+  <div class="map-column">
+    <div class="vol-nav-bar">
+      <button class="slim-nav-btn" disabled title="前の巻（なし）">←</button>
+      <select class="para-select" style="font-family:'Yu Mincho','MS PMincho',serif; font-size:0.95rem; letter-spacing:0.05em;" onchange="if(this.value) window.location.href=this.value" title="巻を切り替え">
+        <option value="vol01.html" selected>魏書一　武帝紀</option>
+        <option value="vol17.html">魏書十七　張樂于張徐傳</option>
+        <option value="vol31.html">蜀書一　劉二牧傳</option>
+        <option value="vol46.html">呉書一　孫破虜討逆傳</option>
+      </select>
+      <button class="slim-nav-btn" onclick="window.location.href='vol17.html'" title="次の公開巻（魏書十七　張樂于張徐傳）へ移動">→</button>
+    </div>
+    <div id="map" style="position:relative;">
+      <div class="map-toast" id="mapToast"></div>
+    </div>
+    <!-- 手元PC・制作時のみ表示される指摘リスト＆プレビュー切替パネル（一般公開時は完全非表示） -->
+    <div class="feedback-tray" id="feedbackTray" style="display:none;">
+      <div class="feedback-tray-header" onclick="toggleFeedbackTray()">
+        <div class="feedback-tray-title">
+          <span>📝 ピンポイント指摘リスト</span>
+          <span class="feedback-count-badge" id="feedbackCountBadge">0件</span>
+        </div>
+        <span id="feedbackTrayToggleIcon" style="font-size:0.78rem; color:#ffe082;">▼ 折りたたむ</span>
+      </div>
+      <div class="feedback-tray-subbar">
+        <label style="background:#00695c; color:#fff; padding:2px 7px; border-radius:4px; font-weight:bold; cursor:pointer; display:flex; align-items:center; gap:4px;" title="ONにすると、本番公開時と同じ表示（第21段落まで）を確認できます">
+          <input type="checkbox" id="togglePublicPreview" onchange="applyEnvironmentModeUI()"> 🌐 公開画面プレビュー
+        </label>
+        <label class="proofread-mode-label" id="proofreadModeLabel" title="ONにすると、色付き単語を左クリックするだけで指摘メニューが出ます">
+          <input type="checkbox" id="toggleProofreadMode"> 🛠️ 1クリック指摘
+        </label>
+        <label id="showAllParasLabel" style="color:#ffe082; cursor:pointer; display:flex; align-items:center; gap:4px;">
+          <input type="checkbox" id="toggleShowAllParas" onchange="renderReaderList()"> 📜 全段落連続
+        </label>
+      </div>
+      <div class="feedback-tray-body" id="feedbackTrayBody">
+        <div class="feedback-empty">
+          本文の気になる文字を<strong>なぞって選択</strong>（または色付き語を<strong>右クリック</strong>）すると、ここに指摘が溜まります。
+        </div>
+      </div>
+      <div class="feedback-tray-footer" id="feedbackTrayFooter">
+        <button class="feedback-copy-btn" id="feedbackCopyBtn" onclick="copyAllFeedbackToClipboard()">📋 指摘をまとめてコピー（チャット貼付用）</button>
+        <button class="feedback-clear-btn" onclick="clearAllFeedback()">🗑️ 全消去</button>
+      </div>
+    </div>
+    <!-- 統一モーダル（PCでは左側の地図上に重ねて本文を隠さず、スマホでは全画面で見やすく表示） -->
+    <div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this) closeModal()">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h3 id="modalTitle">詳細</h3>
+          <button class="modal-close" onclick="closeModal()">× 閉じる</button>
+        </div>
+        <div class="modal-body" id="modalBody"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="reader-panel">
+    <div class="para-nav-bar" id="paraTopNav"></div>
+    <div class="recent-updates-bar" id="recentUpdatesBar" style="display:none;"></div>
+    <div class="record-list" id="recordList"></div>
+  </div>
+</div>
+
+<!-- ワンクリック指摘フローティングバー -->
+<div class="selection-feedback-bar" id="selectionFeedbackBar">
+  <div class="sfb-header">
+    <div>
+      <span id="sfbMetaLabel">[v1_p1_1]</span>
+      選択語: <span class="sfb-target-word" id="sfbTargetWord">〇〇</span>
+      <span id="sfbCurrentTagInfo" style="color:#b0bec5; font-size:0.74rem;"></span>
+    </div>
+    <button class="sfb-close" onclick="hideSelectionFeedbackBar()" title="閉じる">✕</button>
+  </div>
+  <div class="sfb-buttons">
+    <button class="sfb-btn area" onclick="addFeedbackFromBar('🗺️ 地名（エリア：州・郡・広域）にする')">🗺️ 地名(エリア)にする</button>
+    <button class="sfb-btn point" onclick="addFeedbackFromBar('📍 地名（地点：県・城・関・山）にする')">📍 地名(地点)にする</button>
+    <button class="sfb-btn person" onclick="addFeedbackFromBar('👤 人名にする')">👤 人名にする</button>
+    <button class="sfb-btn office" onclick="addFeedbackFromBar('👑 官職にする')">👑 官職にする</button>
+    <button class="sfb-btn special" onclick="addFeedbackFromBar('🔖 特別キーワードにする')">🔖 キーワードにする</button>
+    <button class="sfb-btn split" onclick="addFeedbackFromBar('✂️ この区切りで独立させる（前後の語と分離）')">✂️ この区切りで独立</button>
+    <button class="sfb-btn remove" onclick="addFeedbackFromBar('❌ タグ解除（ただの文字に戻す）')">❌ タグ解除</button>
+    <button class="sfb-btn note" onclick="promptCustomFeedbackNote()">✏️ 場所違い・自由メモ</button>
+  </div>
+</div>
+
+<script>
+  const RECORDS = [{"id": "v1_p1_1", "volume": 1, "book": "魏書", "section_title": "武帝紀", "para_index": 1, "type": "本文", "raw_text": "太祖武皇帝，沛國譙人也，姓曹，諱操，字孟德，漢相國參之後。", "kakikudashi": "太祖武皇帝は、沛国譙の人なり。姓は曹、諱は操、字は孟徳、漢の相国参の後なり。", "translation": "太祖武皇帝は、沛国譙県の人である。姓は曹、諱は操、字は孟徳といい、漢の相国であった曹参の末裔である。", "persons": "曹操,曹参", "places": "沛国,譙", "era_year": "", "source_book": "", "keywords": "相国,出自", "raw_tagged": "{{person:曹操|太祖武皇帝}}，{{place:沛国|沛國}}{{place:譙|譙}}人也，姓曹，諱{{person:曹操|操}}，字{{person:曹操|孟德}}，漢{{office:相国|相國}}{{person:曹参|參}}之後。", "kakikudashi_tagged": "{{person:曹操|太祖武皇帝}}は、{{place:沛国|沛国}}{{place:譙|譙}}の人なり。姓は曹、諱は{{person:曹操|操}}、字は{{person:曹操|孟徳}}、漢の{{office:相国|相国}}{{person:曹参|参}}の後なり。", "translation_tagged": "{{person:曹操|太祖武皇帝}}は、{{place:沛国|沛国}}{{place:譙|譙県}}の人である。姓は曹、諱は{{person:曹操|操}}、字は{{person:曹操|孟徳}}といい、漢の{{office:相国|相国}}であった{{person:曹参|曹参}}の末裔である。"}, {"id": "v1_p1_2", "volume": 1, "book": "魏書", "section_title": "武帝紀", "para_index": 1, "type": "裴注", "raw_text": "〔《曹瞞傳》曰：〕太祖一名吉利，小字阿瞞。王沈《魏書》曰：其先出於黃帝。當高陽世，陸終之子曰安，是爲曹姓。周武王克殷，存先世之後，封曹俠於邾。春秋之世，與於盟會，逮至戰國，爲楚所滅。子孫分流，或家于沛。漢高祖之起，曹參以功封平陽侯，世襲爵土，絕而復紹，至今適嗣國於容城。", "kakikudashi": "『曹瞞伝』に曰く、「太祖は一名を吉利、小字を阿瞞と曰う」と。王沈の『魏書』に曰く、「其の先は黄帝より出ず。高陽の世に当たり、陸終の子を安と曰い、是れ曹姓と為る。周の武王、殷に克ち、先世の後を存し、曹俠を邾に封ず。春秋の世、盟会に与り、戦国に逮びて、楚の滅ぼす所と為る。子孫分流し、或いは沛に家す。漢の高祖の起こるや、曹参は功を以て平陽侯に封ぜられ、爵土を世襲し、絶えて復た紹ぎ、今に至るまで適嗣は容城に国す」と。", "translation": "『曹瞞伝』にいう。「太祖は別名を吉利といい、幼名を阿瞞といった」。王沈の『魏書』にいう。「その祖先は黄帝から出ている。高陽の時代に、陸終の子に安という者がおり、これが曹姓となった。周の武王が殷に打ち勝つと、古の聖王の末裔を存続させ、曹俠を邾に封じた。春秋時代には諸侯の会盟にも加わったが、戦国時代に至って楚に滅ぼされた。子孫は各地に分かれ、ある者は沛に家を構えた。漢の高祖が挙兵すると、曹参は功績によって平陽侯に封じられ、爵位と封土を世襲し、途中で絶えてもまた継がれ、現在に至るまで嫡流の後嗣は容城に封国を保っている」。", "persons": "曹操,王沈,黄帝,顓頊,陸終,曹安,武王,曹挾,劉邦,曹参", "places": "殷,邾,楚,沛国,平陽,容城", "era_year": "", "source_book": "曹瞞伝・魏書", "keywords": "吉利,阿瞞,平陽侯", "raw_tagged": "〔{{special:引用史料|《曹瞞傳》}}曰：〕{{person:曹操|太祖}}一名{{person:曹操|吉利}}，小字{{person:曹操|阿瞞}}。{{person:王沈|王沈}}{{special:引用史料|《魏書》}}曰：其先出於{{person:黄帝|黃帝}}。當{{person:顓頊|高陽}}世，{{person:陸終|陸終}}之子曰{{person:曹安|安}}，是爲曹姓。{{person:武王|周武王}}克{{place:殷|殷}}，存先世之後，封{{person:曹挾|曹俠}}於{{place:邾|邾}}。春秋之世，與於盟會，逮至戰國，爲{{place:楚|楚}}所滅。子孫分流，或家于{{place:沛国|沛}}。{{person:劉邦|漢高祖}}之起，{{person:曹参|曹參}}以功封{{place:平陽|平陽}}{{office:列侯|侯}}，世襲爵土，絕而復紹，至今適嗣國於{{place:容城|容城}}。", "kakikudashi_tagged": "{{special:引用史料|『曹瞞伝』}}に曰く、「{{person:曹操|太祖}}は一名を{{person:曹操|吉利}}、小字を{{person:曹操|阿瞞}}と曰う」と。{{person:王沈|王沈}}の{{special:引用史料|『魏書』}}に曰く、「其の先は{{person:黄帝|黄帝}}より出ず。{{person:顓頊|高陽}}の世に当たり、{{person:陸終|陸終}}の子を{{person:曹安|安}}と曰い、是れ曹姓と為る。{{person:武王|周の武王}}、{{place:殷|殷}}に克ち、先世の後を存し、{{person:曹挾|曹俠}}を{{place:邾|邾}}に封ず。春秋の世、盟会に与り、戦国に逮びて、{{place:楚|楚}}の滅ぼす所と為る。子孫分流し、或いは{{place:沛国|沛}}に家す。{{person:劉邦|漢の高祖}}の起こるや、{{person:曹参|曹参}}は功を以て{{place:平陽|平陽}}{{office:列侯|侯}}に封ぜられ、爵土を世襲し、絶えて復た紹ぎ、今に至るまで適嗣は{{place:容城|容城}}に国す」と。", "translation_tagged": "{{special:引用史料|『曹瞞伝』}}にいう。「{{person:曹操|太祖}}は別名を{{person:曹操|吉利}}といい、幼名を{{person:曹操|阿瞞}}といった」。{{person:王沈|王沈}}の{{special:引用史料|『魏書』}}にいう。「その祖先は{{person:黄帝|黄帝}}から出ている。{{person:顓頊|高陽}}の時代に、{{person:陸終|陸終}}の子に{{person:曹安|安}}という者がおり、これが曹姓となった。{{person:武王|周の武王}}が{{place:殷|殷}}に打ち勝つと、古の聖王の末裔を存続させ、{{person:曹挾|曹俠}}を{{place:邾|邾}}に封じた。春秋時代には諸侯の会盟にも加わったが、戦国時代に至って{{place:楚|楚}}に滅ぼされた。子孫は各地に分かれ、ある者は{{place:沛国|沛}}に家を構えた。{{person:劉邦|漢の高祖}}が挙兵すると、{{person:曹参|曹参}}は功績によって{{place:平陽|平陽}}{{office:列侯|侯}}に封じられ、爵位と封土を世襲し、途中で絶えてもまた継がれ、現在に至るまで嫡流の後嗣は{{place:容城|容城}}に封国を保っている」。"}, {"id": "v1_p1_3", "volume": 1, "book": "魏書", "section_title": "武帝紀", "para_index": 1, "type": "本文", "raw_text": "桓帝世，曹騰爲中常侍大長秋，封費亭侯。", "kakikudashi": "桓帝の世、曹騰は中常侍・大長秋と為り、費亭侯に封ぜらる。", "translation": "後漢の桓帝の時代、曹騰は中常侍・大長秋となり、費亭侯に封じられた。", "persons": "桓帝,曹騰", "places": "費亭", "era_year": "建和元年（147年）", "source_book": "", "keywords": "中常侍,大長秋,費亭侯", "raw_tagged": "{{person:桓帝|桓帝}}世，{{person:曹騰|曹騰}}爲{{office:中常侍|中常侍}}{{office:大長秋|大長秋}}，封{{place:費亭|費亭}}{{office:列侯|侯}}。", "kakikudashi_tagged": "{{person:桓帝|桓帝}}の世、{{person:曹騰|曹騰}}は{{office:中常侍|中常侍}}・{{office:大長秋|大長秋}}と為り、{{place:費亭|費亭}}{{office:列侯|侯}}に封ぜらる。", "translation_tagged": "後漢の{{person:桓帝|桓帝}}の時代、{{person:曹騰|曹騰}}は{{office:中常侍|中常侍}}・{{office:大長秋|大長秋}}となり、{{place:費亭|費亭}}{{office:列侯|侯}}に封じられた。"}, {"id": "v1_p1_4", "volume": 1, "book": "魏書", "section_title": "武帝紀", "para_index": 1, "type": "裴注", "raw_text": "司馬彪《續漢書》曰：騰父節，字元偉，素以仁厚稱。鄰人有亡豕者，與節豕相類，詣門認之，節不與爭；後所亡豕自還其家，豕主人大慙，送所認豕，并辭謝節，節笑而受之。由是鄉黨貴歎焉。長子伯興，次子仲興，次子叔興。騰字季興，少除黃門從官。永寧元年，鄧太后詔黃門令選中黃門從官年少溫謹者，配皇太子書，騰應其選。太子特親愛騰，飲食賞賜與衆有異。順帝即位，爲小黃門，遷至中常侍大長秋。在省闥三十餘年，歷事四帝，未甞有過。好進達賢能，終無所毀傷。其所稱薦，若陳留虞放、邊韶、南陽延固、張溫、弘農張奐、潁川堂谿典等，皆致位公卿，而不伐其善。蜀郡太守因計吏修敬於騰，益州刺史种暠於函谷關搜得其牋，上太守，并奏騰內臣外交，所不當爲，請免官治罪。帝曰：「牋自外來，騰書不出，非其罪也。」乃寑暠奏。騰不以介意，常稱歎暠，以爲暠得事上之節。暠後爲司徒，語人曰：「今日爲公，乃曹常侍恩也。」騰之行事，皆此類也。桓帝即位，以騰先帝舊臣，忠孝彰著，封費亭侯，加位特進。太和三年，追尊騰曰高皇帝。", "kakikudashi": "司馬彪の『続漢書』に曰く、「騰の父の節、字は元偉、素より仁厚を以て称せらる。隣人に豕を亡う者有り、節の豕と相類す、門に詣りて之を認むるに、節は与に争わず；後に亡う所の豕自ら其の家に還り、豕の主人大いに慙じ、認むる所の豕を送り、并せて節に辞謝するに、節は笑いて之を受く。是に由りて郷党は貴びて焉を歎ず。長子は伯興、次子は仲興、次子は叔興。騰は字は季興、少くして黄門従官に除せらる。永寧元年、鄧太后は黄門令に詔して中黄門従官の年少くして温謹なる者を選び、皇太子の書に配せしむるに、騰は其の選に応ず。太子は特に騰を親愛し、飲食・賞賜は衆と異なる有り。順帝即位するや、小黄門と為り、遷りて中常侍・大長秋に至る。省闥に在ること三十余年、四帝に歴事し、未だ嘗て過ち有らず。好みて賢能を進達し、終に毀傷する所無し。其の称薦する所、陳留の虞放・辺韶、南陽の延固・張温、弘農の張奐、潁川の堂谿典等の若きは、皆位を公卿に致すも、其の善に伐らず。蜀郡太守、計吏に因りて敬を騰に修むるに、益州刺史の种暠、函谷関に於いて其の牋を捜し得、太守を上奏し、并せて騰は内臣にして外交し、まさに為すべき所に非ざれば、官を免じて罪を治めんことを請う。帝曰く、『牋は外より来たり、騰の書は出でざれば、其の罪に非ざるなり』と。乃ち暠の奏を寝む。騰は以て意に介せず、常に暠を称歎し、暠は上に事うるの節義を得たりと為す。暠は後に司徒と為り、人に語りて曰く、『今日公と為るは、乃ち曹常侍の恩なり』と。騰の行事は、皆此の類なり。桓帝即位するや、騰が先帝の旧臣にして、忠孝の彰著なるを以て、費亭侯に封じ、位に特進を加う。太和三年、騰を追尊して高皇帝と曰う」と。", "translation": "司馬彪の『続漢書』にいう。「曹騰の父の曹節は、字を元偉といい、日頃から情け深く温厚な人柄で知られていた。あるとき隣人で豚を逃がした者がおり、その豚が曹節の豚とよく似ていたため、曹節の家の門を訪れて自分の豚だと主張したが、曹節はこれと争わなかった；のちに見失っていた豚が自ら隣人の家に帰り着いたため、豚の飼い主は大いに恥じ入り、譲り受けていた豚を送り返し、あわせて曹節に深く謝罪したところ、曹節は笑ってこれを受け入れた。これによって郷里の人々は曹節を尊び感嘆した。長男は伯興、次男は仲興、三男は叔興といった。末子の曹騰は字を季興といい、若くして黄門従官に任じられた。永寧元年（120年）、鄧太后が黄門令に詔を下し、中黄門従官のうち年若く温厚で慎み深い者を選んで皇太子の学友に配属させた際、曹騰がその選抜にかなった。皇太子はとりわけ曹騰を親愛し、飲食や恩賞の賜与も他の者とは別格であった。順帝が即位すると、曹騰は小黄門となり、昇進して中常侍・大長秋に至った。宮中に奉職すること三十余年、四代の皇帝に歴仕して、ただの一度も過失がなかった。好んで賢者や有能な人材を推挙・抜擢し、最後まで人を中傷し陥れることがなかった。曹騰が称揚・推薦した人物には、陳留の虞放・辺韶、南陽の延固・張温、弘農の張奐、潁川の堂谿典らがおり、いずれも公卿の高位にまで昇ったが、曹騰はその善行を誇ることがなかった。あるとき蜀郡太守が上計吏を通じて曹騰に挨拶と贈り物の書状を送ったところ、益州刺史の种暠が函谷関でその書状を検閲して発見し、蜀郡太守を弾劾するとともに、曹騰もまた宮中の内臣でありながら地方官と私的に交際したのは不届きな行為であるとして、免官のうえ処罰するよう奏請した。皇帝は『書状は外部から送られてきたものであり、曹騰から書状を出したわけではないから、彼の罪ではない』と言った。そこで种暠の奏上を不問に付して却下した。曹騰はこの一件を少しも気に留めず、つねづね种暠を称賛し、种暠こそ主君に仕える節義に適っていると評価した。种暠はのちに司徒となると、人に語って『今日私が三公となれたのは、実に曹常侍の恩義によるものだ』と言った。曹騰の行いは、すべてこのようであった。桓帝が即位すると、曹騰が先帝の旧臣であり、忠孝が顕著であったことから、費亭侯に封じ、特進の位を加えた。魏の太和三年（229年）、曹騰に高皇帝の号を追尊した」。", "persons": "司馬彪,曹騰,曹節,曹伯興,曹仲興,曹叔興,鄧太后,順帝,虞放,辺韶,延固,張温,張奐,堂谿典,种暠,桓帝", "places": "陳留,南陽,弘農,潁川,蜀郡,益州,函谷関,費亭", "era_year": "永寧元年（120年）〜太和3年（229年）", "source_book": "続漢書", "keywords": "黄門従官,小黄門,中常侍,大長秋,内臣外交,特進,高皇帝", "raw_tagged": "{{person:司馬彪|司馬彪}}{{special:引用史料|《續漢書》}}曰：{{person:曹騰|騰}}父{{person:曹節|節}}，字{{person:曹節|元偉}}，素以仁厚稱。鄰人有亡豕者，與{{person:曹節|節}}豕相類，詣門認之，{{person:曹節|節}}不與爭；後所亡豕自還其家，豕主人大慙，送所認豕，并辭謝{{person:曹節|節}}，{{person:曹節|節}}笑而受之。由是鄉黨貴歎焉。長子{{person:曹伯興|伯興}}，次子{{person:曹仲興|仲興}}，次子{{person:曹叔興|叔興}}。{{person:曹騰|騰}}字{{person:曹騰|季興}}，少除{{office:黄門従官|黃門從官}}。{{special:永寧|永寧元年}}，{{person:鄧太后|鄧太后}}詔{{office:黄門令|黃門令}}選{{office:黄門従官|中黃門從官}}年少溫謹者，配{{person:順帝|皇太子}}書，{{person:曹騰|騰}}應其選。{{person:順帝|太子}}特親愛{{person:曹騰|騰}}，飲食賞賜與衆有異。{{person:順帝|順帝}}即位，爲{{office:小黄門|小黃門}}，遷至{{office:中常侍|中常侍}}{{office:大長秋|大長秋}}。在{{special:省闥|省闥}}三十餘年，歷事四帝，未甞有過。好進達賢能，終無所毀傷。其所稱薦，若{{place:陳留|陳留}}{{person:虞放|虞放}}、{{person:辺韶|邊韶}}、{{place:南陽|南陽}}{{person:延固|延固}}、{{person:張温|張溫}}、{{place:弘農|弘農}}{{person:張奐|張奐}}、{{place:潁川|潁川}}{{person:堂谿典|堂谿典}}等，皆致位{{office:公卿|公卿}}，而不伐其善。{{place:蜀郡|蜀郡}}{{office:太守|太守}}因{{office:計吏|計吏}}修敬於{{person:曹騰|騰}}，{{place:益州|益州}}{{office:刺史|刺史}}{{person:种暠|种暠}}於{{place:函谷関|函谷關}}搜得其牋，上{{office:太守|太守}}，并奏{{person:曹騰|騰}}{{special:内臣外交|內臣外交}}，所不當爲，請免官治罪。帝曰：「牋自外來，{{person:曹騰|騰}}書不出，非其罪也。」乃寑{{person:种暠|暠}}奏。{{person:曹騰|騰}}不以介意，常稱歎{{person:种暠|暠}}，以爲{{person:种暠|暠}}得事上之節。{{person:种暠|暠}}後爲{{office:司徒|司徒}}，語人曰：「今日爲公，乃{{person:曹騰|曹}}{{office:中常侍|常侍}}恩也。」{{person:曹騰|騰}}之行事，皆此類也。{{person:桓帝|桓帝}}即位，以{{person:曹騰|騰}}先帝舊臣，忠孝彰著，封{{place:費亭|費亭}}{{office:列侯|侯}}，加位{{office:特進|特進}}。{{special:太和|太和三年}}，追尊{{person:曹騰|騰}}曰{{person:曹騰|高皇帝}}。", "kakikudashi_tagged": "{{person:司馬彪|司馬彪}}の{{special:引用史料|『続漢書』}}に曰く、「{{person:曹騰|騰}}の父の{{person:曹節|節}}、字は{{person:曹節|元偉}}、素より仁厚を以て称せらる。隣人に豕を亡う者有り、{{person:曹節|節}}の豕と相類す、門に詣りて之を認むるに、{{person:曹節|節}}は与に争わず；後に亡う所の豕自ら其の家に還り、豕の主人大いに慙じ、認むる所の豕を送り、并せて{{person:曹節|節}}に辞謝するに、{{person:曹節|節}}は笑いて之を受く。是に由りて郷党は貴びて焉を歎ず。長子は{{person:曹伯興|伯興}}、次子は{{person:曹仲興|仲興}}、次子は{{person:曹叔興|叔興}}。{{person:曹騰|騰}}は字は{{person:曹騰|季興}}、少くして{{office:黄門従官|黄門従官}}に除せらる。{{special:永寧|永寧元年}}、{{person:鄧太后|鄧太后}}は{{office:黄門令|黄門令}}に詔して{{office:黄門従官|中黄門従官}}の年少くして温謹なる者を選び、{{person:順帝|皇太子}}の書に配せしむるに、{{person:曹騰|騰}}は其の選に応ず。{{person:順帝|太子}}は特に{{person:曹騰|騰}}を親愛し、飲食・賞賜は衆と異なる有り。{{person:順帝|順帝}}即位するや、{{office:小黄門|小黄門}}と為り、遷りて{{office:中常侍|中常侍}}・{{office:大長秋|大長秋}}に至る。{{special:省闥|省闥}}に在ること三十余年、四帝に歴事し、未だ嘗て過ち有らず。好みて賢能を進達し、終に毀傷する所無し。其の称薦する所、{{place:陳留|陳留}}の{{person:虞放|虞放}}・{{person:辺韶|辺韶}}、{{place:南陽|南陽}}の{{person:延固|延固}}・{{person:張温|張温}}、{{place:弘農|弘農}}の{{person:張奐|張奐}}、{{place:潁川|潁川}}の{{person:堂谿典|堂谿典}}等の若きは、皆位を{{office:公卿|公卿}}に致すも、其の善に伐らず。{{place:蜀郡|蜀郡}}{{office:太守|太守}}、{{office:計吏|計吏}}に因りて敬を{{person:曹騰|騰}}に修むるに、{{place:益州|益州}}{{office:刺史|刺史}}の{{person:种暠|种暠}}、{{place:函谷関|函谷関}}に於いて其の牋を捜し得、{{office:太守|太守}}を上奏し、并せて{{person:曹騰|騰}}は{{special:内臣外交|内臣にして外交}}し、まさに為すべき所に非ざれば、官を免じて罪を治めんことを請う。帝曰く、『牋は外より来たり、{{person:曹騰|騰}}の書は出でざれば、其の罪に非ざるなり』と。乃ち{{person:种暠|暠}}の奏を寝む。{{person:曹騰|騰}}は以て意に介せず、常に{{person:种暠|暠}}を称歎し、{{person:种暠|暠}}は上に事うるの節義を得たりと為す。{{person:种暠|暠}}は後に{{office:司徒|司徒}}と為り、人に語りて曰く、『今日公と為るは、乃ち{{person:曹騰|曹}}{{office:中常侍|常侍}}の恩なり』と。{{person:曹騰|騰}}の行事は、皆此の類なり。{{person:桓帝|桓帝}}即位するや、{{person:曹騰|騰}}が先帝の旧臣にして、忠孝の彰著なるを以て、{{place:費亭|費亭}}{{office:列侯|侯}}に封じ、位に{{office:特進|特進}}を加う。{{special:太和|太和三年}}、{{person:曹騰|騰}}を追尊して{{person:曹騰|高皇帝}}と曰う」と。", "translation_tagged": "{{person:司馬彪|司馬彪}}の{{special:引用史料|『続漢書』}}にいう。「{{person:曹騰|曹騰}}の父の{{person:曹節|曹節}}は、字を{{person:曹節|元偉}}といい、日頃から情け深く温厚な人柄で知られていた。あるとき隣人で豚を逃がした者がおり、その豚が{{person:曹節|曹節}}の豚とよく似ていたため、{{person:曹節|曹節}}の家の門を訪れて自分の豚だと主張したが、{{person:曹節|曹節}}はこれと争わなかった；のちに見失っていた豚が自ら隣人の家に帰り着いたため、豚の飼い主は大いに恥じ入り、譲り受けていた豚を送り返し、あわせて{{person:曹節|曹節}}に深く謝罪したところ、{{person:曹節|曹節}}は笑ってこれを受け入れた。これによって郷里の人々は{{person:曹節|曹節}}を尊び感嘆した。長男は{{person:曹伯興|伯興}}、次男は{{person:曹仲興|仲興}}、三男は{{person:曹叔興|叔興}}といった。末子の{{person:曹騰|曹騰}}は字を{{person:曹騰|季興}}といい、若くして{{office:黄門従官|黄門従官}}に任じられた。{{special:永寧|永寧元年}}（120年）、{{person:鄧太后|鄧太后}}が{{office:黄門令|黄門令}}に詔を下し、{{office:黄門従官|中黄門従官}}のうち年若く温厚で慎み深い者を選んで{{person:順帝|皇太子}}の学友に配属させた際、{{person:曹騰|曹騰}}がその選抜にかなった。{{person:順帝|皇太子}}はとりわけ{{person:曹騰|曹騰}}を親愛し、飲食や恩賞の賜与も他の者とは別格であった。{{person:順帝|順帝}}が即位すると、{{person:曹騰|曹騰}}は{{office:小黄門|小黄門}}となり、昇進して{{office:中常侍|中常侍}}・{{office:大長秋|大長秋}}に至った。宮中に奉職すること三十余年、四代の皇帝に歴仕して、ただの一度も過失がなかった。好んで賢者や有能な人材を推挙・抜擢し、最後まで人を中傷し陥れることがなかった。{{person:曹騰|曹騰}}が称揚・推薦した人物には、{{place:陳留|陳留}}の{{person:虞放|虞放}}・{{person:辺韶|辺韶}}、{{place:南陽|南陽}}の{{person:延固|延固}}・{{person:張温|張温}}、{{place:弘農|弘農}}の{{person:張奐|張奐}}、{{place:潁川|潁川}}の{{person:堂谿典|堂谿典}}らがおり、いずれも{{office:公卿|公卿}}の高位にまで昇ったが、{{person:曹騰|曹騰}}はその善行を誇ることがなかった。あるとき{{place:蜀郡|蜀郡}}{{office:太守|太守}}が{{office:計吏|上計吏}}を通じて{{person:曹騰|曹騰}}に挨拶と贈り物の書状を送ったところ、{{place:益州|益州}}{{office:刺史|刺史}}の{{person:种暠|种暠}}が{{place:函谷関|函谷関}}でその書状を検閲して発見し、{{place:蜀郡|蜀郡}}{{office:太守|太守}}を弾劾するとともに、{{person:曹騰|曹騰}}もまた宮中の内臣でありながら地方官と私的に交際したのは不届きな行為であるとして、免官のうえ処罰するよう奏請した。皇帝は『書状は外部から送られてきたものであり、{{person:曹騰|曹騰}}から書状を出したわけではないから、彼の罪ではない』と言った。そこで{{person:种暠|种暠}}の奏上を不問に付して却下した。{{person:曹騰|曹騰}}はこの一件を少しも気に留めず、つねづね{{person:种暠|种暠}}を称賛し、{{person:种暠|种暠}}こそ主君に仕える節義に適っていると評価した。{{person:种暠|种暠}}はのちに{{office:司徒|司徒}}となると、人に語って『今日私が三公となれたのは、実に{{person:曹騰|曹}}{{office:中常侍|常侍}}の恩義によるものだ』と言った。{{person:曹騰|曹騰}}の行いは、すべてこのようであった。{{person:桓帝|桓帝}}が即位すると、{{person:曹騰|曹騰}}が先帝の旧臣であり、忠孝が顕著であったことから、{{place:費亭|費亭}}{{office:列侯|侯}}に封じ、{{office:特進|特進}}の位を加えた。魏の{{special:太和|太和三年}}（229年）、{{person:曹騰|曹騰}}に{{person:曹騰|高皇帝}}の号を追尊した」。"}, {"id": "v1_p1_5", "volume": 1, "book": "魏書", "section_title": "武帝紀", "para_index": 1, "type": "本文", "raw_text": "養子嵩嗣，官至太尉，莫能審其生出本末。", "kakikudashi": "養子の嵩嗣ぎ、官は太尉に至るも、能く其の生出の本末を審らかにする莫し。", "translation": "養子の曹嵩が後を継ぎ、官位は太尉にまで至ったが、その出生の詳しい経緯を明らかにできる者はいなかった。", "persons": "曹嵩", "places": "", "era_year": "中平4年〜5年（187年〜188年）", "source_book": "", "keywords": "太尉,出自", "raw_tagged": "養子{{person:曹嵩|嵩}}嗣，官至{{office:太尉|太尉}}，莫能審其生出本末。", "kakikudashi_tagged": "養子の{{person:曹嵩|嵩}}嗣ぎ、官は{{office:太尉|太尉}}に至るも、能く其の生出の本末を審らかにする莫し。", "translation_tagged": "養子の{{person:曹嵩|曹嵩}}が後を継ぎ、官位は{{office:太尉|太尉}}にまで至ったが、その出生の詳しい経緯を明らかにできる者はいなかった。"}, {"id": "v1_p1_6", "volume": 1, "book": "魏書", "section_title": "武帝紀", "para_index": 1, "type": "裴注", "raw_text": "《續漢書》曰：嵩字巨高。質性敦慎，所在忠孝。爲司隷校尉，靈帝擢拜大司農、大鴻臚，代崔烈爲太尉。黃初元年，追尊嵩曰太皇帝。吳人作《曹瞞傳》及郭頒《世語》並云：嵩，夏侯氏之子，夏侯惇之叔父。太祖於惇爲從父兄弟。", "kakikudashi": "『続漢書』に曰く、「嵩は字は巨高。質性は敦慎にして、在る所忠孝なり。司隷校尉と為り、霊帝は擢んでて大司農・大鴻臚に拝し、崔烈に代わりて太尉と為す。黄初元年、嵩を追尊して太皇帝と曰う」と。呉人の作る『曹瞞伝』及び郭頒の『世語』に並びに云う、「嵩は夏侯氏の子、夏侯惇の叔父なり。太祖は惇に於いて従父兄弟たり」と。", "translation": "『続漢書』にいう。「曹嵩は字を巨高といった。生まれつき篤実で慎み深く、どの任地にあっても忠孝を尽くした。司隷校尉となり、霊帝に抜擢されて大司農・大鴻臚に任じられ、崔烈に代わって太尉となった。魏の黄初元年（220年）、曹嵩に太皇帝の号を追尊した」。呉の人が著した『曹瞞伝』および郭頒の『世語』はともに、「曹嵩は夏侯氏の子で、夏侯惇の叔父にあたる。太祖は夏侯惇とは従兄弟の関係にあたる」と記す。", "persons": "曹嵩,霊帝,崔烈,郭頒,夏侯惇,曹操", "places": "", "era_year": "黄初元年（220年）", "source_book": "続漢書・曹瞞伝・世語", "keywords": "司隷校尉,大司農,大鴻臚,太尉,太皇帝,夏侯氏", "raw_tagged": "{{special:引用史料|《續漢書》}}曰：{{person:曹嵩|嵩}}字{{person:曹嵩|巨高}}。質性敦慎，所在忠孝。爲{{office:司隷校尉|司隷校尉}}，{{person:霊帝|靈帝}}擢拜{{office:大司農|大司農}}、{{office:大鴻臚|大鴻臚}}，代{{person:崔烈|崔烈}}爲{{office:太尉|太尉}}。{{special:黄初|黃初元年}}，追尊{{person:曹嵩|嵩}}曰{{person:曹嵩|太皇帝}}。吳人作{{special:引用史料|《曹瞞傳》}}及{{person:郭頒|郭頒}}{{special:引用史料|《世語》}}並云：{{person:曹嵩|嵩}}，夏侯氏之子，{{person:夏侯惇|夏侯惇}}之叔父。{{person:曹操|太祖}}於{{person:夏侯惇|惇}}爲從父兄弟。", "kakikudashi_tagged": "{{special:引用史料|『続漢書』}}に曰く、「{{person:曹嵩|嵩}}は字は{{person:曹嵩|巨高}}。質性は敦慎にして、在る所忠孝なり。{{office:司隷校尉|司隷校尉}}と為り、{{person:霊帝|霊帝}}は擢んでて{{office:大司農|大司農}}・{{office:大鴻臚|大鴻臚}}に拝し、{{person:崔烈|崔烈}}に代わりて{{office:太尉|太尉}}と為す。{{special:黄初|黄初元年}}、{{person:曹嵩|嵩}}を追尊して{{person:曹嵩|太皇帝}}と曰う」と。呉人の作る{{special:引用史料|『曹瞞伝』}}及び{{person:郭頒|郭頒}}の{{special:引用史料|『世語』}}に並びに云う、「{{person:曹嵩|嵩}}は夏侯氏の子、{{person:夏侯惇|夏侯惇}}の叔父なり。{{person:曹操|太祖}}は{{person:夏侯惇|惇}}に於いて従父兄弟たり」と。", "translation_tagged": "{{special:引用史料|『続漢書』}}にいう。「{{person:曹嵩|曹嵩}}は字を{{person:曹嵩|巨高}}といった。生まれつき篤実で慎み深く、どの任地にあっても忠孝を尽くした。{{office:司隷校尉|司隷校尉}}となり、{{person:霊帝|霊帝}}に抜擢されて{{office:大司農|大司農}}・{{office:大鴻臚|大鴻臚}}に任じられ、{{person:崔烈|崔烈}}に代わって{{office:太尉|太尉}}となった。魏の{{special:黄初|黄初元年}}（220年）、{{person:曹嵩|曹嵩}}に{{person:曹嵩|太皇帝}}の号を追尊した」。呉の人が著した{{special:引用史料|『曹瞞伝』}}および{{person:郭頒|郭頒}}の{{special:引用史料|『世語』}}はともに、「{{person:曹嵩|曹嵩}}は夏侯氏の子で、{{person:夏侯惇|夏侯惇}}の叔父にあたる。{{person:曹操|太祖}}は{{person:夏侯惇|夏侯惇}}とは従兄弟の関係にあたる」と記す。"}, {"id": "v1_p1_7", "volume": 1, "book": "魏書", "section_title": "武帝紀", "para_index": 1, "type": "本文", "raw_text": "嵩生太祖。", "kakikudashi": "嵩、太祖を生む。", "translation": "この曹嵩が太祖を生んだのである。", "persons": "曹嵩,曹操", "places": "", "era_year": "永寿元年（155年）", "source_book": "", "keywords": "曹操誕生", "raw_tagged": "{{person:曹嵩|嵩}}生{{person:曹操|太祖}}。", "kakikudashi_tagged": "{{person:曹嵩|嵩}}、{{person:曹操|太祖}}を生む。", "translation_tagged": "この{{person:曹嵩|曹嵩}}が{{person:曹操|太祖}}を生んだのである。"}, {"id": "v1_p2_1", "volume": 1, "book": "魏書", "section_title": "武帝紀", "para_index": 2, "type": "本文", "raw_text": "太祖少機警，有權數，而任俠放蕩，不治行業，故世人未之奇也；", "kakikudashi": "太祖は少くして機警、権数有りて、任侠放蕩、行業を治めず、故に世人は未だ之を奇とせざるなり；", "translation": "太祖は若い頃から機敏で才略に富んでいたが、任侠を好んで奔放に振る舞い、品行や生業を修めなかったため、世間の人々はまだ彼を非凡な人物だとは気づいていなかった；", "persons": "曹操", "places": "", "era_year": "", "source_book": "", "keywords": "機警,権数,任侠", "raw_tagged": "{{person:曹操|太祖}}少機警，有權數，而任俠放蕩，不治行業，故世人未之奇也；", "kakikudashi_tagged": "{{person:曹操|太祖}}は少くして機警、権数有りて、任侠放蕩、行業を治めず、故に世人は未だ之を奇とせざるなり；", "translation_tagged": "{{person:曹操|太祖}}は若い頃から機敏で才略に富んでいたが、任侠を好んで奔放に振る舞い、品行や生業を修めなかったため、世間の人々はまだ彼を非凡な人物だとは気づいていなかった；"}, {"id": "v1_p2_2", "volume": 1, "book": "魏書", "section_title": "武帝紀", "para_index": 2, "type": "裴注", "raw_text": "《曹瞞傳》云：太祖少好飛鷹走狗，游蕩無度，其叔父數言之於嵩。太祖患之，後逢叔父於路，乃陽敗面喎口；叔父怪而問其故，太祖曰：「卒中惡風。」叔父以告嵩。嵩驚愕，呼太祖，太祖口貌如故。嵩問曰：「叔父言汝中風，已差乎？」太祖曰：「初不中風，但失愛於叔父，故見罔耳。」嵩乃疑焉。自後叔父有所告，嵩終不復信，太祖於是益得肆意矣。", "kakikudashi": "『曹瞞伝』に云う、「太祖は少くして飛鷹走狗を好み、游蕩して度無く、其の叔父はしばしば之を嵩に言う。太祖は之を患え、後に叔父に路に逢うや、乃ち陽りて面を敗り口を喎む；叔父は怪しみて其の故を問うに、太祖曰く、『卒かに悪風に中たる』と。叔父は以て嵩に告ぐ。嵩は驚愕し、太祖を呼ぶに、太祖の口貌は故の如し。嵩問いて曰く、『叔父は汝が中風せりと言うも、已に差えたるか？』と。太祖曰く、『初めより中風せず、但だ愛を叔父に失う、故に罔いらるるのみ』と。嵩は乃ち焉を疑う。自後、叔父に告ぐる所有るも、嵩は終に復た信ぜず、太祖は是に於いて益々意を肆にするを得たり」と。", "translation": "『曹瞞伝』にいう。「太祖は若い頃、鷹狩りや犬を使った狩りを好み、遊び呆けて節度がなかったため、その叔父がたびたび父の曹嵩にこれを取り締まるよう言いつけた。太祖はこれを疎ましく思い、のちに道で叔父に出くわした際、わざと顔をゆがめて口をひきつらせた；叔父が訝しんでその理由を尋ねると、太祖は『急に中風にかかってしまいました』と答えた。叔父はそのことを曹嵩に告げた。曹嵩は驚愕して太祖を呼び寄せたが、太祖の口元や顔つきは普段通りであった。曹嵩が『叔父上が、お前が中風にかかったと言っておられたが、もう治ったのか？』と尋ねた。太祖は『最初から中風など患っておりません、ただ叔父上に嫌われておりますので、無実の讒言をされただけです』と答えた。曹嵩はそこで叔父の言葉を疑うようになった。これ以降、叔父が何か言いつけても曹嵩は二度と信じなくなり、太祖はこうして思うままに振る舞えるようになった」。", "persons": "曹操,曹嵩", "places": "", "era_year": "", "source_book": "曹瞞伝", "keywords": "飛鷹走狗,中風", "raw_tagged": "{{special:引用史料|《曹瞞傳》}}云：{{person:曹操|太祖}}少好飛鷹走狗，游蕩無度，其叔父數言之於{{person:曹嵩|嵩}}。{{person:曹操|太祖}}患之，後逢叔父於路，乃陽敗面喎口；叔父怪而問其故，{{person:曹操|太祖}}曰：「卒{{special:中風|中惡風}}。」叔父以告{{person:曹嵩|嵩}}。{{person:曹嵩|嵩}}驚愕，呼{{person:曹操|太祖}}，{{person:曹操|太祖}}口貌如故。{{person:曹嵩|嵩}}問曰：「叔父言汝{{special:中風|中風}}，已差乎？」{{person:曹操|太祖}}曰：「初不{{special:中風|中風}}，但失愛於叔父，故見罔耳。」{{person:曹嵩|嵩}}乃疑焉。自後叔父有所告，{{person:曹嵩|嵩}}終不復信，{{person:曹操|太祖}}於是益得肆意矣。", "kakikudashi_tagged": "{{special:引用史料|『曹瞞伝』}}に云う、「{{person:曹操|太祖}}は少くして飛鷹走狗を好み、游蕩して度無く、其の叔父はしばしば之を{{person:曹嵩|嵩}}に言う。{{person:曹操|太祖}}は之を患え、後に叔父に路に逢うや、乃ち陽りて面を敗り口を喎む；叔父は怪しみて其の故を問うに、{{person:曹操|太祖}}曰く、『卒かに{{special:中風|悪風に中たる}}』と。叔父は以て{{person:曹嵩|嵩}}に告ぐ。{{person:曹嵩|嵩}}は驚愕し、{{person:曹操|太祖}}を呼ぶに、{{person:曹操|太祖}}の口貌は故の如し。{{person:曹嵩|嵩}}問いて曰く、『叔父は汝が{{special:中風|中風}}せりと言うも、已に差えたるか？』と。{{person:曹操|太祖}}曰く、『初めより{{special:中風|中風}}せず、但だ愛を叔父に失う、故に罔いらるるのみ』と。{{person:曹嵩|嵩}}は乃ち焉を疑う。自後、叔父に告ぐる所有るも、{{person:曹嵩|嵩}}は終に復た信ぜず、{{person:曹操|太祖}}は是に於いて益々意を肆にするを得たり」と。", "translation_tagged": "{{special:引用史料|『曹瞞伝』}}にいう。「{{person:曹操|太祖}}は若い頃、鷹狩りや犬を使った狩りを好み、遊び呆けて節度がなかったため、その叔父がたびたび父の{{person:曹嵩|曹嵩}}にこれを取り締まるよう言いつけた。{{person:曹操|太祖}}はこれを疎ましく思い、のちに道で叔父に出くわした際、わざと顔をゆがめて口をひきつらせた；叔父が訝しんでその理由を尋ねると、{{person:曹操|太祖}}は『急に{{special:中風|中風}}にかかってしまいました』と答えた。叔父はそのことを{{person:曹嵩|曹嵩}}に告げた。{{person:曹嵩|曹嵩}}は驚愕して{{person:曹操|太祖}}を呼び寄せたが、{{person:曹操|太祖}}の口元や顔つきは普段通りであった。{{person:曹嵩|曹嵩}}が『叔父上が、お前が{{special:中風|中風}}にかかったと言っておられたが、もう治ったのか？』と尋ねた。{{person:曹操|太祖}}は『最初から{{special:中風|中風}}など患っておりません、ただ叔父上に嫌われておりますので、無実の讒言をされただけです』と答えた。{{person:曹嵩|曹嵩}}はそこで叔父の言葉を疑うようになった。これ以降、叔父が何か言いつけても{{person:曹嵩|曹嵩}}は二度と信じなくなり、{{person:曹操|太祖}}はこうして思うままに振る舞えるようになった」。"}, {"id": "v1_p2_3", "volume": 1, "book": "魏書", "section_title": "武帝紀", "para_index": 2, "type": "本文", "raw_text": "惟梁國橋玄、南陽何顒異焉。玄謂太祖曰：「天下將亂，非命世之才不能濟也，能安之者，其在君乎！」", "kakikudashi": "惟だ梁国の橋玄、南陽の何顒のみ焉を異とす。玄は太祖に謂いて曰く、「天下は将に乱れんとす、命世の才に非ざれば済う能わざるなり、能く之を安んずる者は、其れ君に在るか！」と。", "translation": "ただ梁国の橋玄と南陽の何顒だけは、太祖の非凡さを見抜いていた。橋玄は太祖に語って、「天下はまさに乱れようとしており、一世に抜きん出た希代の才能の持ち主でなければ救うことはできないが、天下を安んずることができるのは、まさに君であろうか！」と言った。", "persons": "橋玄,何顒,曹操", "places": "梁国,南陽", "era_year": "", "source_book": "", "keywords": "命世之才", "raw_tagged": "惟{{place:梁国|梁國}}{{person:橋玄|橋玄}}、{{place:南陽|南陽}}{{person:何顒|何顒}}異焉。{{person:橋玄|玄}}謂{{person:曹操|太祖}}曰：「天下將亂，非命世之才不能濟也，能安之者，其在君乎！」", "kakikudashi_tagged": "惟だ{{place:梁国|梁国}}の{{person:橋玄|橋玄}}、{{place:南陽|南陽}}の{{person:何顒|何顒}}のみ焉を異とす。{{person:橋玄|玄}}は{{person:曹操|太祖}}に謂いて曰く、「天下は将に乱れんとす、命世の才に非ざれば済う能わざるなり、能く之を安んずる者は、其れ君に在るか！」と。", "translation_tagged": "ただ{{place:梁国|梁国}}の{{person:橋玄|橋玄}}と{{place:南陽|南陽}}の{{person:何顒|何顒}}だけは、{{person:曹操|太祖}}の非凡さを見抜いていた。{{person:橋玄|橋玄}}は{{person:曹操|太祖}}に語って、「天下はまさに乱れようとしており、一世に抜きん出た希代の才能の持ち主でなければ救うことはできないが、天下を安んずることができるのは、まさに君であろうか！」と言った。"}, {"id": "v1_p2_4", "volume": 1, "book": "魏書", "section_title": "武帝紀", "para_index": 2, "type": "裴注", "raw_text": "《魏書》曰：太尉橋玄，世名知人，覩太祖而異之，曰：「吾見天下名士多矣，未有若君者也！君善自持。吾老矣！願以妻子爲託。」由是聲名益重。《續漢書》曰：玄字公祖，嚴明有才略，長於人物。張璠《漢紀》曰：玄歷位中外，以剛斷稱，謙儉下士，不以王爵私親。光和中爲太尉，以久病策罷，拜太中大夫，卒，家貧乏產業，柩無所殯。當世以此稱爲名臣。《世語》曰：玄謂太祖曰：「君未有名，可交許子將。」太祖乃造子將，子將納焉，由是知名。孫盛異同雜語云：太祖甞私入中常侍張讓室，讓覺之；乃舞手戟於庭，踰垣而出。才武絕人，莫之能害。博覽群書，特好兵法，抄集諸家兵法，名曰接要，又注孫武十三篇，皆傳於世。甞問許子將：「我何如人？」子將不荅。固問之，子將曰：「子治世之能臣，亂世之姦雄。」太祖大笑。", "kakikudashi": "『魏書』に曰く、「太尉の橋玄は、世に人を知ると名あり、太祖を覩て之を異とし、曰く、『吾、天下の名士を見るや多きも、未だ君の若き者は有らざるなり！君、善く自ら持せよ。吾は老いたり！願わくは妻子を以て託と為さん』と。是に由りて声名は益々重し」と。『続漢書』に曰く、「玄は字は公祖、厳明にして才略有り、人物に長ず」と。張璠の『漢紀』に曰く、「玄は位を中外に歴し、剛断を以て称せられ、謙倹にして士に下り、王爵を以て親に私せず。光和中に太尉と為り、久病を以て策罷せられ、太中大夫に拝せられ、卒するに、家は貧しくして産業に乏しく、柩は殯する所無し。当世、此を以て称して名臣と為す」と。『世語』に曰く、「玄は太祖に謂いて曰く、『君は未だ名有らず、許子将に交わるべし』と。太祖は乃ち子将に造り、子将は焉を納れ、是に由りて名を知らる」と。孫盛の『異同雑語』に云う、「太祖は嘗て私かに中常侍の張譲の室に入るに、譲は之を覚る；乃ち手戟を庭に舞わし、垣を踰えて出ず。才武は人に絶し、之を能く害する莫し。群書を博覧し、特に兵法を好み、諸家の兵法を抄集して、名づけて『接要』と曰い、又『孫武十三篇』に注し、皆世に伝わる。嘗て許子将に問う、『我は何如なる人ぞ？』と。子将は荅えず。固く之を問うに、子将曰く、『子は治世の能臣、乱世の姦雄なり』と。太祖は大いに笑う」と。", "translation": "『魏書』にいう。「太尉の橋玄は、世に人物鑑識の名手として知られていたが、太祖を一目見てその非凡さに驚き、『私は天下の名士を数多く見てきたが、まだ君のような人物には出会ったことがない！君よ、どうか自重して身を持してほしい。私はもう年老いた！願わくは私の妻子を君に託したい』と言った。これによって太祖の名声はますます重きをなした」。『続漢書』にいう。「橋玄は字を公祖といい、厳正明察で才略があり、人物を見抜く眼力に優れていた」。張璠の『漢紀』にいう。「橋玄は中央や地方の要職を歴任し、剛直果断をもって称えられ、謙虚で倹約を旨として士人にへりくだり、高官の爵位を笠に着て親族を私的に優遇することがなかった。光和年間に太尉となり、長患いのため職を免じられて太中大夫に任じられ、亡くなったときには家が貧しくて資産に乏しく、棺を安置する場所さえなかった。当時の人々はこれをもって彼を名臣と称えた」。『世語』にいう。「橋玄は太祖に『君はまだ世に名を知られていないから、許子将と交際するとよい』と言った。そこで太祖が許子将のもとを訪ねると、許子将は彼を受け入れ、これによって世に名を知られるようになった」。孫盛の『異同雑語』にいう。「太祖はかつて密かに中常侍の張譲の屋敷に忍び込んだことがあったが、張譲がこれに気づいた；すると太祖は手戟を庭で振るって舞い、垣根を飛び越えて脱出した。才気と武芸は人並み外れており、誰も彼を害することはできなかった。また多くの書物を博覧し、とりわけ兵法を好んで、諸家の兵法書を抜粋・集成して『接要』と名づけ、さらに『孫武十三篇』に注釈を施し、いずれも世に伝わっている。かつて許子将に『私はどのような人物か？』と尋ねた。許子将は答えなかった。しきりに問い詰めると、許子将は『君は治世の能臣、乱世の姦雄である』と言った。太祖は大いに笑った」。", "persons": "橋玄,曹操,張璠,許劭,孫盛,張譲,孫武", "places": "", "era_year": "光和年間（178年〜184年）頃", "source_book": "魏書・続漢書・漢紀・世語・異同雑語", "keywords": "太尉,太中大夫,中常侍,接要,孫武十三篇,治世の能臣・乱世の姦雄", "raw_tagged": "{{special:引用史料|《魏書》}}曰：{{office:太尉|太尉}}{{person:橋玄|橋玄}}，世名知人，覩{{person:曹操|太祖}}而異之，曰：「吾見天下名士多矣，未有若君者也！君善自持。吾老矣！願以妻子爲託。」由是聲名益重。{{special:引用史料|《續漢書》}}曰：{{person:橋玄|玄}}字{{person:橋玄|公祖}}，嚴明有才略，長於人物。{{person:張璠|張璠}}{{special:引用史料|《漢紀》}}曰：{{person:橋玄|玄}}歷位中外，以剛斷稱，謙儉下士，不以王爵私親。{{special:光和|光和中}}爲{{office:太尉|太尉}}，以久病策罷，拜{{office:太中大夫|太中大夫}}，卒，家貧乏產業，柩無所殯。當世以此稱爲名臣。{{special:引用史料|《世語》}}曰：{{person:橋玄|玄}}謂{{person:曹操|太祖}}曰：「君未有名，可交{{person:許劭|許子將}}。」{{person:曹操|太祖}}乃造{{person:許劭|子將}}，{{person:許劭|子將}}納焉，由是知名。{{person:孫盛|孫盛}}{{special:引用史料|異同雜語}}云：{{person:曹操|太祖}}甞私入{{office:中常侍|中常侍}}{{person:張譲|張讓}}室，{{person:張譲|讓}}覺之；乃舞手戟於庭，踰垣而出。才武絕人，莫之能害。博覽群書，特好兵法，抄集諸家兵法，名曰{{special:兵法書|接要}}，又注{{special:兵法書|孫武十三篇}}，皆傳於世。甞問{{person:許劭|許子將}}：「我何如人？」{{person:許劭|子將}}不荅。固問之，{{person:許劭|子將}}曰：「子{{special:姦雄|治世之能臣，亂世之姦雄}}。」{{person:曹操|太祖}}大笑。", "kakikudashi_tagged": "{{special:引用史料|『魏書』}}に曰く、「{{office:太尉|太尉}}の{{person:橋玄|橋玄}}は、世に人を知ると名あり、{{person:曹操|太祖}}を覩て之を異とし、曰く、『吾、天下の名士を見るや多きも、未だ君の若き者は有らざるなり！君、善く自ら持せよ。吾は老いたり！願わくは妻子を以て託と為さん』と。是に由りて声名は益々重し」と。{{special:引用史料|『続漢書』}}に曰く、「{{person:橋玄|玄}}は字は{{person:橋玄|公祖}}、厳明にして才略有り、人物に長ず」と。{{person:張璠|張璠}}の{{special:引用史料|『漢紀』}}に曰く、「{{person:橋玄|玄}}は位を中外に歴し、剛断を以て称せられ、謙倹にして士に下り、王爵を以て親に私せず。{{special:光和|光和中}}に{{office:太尉|太尉}}と為り、久病を以て策罷せられ、{{office:太中大夫|太中大夫}}に拝せられ、卒するに、家は貧しくして産業に乏しく、柩は殯する所無し。当世、此を以て称して名臣と為す」と。{{special:引用史料|『世語』}}に曰く、「{{person:橋玄|玄}}は{{person:曹操|太祖}}に謂いて曰く、『君は未だ名有らず、{{person:許劭|許子将}}に交わるべし』と。{{person:曹操|太祖}}は乃ち{{person:許劭|子将}}に造り、{{person:許劭|子将}}は焉を納れ、是に由りて名を知らる」と。{{person:孫盛|孫盛}}の{{special:引用史料|『異同雑語』}}に云う、「{{person:曹操|太祖}}は嘗て私かに{{office:中常侍|中常侍}}の{{person:張譲|張譲}}の室に入るに、{{person:張譲|譲}}は之を覚る；乃ち手戟を庭に舞わし、垣を踰えて出ず。才武は人に絶し、之を能く害する莫し。群書を博覧し、特に兵法を好み、諸家の兵法を抄集して、名づけて{{special:兵法書|『接要』}}と曰い、又{{special:兵法書|『孫武十三篇』}}に注し、皆世に伝わる。嘗て{{person:許劭|許子将}}に問う、『我は何如なる人ぞ？』と。{{person:許劭|子将}}は荅えず。固く之を問うに、{{person:許劭|子将}}曰く、『子は{{special:姦雄|治世の能臣、乱世の姦雄}}なり』と。{{person:曹操|太祖}}は大いに笑う」と。", "translation_tagged": "{{special:引用史料|『魏書』}}にいう。「{{office:太尉|太尉}}の{{person:橋玄|橋玄}}は、世に人物鑑識の名手として知られていたが、{{person:曹操|太祖}}を一目見てその非凡さに驚き、『私は天下の名士を数多く見てきたが、まだ君のような人物には出会ったことがない！君よ、どうか自重して身を持してほしい。私はもう年老いた！願わくは私の妻子を君に託したい』と言った。これによって{{person:曹操|太祖}}の名声はますます重きをなした」。{{special:引用史料|『続漢書』}}にいう。「{{person:橋玄|橋玄}}は字を{{person:橋玄|公祖}}といい、厳正明察で才略があり、人物を見抜く眼力に優れていた」。{{person:張璠|張璠}}の{{special:引用史料|『漢紀』}}にいう。「{{person:橋玄|橋玄}}は中央や地方の要職を歴任し、剛直果断をもって称えられ、謙虚で倹約を旨として士人にへりくだり、高官の爵位を笠に着て親族を私的に優遇することがなかった。{{special:光和|光和年間}}に{{office:太尉|太尉}}となり、長患いのため職を免じられて{{office:太中大夫|太中大夫}}に任じられ、亡くなったときには家が貧しくて資産に乏しく、棺を安置する場所さえなかった。当時の人々はこれをもって彼を名臣と称えた」。{{special:引用史料|『世語』}}にいう。「{{person:橋玄|橋玄}}は{{person:曹操|太祖}}に『君はまだ世に名を知られていないから、{{person:許劭|許子将}}と交際するとよい』と言った。そこで{{person:曹操|太祖}}が{{person:許劭|許子将}}のもとを訪ねると、{{person:許劭|許子将}}は彼を受け入れ、これによって世に名を知られるようになった」。{{person:孫盛|孫盛}}の{{special:引用史料|『異同雑語』}}にいう。「{{person:曹操|太祖}}はかつて密かに{{office:中常侍|中常侍}}の{{person:張譲|張譲}}の屋敷に忍び込んだことがあったが、{{person:張譲|張譲}}がこれに気づいた；すると{{person:曹操|太祖}}は手戟を庭で振るって舞い、垣根を飛び越えて脱出した。才気と武芸は人並み外れており、誰も彼を害することはできなかった。また多くの書物を博覧し、とりわけ兵法を好んで、諸家の兵法書を抜粋・集成して{{special:兵法書|『接要』}}と名づけ、さらに{{special:兵法書|『孫武十三篇』}}に注釈を施し、いずれも世に伝わっている。かつて{{person:許劭|許子将}}に『私はどのような人物か？』と尋ねた。{{person:許劭|許子将}}は答えなかった。しきりに問い詰めると、{{person:許劭|許子将}}は『君は{{special:姦雄|治世の能臣、乱世の姦雄}}である』と言った。{{person:曹操|太祖}}は大いに笑った」。"}];
+  const PLACES = [{"key": "豫州", "label": "豫州（よしゅう：汝水・潁水流域の河南省中南部〜安徽省北西部を統括する州）", "place_type": "area", "category": "州（広域エリア）", "province": "豫州", "modern": "河南省中南部・東部・安徽省北西部", "lat": 33.5, "lng": 114.2, "zoom": 6, "match_terms": ["豫州"], "is_area": true, "is_pin": false, "is_river": false, "parent_area": "", "area_polygon": [[35.0, 112.8], [35.0, 116.8], [32.2, 116.8], [32.2, 112.8]]}, {"key": "兗州", "label": "兗州（えんしゅう：黄河下流南岸〜済水・泗水流域の陳留・山陽・済陰・東郡・泰山を統括する州）", "place_type": "area", "category": "州（広域エリア）", "province": "兗州", "modern": "山東省南西部・河南省北東部", "lat": 35.3, "lng": 116.0, "zoom": 6, "match_terms": ["兗州", "兖州"], "is_area": true, "is_pin": false, "is_river": false, "parent_area": "", "area_polygon": [[36.6, 114.3], [36.6, 117.6], [34.4, 117.6], [34.4, 114.3]]}, {"key": "徐州", "label": "徐州（じょしゅう：淮水下流〜山東南部の下邳・広陵・彭城・東海・琅邪を統括する州）", "place_type": "area", "category": "州（広域エリア）", "province": "徐州", "modern": "江蘇省中北部・山東省南東部・安徽省北東部", "lat": 34.1, "lng": 118.6, "zoom": 6, "match_terms": ["徐州"], "is_area": true, "is_pin": false, "is_river": false, "parent_area": "", "area_polygon": [[36.2, 116.8], [36.2, 120.5], [32.2, 120.5], [32.2, 116.8]]}, {"key": "司隸", "label": "司隸（しれい：帝都洛陽・長安および周辺の河南・河内・河東・弘農・三輔を直轄する中央州域）", "place_type": "area", "category": "州（広域エリア）", "province": "司隸", "modern": "河南省北西部・山西省南西部・陝西省中部", "lat": 34.7, "lng": 111.3, "zoom": 6, "match_terms": ["司隸", "司隷"], "is_area": true, "is_pin": false, "is_river": false, "parent_area": "", "area_polygon": [[36.5, 108.5], [36.5, 113.8], [33.8, 113.8], [33.8, 108.5]]}, {"key": "冀州", "label": "冀州（きしゅう：黄河以北の河北平原を中心とする州）", "place_type": "area", "category": "州（広域エリア）", "province": "冀州", "modern": "河北省中南部・河南省北部・山東省北西部", "lat": 37.2, "lng": 115.2, "zoom": 6, "match_terms": ["冀州"], "is_area": true, "is_pin": false, "is_river": false, "parent_area": "", "area_polygon": [[39.3, 113.8], [39.3, 117.5], [35.2, 117.5], [35.2, 113.8]]}, {"key": "荊州", "label": "荊州（けいしゅう：南陽盆地から長江中流域・江南四郡に至る広域州）", "place_type": "area", "category": "州（広域エリア）", "province": "荊州", "modern": "湖北省・湖南省・河南省南西部", "lat": 29.8, "lng": 112.3, "zoom": 6, "match_terms": ["荊州", "荆州"], "is_area": true, "is_pin": false, "is_river": false, "parent_area": "", "area_polygon": [[33.8, 109.5], [33.8, 115.2], [25.2, 115.2], [25.2, 109.5]]}, {"key": "益州", "label": "益州（えきしゅう：巴・蜀・漢中から南中に至る南西の広域州）", "place_type": "area", "category": "州（広域エリア）", "province": "益州", "modern": "四川省・重慶市・陝西省南部・雲南省・貴州省", "lat": 30.65, "lng": 104.06, "zoom": 6, "match_terms": ["益州"], "is_area": true, "is_pin": false, "is_river": false, "parent_area": "", "area_polygon": [[33.5, 102.0], [33.5, 108.5], [27.5, 108.5], [27.5, 102.0]]}, {"key": "殷", "label": "殷（いん：殷〔商〕王朝の中心領域、朝歌・殷墟を中心とする中原北部一帯）", "place_type": "area", "category": "古国（広域エリア）", "province": "司隸・冀州・兗州", "modern": "河南省安陽市・鶴壁市・新郷市・鄭州市一帯", "lat": 35.65, "lng": 114.35, "zoom": 6, "match_terms": ["殷"], "is_area": true, "is_pin": false, "is_river": false, "parent_area": "", "area_polygon": [[36.5, 113.2], [36.5, 115.5], [34.5, 115.5], [34.5, 113.2]]}, {"key": "楚", "label": "楚（そ：春秋戦国時代の楚の領域、江漢流域から淮水・魯南に至る南方大国）", "place_type": "area", "category": "古国（広域エリア）", "province": "荊州・豫州・揚州・徐州", "modern": "湖北省・湖南省北部・安徽省中北部・河南省南部・江蘇省西部", "lat": 31.2, "lng": 114.2, "zoom": 6, "match_terms": ["楚"], "is_area": true, "is_pin": false, "is_river": false, "parent_area": "", "area_polygon": [[33.5, 111.0], [33.5, 117.5], [29.0, 117.5], [29.0, 111.0]]}, {"key": "沛国", "label": "沛国・沛郡（はいこく／はいぐん：豫州東部の王国・郡、相県・沛県・譙県を管轄）", "place_type": "area", "category": "郡国（広域エリア）", "province": "豫州", "modern": "安徽省淮北市・亳州市・宿州市・江蘇省沛県・河南省永城市一帯", "lat": 33.85, "lng": 116.5, "zoom": 8, "match_terms": ["沛国", "沛國", "沛郡", "沛"], "is_area": true, "is_pin": false, "is_river": false, "parent_area": "", "area_polygon": [[34.85, 115.55], [34.85, 117.35], [33.2, 117.35], [33.2, 115.55]]}, {"key": "梁国", "label": "梁国（りょうこく：豫州北東部の王国、睢陽・蒙・碭山を管轄）", "place_type": "area", "category": "郡国（広域エリア）", "province": "豫州", "modern": "河南省商丘市・虞城県・夏邑県・安徽省碭山県一帯", "lat": 34.42, "lng": 115.65, "zoom": 8, "match_terms": ["梁国", "梁國", "梁郡"], "is_area": true, "is_pin": false, "is_river": false, "parent_area": "", "area_polygon": [[34.8, 115.2], [34.8, 116.3], [34.1, 116.3], [34.1, 115.2]]}, {"key": "潁川", "label": "潁川郡（えいせんぐん：豫州北西部の中心郡、潁水流域）", "place_type": "area", "category": "郡国（広域エリア）", "province": "豫州", "modern": "河南省許昌市・禹州市・臨潁県・長葛市・登封市一帯", "lat": 34.16, "lng": 113.47, "zoom": 8, "match_terms": ["潁川郡", "穎川郡", "潁川", "穎川"], "is_area": true, "is_pin": false, "is_river": false, "parent_area": "", "area_polygon": [[34.5, 113.1], [34.5, 114.4], [33.5, 114.4], [33.5, 113.1]]}, {"key": "陳留", "label": "陳留郡（ちんりゅうぐん：兗州南西部の要衝郡、汴水・睢水の上流域）", "place_type": "area", "category": "郡国（広域エリア）", "province": "兗州", "modern": "河南省開封市・杞県・民権県・長垣市一帯", "lat": 34.65, "lng": 114.65, "zoom": 8, "match_terms": ["陳留郡", "陳留"], "is_area": true, "is_pin": false, "is_river": false, "parent_area": "", "area_polygon": [[35.2, 114.2], [35.2, 115.4], [34.3, 115.4], [34.3, 114.2]]}, {"key": "山陽", "label": "山陽郡（さんようぐん：兗州中南部の郡、昌邑・湖陸・鉅野を管轄）", "place_type": "area", "category": "郡国（広域エリア）", "province": "兗州", "modern": "山東省金郷県・巨野県・魚台県・嘉祥県一帯", "lat": 35.05, "lng": 116.25, "zoom": 8, "match_terms": ["山陽郡", "山陽"], "is_area": true, "is_pin": false, "is_river": false, "parent_area": "", "area_polygon": [[35.55, 115.7], [35.55, 116.85], [34.65, 116.85], [34.65, 115.7]]}, {"key": "魯国", "label": "魯国（ろこく：豫州〔のち徐州・兗州境〕の王国、旧魯・邾の故地である魯県・騶〔鄒〕県を管轄）", "place_type": "area", "category": "郡国（広域エリア）", "province": "豫州・徐州", "modern": "山東省曲阜市・鄒城市・泗水県・滕州市一帯", "lat": 35.5, "lng": 117.0, "zoom": 8, "match_terms": ["魯国", "魯國"], "is_area": true, "is_pin": false, "is_river": false, "parent_area": "", "area_polygon": [[35.85, 116.65], [35.85, 117.5], [35.05, 117.5], [35.05, 116.65]]}, {"key": "南陽", "label": "南陽郡（なんようぐん：荊州最北部の大郡、宛県を中心とする南陽盆地）", "place_type": "area", "category": "郡国（広域エリア）", "province": "荊州", "modern": "河南省南陽市・鄧州市・新野県・唐河県・湖北省棗陽市一帯", "lat": 33.0, "lng": 112.53, "zoom": 8, "match_terms": ["南陽郡", "南陽"], "is_area": true, "is_pin": false, "is_river": false, "parent_area": "", "area_polygon": [[33.7, 111.5], [33.7, 113.5], [32.3, 113.5], [32.3, 111.5]]}, {"key": "弘農", "label": "弘農郡（こうのうぐん：司隸西部の郡、洛陽と関中を結ぶ函谷関・華陰の回廊地帯）", "place_type": "area", "category": "郡国（広域エリア）", "province": "司隸", "modern": "河南省三門峡市・霊宝市・洛陽市新安県・宜陽県・陝西省華陰市一帯", "lat": 34.52, "lng": 110.88, "zoom": 8, "match_terms": ["弘農郡", "弘農"], "is_area": true, "is_pin": false, "is_river": false, "parent_area": "", "area_polygon": [[34.9, 109.8], [34.9, 112.1], [33.9, 112.1], [33.9, 109.8]]}, {"key": "河東", "label": "河東郡（かとうぐん：司隸北部の郡、黄河東岸の汾水下流域・安邑・平陽を管轄）", "place_type": "area", "category": "郡国（広域エリア）", "province": "司隸", "modern": "山西省運城市・臨汾市一帯", "lat": 35.6, "lng": 111.35, "zoom": 8, "match_terms": ["河東郡", "河東"], "is_area": true, "is_pin": false, "is_river": false, "parent_area": "", "area_polygon": [[36.4, 110.35], [36.4, 112.2], [34.7, 112.2], [34.7, 110.35]]}, {"key": "河間", "label": "河間国・河間郡（かかんこく／かかんぐん：冀州北部の王国・郡、楽成・易・容城を管轄）", "place_type": "area", "category": "郡国（広域エリア）", "province": "冀州", "modern": "河北省献県・河間市・任丘市・雄県・容城県一帯", "lat": 38.65, "lng": 115.95, "zoom": 8, "match_terms": ["河間国", "河間國", "河間郡", "河間"], "is_area": true, "is_pin": false, "is_river": false, "parent_area": "", "area_polygon": [[39.25, 115.4], [39.25, 116.65], [38.0, 116.65], [38.0, 115.4]]}, {"key": "蜀郡", "label": "蜀郡（しょくぐん：益州の中心郡、成都を中心とする成都平原一帯）", "place_type": "area", "category": "郡国（広域エリア）", "province": "益州", "modern": "四川省成都市・崇州市・都江堰市・邛崍市一帯", "lat": 30.67, "lng": 104.06, "zoom": 8, "match_terms": ["蜀郡"], "is_area": true, "is_pin": false, "is_river": false, "parent_area": "", "area_polygon": [[31.3, 103.2], [31.3, 104.6], [30.1, 104.6], [30.1, 103.2]]}, {"key": "譙", "label": "譙県（しょうけん：豫州沛国の属県、渦水沿岸の要衝）", "place_type": "point", "category": "県（拠点都市）", "province": "豫州", "parent_area": "沛国", "modern": "安徽省亳州市譙城区", "lat": 33.88, "lng": 115.78, "zoom": 9, "match_terms": ["譙県", "譙縣", "譙"], "is_area": false, "is_pin": true, "is_river": false, "area_polygon": []}, {"key": "費亭", "label": "費亭（ひてい：豫州沛国酇県の亭〔『水経注』陰溝水注。別説に兗州山陽郡湖陸県費亭・豫州魯国費県〕）", "place_type": "point", "category": "亭・封地（地点）", "province": "豫州", "parent_area": "沛国", "modern": "河南省商丘市永城市酇城鎮付近（別説に山東省魚台県南東）", "lat": 33.72, "lng": 116.22, "zoom": 9, "match_terms": ["費亭"], "is_area": false, "is_pin": true, "is_river": false, "area_polygon": []}, {"key": "邾", "label": "邾・騶県（ちゅう／すうけん：古の邾国〔鄒国〕の故城、魯国騶県の南東）", "place_type": "point", "category": "古国都城（地点）", "province": "豫州・徐州", "parent_area": "魯国", "modern": "山東省済寧市鄒城市南東（紀王城遺跡）", "lat": 35.33, "lng": 117.08, "zoom": 9, "match_terms": ["邾"], "is_area": false, "is_pin": true, "is_river": false, "area_polygon": []}, {"key": "平陽", "label": "平陽県（へいようけん：司隸河東郡の属県、汾水東岸の古都）", "place_type": "point", "category": "県（拠点都市）", "province": "司隸", "parent_area": "河東", "modern": "山西省臨汾市堯都区南西", "lat": 35.98, "lng": 111.48, "zoom": 9, "match_terms": ["平陽県", "平陽縣", "平陽"], "is_area": false, "is_pin": true, "is_river": false, "area_polygon": []}, {"key": "容城", "label": "容城県（ようじょうけん：冀州河間国の属県、易水南方の要地）", "place_type": "point", "category": "県（拠点都市）", "province": "冀州", "parent_area": "河間", "modern": "河北省保定市容城県北西（城子村付近）", "lat": 39.05, "lng": 115.86, "zoom": 9, "match_terms": ["容城県", "容城縣", "容城"], "is_area": false, "is_pin": true, "is_river": false, "area_polygon": []}, {"key": "函谷関", "label": "函谷関（かんこくかん：司隸弘農郡の関所、洛陽西方の新安県にある漢函谷関および弘農県の秦函谷関）", "place_type": "point", "category": "関所（要衝）", "province": "司隸", "parent_area": "弘農", "modern": "河南省洛陽市新安県東（漢函谷関）／三門峡市霊宝市北東（秦函谷関）", "lat": 34.73, "lng": 111.58, "zoom": 9, "match_terms": ["函谷関", "函谷關"], "is_area": false, "is_pin": true, "is_river": false, "area_polygon": []}, {"key": "黄河", "label": "黄河（こうが：中原の北辺を東流する大河）", "place_type": "river", "category": "河川（水路）", "province": "涼州・司隸・并州・冀州・兗州・青州", "modern": "黄河", "lat": 35.1, "lng": 114.2, "zoom": 7, "match_terms": ["黄河", "黃河"], "is_area": false, "is_pin": false, "is_river": true, "parent_area": "", "area_polygon": []}, {"key": "淮水", "label": "淮水（わいすい：桐柏山に発し豫州・徐州・揚州の間を東流する大河、現在の淮河）", "place_type": "river", "category": "河川（水路）", "province": "豫州・徐州・揚州", "modern": "淮河", "lat": 32.62, "lng": 116.75, "zoom": 7, "match_terms": ["淮水"], "is_area": false, "is_pin": false, "is_river": true, "parent_area": "", "area_polygon": []}, {"key": "泗水", "label": "泗水（しすい：魯国・山陽・彭城・下邳を貫流して淮水に注ぐ河川）", "place_type": "river", "category": "河川（水路）", "province": "兗州・徐州", "modern": "山東省泗水〜江蘇省徐州市・宿遷市（旧泗水河道）", "lat": 34.26, "lng": 117.2, "zoom": 7, "match_terms": ["泗水"], "is_area": false, "is_pin": false, "is_river": true, "parent_area": "", "area_polygon": []}, {"key": "漢水", "label": "漢水・沔水（かんすい／べんすい：漢中から南陽・襄陽を経て夏口で長江に合流する大支流）", "place_type": "river", "category": "河川（水路）", "province": "益州・荊州", "modern": "漢江", "lat": 32.02, "lng": 112.14, "zoom": 7, "match_terms": ["漢水", "沔水"], "is_area": false, "is_pin": false, "is_river": true, "parent_area": "", "area_polygon": []}, {"key": "長江", "label": "長江・大江（ちょうこう／たいこう：巴蜀・荊州・揚州を貫流する中国最大の大河）", "place_type": "river", "category": "河川（水路）", "province": "益州・荊州・揚州", "modern": "長江（揚子江）", "lat": 31.35, "lng": 118.35, "zoom": 7, "match_terms": ["長江", "大江"], "is_area": false, "is_pin": false, "is_river": true, "parent_area": "", "area_polygon": []}];
+  const PLACE_NOTES = {"沛": "原文の「沛」を、譙県を含む「沛国（沛郡）」として地図表示しています。"};
+  const OFFICES = {"相国": {"title": "相国（しょうこく：百官の最高位・前漢の曹参が歴任）", "wiki_title": "相国", "mapping_note": "", "rank": "百官の最高位（丞相・三公の上に置かれた最高執政官）", "ai_desc": "皇帝を補佐して国政を総覧する最高位の宰相職。前漢では高祖（劉邦）の創業期に蕭何が初めて相国に任じられ、蕭何の没後（恵帝2年＝前193年）に斉相であった曹参が第2代の相国となって「蕭規曹随（蕭何の定めた法規を曹参がそのまま遵守し民を休養させた）」と称えられた（『史記』巻54・曹相国世家）。", "match_terms": ["相国", "相國"]}, "太尉": {"title": "太尉（たいい：三公の筆頭）", "wiki_title": "太尉", "mapping_note": "", "rank": "一万石（最高位の三公の一）", "ai_desc": "司徒・司空とともに後漢の最高官「三公」を構成し、天下の軍事・国防・人事を統括した最高官職（『続漢書』百官志一）。曹操の父・曹嵩は霊帝の中平4年（187年）11月、崔烈に代わって太尉に昇った（『後漢書』巻8・霊帝紀）。", "match_terms": ["太尉"]}, "司徒": {"title": "司徒（しと：三公の一）", "wiki_title": "司徒", "mapping_note": "", "rank": "一万石（最高位の三公の一）", "ai_desc": "太尉・司空とともに「三公」を構成し、天下の民政・教化・礼制を統括した最高官職（『続漢書』百官志一）。かつて益州刺史として曹騰を弾劾した种暠は、曹騰がその忠直を称賛して恨まなかったこともあり、延熹4年（161年）に司徒に昇った（『後漢書』巻56・种暠伝）。", "match_terms": ["司徒"]}, "特進": {"title": "特進（とくしん：列侯のうち特に朝請・優遇を賜る高位の散官位）", "wiki_title": "特進", "mapping_note": "", "rank": "三公に次ぐ優遇位（諸侯の功徳優異者に授与）", "ai_desc": "列侯のうち特に功徳が優れ、朝廷で三公に次ぐ礼遇・奉朝請を許された高位の加官・位階（『続漢書』百官志五）。桓帝が即位すると、定策の功と長年の忠勤により曹騰は費亭侯に封じられ、特進の位を加えられた。", "match_terms": ["特進"]}, "公卿": {"title": "公卿（こうけい：三公および九卿の総称）", "wiki_title": "公卿", "mapping_note": "", "rank": "一万石〜中二千石（朝廷の最高幹部層）", "ai_desc": "最高執政官である「三公」（太尉・司徒・司空）と、中央各省庁の長官である「九卿」（太常・光禄勲・衛尉・太僕・廷尉・大鴻臚・宗正・大司農・少府）の総称。曹騰が推挙した虞放（司空）・辺韶・延固・張温（太尉・司空）・張奐（太常・大司農）・堂谿典らはいずれも公卿の高位に至った。", "match_terms": ["公卿"]}, "司隷校尉": {"title": "司隷校尉（しれいこうい：帝都および司隸七郡を監察・統括する長官）", "wiki_title": "司隷校尉", "mapping_note": "", "rank": "比二千石（中央および三輔・三河・弘農を検察する特命監察長官）", "ai_desc": "符節を持して帝都・洛陽および周辺の司隸七郡（河南・河内・河東・弘農・京兆・左馮翊・右扶風）の百官・皇族・豪族を監察・弾劾した長官（『続漢書』百官志四）。曹嵩は霊帝の代に司隷校尉を務めた。", "match_terms": ["司隷校尉", "司隸校尉"]}, "大司農": {"title": "大司農（だいしのう：九卿の一・国家財政と穀物備蓄を統括）", "wiki_title": "大司農", "mapping_note": "", "rank": "中二千石（九卿の一）", "ai_desc": "国家の租税・穀物・貨幣・塩鉄および財政収支を総管する中央の大臣（『続漢書』百官志三）。曹嵩は司隷校尉から霊帝に抜擢されて大司農・大鴻臚を歴任した。", "match_terms": ["大司農"]}, "大鴻臚": {"title": "大鴻臚（だいこうろ：九卿の一・諸侯王や朝貢国との外交儀礼を統括）", "wiki_title": "大鴻臚", "mapping_note": "", "rank": "中二千石（九卿の一）", "ai_desc": "諸侯王・列侯の封爵儀礼や、周辺諸民族・外国使節の朝貢・賓客応接を総管する中央の大臣（『続漢書』百官志二）。", "match_terms": ["大鴻臚"]}, "大長秋": {"title": "大長秋（だいちょうしゅう：皇后宮〔長秋宮〕を統括する長官）", "wiki_title": "大長秋", "mapping_note": "", "rank": "二千石（皇后宮の最高長官、後漢では主に宦官が就任）", "ai_desc": "皇后の宮殿（長秋宮）の宣命・家政・宮官を統括する長官。後漢の和帝以降は常時、宦官（中常侍）の中から選任され、宮中で極めて高い格式と権威を持った（『続漢書』百官志四）。曹騰は順帝・桓帝の代に中常侍・大長秋に昇った。", "match_terms": ["大長秋"]}, "中常侍": {"title": "中常侍（ちゅうじょうじ：皇帝側近で詔命伝達・顧問を掌る最高位宦官）", "wiki_title": "中常侍", "mapping_note": "", "rank": "比二千石（後漢末には二千石相当、宦官の最高常設職）", "ai_desc": "宮中の禁中に出入りして皇帝の左右に侍り、顧問応対や詔勅伝達を掌った高位の宦官職（『続漢書』百官志三）。曹騰は順帝・沖帝・質帝・桓帝の四代に仕えて中常侍・大長秋となり、三十余年にわたり過失なく賢能を推挙した。", "match_terms": ["中常侍"]}, "小黄門": {"title": "小黄門（しょうこうもん：禁中で詔命の伝達や上奏文の取次を掌る宦官職）", "wiki_title": "小黄門", "mapping_note": "", "rank": "六百石（中常侍に次ぐ禁中実務の要職）", "ai_desc": "宮中の禁門（黄門）の内側で皇帝の側近くに仕え、宮中と尚書台・外朝との間の文書取次や勅命伝達を掌った宦官職（『続漢書』百官志三）。皇太子（劉保）の学友であった曹騰は、順帝の即位に伴い小黄門に任じられた。", "match_terms": ["小黄門", "小黃門"]}, "黄門令": {"title": "黄門令（こうもんれい：禁中の宦官・黄門官を統括する長官）", "wiki_title": "黄門令", "mapping_note": "", "rank": "六百石（少府属官、禁中の諸宦官を監督する長官）", "ai_desc": "少府に属し、宮中の省中（禁中）に勤務する黄門諸官・従官の人事と規律を統括した宦官長官（『続漢書』百官志三）。永寧元年（120年）、鄧太后は黄門令に詔を下して皇太子の学友となる年少温謹な中黄門従官を選抜させた。", "match_terms": ["黄門令", "黃門令"]}, "黄門従官": {"title": "黄門従官・中黄門従官（こうもんじゅうかん：禁中に奉仕する年少・初任の宦官職）", "wiki_title": "黄門", "mapping_note": "", "rank": "少府・黄門令傘下の禁中侍従職", "ai_desc": "宮中の黄門（禁門）内に奉仕する初任の宦官職。曹騰は若くして黄門従官に除せられ、永寧元年（120年）に中黄門従官の中から温厚謹直な人物として皇太子（のちの順帝）の学友に選抜された。", "match_terms": ["中黄門従官", "中黄門從官", "中黃門従官", "中黃門從官", "黄門従官", "黄門從官", "黃門従官", "黃門從官"]}, "刺史": {"title": "刺史（しし：益州刺史・各州の監察長官）", "wiki_title": "刺史", "mapping_note": "", "rank": "六百石（一州の郡国を監察・統率する地方長官）", "ai_desc": "一州を管轄し、傘下の郡太守（二千石）や県令長を監察・弾劾した地方長官（『続漢書』百官志五）。益州刺史であった种暠は、函谷関で蜀郡太守が曹騰へ送った書状を検閲・摘発して弾劾奏上を行った。", "match_terms": ["刺史"]}, "太守": {"title": "太守（たいしゅ：蜀郡太守・郡の最高長官）", "wiki_title": "太守", "mapping_note": "", "rank": "二千石（一郡の民政・軍事・司法を統括する地方長官）", "ai_desc": "一郡の行政・軍事・司法を統括する地方長官（『続漢書』百官志五）。毎年末には「計吏（上計吏）」を帝都・洛陽へ派遣して郡の戸口・財政・治績を朝廷に報告させた。", "match_terms": ["太守", "郡守", "二千石"]}, "計吏": {"title": "計吏・上計吏（けいり／じょうけいり：郡国から毎年の決算・統計を中央へ報告する使者）", "wiki_title": "上計", "mapping_note": "", "rank": "郡国の属吏（歳末に帝都洛陽へ上京する会計・治績報告使）", "ai_desc": "郡国から毎年末に帝都へ派遣され、1年間の戸口・租税・治安などの統計簿（計簿）を朝廷に奉呈する使者（上計吏）。蜀郡太守はこの計吏の上京に託して中常侍・曹騰へ挨拶と進物の書状（牋）を送ろうとし、函谷関で益州刺史・种暠に摘発された。", "match_terms": ["上計吏", "計吏"]}, "列侯": {"title": "列侯・亭侯（れっこう／ていこう：平陽侯・費亭侯などの爵位）", "wiki_title": "列侯", "mapping_note": "", "rank": "二十等爵の最高位（県侯・郷侯・亭侯）", "ai_desc": "二十等爵の最高位。前漢の曹参は高祖（劉邦）に従った功績で一万六百戸の「平陽侯」（県侯）に封じられ、後漢の曹騰は桓帝即位の功により「費亭侯」（亭侯）に封じられた。曹騰の爵位は養子の曹嵩、ついで孫の曹操へと継承された。", "match_terms": ["列侯", "亭侯"]}, "太中大夫": {"title": "太中大夫（たいちゅうたいふ：光禄勲に属する高位の顧問・議論官）", "wiki_title": "太中大夫", "mapping_note": "", "rank": "千石（光禄勲属官、光禄大夫に次ぐ顧問官）", "ai_desc": "光禄勲に属し、宮中で皇帝の顧問・議論・諫言を掌った高官（『続漢書』百官志二）。三公を退任した老臣が優遇職として就くことも多く、太尉・橋玄は病により太尉を免じられた後に太中大夫に拝された。", "match_terms": ["太中大夫"]}};
+  const SPECIAL_KW = {"引用史料": {"title": "裴松之注の引用史料（『曹瞞伝』『魏書』『続漢書』『世語』『漢紀』『異同雑語』）", "category": "史料・典籍", "ai_desc": "裴松之注に引かれる歴史書群。『曹瞞伝』（呉の人が著した曹操の逸話集）、王沈『魏書』（魏の公式国史）、司馬彪『続漢書』（後漢通史）、郭頒『世語』（『魏晋世語』）、張璠『漢紀』（『後漢紀』三十巻）、孫盛『異同雑語』（異伝・雑録を収集した史書）。", "match_terms": ["《曹瞞傳》", "《曹瞞伝》", "『曹瞞伝』", "『曹瞞傳』", "《魏書》", "『魏書』", "《續漢書》", "《続漢書》", "『続漢書』", "『續漢書』", "《世語》", "『世語』", "《漢紀》", "『漢紀』", "異同雜語", "異同雑語", "『異同雑語』", "『異同雜語』"]}, "光和": {"title": "光和（こうわ：後漢・霊帝の元号、178年〜184年）", "category": "元号・年号", "ai_desc": "後漢の第12代皇帝・霊帝（劉宏）の3番目の元号（178年3月〜184年12月）。橋玄は光和元年（178年）に太尉に就任した。", "match_terms": ["光和中", "光和年間"]}, "兵法書": {"title": "『接要』と『孫武十三篇』注（曹操による兵法編纂と『孫子』最古の注釈書）", "category": "兵法・典籍", "ai_desc": "曹操は若年より群書を博覧してとりわけ兵法を好み、諸家の兵法書から要点を抄録して『接要』（『兵書接要』）を編み、さらに春秋時代の孫武が著した『孫子（孫武十三篇）』に注釈（『孫子略解』・魏武注孫子）を施した。曹操の『孫子』注は現存する最古の孫子注釈として今日まで伝わる。", "match_terms": ["『接要』", "接要", "『孫武十三篇』", "孫武十三篇"]}, "姦雄": {"title": "「治世の能臣、乱世の姦雄」（許劭による若き曹操への人物月旦評）", "category": "故事・人物評", "ai_desc": "汝南郡で従兄の許靖とともに毎月人物批評（「月旦評」）を行っていた許劭（字は子将）が、若き曹操から人物評価を問われて下した著名な評語（孫盛『異同雑語』所引）。平和な時代であれば有能な臣下となるが、乱世にあっては天下を壟断する姦雄（並外れた英雄・梟雄）となる器の持ち主であることを言い当て、曹操は大いに笑ったとされる。", "match_terms": ["治世之能臣，亂世之姦雄", "治世之能臣，乱世之姦雄", "治世の能臣、乱世の姦雄", "治世の能臣、亂世の姦雄"]}, "中風": {"title": "中風・中悪風（ちゅうふう／ちゅうあくふう：顔面麻痺や半身不随を引き起こす急病）", "category": "医学・故事用語", "ai_desc": "古代中国医学（『黄帝内経』『金匱要略』など）において、外邪の風（「悪風」「邪風」）に中（あ）たることで急激に口元や顔面が歪む（口眼喎斜）または半身不随・言語障害を起こす病を指す。若き曹操は、自らの放蕩を父・曹嵩へ頻繁に告げ口する叔父を陥れるため、道端でわざと顔を歪めて「にわかに悪風に中たった（中風になった）」と狂言を演じ、曹嵩の前では平然とした顔を見せて叔父の信用を失墜させた（『曹瞞伝』）。", "match_terms": ["中惡風", "悪風に中たる", "中風"]}, "永寧": {"title": "永寧（えいねい：後漢・安帝の元号、120年〜121年）", "category": "元号・年号", "ai_desc": "後漢の第6代皇帝・安帝（劉祜）の元号（120年4月〜121年6月）。永寧元年（120年）4月に安帝の皇子・劉保（のちの順帝、当時6歳）が皇太子に立てられ、臨朝称制していた鄧太后の詔によって年少温謹な曹騰が皇太子の学友（書相手）に選ばれた。", "match_terms": ["永寧元年", "永寧"]}, "黄初": {"title": "黄初（こうしょ：魏・文帝曹丕の元号、220年〜226年）", "category": "元号・年号", "ai_desc": "曹操の嫡子・曹丕（文帝）が後漢の献帝から禅譲を受けて魏王朝を開いた最初の元号（220年10月〜226年）。黄初元年（220年）、文帝は父・曹操に「武皇帝（太祖）」、祖父・曹嵩に「太皇帝」の号を追尊した。", "match_terms": ["黃初元年", "黄初元年"]}, "太和": {"title": "太和（たいわ：魏・明帝曹叡の元号、227年〜233年）", "category": "元号・年号", "ai_desc": "魏の第2代皇帝・明帝（曹叡）の最初の元号（227年〜233年）。太和3年（229年）6月、明帝は高祖父・曹騰に「高皇帝」の号を追尊した（『三國志』巻3・明帝紀）。", "match_terms": ["太和三年"]}, "省闥": {"title": "省闥（せいたつ：宮中の禁中・宮門の内部）", "category": "制度・宮廷用語", "ai_desc": "「省」は宮中の禁中（本来は「禁中」と呼んだが、前漢の元帝皇后・王政君の父の名「禁」を避諱して「省中」と改称）、「闥」は宮中の小門を指し、皇帝が起居・執務する宮廷奥深くの中枢を意味する。曹騰は安帝・順帝・沖帝・質帝・桓帝の代にわたり省闥に三十余年奉職した。", "match_terms": ["省闥"]}, "内臣外交": {"title": "内臣外交（ないしんがいこう：宮中の側近・宦官が地方長官や外朝の臣と私的に結託する禁制）", "category": "法制・政治用語", "ai_desc": "漢代の法制において、宮中に仕える内臣（宦官・側近）や諸侯王が、地方の太守・刺史や外朝の官僚と私的に書簡・贈答品を交わして結託すること（『私交』『外交』）は厳しく禁じられていた。益州刺史・种暠はこの法に基づき、蜀郡太守から書状を送られた曹騰を「内臣外交」として弾劾したが、皇帝は「書状は外から一方的に送られたもので曹騰から出したのではない」として不問とした。", "match_terms": ["內臣外交", "内臣外交", "内臣にして外交", "內臣にして外交"]}};
+  const PERSONS_INFO = {"曹操": {"name": "曹操（そうそう：字は孟徳、幼名は阿瞞・吉利、太祖武皇帝）", "wiki_title": "曹操", "role": "魏の基礎を築いた覇王（太祖武皇帝）・後漢の丞相・魏王", "ai_desc": "沛国譙県の人（155年〜220年）。前漢の相国・曹参の末裔とされ、中常侍・大長秋・費亭侯となった曹騰の養子・曹嵩（太尉）の子として生まれた。後漢末の動乱期に兗州を拠点として献帝を許に迎え、官渡の戦いで袁紹を破って華北を統一、丞相・魏公・魏王に昇り、没後に子の曹丕（文帝）が魏を建国すると「太祖武皇帝」と追尊された。"}, "曹参": {"name": "曹参（そうしん／そうさん：字は敬伯、前漢の相国・平陽侯）", "wiki_title": "曹参", "role": "前漢創業の功臣・第2代相国・平陽懿侯", "ai_desc": "沛県の人（?〜前190年）。前漢の高祖・劉邦の挙兵に従って数々の戦功を立て、平陽侯（一万六百戸）に封じられた。蕭何の没後に第2代の相国となり、黄老の無為自然の治を採って「蕭規曹随」と称えられた（『史記』巻54・曹相国世家）。曹操の一族はその末裔とされる。"}, "王沈": {"name": "王沈（おうしん：字は処道、『魏書』の撰者）", "wiki_title": "王沈 (西晋)", "role": "魏末〜西晋の政治家・歴史家（『魏書』四十余巻の撰者）", "ai_desc": "太原郡晋陽県の人（?〜266年）。魏の正元年間以降、荀顗・阮籍らとともに魏の国史『魏書』を編纂した（『晋書』巻39・王沈伝）。裴松之は『三國志』注においてこの王沈『魏書』を多数引用している。"}, "黄帝": {"name": "黄帝（こうてい：古代中国の伝説上の帝王・五帝の筆頭）", "wiki_title": "黄帝", "role": "中国神話・五帝の筆頭（有熊氏・軒轅氏）", "ai_desc": "『史記』五帝本紀の冒頭に記される古代中国の伝説上の聖王。王沈『魏書』によれば、曹氏の遠祖は黄帝から出て、その孫の顓頊（高陽氏）の代に陸終の子・安が曹姓を賜ったとされる。"}, "顓頊": {"name": "顓頊・高陽（せんぎょく／こうよう：五帝の一・高陽氏）", "wiki_title": "顓頊", "role": "古代中国の五帝の一（黄帝の孫・高陽氏）", "ai_desc": "黄帝の孫（昌意の子）で、高陽に興ったことから「高陽氏」と称される古代の聖王（『史記』五帝本紀）。その子孫である陸終の第五子・安が曹姓の祖となったとされる。"}, "陸終": {"name": "陸終（りくしゅう：顓頊の後裔・祝融氏の呉回の子）", "wiki_title": "陸終", "role": "古代の伝承上の人物（六子を生み、第五子・安が曹姓の祖）", "ai_desc": "『史記』巻40・楚世家および『大戴礼記』帝繋篇に見える顓頊（高陽氏）の後裔。鬼方氏の女・女潰を娶って六人の男子（昆吾・参胡・彭祖・会人・曹姓の安・季連）を生み、第五子の安が曹姓（邾国）の祖、第六子の季連が羋姓（楚国）の祖となった。"}, "曹安": {"name": "安・曹安（あん／そうあん：陸終の第五子・曹姓の始祖）", "wiki_title": "曹挾", "role": "陸終の第五子・曹姓の始祖", "ai_desc": "顓頊（高陽氏）の後裔である陸終の第五子。曹姓を賜り、その子孫である曹挾（曹俠）が周の武王によって邾（現在の山東省鄒城市）に封じられた（『史記』楚世家、王沈『魏書』）。"}, "武王": {"name": "武王・周武王（ぶおう：周王朝の初代天子・姫発）", "wiki_title": "武王 (周)", "role": "周王朝の建国者（文王の子）", "ai_desc": "牧野の戦いで殷の紂王を討って殷王朝を滅ぼし、周王朝を創始した天子。古の聖王（五帝・三王）の末裔を各地に封じた際、曹安の後裔である曹挾（曹俠）を邾国に封じた。"}, "曹挾": {"name": "曹挾・曹俠（そうきょう：邾国の初代君主）", "wiki_title": "曹挾", "role": "周初の諸侯・邾（鄒）国の始封君主", "ai_desc": "陸終の第五子・安（曹姓）の末裔。周の武王が殷を滅ぼした際、古の帝王の後裔として邾（現在の山東省済寧市鄒城市）に封じられ、邾国（のちの鄒国）の始祖となった。邾国は春秋時代に諸侯の会盟に参加したが、戦国時代に楚に滅ぼされ、子孫の一部が沛に移り住んだとされる。"}, "劉邦": {"name": "高祖・劉邦（こうそ／りゅうほう：前漢の初代皇帝）", "wiki_title": "劉邦", "role": "前漢の初代皇帝（太祖高皇帝）", "ai_desc": "沛県豊邑の人（前256年または前247年〜前195年）。秦末に沛県で挙兵し、同郷の蕭何・曹参らを率いて秦を滅ぼし、楚漢戦争で項羽を破って前漢王朝を建国した。"}, "桓帝": {"name": "桓帝（かんてい：後漢の第11代皇帝・劉志）", "wiki_title": "桓帝", "role": "後漢の第11代皇帝（在位146年〜167年）", "ai_desc": "章帝の曽孫・蠡吾侯劉翼の子（132年〜167年）。質帝が梁冀に毒殺された後、曹騰らの進言もあって15歳で即位した。曹騰が先帝以来の旧臣として忠孝顕著であったことから、曹騰を費亭侯に封じ、特進の位を加えた。"}, "曹騰": {"name": "曹騰（そうとう：字は季興、曹操の祖父・中常侍・大長秋・費亭侯、追尊・高皇帝）", "wiki_title": "曹騰", "role": "後漢の中常侍・大長秋・費亭侯（曹操の祖父、魏の高皇帝）", "ai_desc": "沛国譙県の人、曹節（字は元偉）の末子。若くして黄門従官となり、永寧元年（120年）に鄧太后の詔で皇太子（順帝）の学友に選抜された。順帝即位後に小黄門から中常侍・大長秋へ昇り、安帝・順帝・沖帝・質帝・桓帝の宮中に三十余年奉職して一度も過失がなく、虞放・辺韶・延固・張温・張奐・堂谿典ら多くの名士を推挙し、自らを弾劾した种暠をも称揚した。桓帝即位後に費亭侯・特進となり、魏の明帝の太和3年（229年）に「高皇帝」と追尊された（『後漢書』巻78・曹騰伝）。"}, "司馬彪": {"name": "司馬彪（しばひょう：字は紹統、『続漢書』の撰者）", "wiki_title": "司馬彪", "role": "西晋の皇族・歴史家（『続漢書』『九州春秋』の撰者）", "ai_desc": "司馬懿の弟・司馬進の孫（240年代〜306年）。西晋の秘書丞・散騎常侍を務め、後漢一代の歴史書『続漢書』八十三巻および『九州春秋』を著した（『晋書』巻82・司馬彪伝）。"}, "曹節": {"name": "曹節（そうせつ：字は元偉、曹騰の父・曹操の曽祖父）", "wiki_title": "曹節 (曹騰の父)", "role": "沛国譙県の長者（曹騰の父・曹操の曽祖父）", "ai_desc": "沛国譙県の人、字は元偉（後漢末・霊帝期の宦官である曹節〔字は漢豊〕とは同姓同名の別人）。情け深く温厚な人柄で知られ、隣人が逃げた豚を曹節の豚と誤認して持ち帰った際も争わず、後に本物の豚が戻って恥じ入った隣人が謝罪に訪れた際も笑って受け入れたため、郷里の人々から深く敬慕された。伯興・仲興・叔興・季興（曹騰）の四子をもうけた。"}, "曹伯興": {"name": "曹伯興（そうはくこう：曹節の長男・曹騰の長兄）", "wiki_title": "曹節 (曹騰の父)", "role": "曹節の長男（曹騰の長兄）", "ai_desc": "沛国譙県の人。曹節（字は元偉）の長男で、仲興・叔興・季興（曹騰）の長兄にあたる。"}, "曹仲興": {"name": "曹仲興（そうちゅうこう：曹節の次男・曹騰の次兄）", "wiki_title": "曹節 (曹騰の父)", "role": "曹節の次男（曹騰の次兄）", "ai_desc": "沛国譙県の人。曹節（字は元偉）の次男で、曹騰の兄にあたる。"}, "曹叔興": {"name": "曹叔興（そうしゅくこう：曹節の三男・曹騰の三兄）", "wiki_title": "曹節 (曹騰の父)", "role": "曹節の三男（曹騰のすぐ上の兄）", "ai_desc": "沛国譙県の人。曹節（字は元偉）の三男（原文「次子叔興」）で、末子・曹騰（字は季興）の兄にあたる。"}, "鄧太后": {"name": "鄧太后・和熹鄧皇后（とうたいこう：後漢・和帝の皇后、鄧綏）", "wiki_title": "鄧綏", "role": "後漢・和帝の皇后（皇太后として殤帝・安帝期に臨朝称制）", "ai_desc": "太傅・鄧禹の孫娘（81年〜121年）。和帝の崩御後、皇太后として殤帝・安帝の二代にわたり16年間臨朝称制し、学問・儒教の振興と清廉な政治で名高かった。永寧元年（120年）、皇太子・劉保（のちの順帝）の学友として年少温謹な曹騰を抜擢させた。"}, "順帝": {"name": "順帝（じゅんてい：後漢の第8代皇帝・劉保）", "wiki_title": "順帝 (漢)", "role": "後漢の第8代皇帝（在位125年〜144年）", "ai_desc": "安帝の皇子（115年〜144年）。永寧元年（120年）に皇太子に立てられた際、学友に配属された曹騰を深く親愛し、延光4年（125年）に即位すると曹騰を小黄門から中常侍・大長秋へと重用した。"}, "虞放": {"name": "虞放（ぐほう：字は子仲、曹騰が推挙した名士・のち司空）", "wiki_title": "虞放", "role": "後漢の司空・名士（陳留郡の人）", "ai_desc": "陳留郡東昏県の人（?〜169年）。曹騰からその賢能を称揚・推薦されて中央で昇進し、桓帝の延熹4年（161年）に司空に至った。のちに第二次党錮の禍（169年）で処刑された（『後漢書』巻67・党錮伝）。"}, "辺韶": {"name": "辺韶（へんしょう：字は孝先、曹騰が推挙した儒学者・文人）", "wiki_title": "辺韶", "role": "後漢の儒学者・尚書令・陳相（陳留郡の人）", "ai_desc": "陳留郡浚儀県の人。博学と文章の才で知られ、昼寝を弟子にからかわれた際に「辺を姓とし孝先を字とす、腹便便として五経の笥（箱）なり」と即興で応じた逸話で名高い。曹騰の推挙を受けて太中大夫・尚書令・陳相などを歴任した（『後漢書』巻80上・文苑伝）。"}, "延固": {"name": "延固（えんこ：『後漢書』では延篤〔字は叔堅〕、南陽郡の名士）", "wiki_title": "延篤", "role": "後漢の儒学者・京兆尹（南陽郡の人）", "ai_desc": "南陽郡犨県の人。『後漢書』巻64・延篤伝および巻78・曹騰伝では「延篤（字は叔堅）」と記される（『続漢書』は桓帝の諱「志」や音通により「延固」と表記）。左氏伝に通じた名儒で、曹騰に称揚されて議郎・侍中・左馮翊・京兆尹を歴任した。"}, "張温": {"name": "張温（ちょうおん：字は伯慎、南陽郡出身・のち太尉・司空）", "wiki_title": "張温 (後漢)", "role": "後漢の司空・太尉・車騎将軍（南陽郡穣県の人）", "ai_desc": "南陽郡穣県の人（?〜191年）。若くして曹騰にその才能を称揚されて引き立てられ、霊帝期に大司農・司空・車騎将軍・太尉を歴任した（『後漢書』巻56・張晧伝附張温伝）。"}, "張奐": {"name": "張奐（ちょうかん：字は然明、涼州三明の一・大司農・太常）", "wiki_title": "張奐", "role": "後漢の名将・儒学者・太常・大司農（本貫は敦煌郡、のち弘農郡華陰県に移籍）", "ai_desc": "敦煌郡淵泉県の人（104年〜181年）。皇甫規・段熲とともに「涼州三明」と称された名将・清流知識人で、辺境統治の功により弘農郡華陰県への移籍を許されたため「弘農の張奐」と呼ばれる。曹騰から推挙を受けて護匈奴中郎将・度遼将軍・大司農・太常など公卿の高位に至った（『後漢書』巻65・張奐伝）。"}, "堂谿典": {"name": "堂谿典（どうけいてん：字は伯並、潁川郡の儒学者・五官中郎将）", "wiki_title": "堂谿典", "role": "後漢の儒学者・侍中・五官中郎将（潁川郡の人）", "ai_desc": "潁川郡陽翟県の人。古文尚書・公羊伝に精通し、曹騰の推挙を受けて侍中・五官中郎将に昇り、熹平4年（175年）には蔡邕らとともに熹平石経の校定・揮毫に携わった（『後漢書』巻60下・蔡邕伝、巻64・延篤伝注）。"}, "种暠": {"name": "种暠（ちゅうこう：字は景伯、益州刺史・のち司徒）", "wiki_title": "种暠", "role": "後漢の益州刺史・涼州刺史・度遼将軍・司徒（河南郡洛陽県の人）", "ai_desc": "河南郡洛陽県の人（103年〜163年）。益州刺史であった際、蜀郡太守が上計吏を通じて中常侍・曹騰に送った書状を函谷関で検閲・発見し、太守とあわせて曹騰を「内臣外交」の罪で弾劾した。しかし曹騰は种暠を少しも恨まず、かえって「主君に仕える節義に適っている」と称賛し続けたため、延熹4年（161年）に司徒に昇った种暠は「今日私が三公となれたのは曹常侍の恩義によるものだ」と語った（『後漢書』巻56・种暠伝）。"}, "曹嵩": {"name": "曹嵩（そうすう：字は巨高、曹操の父・太尉、追尊・太皇帝）", "wiki_title": "曹嵩", "role": "後漢の太尉・費亭侯（曹騰の養子・曹操の父、魏の太皇帝）", "ai_desc": "中常侍・費亭侯であった曹騰の養子となり、その爵位を継いだ（?〜193年）。『三國志』本文は「その出生の詳しい経緯を明らかにできる者はいなかった」とし、裴注が引く『曹瞞伝』および郭頒『世語』は「夏侯氏の子で夏侯惇の叔父にあたる」と記す。司隷校尉から霊帝に抜擢されて大司農・大鴻臚を歴任し、中平4年（187年）に崔烈に代わって太尉に至った。魏の黄初元年（220年）に「太皇帝」と追尊された。"}, "霊帝": {"name": "霊帝（れいてい：後漢の第12代皇帝・劉宏）", "wiki_title": "霊帝", "role": "後漢の第12代皇帝（在位168年〜189年）", "ai_desc": "河間孝王・劉開の曽孫（156年〜189年）。桓帝の崩御後に迎立された。売官制度を大々的に行って三公・九卿の官位にも礼銭（献納金）を課し、曹嵩を大司農・大鴻臚から太尉に任じた（『後漢書』巻8・霊帝紀、巻78・曹騰伝附曹嵩伝）。"}, "崔烈": {"name": "崔烈（さいれつ：字は威考、曹嵩の前任の太尉）", "wiki_title": "崔烈", "role": "後漢の太尉・城門校尉（涿郡安平県の人、崔駰の孫・崔州平の父）", "ai_desc": "涿郡安平県の人（?〜192年）。北方の名門・博陵崔氏の出身で、霊帝の中平2年（185年）に五百万銭を納めて司徒から太尉となり、世人から「銅臭（銭の臭いがする）」と評された。中平4年（187年）11月に太尉を退き、代わって曹嵩が太尉に就任した（『後漢書』巻52・崔駰伝附崔烈伝）。"}, "郭頒": {"name": "郭頒（かくはん：西晋の史家・『魏晋世語』の撰者）", "wiki_title": "魏晋世語", "role": "西晋の官僚・歴史家（襄陽県令、『魏晋世語』の撰者）", "ai_desc": "西晋の時代に襄陽県令などを務め、後漢末から西晋にかけての逸話集『魏晋世語』（略称『世語』）を著した。裴松之は『三國志』注で同書を頻繁に引用している。"}, "夏侯惇": {"name": "夏侯惇（かこうとん：字は元譲、曹操の腹心・大将軍）", "wiki_title": "夏侯惇", "role": "曹操旗揚げ以来の宿将・大将軍・高安郷侯（沛国譙県の人）", "ai_desc": "沛国譙県の人（?〜220年）、前漢の夏侯嬰の末裔。『曹瞞伝』および郭頒『世語』によれば、曹操の父・曹嵩はもともと夏侯氏の子で夏侯惇の叔父にあたり、曹操と夏侯惇は従兄弟（いとこ）の関係にあったとされる。曹操の挙兵当初から常に軍の重鎮として従い、のちに大将軍に至った（『三國志』巻9・夏侯惇伝）。"}, "橋玄": {"name": "橋玄（きょうげん：字は公祖、後漢の太尉・若き曹操の真価を見抜いた名臣）", "wiki_title": "橋玄", "role": "後漢の太尉・司空・司徒（梁国睢陽県の人）", "ai_desc": "梁国睢陽県の人（110年〜184年）。剛直果断な名臣として度遼将軍・河南尹・司空・司徒・太尉を歴任しながらも、清廉潔白で没時には棺を安置する資産さえないほどであった。まだ無名であった若き曹操と会見して「天下はまさに乱れようとしており、これを安んずることができるのは君であろう」「私は老いた、願わくは妻子を託したい」と激賞し、人物批評家の許劭（許子将）と交わるよう勧めた（『後漢書』巻51・橋玄伝）。後の建安7年（202年）、曹操は橋玄の墓を通りかかった際に自ら祭文を捧げてその知遇に涙した。"}, "何顒": {"name": "何顒（かぎょう：字は伯求、南陽の名士・党人）", "wiki_title": "何顒", "role": "後漢末の名士・北軍中候（南陽郡棘陽県の人）", "ai_desc": "南陽郡棘陽県の人（?〜190年頃）。太学に遊んで郭泰・賈彪らと交わり、党錮の禍では変名して汝南・南陽の間で多くの党人を救出した。若き曹操を見て「漢室はまさに滅びようとしており、天下を安んずる者は必ずこの人である」と評し、橋玄とともに最も早く曹操の器量を見抜いた人物として知られる（『後漢書』巻67・党錮伝附何顒伝）。"}, "張璠": {"name": "張璠（ちょうはん：東晋の歴史家・『後漢紀』三十巻の撰者）", "wiki_title": "後漢紀", "role": "東晋の官僚・歴史家（『漢紀〔後漢紀〕』三十巻の撰者）", "ai_desc": "東晋に仕えて著作郎・令狐県令などを務め、後漢の歴史を通史としてまとめた『後漢紀』（裴注では『漢紀』と表記）三十巻を著した。完本は散逸したが、裴松之の『三國志』注に多くの逸文が保存されている。"}, "許劭": {"name": "許劭（きょしょう：字は子将、「月旦評」で名高い汝南の人物批評家）", "wiki_title": "許劭", "role": "後漢末の人物批評家・汝南郡功曹（汝南郡平輿県の人）", "ai_desc": "汝南郡平輿県の人（150年〜195年）。従兄の許靖とともに毎月朔日（ついたち）に郷里の人物を品評する「月旦評」を主宰し、その評価によって人物の声価が決まるほどの影響力を持った。橋玄の勧めで訪れた若き曹操から「私はどのような人物か」と問われ、「治世の能臣、乱世の姦雄」と評したことで知られる（『後漢書』巻68・許劭伝）。"}, "孫盛": {"name": "孫盛（そんせい：字は安国、『魏氏春秋』『異同雑語』の撰者）", "wiki_title": "孫盛", "role": "東晋の歴史家・長沙太守・秘書監（太原郡中都県の人）", "ai_desc": "太原郡中都県の人（302年〜373年）。東晋の桓温の参軍・長沙太守・秘書監を歴任し、『魏氏春秋』『晋陽秋』『異同雑語（異同評）』などを著した。『三國志』裴松之注に多数の記述が引用されている（『晋書』巻82・孫盛伝）。"}, "張譲": {"name": "張譲（ちょうじょう：後漢末・霊帝期の筆頭中常侍・十常侍の首領）", "wiki_title": "張譲", "role": "後漢の中常侍・列侯（穎川郡の人、「十常侍」の筆頭）", "ai_desc": "潁川郡の人（?〜189年）。桓帝・霊帝に仕えて中常侍となり、趙忠らとともに「十常侍」の筆頭として朝政を壟断し、霊帝から「張常侍は我が父なり」とまで寵信された。孫盛『異同雑語』によれば、若き曹操が密かに張譲の屋敷へ忍び込み、発覚するや庭で手戟を舞わせて垣根を飛び越え脱出したという（『後漢書』巻78・張譲伝）。"}, "孫武": {"name": "孫武（そんぶ：春秋時代の斉出身の兵法家、『孫子』十三篇の著者）", "wiki_title": "孫武", "role": "春秋時代の呉の将軍・兵法家（『孫子』十三篇の撰者）", "ai_desc": "春秋時代の斉の人で、呉王闔閭に仕えて楚を破った不世出の兵法家。その著書『孫子（孫武十三篇）』は兵学の最高古典とされ、曹操はこれに史上最初の体系的な注釈（『孫子略解』・魏武注孫子）を施して後世に伝えた。"}};
+  const NATURAL_FEATURES = [{"name": "黄 河", "lat": 35.1, "lng": 114.2, "type": "river"}, {"name": "淮 水", "lat": 32.65, "lng": 116.5, "type": "river"}, {"name": "泗 水", "lat": 34.45, "lng": 117.15, "type": "river"}, {"name": "漢 水", "lat": 32.02, "lng": 112.14, "type": "river"}, {"name": "長 江", "lat": 30.8, "lng": 117.3, "type": "river"}, {"name": "嵩 山", "lat": 34.48, "lng": 113.04, "type": "mountain"}, {"name": "泰 山", "lat": 36.25, "lng": 117.1, "type": "mountain"}, {"name": "太行山脈", "lat": 36.5, "lng": 113.6, "type": "mountain"}, {"name": "桐柏山", "lat": 32.4, "lng": 113.3, "type": "mountain"}];
+  const RIVER_LINES = [{"key": "黄河", "name": "黄河", "coords": [[36.06, 103.8], [38.47, 106.27], [40.15, 111.15], [34.62, 110.28], [34.8, 112.5], [34.95, 113.6], [35.75, 115.05], [36.7, 117.0]]}, {"key": "淮水", "name": "淮水（淮河）", "coords": [[32.4, 113.35], [32.15, 114.08], [32.42, 115.65], [32.62, 116.75], [32.92, 117.6], [33.02, 118.52], [33.58, 119.05], [34.02, 119.85]]}, {"key": "泗水", "name": "泗水", "coords": [[35.65, 117.25], [35.4, 116.82], [34.26, 117.2], [33.92, 118.02], [33.58, 119.05]]}, {"key": "漢水", "name": "漢水", "coords": [[33.07, 107.02], [32.68, 109.02], [32.38, 111.65], [32.02, 112.14], [31.15, 112.58], [30.58, 114.3]]}, {"key": "長江", "name": "長江（大江）", "coords": [[28.75, 104.65], [29.55, 106.55], [30.8, 108.4], [30.7, 111.3], [30.32, 112.24], [29.45, 113.1], [30.58, 114.3], [30.25, 115.05], [29.72, 115.98], [30.5, 117.05], [31.35, 118.35], [32.1, 118.8], [32.22, 119.45], [31.95, 120.3], [31.6, 121.2]]}];
+  const PUBLISHED_MAX_PARA = 2;
+
+  // 【方法A：自動切り替え判定】
+  // 手元のPC（file:// または localhost）で開いた時、または URL に ?edit=1 を付けた時だけ制作・指摘環境を有効化。
+  // github.io 等へアップロードして一般読者が開いた時は、自動的に公開モード（指摘リスト非表示＆完了段落のみ表示）になる。
+  const urlParams = new URLSearchParams(window.location.search);
+  const IS_AUTHOR_EDIT_ENV = (
+    window.location.protocol === 'file:' ||
+    window.location.hostname === 'localhost' ||
+    window.location.hostname === '127.0.0.1' ||
+    urlParams.get('edit') === '1'
+  ) && urlParams.get('public') !== '1';
+
+  function isEditModeActive() {
+    if (!IS_AUTHOR_EDIT_ENV) return false;
+    const previewEl = document.getElementById('togglePublicPreview');
+    return !(previewEl && previewEl.checked);
+  }
+
+  const TOTAL_PARAGRAPHS = Math.max(...RECORDS.map(r => r.para_index));
+
+  function getMaxVisibleParagraph() {
+    return isEditModeActive() ? TOTAL_PARAGRAPHS : Math.min(TOTAL_PARAGRAPHS, PUBLISHED_MAX_PARA);
+  }
+
+  function getVisibleRecords() {
+    const maxP = getMaxVisibleParagraph();
+    return RECORDS.filter(r => r.para_index <= maxP);
+  }
+
+  let currentActiveId = "v1_p1_1";
+  let readingHistoryStack = [];
+  let activeHighlightLayers = [];
+
+  // 1. 地図の初期化
+  const map = L.map('map').setView([34.4, 114.5], 6);
+
+  const shadedReliefLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}', {
+    attribution: 'Tiles &copy; Esri',
+    maxNativeZoom: 13,
+    maxZoom: 13
+  });
+  const physicalLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Physical_Map/MapServer/tile/{z}/{y}/{x}', {
+    attribution: 'Tiles &copy; Esri',
+    maxNativeZoom: 8,
+    maxZoom: 13
+  });
+  physicalLayer.addTo(map);
+
+  L.control.layers({
+    "① 自然地形図（山脈と川のみ・道路なし）": physicalLayer,
+    "② 陰影白地図（山の凹凸のみ・詳細ズーム可）": shadedReliefLayer
+  }).addTo(map);
+
+  // 2. 山脈・大河
+  const natureGroup = L.layerGroup().addTo(map);
+  RIVER_LINES.forEach(river => {
+    const rLine = L.polyline(river.coords, { color: '#1976d2', weight: 2.5, opacity: 0.75 }).addTo(natureGroup);
+    rLine.bindTooltip(river.name, { sticky: true });
+  });
+  NATURAL_FEATURES.forEach(feat => {
+    const icon = L.divIcon({
+      className: feat.type === 'mountain' ? 'nature-label-mountain' : 'nature-label-river',
+      html: feat.name,
+      iconSize: [140, 20],
+      iconAnchor: [70, 10]
+    });
+    L.marker([feat.lat, feat.lng], { icon: icon, interactive: false }).addTo(natureGroup);
+  });
+
+  // 3. エリア（郡・州）および地点ピンのレイヤー（公開範囲に応じて自動フィルタリング）
+  const baseAreaGroup = L.layerGroup().addTo(map);
+  const pinMarkerGroup = L.layerGroup().addTo(map);
+
+  function getActivePlaceKeysSet() {
+    if (isEditModeActive()) {
+      return new Set(PLACES.map(p => p.key));
+    }
+    const visibleRecs = getVisibleRecords();
+    const usedKeys = new Set();
+    const tagRegex = /\{\{place:([^|}]+)\|/g;
+    visibleRecs.forEach(rec => {
+      [rec.raw_tagged, rec.kakikudashi_tagged, rec.translation_tagged].forEach(txt => {
+        if (!txt) return;
+        let m;
+        while ((m = tagRegex.exec(txt)) !== null) {
+          usedKeys.add(m[1]);
+        }
+      });
+    });
+    // 使用されている地点ピンの親エリア（parent_area）もあわせて有効化
+    PLACES.forEach(p => {
+      if (p.is_pin && usedKeys.has(p.key) && p.parent_area) {
+        usedKeys.add(p.parent_area);
+      }
+    });
+    return usedKeys;
+  }
+
+  function getShortNameWithReading(labelStr) {
+    if (!labelStr) return '';
+    return labelStr.replace(/：[^）]*）$/, '）');
+  }
+
+  function renderMapLayersForCurrentMode() {
+    baseAreaGroup.clearLayers();
+    pinMarkerGroup.clearLayers();
+    const activeKeys = getActivePlaceKeysSet();
+
+    PLACES.filter(p => p.is_area && p.area_polygon && activeKeys.has(p.key)).forEach(area => {
+      const isCommandery = area.category.includes('郡');
+      const poly = L.polygon(area.area_polygon, {
+        color: isCommandery ? '#5d4037' : '#1565c0',
+        weight: isCommandery ? 1.5 : 1.2,
+        dashArray: isCommandery ? '4, 4' : '8, 6',
+        fillColor: isCommandery ? '#8d6e63' : '#42a5f5',
+        fillOpacity: isCommandery ? 0.06 : 0.03
+      }).addTo(baseAreaGroup);
+      poly.bindTooltip(`🗺️ ${getShortNameWithReading(area.label)}`, { sticky: true });
+      poly.on('click', () => {
+        focusPlaceOnMap(area.key, area.key);
+      });
+    });
+
+    PLACES.filter(p => p.is_pin && activeKeys.has(p.key)).forEach(place => {
+      let fillColor = '#e65100';
+      if (place.province === '益州' || place.province === '涼州') fillColor = '#2e7d32';
+      else if (place.province === '荊州') fillColor = '#1565c0';
+      else if (place.province === '揚州' || place.province === '徐州') fillColor = '#6a1b9a';
+
+      const marker = L.circleMarker([place.lat, place.lng], {
+        radius: 6.5,
+        fillColor: fillColor,
+        color: '#fff',
+        weight: 1.8,
+        fillOpacity: 0.95
+      }).addTo(pinMarkerGroup);
+
+      marker.bindTooltip(`<span class="custom-label" id="pin-label-${place.key}">${place.key}</span>`, {
+        permanent: true,
+        direction: 'top',
+        offset: [0, -7],
+        className: 'transparent-box'
+      });
+
+      marker.on('click', () => {
+        focusPlaceOnMap(place.key, place.key);
+      });
+    });
+  }
+
+  window.addEventListener('resize', () => {
+    map.invalidateSize();
+  });
+
+  // 5. 地名クリック時の移動＆「エリア⊃地点」ハイライト処理
+  function focusPlaceOnMap(placeKey, clickedRawSurface = '') {
+    closeModal();
+    const found = PLACES.find(p => p.key === placeKey);
+    document.querySelectorAll('.custom-label').forEach(el => el.classList.remove('selected-pin'));
+    activeHighlightLayers.forEach(layer => map.removeLayer(layer));
+    activeHighlightLayers = [];
+
+    if (!found) return false;
+
+    const targetZoom = Math.round(found.zoom || 8);
+    map.stop();
+
+    let hierarchyHtml = '';
+    const activeKeys = getActivePlaceKeysSet();
+
+    // (A) エリア（州・郡・河南・河北など）をクリックした場合：領域ポリゴン（面）と中央バナーを表示
+    if (found.is_area && found.area_polygon) {
+      map.fitBounds(found.area_polygon, { padding: [36, 36], maxZoom: 7 });
+
+      const areaPoly = L.polygon(found.area_polygon, {
+        color: '#d84315',
+        weight: 3.5,
+        fillColor: '#ffab40',
+        fillOpacity: 0.25
+      }).addTo(map);
+
+      const bannerIcon = L.divIcon({
+        className: '',
+        html: `<span class="area-banner-label">🗺️ ${found.key}</span>`,
+        iconSize: [140, 28],
+        iconAnchor: [70, 14]
+      });
+      const bannerMarker = L.marker([found.lat, found.lng], { icon: bannerIcon, interactive: false }).addTo(map);
+      activeHighlightLayers.push(areaPoly, bannerMarker);
+    }
+    // (B) 河川をクリックした場合：水系ポリラインをハイライト
+    else if (found.is_river) {
+      map.setView([found.lat, found.lng], 7, { animate: true, duration: 0.5 });
+      RIVER_LINES.filter(r => r.key === found.key).forEach(river => {
+        const hl = L.polyline(river.coords, { color: '#ffeb3b', weight: 7, opacity: 0.85 }).addTo(map);
+        const fg = L.polyline(river.coords, { color: '#d32f2f', weight: 3.5, opacity: 0.95 }).addTo(map);
+        activeHighlightLayers.push(hl, fg);
+      });
+    }
+    // (C) 地点（県・城・関・山）をクリックした場合：親エリア（豫州・徐州・兗州など）全体が見える縮尺に合わせてピン＋親枠を表示
+    else {
+      const labelEl = document.getElementById(`pin-label-${found.key}`);
+      if (labelEl) labelEl.classList.add('selected-pin');
+
+      const parentArea = PLACES.find(a => a.is_area && a.key === found.parent_area);
+      if (parentArea && parentArea.area_polygon) {
+        // 親エリア（例：許なら豫州）の枠全体が画面に収まる縮尺（最大ズーム7）に合わせる
+        map.fitBounds(parentArea.area_polygon, { padding: [36, 36], maxZoom: 7 });
+
+        const parentPoly = L.polygon(parentArea.area_polygon, {
+          color: '#2e7d32',
+          weight: 2.5,
+          dashArray: '6, 4',
+          fillColor: '#66bb6a',
+          fillOpacity: 0.12
+        }).addTo(map);
+        const pLat = parentArea.area_polygon[0][0];
+        const pLng = (parentArea.area_polygon[0][1] + parentArea.area_polygon[1][1]) / 2;
+        const parentBanner = L.marker([pLat, pLng], {
+          icon: L.divIcon({
+            className: '',
+            html: `<span class="parent-area-banner-label">${parentArea.key}</span>`,
+            iconSize: [100, 22],
+            iconAnchor: [50, 11]
+          }),
+          interactive: false
+        }).addTo(map);
+        activeHighlightLayers.push(parentPoly, parentBanner);
+      } else {
+        map.setView([found.lat, found.lng], 7, { animate: true, duration: 0.5 });
+      }
+
+      const ptCircle = L.circle([found.lat, found.lng], {
+        radius: 14000,
+        color: '#c62828',
+        weight: 2.5,
+        fillColor: '#ff5252',
+        fillOpacity: 0.25
+      }).addTo(map);
+      activeHighlightLayers.push(ptCircle);
+    }
+
+    const toast = document.getElementById('mapToast');
+    const safeSurface = (clickedRawSurface || found.key).replace(/'/g, "\'");
+    const safeKey = found.key.replace(/'/g, "\'");
+    const toastFeedbackHtml = isEditModeActive() ? `
+      <div class="toast-feedback-bar">
+        <button class="toast-fb-btn" onclick="addPlaceToastFeedback('${safeKey}', '${safeSurface}', '🔄 場所が違う（同名別地・位置修正）')">🔄 場所が違う</button>
+        <button class="toast-fb-btn" onclick="addPlaceToastFeedback('${safeKey}', '${safeSurface}', '📐 エリア⇔地点の区分変更')">📐 エリア⇔地点変更</button>
+        <button class="toast-fb-btn" onclick="startMapCoordPicker('${safeKey}', '${safeSurface}')">📍 地図クリックで正しい位置を指定</button>
+        <button class="toast-fb-btn" onclick="addPlaceToastFeedback('${safeKey}', '${safeSurface}', '❌ 地名タグ解除')">❌ タグ解除</button>
+      </div>
+    ` : '';
+    const shortTitle = getShortNameWithReading(found.label);
+    toast.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center; gap:10px;"><div>📍 <strong>${shortTitle}</strong> <span style="font-size:0.8rem; color:#ddd;">（現在の${found.modern}）</span></div><button onclick="document.getElementById('mapToast').style.display='none'" style="background:transparent; border:none; color:#ccc; cursor:pointer; font-size:0.9rem; line-height:1; padding:0 2px;" title="閉じる">✕</button></div>${toastFeedbackHtml}`;
+    toast.style.display = 'block';
+    return true;
+  }
+
+  // 6. データベースに埋め込まれた確定タグ（{type:key|surface}）を直接HTMLへ変換
+  function getActivePersonsList() {
+    return Array.from(new Set(
+      getVisibleRecords().flatMap(r => (r.persons || '').split(',').map(s => s.trim()).filter(Boolean))
+    ));
+  }
+
+  function getPlaceSubTypeLabel(placeKey) {
+    const p = PLACES.find(item => item.key === placeKey);
+    if (!p) return `地名(${placeKey})`;
+    if (p.is_area) return `🗺️地名[エリア](${placeKey})`;
+    if (p.is_river) return `🌊地名[河川](${placeKey})`;
+    return `📍地名[地点](${placeKey})`;
+  }
+
+  function renderEmbeddedTags(taggedText, recId) {
+    if (!taggedText) return '';
+    const editHint = isEditModeActive() ? ' ／ 右クリックまたはドラッグ選択で指摘' : '';
+    return taggedText.replace(/\{\{(place|office|person|special):([^|}]+)\|([^}]+)\}\}?/g, (m, tagType, key, surface) => {
+      const safeKey = key.replace(/'/g, "\'");
+      const safeSurface = surface.replace(/'/g, "\'");
+      if (tagType === 'place') {
+        const subLabel = getPlaceSubTypeLabel(key);
+        return `<span class="inline-place" data-tag-type="place" data-tag-key="${key}" onclick="handleInlineTagClick(event, '${recId}', 'place', '${safeKey}', '${safeSurface}')" oncontextmenu="handleInlineTagContextMenu(event, '${recId}', 'place', '${safeKey}', '${safeSurface}')" title="${subLabel}：クリックで地図移動${editHint}">${surface}</span>`;
+      } else if (tagType === 'office') {
+        return `<span class="inline-office" data-tag-type="office" data-tag-key="${key}" onclick="handleInlineTagClick(event, '${recId}', 'office', '${safeKey}', '${safeSurface}')" oncontextmenu="handleInlineTagContextMenu(event, '${recId}', 'office', '${safeKey}', '${safeSurface}')" title="👑官職(${key})：クリックで解説${editHint}">${surface}</span>`;
+      } else if (tagType === 'person') {
+        return `<span class="inline-person" data-tag-type="person" data-tag-key="${key}" onclick="handleInlineTagClick(event, '${recId}', 'person', '${safeKey}', '${safeSurface}')" oncontextmenu="handleInlineTagContextMenu(event, '${recId}', 'person', '${safeKey}', '${safeSurface}')" title="👤人名(${key})：クリックで解説${editHint}">${surface}</span>`;
+      } else if (tagType === 'special') {
+        return `<span class="inline-special" data-tag-type="special" data-tag-key="${key}" onclick="handleInlineTagClick(event, '${recId}', 'special', '${safeKey}', '${safeSurface}')" oncontextmenu="handleInlineTagContextMenu(event, '${recId}', 'special', '${safeKey}', '${safeSurface}')" title="🔖特別キーワード(${key})：クリックで解説${editHint}">${surface}</span>`;
+      }
+      return surface;
+    });
+  }
+
+  // 7. 本文・裴注リーダー描画（「1段落＝本文＋裴注」ずつの切り替え表示）
+  const recordListEl = document.getElementById('recordList');
+  const paraTopNavEl = document.getElementById('paraTopNav');
+  let currentParaIndex = 1;
+
+  function getSectionLabelForPara(paraIdx) {
+    const rec = RECORDS.find(r => r.para_index === paraIdx);
+    const maxVis = getMaxVisibleParagraph();
+    if (isEditModeActive() && rec) {
+      const shortSec = (rec.section_title || '').replace('武帝紀（', '').replace('）', '');
+      const pubBadge = paraIdx <= PUBLISHED_MAX_PARA ? '✅' : '🔧';
+      return `${pubBadge} 第 ${paraIdx} / ${maxVis} （${shortSec}）`;
+    }
+    const denomLabel = PUBLISHED_MAX_PARA < TOTAL_PARAGRAPHS ? '○' : maxVis;
+    return `第 ${paraIdx} / ${denomLabel}`;
+  }
+
+  function goToParagraph(paraIdx) {
+    const maxVis = getMaxVisibleParagraph();
+    const clamped = Math.max(1, Math.min(maxVis, paraIdx));
+    currentParaIndex = clamped;
+    const showAllEl = document.getElementById('toggleShowAllParas');
+    if (showAllEl && showAllEl.checked) {
+      showAllEl.checked = false;
+    }
+    renderReaderList();
+    recordListEl.scrollTop = 0;
+    const firstRec = getVisibleRecords().find(r => r.para_index === currentParaIndex);
+    if (firstRec) {
+      setActiveRecord(firstRec.id);
+    }
+  }
+
+  function changeParagraph(delta) {
+    goToParagraph(currentParaIndex + delta);
+  }
+
+  function renderReaderList() {
+    const showAll = isEditModeActive() && document.getElementById('toggleShowAllParas') && document.getElementById('toggleShowAllParas').checked;
+    const maxVis = getMaxVisibleParagraph();
+    if (currentParaIndex > maxVis) {
+      currentParaIndex = maxVis;
+    }
+
+    // 地図と本文の間の段落切り替えバー（← 第 1 / ○ →）を更新
+    if (paraTopNavEl) {
+      if (!showAll) {
+        const prevDisabled = currentParaIndex <= 1 ? 'disabled' : '';
+        const nextDisabled = currentParaIndex >= maxVis ? 'disabled' : '';
+        let optionsHtml = '';
+        for (let p = 1; p <= maxVis; p++) {
+          const selectedAttr = p === currentParaIndex ? 'selected' : '';
+          optionsHtml += `<option value="${p}" ${selectedAttr}>${getSectionLabelForPara(p)}</option>`;
+        }
+        paraTopNavEl.innerHTML = `
+          <button class="slim-nav-btn" onclick="changeParagraph(-1)" ${prevDisabled}>←</button>
+          <select class="para-select" onchange="goToParagraph(parseInt(this.value, 10))">${optionsHtml}</select>
+          <button class="slim-nav-btn" onclick="changeParagraph(1)" ${nextDisabled}>→</button>
+        `;
+      } else {
+        paraTopNavEl.innerHTML = `<span class="vol-nav-title">全段落連続表示（第 1 〜 ${maxVis} 段落）</span>`;
+      }
+    }
+
+    recordListEl.innerHTML = '';
+
+    // 読書履歴スタックがある場合は最上部に「元の場所に戻る」ボタンを表示
+    if (readingHistoryStack.length > 0) {
+      const lastId = readingHistoryStack[readingHistoryStack.length - 1];
+      const backBtnEl = document.createElement('button');
+      backBtnEl.className = 'back-btn';
+      backBtnEl.style.display = 'inline-block';
+      backBtnEl.textContent = `↩ さっき読んでいた場所 (${lastId}) に戻る`;
+      backBtnEl.onclick = goBackToSavedReadingSpot;
+      recordListEl.appendChild(backBtnEl);
+    }
+
+    const visibleRecs = getVisibleRecords();
+    const targetRecords = showAll
+      ? visibleRecs
+      : visibleRecs.filter(rec => rec.para_index === currentParaIndex);
+
+    targetRecords.forEach(rec => {
+      const isPei = rec.type === '裴注';
+      const card = document.createElement('div');
+      card.className = `record-card ${isPei ? 'pei-note' : 'main-text'}`;
+      card.id = `card-${rec.id}`;
+      card.dataset.id = rec.id;
+
+      card.innerHTML = `
+        <div class="card-top">
+          <span><strong>${rec.id}</strong> [${rec.section_title}] （第${rec.para_index}段落） ${rec.era_year ? `｜ 📅 ${rec.era_year}` : ''}</span>
+          <span class="badge ${isPei ? 'pei' : 'main'}">${rec.type}</span>
+        </div>
+        <div class="raw-text">${renderEmbeddedTags(rec.raw_tagged, rec.id)}</div>
+        <div class="kakikudashi">${renderEmbeddedTags(rec.kakikudashi_tagged, rec.id)}</div>
+        <div class="translation">${renderEmbeddedTags(rec.translation_tagged, rec.id)}</div>
+      `;
+
+      card.addEventListener('click', () => {
+        setActiveRecord(rec.id);
+      });
+
+      recordListEl.appendChild(card);
+    });
+
+    // 本文末尾の索引ボタンバー
+    const bottomNav = document.createElement('div');
+    bottomNav.className = 'para-bottom-nav';
+    bottomNav.innerHTML = `
+      <button class="nav-btn" onclick="openTocModal()">📑 登場人物・地名・官職 索引</button>
+    `;
+    recordListEl.appendChild(bottomNav);
+
+    // 本文の一番下に配置する Google AdSense 広告スペース
+    const adBox = document.createElement('div');
+    adBox.className = 'ad-footer-box';
+    adBox.innerHTML = `
+      <div class="ad-footer-label">スポンサーリンク</div>
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-4382223240782332"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+    `;
+    recordListEl.appendChild(adBox);
+    try {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } catch (e) {}
+  }
+
+  function setActiveRecord(recId) {
+    currentActiveId = recId;
+    document.querySelectorAll('.record-card').forEach(c => {
+      c.classList.toggle('active-card', c.dataset.id === recId);
+    });
+  }
+
+  // 8. 全カテゴリ統一モーダル（人物・官職はWikipedia概略＋出現箇所、特別キーワードは語句解説＋出現箇所）
+  function openUnifiedModal(categoryType, itemKey, clickedSurface = '') {
+    let headerTitle = '';
+    let wikiTargetTitle = '';
+    let mappingNote = '';
+    let specialGlossaryDesc = '';
+    let searchTerms = [];
+
+    if (categoryType === 'person') {
+      headerTitle = `👤 【人物】${itemKey}`;
+      const pInfo = PERSONS_INFO[itemKey];
+      if (pInfo) {
+        wikiTargetTitle = pInfo.wiki_title || '';
+        specialGlossaryDesc = pInfo.ai_desc || '';
+      } else {
+        wikiTargetTitle = itemKey.replace(/\(.*?\)/g, '');
+      }
+      if (clickedSurface && clickedSurface !== itemKey) {
+        mappingNote = `原文の「${clickedSurface}」をフルネーム「${itemKey}」に特別変換して紐づけています。`;
+      }
+      searchTerms = [itemKey];
+    } else if (categoryType === 'office') {
+      const info = OFFICES[itemKey];
+      if (!info) return;
+      headerTitle = `👑 【官職】${info.title}`;
+      wikiTargetTitle = info.wiki_title !== undefined ? info.wiki_title : itemKey;
+      mappingNote = info.mapping_note || '';
+      if (!wikiTargetTitle) {
+        specialGlossaryDesc = info.ai_desc || '';
+      }
+      searchTerms = itemKey === '県令' ? ['易陽令', '雒陽令', '綿竹令'] :
+                    (itemKey === '県長' ? ['臨沮長', '旌陽長', '臨邛長'] :
+                    (itemKey === '相' ? ['魯相'] : info.match_terms));
+    } else if (categoryType === 'special') {
+      const info = SPECIAL_KW[itemKey];
+      if (!info) return;
+      headerTitle = `🔖 【${info.category}】${info.title}`;
+      wikiTargetTitle = info.wiki_title !== undefined ? info.wiki_title : itemKey;
+      mappingNote = info.mapping_note || '';
+      specialGlossaryDesc = info.ai_desc || '';
+      searchTerms = info.match_terms;
+    }
+
+    const fallbackAiDesc = (categoryType === 'office' && OFFICES[itemKey]) ? (OFFICES[itemKey].ai_desc || '') : '';
+
+    const matched = getVisibleRecords().filter(rec => {
+      const allText = [rec.raw_text, rec.kakikudashi, rec.translation, rec.persons, rec.keywords, rec.source_book, rec.era_year].join(' ');
+      return searchTerms.some(t => allText.includes(t));
+    });
+
+    document.getElementById('modalTitle').textContent = `${headerTitle} （出現：${matched.length} 件）`;
+    const bodyEl = document.getElementById('modalBody');
+
+    const specialDescHtml = specialGlossaryDesc
+      ? `<div class="ai-special-box">
+           <div style="font-weight:bold; color:#4a148c; margin-bottom:4px;">📖 【語句・故事の意味解説】</div>
+           <div>${specialGlossaryDesc}</div>
+         </div>`
+      : '';
+
+    const wikiBoxHtml = wikiTargetTitle
+      ? `<div class="wiki-standard-box" id="unifiedWikiBox">
+           <div>🌐 Wikipediaから「${wikiTargetTitle}」の概略を取得中...</div>
+         </div>`
+      : '';
+
+    bodyEl.innerHTML = `
+      ${specialDescHtml}
+      ${wikiBoxHtml}
+      <details class="occurrence-details">
+        <summary class="occurrence-summary">📖 出現箇所一覧（全 ${matched.length} 件）</summary>
+        <div class="occurrence-list" id="modalOccurrenceList"></div>
+      </details>
+    `;
+
+    if (wikiTargetTitle) {
+      fetchWikipediaSummary(wikiTargetTitle, 'unifiedWikiBox', fallbackAiDesc, Boolean(specialGlossaryDesc));
+    }
+    const occListEl = document.getElementById('modalOccurrenceList');
+    if (occListEl) {
+      appendOccurrencesToModal(occListEl, matched, searchTerms);
+    }
+    document.getElementById('modalOverlay').style.display = 'flex';
+  }
+
+  async function fetchWikipediaSummary(wikiTitle, containerId, fallbackDesc = '', hasSpecialBox = false) {
+    const box = document.getElementById(containerId);
+    if (!box) return;
+    const encoded = encodeURIComponent(wikiTitle);
+    const wikiUrl = `https://ja.wikipedia.org/wiki/${encoded}`;
+    try {
+      const res = await fetch(`https://ja.wikipedia.org/api/rest_v1/page/summary/${encoded}`);
+      if (!res.ok) throw new Error('Not found');
+      const data = await res.json();
+      if (data.type === 'disambiguation') throw new Error('Disambiguation');
+      box.innerHTML = `
+        <div style="font-weight:bold; color:#0d47a1; margin-bottom:4px;">🌐 【Wikipedia 概略】「${data.title}」</div>
+        <div>${data.extract || '（要約テキストなし）'}</div>
+        <a class="wiki-link-btn" href="${wikiUrl}" target="_blank" rel="noopener">Wikipediaで「${data.title}」のページを開く ↗</a>
+      `;
+    } catch (err) {
+      if (hasSpecialBox) {
+        box.style.display = 'none';
+      } else if (fallbackDesc) {
+        box.className = 'ai-special-box';
+        box.innerHTML = `
+          <div style="font-weight:bold; color:#4a148c; margin-bottom:4px;">📖 【語句・制度の意味解説】</div>
+          <div>${fallbackDesc}</div>
+        `;
+      } else {
+        box.style.display = 'none';
+      }
+    }
+  }
+
+  function appendOccurrencesToModal(container, records, highlightTerms) {
+    records.forEach(rec => {
+      const item = document.createElement('div');
+      item.className = 'modal-occurrence';
+      const isCurrent = rec.id === currentActiveId;
+      item.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <span style="font-size:0.82rem; font-weight:bold; color:#3d2f1d;">
+            ${rec.id} [${rec.section_title}] （第${rec.para_index}段落・${rec.type}） ${isCurrent ? '👈 【現在読書中の行】' : ''}
+          </span>
+          <button class="jump-btn" onclick="jumpToRecordFromModal('${rec.id}')">この段落へ移動して読む</button>
+        </div>
+        <div class="raw-text" style="font-size:0.95rem;">${highlightSimple(rec.raw_text, highlightTerms)}</div>
+        <div class="translation" style="font-size:0.88rem;">${highlightSimple(rec.translation, highlightTerms)}</div>
+      `;
+      container.appendChild(item);
+    });
+  }
+
+  function openTocModal() {
+    document.getElementById('modalTitle').textContent = '📑 巻1（魏書一・武帝紀）目次・エリア＆地点インデックス';
+    const bodyEl = document.getElementById('modalBody');
+    const activeKeys = getActivePlaceKeysSet();
+    const activePersons = getActivePersonsList();
+    const visRecords = getVisibleRecords();
+
+    const activeOffices = Object.keys(OFFICES).filter(k => {
+      if (isEditModeActive()) return true;
+      const info = OFFICES[k];
+      const terms = [k, ...(info.aliases || [])];
+      return visRecords.some(r => terms.some(t => r.raw_text.includes(t) || r.kakikudashi.includes(t) || r.translation.includes(t)));
+    });
+
+    const activeSpecials = Object.keys(SPECIAL_KW).filter(k => {
+      if (isEditModeActive()) return true;
+      const info = SPECIAL_KW[k];
+      const terms = [k, ...(info.aliases || [])];
+      return visRecords.some(r => terms.some(t => r.raw_text.includes(t) || r.kakikudashi.includes(t) || r.translation.includes(t)));
+    });
+
+    const areaButtons = PLACES.filter(p => p.is_area && activeKeys.has(p.key)).map(p => `<button class="nav-btn" style="background:#d84315; margin:2px;" onclick="closeModal(); focusPlaceOnMap('${p.key}', '${p.key}')">🗺️ [エリア] ${p.key}</button>`).join('');
+    const pointButtons = PLACES.filter(p => p.is_pin && activeKeys.has(p.key)).map(p => `<button class="nav-btn" style="background:#2e7d32; margin:2px;" onclick="closeModal(); focusPlaceOnMap('${p.key}', '${p.key}')">📍 ${p.key} (${p.parent_area})</button>`).join('');
+    const riverButtons = PLACES.filter(p => p.is_river && activeKeys.has(p.key)).map(p => `<button class="nav-btn" style="background:#0277bd; margin:2px;" onclick="closeModal(); focusPlaceOnMap('${p.key}', '${p.key}')">🌊 ${p.key}</button>`).join('');
+    const officeButtons = activeOffices.map(k => `<button class="nav-btn" style="background:#1565c0; margin:2px;" onclick="openUnifiedModal('office', '${k}', '${k}')">👑 ${k}</button>`).join('');
+    const personButtons = activePersons.map(p => `<button class="nav-btn" style="background:#bf360c; margin:2px;" onclick="openUnifiedModal('person', '${p}', '${p}')">👤 ${p}</button>`).join('');
+    const specialButtons = activeSpecials.map(k => `<button class="nav-btn" style="background:#6a1b9a; margin:2px;" onclick="openUnifiedModal('special', '${k}', '${k}')">🔖 ${k}</button>`).join('');
+
+    bodyEl.innerHTML = `
+      <div>
+        <h4 style="margin-bottom:6px; color:#3d2f1d;">📌 章立て（各列伝へ移動）</h4>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="nav-btn" onclick="jumpToRecordFromModal('v1_p1_1')">① 第1部：出自〜挙兵・兗州平定（第1段落〜順次公開中）</button>
+        </div>
+      </div>
+      <div>
+        <h4 style="margin-bottom:6px; color:#d84315;">①-A エリア地名（州・郡・広域地方：面で表示）</h4>
+        <div>${areaButtons}</div>
+      </div>
+      <div>
+        <h4 style="margin-bottom:6px; color:#1b5e20;">①-B 地点地名（県・城・関・山・戦場：ピン＋親エリア枠で表示）</h4>
+        <div>${pointButtons}</div>
+      </div>
+      ${riverButtons ? `
+      <div>
+        <h4 style="margin-bottom:6px; color:#0277bd;">①-C 河川（水系ラインハイライト）</h4>
+        <div>${riverButtons}</div>
+      </div>` : ''}
+      <div>
+        <h4 style="margin-bottom:6px; color:#0d47a1;">② 官職・爵位事典</h4>
+        <div>${officeButtons}</div>
+      </div>
+      <div>
+        <h4 style="margin-bottom:6px; color:#bf360c;">③ 登場人物一覧（${activePersons.length} 名）</h4>
+        <div>${personButtons}</div>
+      </div>
+      <div>
+        <h4 style="margin-bottom:6px; color:#4a148c;">④ 特別キーワード（制度・年号・兵法・引用史料）</h4>
+        <div>${specialButtons}</div>
+      </div>
+    `;
+    document.getElementById('modalOverlay').style.display = 'flex';
+  }
+
+  function closeModal() {
+    document.getElementById('modalOverlay').style.display = 'none';
+  }
+
+  function jumpToRecordFromModal(targetId) {
+    if (targetId !== currentActiveId) {
+      readingHistoryStack.push(currentActiveId);
+    }
+    closeModal();
+    scrollToCard(targetId);
+  }
+
+  function goBackToSavedReadingSpot() {
+    if (readingHistoryStack.length === 0) return;
+    const prevId = readingHistoryStack.pop();
+    scrollToCard(prevId);
+  }
+
+  function scrollToCard(recId) {
+    const rec = getVisibleRecords().find(r => r.id === recId);
+    if (!rec) return;
+    if (currentParaIndex !== rec.para_index) {
+      currentParaIndex = rec.para_index;
+    }
+    renderReaderList();
+    const cardEl = document.getElementById(`card-${recId}`);
+    if (cardEl) {
+      cardEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setActiveRecord(recId);
+    }
+  }
+
+  function highlightSimple(text, terms) {
+    if (!text) return '';
+    let res = text;
+    terms.forEach(t => {
+      if (!t) return;
+      res = res.replace(new RegExp(t, 'g'), `<span class="highlight">${t}</span>`);
+    });
+    return res;
+  }
+
+  // =========================================================================
+  // 9. ワンクリック指摘・校正システム（手元PCまたは ?edit=1 時のみ自動表示）
+  // =========================================================================
+  const FEEDBACK_STORAGE_KEY = 'threekingdom_vol01_feedback_clean_v1';
+  const MAX_SELECTION_CHARS = 50;          // ポップアップを出す最大選択文字数
+  const CONTEXT_SNIPPET_RADIUS_CHARS = 10; // 前後の文脈として切り出す文字数
+  const POPUP_OFFSET_Y_PX = 10;            // 選択箇所からポップアップまでの縦オフセット(px)
+  const POPUP_VIEWPORT_MARGIN_PX = 12;     // 画面端からの最小マージン(px)
+  const COORD_DECIMAL_DIGITS = 2;          // 地図クリック時の緯度・経度の小数桁数
+
+  let feedbackItems = [];
+  let pendingFeedbackContext = null;
+  let mapCoordPickerState = null;
+
+  try {
+    const saved = localStorage.getItem(FEEDBACK_STORAGE_KEY);
+    if (saved) feedbackItems = JSON.parse(saved);
+  } catch (e) {
+    feedbackItems = [];
+  }
+
+  function saveFeedbackItems() {
+    try {
+      localStorage.setItem(FEEDBACK_STORAGE_KEY, JSON.stringify(feedbackItems));
+    } catch (e) {}
+    renderFeedbackTray();
+  }
+
+  const RECENT_UPDATES = {"new_records": [{"recId": "v1_p2_1", "label": "🆕 段落2-1 [v1_p2_1] 青年期の太祖（機警・権数・任侠放蕩）"}, {"recId": "v1_p2_2", "label": "🆕 段落2-2 [v1_p2_2] 裴注『曹瞞伝』：叔父を欺いた中風の狂言"}, {"recId": "v1_p2_3", "label": "🆕 段落2-3 [v1_p2_3] 橋玄・何顒の評価（「天下を安んずる者は君か」）"}, {"recId": "v1_p2_4", "label": "🆕 段落2-4 [v1_p2_4] 裴注：橋玄の鑑識・張譲邸潜入・『接要』と孫子注・許劭「治世の能臣、乱世の姦雄」"}], "pinpoint_fixes": [{"recId": "v1_p2_2", "blockClass": "trans-block", "word": "中風", "label": "✨ 修正1 [v1_p2_2] 『中風（中悪風）』を特別キーワード化"}]};
+
+  function toggleRecentUpdatesBar() {
+    const bar = document.getElementById('recentUpdatesBar');
+    const btn = document.getElementById('rupToggleBtn');
+    if (!bar) return;
+    bar.classList.toggle('collapsed');
+    if (btn) {
+      btn.textContent = bar.classList.contains('collapsed') ? '▼ 展開' : '▲ 隠す';
+    }
+  }
+
+  function renderRecentUpdatesBar() {
+    const bar = document.getElementById('recentUpdatesBar');
+    if (!bar) return;
+    if (!isEditModeActive()) {
+      bar.style.display = 'none';
+      return;
+    }
+    const newRecs = RECENT_UPDATES.new_records || [];
+    const fixes = RECENT_UPDATES.pinpoint_fixes || [];
+    if (newRecs.length === 0 && fixes.length === 0) {
+      bar.style.display = 'none';
+      return;
+    }
+    bar.style.display = 'flex';
+    const isCollapsed = bar.classList.contains('collapsed');
+
+    const newRecBtns = newRecs.map(item =>
+      `<button class="rup-badge new-rec" onclick="jumpToRecentUpdate('${item.recId}', '', '')" title="クリックでこの追加段落へジャンプ">${item.label}</button>`
+    ).join('');
+
+    const fixBtns = fixes.map(item =>
+      `<button class="rup-badge fix-item" onclick="jumpToRecentUpdate('${item.recId}', '${item.blockClass}', '${item.word}')" title="クリックで『${item.word}』の反映箇所へジャンプしてハイライト点滅">${item.label}</button>`
+    ).join('');
+
+    bar.innerHTML = `
+      <div class="rup-header" onclick="toggleRecentUpdatesBar()">
+        <div class="rup-title">
+          <span>🔄 最新の追加・修正ジャンプバー（クリックで該当箇所へ直行＆点滅）</span>
+        </div>
+        <button class="rup-toggle-btn" id="rupToggleBtn" onclick="event.stopPropagation(); toggleRecentUpdatesBar();">${isCollapsed ? '▼ 展開' : '▲ 隠す'}</button>
+      </div>
+      <div class="rup-body">
+        ${newRecs.length > 0 ? `<div class="rup-row"><span class="rup-row-label">【今回の追加】</span>${newRecBtns}</div>` : ''}
+        ${fixes.length > 0 ? `<div class="rup-row"><span class="rup-row-label">【直近の修正】</span>${fixBtns}</div>` : ''}
+      </div>
+    `;
+  }
+
+  function jumpToRecentUpdate(recId, blockClass, targetWord) {
+    scrollToCard(recId);
+    setTimeout(() => {
+      const cardEl = document.getElementById(`card-${recId}`);
+      if (!cardEl) return;
+
+      document.querySelectorAll('.flash-update-target').forEach(el => el.classList.remove('flash-update-target'));
+      document.querySelectorAll('.flash-card-target').forEach(el => el.classList.remove('flash-card-target'));
+
+      if (!targetWord) {
+        cardEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        cardEl.classList.add('flash-card-target');
+        return;
+      }
+
+      const containerEl = (blockClass ? cardEl.querySelector(`.${blockClass}`) : null) || cardEl;
+      const tagSpans = Array.from(containerEl.querySelectorAll('.inline-place, .inline-person, .inline-office, .inline-special'));
+      let matchedEl = tagSpans.find(sp => (sp.textContent || '').trim() === targetWord)
+                   || tagSpans.find(sp => (sp.textContent || '').includes(targetWord));
+
+      if (matchedEl) {
+        matchedEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        matchedEl.classList.add('flash-update-target');
+      } else {
+        containerEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        cardEl.classList.add('flash-card-target');
+      }
+    }, 60);
+  }
+
+  function applyEnvironmentModeUI() {
+    const editActive = isEditModeActive();
+    const trayEl = document.getElementById('feedbackTray');
+    const trayBodyEl = document.getElementById('feedbackTrayBody');
+    const trayFooterEl = document.getElementById('feedbackTrayFooter');
+    const proofreadLabelEl = document.getElementById('proofreadModeLabel');
+    const showAllLabelEl = document.getElementById('showAllParasLabel');
+
+    // 手元PCまたは ?edit=1 の時だけ制作トレイを表示（本番Webでは完全非表示）
+    if (trayEl) trayEl.style.display = IS_AUTHOR_EDIT_ENV ? 'flex' : 'none';
+    if (trayBodyEl) trayBodyEl.style.display = editActive ? 'flex' : 'none';
+    if (trayFooterEl) trayFooterEl.style.display = editActive ? 'flex' : 'none';
+    if (proofreadLabelEl) proofreadLabelEl.style.display = editActive ? 'flex' : 'none';
+    if (showAllLabelEl) showAllLabelEl.style.display = editActive ? 'flex' : 'none';
+    if (!editActive) hideSelectionFeedbackBar();
+
+    renderRecentUpdatesBar();
+    renderMapLayersForCurrentMode();
+    renderReaderList();
+  }
+
+  function handleInlineTagClick(event, recId, tagType, itemKey, surfaceText) {
+    event.stopPropagation();
+    const sel = window.getSelection();
+    if (sel && sel.toString().trim().length > 0) {
+      return;
+    }
+
+    setActiveRecord(recId);
+    const isProofreadMode = isEditModeActive() && document.getElementById('toggleProofreadMode').checked;
+
+    if (tagType === 'place') {
+      focusPlaceOnMap(itemKey, surfaceText);
+    }
+
+    if (isProofreadMode) {
+      openFeedbackBarForTagElement(event.currentTarget, recId, tagType, itemKey, surfaceText);
+      return;
+    }
+
+    if (tagType !== 'place') {
+      openUnifiedModal(tagType, itemKey, surfaceText);
+    }
+  }
+
+  function handleInlineTagContextMenu(event, recId, tagType, itemKey, surfaceText) {
+    if (!isEditModeActive()) return;
+    event.preventDefault();
+    event.stopPropagation();
+    setActiveRecord(recId);
+    if (tagType === 'place') {
+      focusPlaceOnMap(itemKey, surfaceText);
+    }
+    openFeedbackBarForTagElement(event.currentTarget, recId, tagType, itemKey, surfaceText);
+  }
+
+  function getBlockLabelFromElement(el) {
+    if (!el) return '本文';
+    if (el.closest('.raw-text')) return '原文';
+    if (el.closest('.kakikudashi')) return '書き下し';
+    if (el.closest('.translation')) return '現代語訳';
+    return '本文';
+  }
+
+  function getRangeCharOffsetInContainer(containerEl, range) {
+    if (!containerEl || !range) return -1;
+    try {
+      const preRange = range.cloneRange();
+      preRange.selectNodeContents(containerEl);
+      preRange.setEnd(range.startContainer, range.startOffset);
+      return preRange.toString().length;
+    } catch (e) {
+      return -1;
+    }
+  }
+
+  function extractSurroundingContext(containerEl, targetWord, exactOffset = -1) {
+    if (!containerEl || !targetWord) return targetWord;
+    const fullText = containerEl.innerText || containerEl.textContent || '';
+    const idx = (exactOffset >= 0 && exactOffset <= fullText.length)
+      ? exactOffset
+      : fullText.indexOf(targetWord);
+    if (idx === -1) return `【${targetWord}】`;
+    const start = Math.max(0, idx - CONTEXT_SNIPPET_RADIUS_CHARS);
+    const end = Math.min(fullText.length, idx + targetWord.length + CONTEXT_SNIPPET_RADIUS_CHARS);
+    const prefix = (start > 0 ? '…' : '') + fullText.slice(start, idx);
+    const suffix = fullText.slice(idx + targetWord.length, end) + (end < fullText.length ? '…' : '');
+    return `${prefix}【${targetWord}】${suffix}`;
+  }
+
+  function openFeedbackBarForTagElement(el, recId, tagType, itemKey, surfaceText) {
+    if (!isEditModeActive()) return;
+    const blockEl = el.closest('.raw-text, .kakikudashi, .translation');
+    const blockLabel = getBlockLabelFromElement(el);
+    let exactOffset = -1;
+    if (blockEl && el) {
+      try {
+        const r = document.createRange();
+        r.selectNodeContents(el);
+        exactOffset = getRangeCharOffsetInContainer(blockEl, r);
+      } catch (e) {}
+    }
+    const contextStr = extractSurroundingContext(blockEl, surfaceText, exactOffset);
+    const typeNameMap = {
+      'place': getPlaceSubTypeLabel(itemKey),
+      'person': `👤人名(${itemKey})`,
+      'office': `👑官職(${itemKey})`,
+      'special': `🔖特別語(${itemKey})`
+    };
+
+    pendingFeedbackContext = {
+      recId: recId,
+      blockLabel: blockLabel,
+      word: surfaceText,
+      contextStr: contextStr,
+      currentTag: typeNameMap[tagType] || tagType
+    };
+
+    const rect = el.getBoundingClientRect();
+    showSelectionFeedbackBarAtRect(rect);
+  }
+
+  document.addEventListener('mouseup', (event) => {
+    if (!isEditModeActive()) return;
+    const bar = document.getElementById('selectionFeedbackBar');
+    if (bar && bar.contains(event.target)) return;
+
+    setTimeout(() => {
+      if (!isEditModeActive()) return;
+      const sel = window.getSelection();
+      if (!sel || sel.isCollapsed) return;
+      const selectedText = sel.toString().trim();
+      if (!selectedText || selectedText.length > MAX_SELECTION_CHARS) return;
+
+      const anchorNode = sel.anchorNode;
+      if (!anchorNode) return;
+      const anchorEl = anchorNode.nodeType === 3 ? anchorNode.parentElement : anchorNode;
+      if (!anchorEl) return;
+
+      const cardEl = anchorEl.closest('.record-card');
+      if (!cardEl) return;
+
+      const recId = cardEl.dataset.id || currentActiveId;
+      const blockEl = anchorEl.closest('.raw-text, .kakikudashi, .translation');
+      const blockLabel = getBlockLabelFromElement(anchorEl);
+      const range = sel.getRangeAt(0);
+      const exactOffset = getRangeCharOffsetInContainer(blockEl, range);
+      const contextStr = extractSurroundingContext(blockEl, selectedText, exactOffset);
+
+      // 選択箇所が既存のタグ内かどうかを判定
+      const inlineTagEl = anchorEl.closest('.inline-place, .inline-person, .inline-office, .inline-special');
+      let currentTag = '未タグ';
+      if (inlineTagEl) {
+        const fullTagText = inlineTagEl.textContent || '';
+        const tType = inlineTagEl.dataset.tagType || '';
+        const tKey = inlineTagEl.dataset.tagKey || fullTagText;
+        const detailType = tType === 'place' ? getPlaceSubTypeLabel(tKey) :
+                           (tType === 'person' ? `👤人名(${tKey})` :
+                           (tType === 'office' ? `👑官職(${tKey})` :
+                           (tType === 'special' ? `🔖特別語(${tKey})` : `既タグ「${fullTagText}」`)));
+        currentTag = fullTagText === selectedText ? detailType : `${detailType}の一部`;
+      }
+
+      pendingFeedbackContext = {
+        recId: recId,
+        blockLabel: blockLabel,
+        word: selectedText,
+        contextStr: contextStr,
+        currentTag: currentTag
+      };
+
+      const rect = range.getBoundingClientRect();
+      showSelectionFeedbackBarAtRect(rect);
+    }, 10);
+  });
+
+  function showSelectionFeedbackBarAtRect(rect) {
+    if (!pendingFeedbackContext) return;
+    const bar = document.getElementById('selectionFeedbackBar');
+    document.getElementById('sfbMetaLabel').textContent = `[${pendingFeedbackContext.recId}・${pendingFeedbackContext.blockLabel}]`;
+    document.getElementById('sfbTargetWord').textContent = pendingFeedbackContext.word;
+    document.getElementById('sfbCurrentTagInfo').textContent = `（現在: ${pendingFeedbackContext.currentTag}）`;
+
+    bar.style.display = 'flex';
+    const barRect = bar.getBoundingClientRect();
+
+    let topPx = rect.top - barRect.height - POPUP_OFFSET_Y_PX;
+    if (topPx < POPUP_VIEWPORT_MARGIN_PX) {
+      topPx = rect.bottom + POPUP_OFFSET_Y_PX;
+    }
+    let leftPx = rect.left + (rect.width / 2) - (barRect.width / 2);
+    leftPx = Math.max(POPUP_VIEWPORT_MARGIN_PX, Math.min(window.innerWidth - barRect.width - POPUP_VIEWPORT_MARGIN_PX, leftPx));
+
+    bar.style.top = `${Math.round(topPx)}px`;
+    bar.style.left = `${Math.round(leftPx)}px`;
+  }
+
+  function hideSelectionFeedbackBar() {
+    const bar = document.getElementById('selectionFeedbackBar');
+    if (bar) bar.style.display = 'none';
+  }
+
+  function addFeedbackFromBar(actionText) {
+    if (!pendingFeedbackContext) return;
+    feedbackItems.push({
+      id: Date.now() + Math.random(),
+      recId: pendingFeedbackContext.recId,
+      blockLabel: pendingFeedbackContext.blockLabel,
+      word: pendingFeedbackContext.word,
+      contextStr: pendingFeedbackContext.contextStr,
+      currentTag: pendingFeedbackContext.currentTag,
+      action: actionText
+    });
+    saveFeedbackItems();
+    hideSelectionFeedbackBar();
+    const sel = window.getSelection();
+    if (sel) sel.removeAllRanges();
+  }
+
+  function promptCustomFeedbackNote() {
+    if (!pendingFeedbackContext) return;
+    const note = window.prompt(
+      `[${pendingFeedbackContext.recId}] 「${pendingFeedbackContext.word}」についての指摘・メモを入力してください（例：〇〇郡の同名別地、訳文を〇〇に修正など）：`,
+      ''
+    );
+    if (note && note.trim()) {
+      addFeedbackFromBar(`✏️ メモ指摘: ${note.trim()}`);
+    }
+  }
+
+  // 地図左下の地名トースト内からのワンクリック指摘
+  function addPlaceToastFeedback(placeKey, surfaceText, actionText) {
+    feedbackItems.push({
+      id: Date.now() + Math.random(),
+      recId: currentActiveId,
+      blockLabel: '地図確認',
+      word: surfaceText,
+      contextStr: `現在位置 ${currentActiveId} で「${surfaceText}」(登録キー: ${placeKey}) を確認中`,
+      currentTag: `地名(${placeKey})`,
+      action: actionText
+    });
+    saveFeedbackItems();
+  }
+
+  // 地図上をクリックして「本当の場所（緯度・経度）」をワンクリック指定するモード
+  function startMapCoordPicker(placeKey, surfaceText) {
+    mapCoordPickerState = {
+      recId: currentActiveId,
+      placeKey: placeKey,
+      surfaceText: surfaceText
+    };
+    const toast = document.getElementById('mapToast');
+    toast.innerHTML = `<div style="color:#ffd54f; font-weight:bold;">🎯 【位置指定モード】地図上で「${surfaceText}」の正しい位置をクリックしてください（自動で緯度・経度が指摘リストに入ります）</div>`;
+    document.getElementById('map').style.cursor = 'crosshair';
+  }
+
+  map.on('click', (e) => {
+    if (!mapCoordPickerState) return;
+    const lat = e.latlng.lat.toFixed(COORD_DECIMAL_DIGITS);
+    const lng = e.latlng.lng.toFixed(COORD_DECIMAL_DIGITS);
+    feedbackItems.push({
+      id: Date.now() + Math.random(),
+      recId: mapCoordPickerState.recId,
+      blockLabel: '地図座標指定',
+      word: mapCoordPickerState.surfaceText,
+      contextStr: `登録キー: ${mapCoordPickerState.placeKey}`,
+      currentTag: `地名(${mapCoordPickerState.placeKey})`,
+      action: `📍 正しい座標を地図クリックで指定 ➔ 緯度: ${lat}, 経度: ${lng}`
+    });
+    saveFeedbackItems();
+
+    L.circleMarker([e.latlng.lat, e.latlng.lng], {
+      radius: 8,
+      color: '#ffeb3b',
+      fillColor: '#d50000',
+      fillOpacity: 0.9,
+      weight: 2.5
+    }).addTo(activeHighlightLayers.length >= 0 ? map : map).bindTooltip(`🎯 指摘座標: ${ mapCoordPickerState.surfaceText } (${lat}, ${lng})`, { permanent: true, direction: 'top' });
+
+    document.getElementById('map').style.cursor = '';
+    const toast = document.getElementById('mapToast');
+    toast.innerHTML = `✅ <strong>「${mapCoordPickerState.surfaceText}」の指定座標 (${lat}, ${lng}) を右下の指摘リストに追加しました！</strong>`;
+    mapCoordPickerState = null;
+  });
+
+  function toggleFeedbackTray() {
+    const tray = document.getElementById('feedbackTray');
+    const icon = document.getElementById('feedbackTrayToggleIcon');
+    tray.classList.toggle('minimized');
+    icon.textContent = tray.classList.contains('minimized') ? '▲ 展開する' : '▼ 折りたたむ';
+  }
+
+  function removeFeedbackItem(idx) {
+    feedbackItems.splice(idx, 1);
+    saveFeedbackItems();
+  }
+
+  function clearAllFeedback() {
+    if (feedbackItems.length === 0) return;
+    feedbackItems = [];
+    saveFeedbackItems();
+  }
+
+  function renderFeedbackTray() {
+    const badge = document.getElementById('feedbackCountBadge');
+    const body = document.getElementById('feedbackTrayBody');
+    if (!badge || !body) return;
+
+    badge.textContent = `${feedbackItems.length}件`;
+
+    if (feedbackItems.length === 0) {
+      body.innerHTML = `
+        <div class="feedback-empty">
+          本文の気になる文字を<strong>なぞって選択</strong>するか、色付き単語を<strong>右クリック</strong>（🛠️指摘モードON時は左クリック）すると、ワンクリックでここに指摘が溜まります。
+        </div>
+      `;
+      return;
+    }
+
+    body.innerHTML = feedbackItems.map((item, idx) => `
+      <div class="feedback-item">
+        <div>
+          <div><strong>[${item.recId}・${item.blockLabel}]</strong> 「<span style="color:#ffd54f; font-weight:bold;">${item.word}</span>」 <span style="color:#b0bec5; font-size:0.74rem;">(${item.currentTag})</span></div>
+          <div style="color:#a5d6a7; font-weight:bold; margin-top:2px;">➔ ${item.action}</div>
+          <div style="color:#ccc; font-size:0.74rem; margin-top:1px;">文脈: ${item.contextStr}</div>
+        </div>
+        <button class="feedback-item-del" onclick="removeFeedbackItem(${idx})" title="この指摘を削除">✕</button>
+      </div>
+    `).join('');
+  }
+
+  function copyAllFeedbackToClipboard() {
+    if (feedbackItems.length === 0) {
+      window.alert('まだ指摘リストが空です。本文の文字をドラッグ選択するか、色付き単語を右クリックして指摘を追加してください。');
+      return;
+    }
+
+    const lines = ['【巻1 ピンポイント指摘リスト】'];
+    feedbackItems.forEach((item, i) => {
+      lines.push(`${i + 1}. [${item.recId} / ${item.blockLabel}] 「${item.word}」（現在: ${item.currentTag}｜文脈: ${item.contextStr}） ➔ ${item.action}`);
+    });
+    const textToCopy = lines.join('\n');
+
+    navigator.clipboard.writeText(textToCopy).then(() => {
+      const btn = document.getElementById('feedbackCopyBtn');
+      const origText = btn.textContent;
+      btn.textContent = '✅ コピーしました！そのままチャットに貼り付けてください';
+      btn.style.background = '#66bb6a';
+      setTimeout(() => {
+        btn.textContent = origText;
+        btn.style.background = '';
+      }, 2500);
+    }).catch(() => {
+      window.prompt('以下のテキストをコピーしてチャットに貼り付けてください：', textToCopy);
+    });
+  }
+
+  applyEnvironmentModeUI();
+  renderFeedbackTray();
+  setActiveRecord("v1_p1_1");
+</script>
+</body>
+</html>
