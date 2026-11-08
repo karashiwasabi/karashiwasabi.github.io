@@ -529,10 +529,11 @@
     }
     .map-toast {
       position: absolute;
-      bottom: 14px;
-      left: 14px;
+      top: 8px;
+      left: 8px;
+      bottom: auto;
       z-index: 5000;
-      background: rgba(36, 29, 22, 0.95);
+      background: rgba(36, 29, 22, 0.96);
       color: #fff;
       border: 1.5px solid #d4af37;
       border-radius: 6px;
@@ -540,8 +541,22 @@
       font-size: 0.82rem;
       box-shadow: 0 4px 16px rgba(0,0,0,0.45);
       display: none;
-      width: 240px;
-      max-width: 44%;
+      flex-direction: column;
+      width: calc(46% - 12px);
+      max-width: 300px;
+      max-height: calc(100% - 16px);
+      overflow-y: auto;
+    }
+    .toast-img-el {
+      width: 100%;
+      height: auto;
+      max-height: min(42vh, 240px);
+      object-fit: contain;
+      background: #18130e;
+      border-radius: 4px;
+      border: 1px solid rgba(212, 175, 55, 0.55);
+      margin-top: 5px;
+      display: none;
     }
     .toast-feedback-bar {
       margin-top: 8px;
@@ -788,13 +803,28 @@
         margin-left: 8px;
       }
       .map-toast {
-        bottom: 6px;
+        top: 6px;
         left: 6px;
+        bottom: auto;
         right: auto;
-        width: 170px;
-        max-width: 45%;
+        width: calc(46% - 8px);
+        max-width: none;
+        max-height: calc(100% - 12px);
         padding: 5px 7px;
-        font-size: 0.72rem;
+        font-size: 0.70rem;
+      }
+      .toast-img-el {
+        max-height: 17vh;
+        margin-top: 4px;
+      }
+      .toast-modern-loc {
+        display: none;
+      }
+      .toast-feedback-bar {
+        display: none !important;
+      }
+      .feedback-tray {
+        display: none !important;
       }
       .modal-overlay {
         position: absolute;
@@ -1077,10 +1107,21 @@
   let readingHistoryStack = [];
   let activeHighlightLayers = [];
 
-  // 1. 地図の初期化（方法A：ズーム13まで鮮明な Esri 陰影白地図単一レイヤー）
+  // 1. 地図の初期化（方法A：ズーム13まで鮮明な Esri 陰影白地図単一レイヤー、ズームボタンは右上に配置）
   const MAP_MAX_NATIVE_ZOOM_LEVEL = 13;
   const MAP_MAX_ZOOM_LEVEL = 13;
-  const map = L.map('map', { maxZoom: MAP_MAX_ZOOM_LEVEL }).setView([36.6, 139.9], 7);
+  const MAP_LEFT_PANEL_WIDTH_RATIO = 0.48;
+  const MAP_RIGHT_HALF_CENTER_OFFSET_RATIO = 0.24;
+  const map = L.map('map', { maxZoom: MAP_MAX_ZOOM_LEVEL, zoomControl: false }).setView([36.6, 139.9], 7);
+  L.control.zoom({ position: 'topright' }).addTo(map);
+
+  function setMapViewInRightHalf(lat, lng, zoomLevel) {
+    const mapSize = map.getSize();
+    const offsetX = Math.round(mapSize.x * MAP_RIGHT_HALF_CENTER_OFFSET_RATIO);
+    const targetPoint = map.project([lat, lng], zoomLevel);
+    const shiftedCenter = map.unproject(targetPoint.subtract([offsetX, 0]), zoomLevel);
+    map.setView(shiftedCenter, zoomLevel, { animate: true, duration: 0.5 });
+  }
 
   const shadedReliefLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}', {
     attribution: 'Tiles &copy; Esri',
@@ -1202,7 +1243,13 @@
 
     if (found.is_area && found.area_polygon) {
       const areaZoom = Math.round(found.zoom || 9);
-      map.fitBounds(found.area_polygon, { padding: [36, 36], maxZoom: areaZoom });
+      const mapSize = map.getSize();
+      const leftPadPx = Math.round(mapSize.x * MAP_LEFT_PANEL_WIDTH_RATIO) + 16;
+      map.fitBounds(found.area_polygon, {
+        paddingTopLeft: [leftPadPx, 24],
+        paddingBottomRight: [24, 24],
+        maxZoom: areaZoom
+      });
 
       const areaPoly = L.polygon(found.area_polygon, {
         color: '#d84315',
@@ -1222,7 +1269,7 @@
     }
     else if (found.is_river) {
       const riverZoom = Math.round(found.zoom || 11);
-      map.setView([found.lat, found.lng], riverZoom, { animate: true, duration: 0.5 });
+      setMapViewInRightHalf(found.lat, found.lng, riverZoom);
       RIVER_LINES.filter(r => r.key === found.key).forEach(river => {
         const hl = L.polyline(river.coords, { color: '#ffeb3b', weight: 7, opacity: 0.85 }).addTo(map);
         const fg = L.polyline(river.coords, { color: '#d32f2f', weight: 3.5, opacity: 0.95 }).addTo(map);
@@ -1257,8 +1304,8 @@
         activeHighlightLayers.push(parentPoly, parentBanner);
       }
 
-      // 地点ピンそのものが画面の真ん中に来るように移動
-      map.setView([found.lat, found.lng], pointZoom, { animate: true, duration: 0.5 });
+      // 右半分の中央に地点ピンが来るように移動
+      setMapViewInRightHalf(found.lat, found.lng, pointZoom);
 
       const circleRadiusMeters = pointZoom >= 12 ? 350 : (pointZoom >= 11 ? 600 : (pointZoom >= 9 ? 3500 : 8000));
       const ptCircle = L.circle([found.lat, found.lng], {
@@ -1275,7 +1322,7 @@
     const safeSurface = (clickedRawSurface || found.key).replace(/'/g, "\'");
     const safeKey = found.key.replace(/'/g, "\'");
     const toastFeedbackHtml = isEditModeActive() ? `
-      <div class="toast-feedback-bar">
+      <div class="toast-feedback-bar" style="flex-shrink:0;">
         <button class="toast-fb-btn" onclick="addPlaceToastFeedback('${safeKey}', '${safeSurface}', '🔄 場所が違う（同名別地・位置修正）')">🔄 場所が違う</button>
         <button class="toast-fb-btn" onclick="addPlaceToastFeedback('${safeKey}', '${safeSurface}', '📐 エリア⇔地点の区分変更')">📐 エリア⇔地点変更</button>
         <button class="toast-fb-btn" onclick="startMapCoordPicker('${safeKey}', '${safeSurface}')">📍 地図クリックで正しい位置を指定</button>
@@ -1284,19 +1331,20 @@
     ` : '';
     const shortTitle = getShortNameWithReading(found.label);
     const ukiyoeCaption = found.ukiyoe_caption || '';
+    // 左半分：上から順に「地名・現在地 → 図版タイトル → 絵の全体表示」を描画
     toast.innerHTML = `
-      <img id="toastUkiyoeImg" src="" alt="${found.key}" style="width:100%; height:auto; max-height:210px; object-fit:contain; background:#18130e; border-radius:4px; border:1px solid rgba(212,175,55,0.55); margin-bottom:5px; display:none;" />
-      <div id="toastUkiyoeCaption" style="font-family:'Yu Mincho','MS PMincho',serif; font-size:0.74rem; color:#ffe082; margin-bottom:5px; line-height:1.35; display:none;">${ukiyoeCaption}</div>
-      <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:6px;">
-        <div style="line-height:1.35;">
-          <div style="font-family:'Yu Mincho','MS PMincho',serif; font-size:0.88rem; font-weight:bold; color:#fff;">📍 ${shortTitle}</div>
-          <div style="font-size:0.72rem; color:#d7ccc8; margin-top:2px;">現在の${found.modern}</div>
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:4px; flex-shrink:0;">
+        <div style="line-height:1.3;">
+          <div style="font-family:'Yu Mincho','MS PMincho',serif; font-size:0.84rem; font-weight:bold; color:#fff;">📍 ${shortTitle}</div>
+          <div class="toast-modern-loc" style="font-size:0.72rem; color:#d7ccc8; margin-top:2px;">現在の${found.modern}</div>
         </div>
-        <button onclick="document.getElementById('mapToast').style.display='none'" style="background:transparent; border:none; color:#bbb; cursor:pointer; font-size:0.9rem; line-height:1; padding:0 2px;" title="閉じる">✕</button>
+        <button onclick="document.getElementById('mapToast').style.display='none'" style="background:transparent; border:none; color:#bbb; cursor:pointer; font-size:0.9rem; line-height:1; padding:0 2px; flex-shrink:0;" title="閉じる">✕</button>
       </div>
+      <div id="toastUkiyoeCaption" style="font-family:'Yu Mincho','MS PMincho',serif; font-size:0.70rem; color:#ffe082; margin-top:4px; line-height:1.25; flex-shrink:0; display:none;">${ukiyoeCaption}</div>
+      <img id="toastUkiyoeImg" class="toast-img-el" src="" alt="${found.key}" />
       ${toastFeedbackHtml}
     `;
-    toast.style.display = 'block';
+    toast.style.display = 'flex';
     loadToastUkiyoePreview(found);
     return true;
   }
