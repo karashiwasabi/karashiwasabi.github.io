@@ -1855,6 +1855,56 @@
     inputStep.style.display = 'flex';
   });
 
+  // URLパラメータ（?genre=haiku&l1=...&l2=...&l3=...&author=...&bg=...&auto=1）による外部連携・自動再生
+  (async function applyUrlQueryParams() {
+    const params = new URLSearchParams(window.location.search);
+    const paramGenre = params.get('genre');
+    if (paramGenre && GENRE_CONFIGS[paramGenre]) {
+      document.querySelectorAll('.genre-btn').forEach((b) => {
+        b.classList.toggle('active', b.dataset.genre === paramGenre);
+      });
+      renderInputFieldsForGenre(paramGenre);
+    }
+
+    const paramBg = params.get('bg');
+    if (paramBg && BG_THEMES.some((t) => t.key === paramBg)) {
+      currentBgThemeKey = paramBg;
+      document.querySelectorAll('.bg-theme-btn').forEach((btn) => {
+        btn.classList.toggle('active', btn.dataset.bgTheme === paramBg);
+      });
+    }
+
+    const inputs = document.querySelectorAll('.line-field');
+    let hasParamLine = false;
+    inputs.forEach((inp, idx) => {
+      const val = params.get(`l${idx + 1}`);
+      if (val !== null) {
+        inp.value = val;
+        if (val.trim().length > 0) hasParamLine = true;
+      }
+    });
+
+    const paramAuthor = params.get('author');
+    if (paramAuthor !== null) {
+      authorInput.value = paramAuthor;
+    }
+
+    if (params.get('auto') === '1' && hasParamLine) {
+      const config = GENRE_CONFIGS[currentGenreKey];
+      currentLines = Array.from(inputs).map((inp) => inp.value.trim()).filter((line) => line.length > 0);
+      currentAuthor = authorInput.value.trim();
+      latestGeneratedMp4File = null;
+
+      inputStep.style.display = 'none';
+      previewStep.style.display = 'flex';
+      successBox.style.display = 'none';
+
+      await ensureGenreFontsLoaded(config);
+      await ensureBgImageLoaded(getEffectiveConfig().bgPath);
+      startCanvasAnimation();
+    }
+  })();
+
   /* ==================================================
      描画ループ & ジャンル別組版エンジン（1080 x 1920）
      ================================================== */
