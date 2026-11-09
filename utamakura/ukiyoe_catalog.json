@@ -9,8 +9,7 @@
     "province": "武蔵国",
     "commons_query": "名所江戸百景 深川万年橋",
     "places": [
-      "深川",
-      "江戸・隅田川圏"
+      "深川"
     ],
     "works": [
       "おくのほそ道"
@@ -43,7 +42,6 @@
     "province": "武蔵国",
     "commons_query": "名所江戸百景 大はしあたけの夕立",
     "places": [
-      "両国",
       "新大橋"
     ],
     "works": [
@@ -156,11 +154,7 @@
     "province": "山城国",
     "commons_query": "六十余州名所図会 山城",
     "places": [
-      "都",
-      "嵐山",
-      "小倉山",
-      "大井川（山城）",
-      "畿内・都（歌枕遠望）圏"
+      "嵐山"
     ],
     "works": [
       "おくのほそ道",
@@ -178,10 +172,7 @@
     "province": "大和国",
     "commons_query": "六十余州名所図会 大和",
     "places": [
-      "竜田川",
-      "龍田山",
-      "三室山",
-      "奈良"
+      "龍田山"
     ],
     "works": [
       "小倉百人一首",
@@ -198,9 +189,7 @@
     "province": "摂津国",
     "commons_query": "六十余州名所図会 摂津",
     "places": [
-      "住吉",
-      "難波",
-      "住の江"
+      "住吉"
     ],
     "works": [
       "小倉百人一首",
@@ -217,8 +206,7 @@
     "province": "伊勢国",
     "commons_query": "六十余州名所図会 伊勢",
     "places": [
-      "伊勢",
-      "二見浦"
+      "朝熊山"
     ],
     "works": [
       "おくのほそ道",
@@ -236,7 +224,7 @@
     "province": "三河国",
     "commons_query": "六十余州名所図会 三河",
     "places": [
-      "三河"
+      "鳳来寺山"
     ],
     "works": [
       "万葉集"
@@ -252,8 +240,7 @@
     "province": "遠江国",
     "commons_query": "六十余州名所図会 遠江",
     "places": [
-      "浜名湖",
-      "引佐細江"
+      "浜名湖"
     ],
     "works": [
       "万葉集"
@@ -269,9 +256,7 @@
     "province": "駿河国",
     "commons_query": "六十余州名所図会 駿河",
     "places": [
-      "三保の松原",
-      "田子の浦",
-      "清見潟"
+      "三保の松原"
     ],
     "works": [
       "小倉百人一首",
@@ -288,8 +273,7 @@
     "province": "甲斐国",
     "commons_query": "六十余州名所図会 甲斐",
     "places": [
-      "猿橋",
-      "甲斐"
+      "猿橋"
     ],
     "works": [
       "歌枕"
@@ -305,9 +289,7 @@
     "province": "相模国",
     "commons_query": "六十余州名所図会 相模",
     "places": [
-      "江ノ島",
-      "鎌倉",
-      "箱根"
+      "江ノ島"
     ],
     "works": [
       "小倉百人一首",
@@ -324,9 +306,7 @@
     "province": "常陸国",
     "commons_query": "六十余州名所図会 常陸",
     "places": [
-      "常陸国圏",
-      "鹿島",
-      "筑波山"
+      "鹿島"
     ],
     "works": [
       "おくのほそ道",
@@ -344,11 +324,7 @@
     "province": "近江国",
     "commons_query": "六十余州名所図会 近江",
     "places": [
-      "石山",
-      "琵琶湖",
-      "近江",
-      "幻住庵",
-      "打出の浜"
+      "石山"
     ],
     "works": [
       "おくのほそ道",
@@ -366,8 +342,7 @@
     "province": "美濃国",
     "commons_query": "六十余州名所図会 美濃",
     "places": [
-      "美濃",
-      "不破の関"
+      "養老ノ滝"
     ],
     "works": [
       "おくのほそ道",
@@ -384,9 +359,7 @@
     "province": "信濃国",
     "commons_query": "六十余州名所図会 信濃",
     "places": [
-      "更科",
-      "姨捨山",
-      "信濃"
+      "更科"
     ],
     "works": [
       "更科紀行",
@@ -419,8 +392,7 @@
     "province": "陸奥国",
     "commons_query": "六十余州名所図会 陸奥",
     "places": [
-      "松島",
-      "奥州（白河・松島）圏"
+      "松島"
     ],
     "works": [
       "おくのほそ道"
@@ -436,12 +408,7 @@
     "province": "出羽国",
     "commons_query": "六十余州名所図会 出羽",
     "places": [
-      "最上川",
-      "月山",
-      "羽黒山",
-      "湯殿山",
-      "酒田",
-      "出羽（象潟・出羽三山）圏"
+      "最上川"
     ],
     "works": [
       "おくのほそ道",
@@ -458,9 +425,7 @@
     "province": "越後国",
     "commons_query": "六十余州名所図会 越後",
     "places": [
-      "親不知",
-      "市振",
-      "越後国圏"
+      "親不知"
     ],
     "works": [
       "おくのほそ道"
@@ -476,8 +441,7 @@
     "province": "佐渡国",
     "commons_query": "六十余州名所図会 佐渡",
     "places": [
-      "佐渡",
-      "佐渡が島"
+      "佐渡"
     ],
     "works": [
       "おくのほそ道"
@@ -493,10 +457,7 @@
     "province": "越中国",
     "commons_query": "六十余州名所図会 越中",
     "places": [
-      "越中",
-      "神通川",
-      "有磯海",
-      "奈古の浦"
+      "富山船橋"
     ],
     "works": [
       "おくのほそ道",
@@ -513,11 +474,7 @@
     "province": "加賀国",
     "commons_query": "六十余州名所図会 加賀",
     "places": [
-      "金沢",
-      "小松",
-      "那谷寺",
-      "山中温泉",
-      "加賀"
+      "金沢"
     ],
     "works": [
       "おくのほそ道"
@@ -533,11 +490,7 @@
     "province": "越前国",
     "commons_query": "六十余州名所図会 越前",
     "places": [
-      "敦賀",
-      "気比の海",
-      "種の浜",
-      "色ケ浜",
-      "越前"
+      "気比の松原"
     ],
     "works": [
       "おくのほそ道"
@@ -553,9 +506,7 @@
     "province": "丹後国",
     "commons_query": "六十余州名所図会 丹後",
     "places": [
-      "天橋立",
-      "大江山",
-      "与謝の海"
+      "天橋立"
     ],
     "works": [
       "小倉百人一首"
@@ -571,9 +522,7 @@
     "province": "播磨国",
     "commons_query": "六十余州名所図会 播磨",
     "places": [
-      "明石",
-      "高砂",
-      "須磨"
+      "舞子の浜"
     ],
     "works": [
       "小倉百人一首",
@@ -590,8 +539,7 @@
     "province": "備前国",
     "commons_query": "六十余州名所図会 備前",
     "places": [
-      "瀬戸内",
-      "児島"
+      "田の口"
     ],
     "works": [
       "万葉集"
@@ -607,8 +555,7 @@
     "province": "安芸国",
     "commons_query": "六十余州名所図会 安芸",
     "places": [
-      "厳島",
-      "安芸"
+      "厳島"
     ],
     "works": [
       "平家物語",
@@ -625,10 +572,7 @@
     "province": "紀伊国",
     "commons_query": "六十余州名所図会 紀伊",
     "places": [
-      "和歌の浦",
-      "玉津島",
-      "吹上の浜",
-      "紀伊"
+      "和歌の浦"
     ],
     "works": [
       "万葉集",
@@ -645,8 +589,7 @@
     "province": "淡路国",
     "commons_query": "六十余州名所図会 淡路",
     "places": [
-      "淡路島",
-      "絵島"
+      "淡路島"
     ],
     "works": [
       "小倉百人一首",
@@ -679,9 +622,7 @@
     "province": "讃岐国",
     "commons_query": "六十余州名所図会 讃岐",
     "places": [
-      "松山（讃岐）",
-      "白峰",
-      "讃岐"
+      "象頭山"
     ],
     "works": [
       "万葉集",
@@ -698,9 +639,7 @@
     "province": "筑前国",
     "commons_query": "六十余州名所図会 筑前",
     "places": [
-      "大宰府",
-      "博多",
-      "筑紫"
+      "筥崎"
     ],
     "works": [
       "万葉集",
@@ -717,8 +656,7 @@
     "province": "駿河国・甲斐国",
     "commons_query": "富嶽三十六景 凱風快晴",
     "places": [
-      "富士山",
-      "駿河・富士山圏"
+      "富士山"
     ],
     "works": [
       "おくのほそ道",
@@ -736,7 +674,7 @@
     "province": "武蔵国・相模国",
     "commons_query": "富嶽三十六景 神奈川沖浪裏",
     "places": [
-      "武蔵海浜"
+      "神奈川沖"
     ],
     "works": [
       "万葉集"
@@ -769,9 +707,7 @@
     "province": "下野国",
     "commons_query": "諸国瀧廻り 下野黒髪山きりふりの滝",
     "places": [
-      "黒髪山",
-      "日光山",
-      "日光・下野路圏"
+      "黒髪山"
     ],
     "works": [
       "おくのほそ道"
@@ -820,7 +756,6 @@
     "province": "山城国",
     "commons_query": "諸国名橋奇覧 山城あらし山吐月橋",
     "places": [
-      "大堰川",
       "渡月橋"
     ],
     "works": [
@@ -853,9 +788,7 @@
     "province": "近江国",
     "commons_query": "東海道五十三次 大津",
     "places": [
-      "逢坂の関",
-      "逢坂山",
-      "大津"
+      "逢坂山"
     ],
     "works": [
       "小倉百人一首",
@@ -906,8 +839,7 @@
     "province": "大和国・近江国",
     "commons_query": "Hokusai Tenji Tenno",
     "places": [
-      "飛鳥",
-      "大津宮"
+      "飛鳥"
     ],
     "works": [
       "小倉百人一首",
@@ -924,25 +856,7 @@
     "province": "大和国",
     "commons_query": "Hokusai Jito Tenno",
     "places": [
-      "天の香具山",
-      "藤原京"
-    ],
-    "works": [
-      "小倉百人一首",
-      "万葉集"
-    ]
-  },
-  {
-    "id": "hyakunin_yamabe_akahito",
-    "category": "浮世絵（百人一首うばがゑとき）",
-    "artist": "葛飾北斎",
-    "series": "百人一首うばがゑとき",
-    "title": "山部赤人（田子の浦にうち出でてみれば白妙の富士の高嶺に雪は降りつつ）",
-    "caption": "葛飾北斎『百人一首うばがゑとき 山部赤人（田子の浦）』",
-    "province": "駿河国",
-    "commons_query": "Hokusai Yamabe no Akahito",
-    "places": [
-      "田子の浦"
+      "天の香具山"
     ],
     "works": [
       "小倉百人一首",
@@ -959,8 +873,7 @@
     "province": "大和国",
     "commons_query": "Hokusai Abe no Nakamaro",
     "places": [
-      "三笠山",
-      "春日野"
+      "三笠山"
     ],
     "works": [
       "小倉百人一首"
@@ -994,94 +907,6 @@
     "commons_query": "Hokusai Ariwara no Narihira",
     "places": [
       "竜田川"
-    ],
-    "works": [
-      "小倉百人一首"
-    ]
-  },
-  {
-    "id": "masterpiece_sotatsu_matsushima",
-    "category": "日本古典名画（琳派・屏風）",
-    "artist": "俵屋宗達",
-    "series": "国宝級古典屏風",
-    "title": "松島図屏風",
-    "caption": "俵屋宗達『松島図屏風』（フリーア美術館蔵・パブリックドメイン）",
-    "province": "陸奥国",
-    "commons_query": "Waves at Matsushima Tawaraya Sotatsu",
-    "places": [
-      "塩竈",
-      "籬が島",
-      "沖の石"
-    ],
-    "works": [
-      "おくのほそ道"
-    ]
-  },
-  {
-    "id": "masterpiece_korin_kakitsubata",
-    "category": "日本古典名画（琳派・国宝屏風）",
-    "artist": "尾形光琳",
-    "series": "国宝屏風",
-    "title": "燕子花図屏風（かきつばた・花かつみ）",
-    "caption": "尾形光琳『燕子花図屏風』（国宝・パブリックドメイン）",
-    "province": "三河国・陸奥国",
-    "commons_query": "Irises Ogata Korin",
-    "places": [
-      "安積山"
-    ],
-    "works": [
-      "おくのほそ道",
-      "伊勢物語"
-    ]
-  },
-  {
-    "id": "masterpiece_hoitsu_natsuakikusa",
-    "category": "日本古典名画（琳派・重要文化財屏風）",
-    "artist": "酒井抱一",
-    "series": "重要文化財屏風",
-    "title": "夏秋草図屏風（宮城野の萩と薄）",
-    "caption": "酒井抱一『夏秋草図屏風』（重要文化財・パブリックドメイン）",
-    "province": "陸奥国",
-    "commons_query": "Sakai Hoitsu Summer and Autumn",
-    "places": [
-      "宮城野",
-      "笠島"
-    ],
-    "works": [
-      "おくのほそ道"
-    ]
-  },
-  {
-    "id": "masterpiece_buson_okunohosomichi",
-    "category": "日本古典名画（俳画・重要文化財絵巻）",
-    "artist": "与謝蕪村",
-    "series": "奥の細道図巻・屏風",
-    "title": "奥の細道図屏風",
-    "caption": "与謝蕪村『奥の細道図』（重要文化財・パブリックドメイン）",
-    "province": "下野国・陸奥国",
-    "commons_query": "Buson Oku no Hosomichi",
-    "places": [
-      "白河関",
-      "那須野",
-      "黒羽",
-      "須賀川",
-      "しのぶの里"
-    ],
-    "works": [
-      "おくのほそ道"
-    ]
-  },
-  {
-    "id": "masterpiece_sesshu_amanohashidate",
-    "category": "日本古典名画（水墨画・国宝）",
-    "artist": "雪舟等楊",
-    "series": "国宝水墨画",
-    "title": "天橋立図",
-    "caption": "雪舟『天橋立図』（国宝・パブリックドメイン）",
-    "province": "丹後国",
-    "commons_query": "Ama-no-Hashidate Sesshu",
-    "places": [
-      "天橋立"
     ],
     "works": [
       "小倉百人一首"
