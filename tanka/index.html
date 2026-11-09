@@ -80,8 +80,32 @@
       gap: 8px;
       flex-wrap: wrap;
     }
+    .header-title-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .portal-top-link {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-color-sub);
+      background-color: #faf8f5;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+    .portal-top-link:hover {
+      color: var(--accent-color);
+      border-color: var(--accent-color);
+      background-color: #fff6f6;
+    }
     .header h1 {
-      font-size: 19px;
+      font-size: 18px;
       color: var(--accent-color);
       letter-spacing: 0.5px;
       white-space: nowrap;
@@ -540,7 +564,10 @@
 
 <div class="app-container">
   <header class="header">
-    <h1>Short Verse Studio</h1>
+    <div class="header-title-group">
+      <a href="https://wasabikarashi.com/" class="portal-top-link" title="総合トップページへ戻る">🏠 トップ</a>
+      <h1>Short Verse Studio</h1>
+    </div>
     <div class="header-controls">
       <select id="langSelect" class="lang-select" aria-label="Language">
         <option value="ja">🇯🇵 日本語</option>
@@ -1854,56 +1881,6 @@
     previewStep.style.display = 'none';
     inputStep.style.display = 'flex';
   });
-
-  // URLパラメータ（?genre=haiku&l1=...&l2=...&l3=...&author=...&bg=...&auto=1）による外部連携・自動再生
-  (async function applyUrlQueryParams() {
-    const params = new URLSearchParams(window.location.search);
-    const paramGenre = params.get('genre');
-    if (paramGenre && GENRE_CONFIGS[paramGenre]) {
-      document.querySelectorAll('.genre-btn').forEach((b) => {
-        b.classList.toggle('active', b.dataset.genre === paramGenre);
-      });
-      renderInputFieldsForGenre(paramGenre);
-    }
-
-    const paramBg = params.get('bg');
-    if (paramBg && BG_THEMES.some((t) => t.key === paramBg)) {
-      currentBgThemeKey = paramBg;
-      document.querySelectorAll('.bg-theme-btn').forEach((btn) => {
-        btn.classList.toggle('active', btn.dataset.bgTheme === paramBg);
-      });
-    }
-
-    const inputs = document.querySelectorAll('.line-field');
-    let hasParamLine = false;
-    inputs.forEach((inp, idx) => {
-      const val = params.get(`l${idx + 1}`);
-      if (val !== null) {
-        inp.value = val;
-        if (val.trim().length > 0) hasParamLine = true;
-      }
-    });
-
-    const paramAuthor = params.get('author');
-    if (paramAuthor !== null) {
-      authorInput.value = paramAuthor;
-    }
-
-    if (params.get('auto') === '1' && hasParamLine) {
-      const config = GENRE_CONFIGS[currentGenreKey];
-      currentLines = Array.from(inputs).map((inp) => inp.value.trim()).filter((line) => line.length > 0);
-      currentAuthor = authorInput.value.trim();
-      latestGeneratedMp4File = null;
-
-      inputStep.style.display = 'none';
-      previewStep.style.display = 'flex';
-      successBox.style.display = 'none';
-
-      await ensureGenreFontsLoaded(config);
-      await ensureBgImageLoaded(getEffectiveConfig().bgPath);
-      startCanvasAnimation();
-    }
-  })();
 
   /* ==================================================
      描画ループ & ジャンル別組版エンジン（1080 x 1920）
