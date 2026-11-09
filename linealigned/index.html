@@ -640,18 +640,23 @@
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
 
-    // Send pageview with location mapped to Marketplace domain so GA4 stream accepts it
+    var isWebDirect = (window.location && window.location.hostname === 'wasabikarashi.com');
+    var studioPageTitle = isWebDirect ? 'Line-aligned Studio (Web)' : 'Line-aligned Studio';
+    var studioPageLocation = isWebDirect
+      ? 'https://wasabikarashi.com/linealigned/'
+      : 'https://workspace.google.com/marketplace/app/linealigned/studio';
+
     gtag('config', 'G-310XSTTWSM', {
-      'page_title': 'Line-aligned Studio',
-      'page_location': 'https://workspace.google.com/marketplace/app/linealigned/studio',
+      'page_title': studioPageTitle,
+      'page_location': studioPageLocation,
       'cookie_flags': 'SameSite=None;Secure',
       'cookie_update': false
     });
 
     // Explicit page_view event
     gtag('event', 'page_view', {
-      'page_title': 'Line-aligned Studio',
-      'page_location': 'https://workspace.google.com/marketplace/app/linealigned/studio'
+      'page_title': studioPageTitle,
+      'page_location': studioPageLocation
     });
 
     // Custom helper to track events safely
@@ -659,8 +664,8 @@
       try {
         if (typeof gtag === 'function') {
           var p = params || {};
-          p.page_location = 'https://workspace.google.com/marketplace/app/linealigned/studio';
-          p.page_title = 'Line-aligned Studio';
+          p.page_location = studioPageLocation;
+          p.page_title = studioPageTitle;
           gtag('event', eventName, p);
         }
       } catch (e) {
