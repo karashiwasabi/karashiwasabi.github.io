@@ -23,15 +23,16 @@
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
   <style>
     :root {
-      --bg-page: #f7f6f2;
+      --bg-page: #f4f3ee;
       --bg-card: #ffffff;
-      --text-main: #222222;
-      --text-sub: #555555;
-      --border-soft: #e0ddd5;
-      --accent-blue: #1a5fb4;
-      --accent-amber: #8c5a2b;
-      --accent-green: #2b6e46;
-      --accent-red: #8e352e;
+      --header-bg: #1e293b;
+      --text-main: #1e293b;
+      --text-sub: #475569;
+      --border-soft: #dcd9d0;
+      --accent-blue: #1d4ed8;
+      --accent-amber: #b45309;
+      --accent-green: #15803d;
+      --accent-red: #b91c1c;
     }
 
     * {
@@ -44,114 +45,125 @@
       font-family: "BIZ UDPGothic", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans JP", "Noto Sans SC", "Noto Sans TC", "Noto Sans KR", Meiryo, sans-serif;
       color: var(--text-main);
       background-color: var(--bg-page);
-      line-height: 1.75;
+      line-height: 1.7;
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ヘッダー */
+    /* 上部バー：白背景をやめ、濃色背景＋色付き直リンクボタンでひと目で押せるデザイン */
     header {
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(255, 255, 255, 0.96);
-      backdrop-filter: blur(6px);
-      border-bottom: 1px solid var(--border-soft);
-      padding: 0.65rem 1.25rem;
+      background: var(--header-bg);
+      color: #ffffff;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+      padding: 0.7rem 1.25rem;
     }
 
     .header-inner {
-      max-width: 1080px;
+      max-width: 1120px;
       margin: 0 auto;
       display: flex;
       flex-wrap: wrap;
-      gap: 0.5rem 1rem;
+      gap: 0.6rem 1rem;
       align-items: center;
       justify-content: space-between;
     }
 
     .site-brand {
-      font-size: 1.05rem;
+      font-size: 1.08rem;
       font-weight: 700;
-      color: var(--text-main);
+      color: #ffffff;
       text-decoration: none;
       letter-spacing: 0.02em;
       white-space: nowrap;
+      padding-right: 0.5rem;
     }
 
     .header-nav {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.25rem 0.75rem;
+      gap: 0.45rem;
       align-items: center;
     }
 
-    .header-nav-link {
-      color: var(--text-sub);
+    .header-nav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      color: #ffffff;
       text-decoration: none;
-      font-size: 0.88rem;
+      font-size: 0.85rem;
       font-weight: 700;
-      padding: 0.3rem 0.55rem;
+      padding: 0.4rem 0.8rem;
       border-radius: 6px;
-      transition: background-color 0.2s, color 0.2s;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      transition: transform 0.15s, opacity 0.15s;
     }
 
-    .header-nav-link:hover {
-      background-color: #eceae2;
-      color: var(--accent-blue);
+    .header-nav-btn:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
     }
+
+    .nav-la { background: #2563eb; }
+    .nav-sv { background: #b45309; }
+    .nav-tk { background: #15803d; }
+    .nav-ut { background: #b91c1c; }
 
     .lang-bar {
       display: flex;
+      flex-wrap: wrap;
       gap: 0.25rem;
       align-items: center;
     }
 
     .lang-btn {
-      background: transparent;
-      border: 1px solid var(--border-soft);
-      color: var(--text-sub);
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #e2e8f0;
       font-size: 0.78rem;
-      padding: 0.22rem 0.5rem;
+      padding: 0.26rem 0.55rem;
       border-radius: 5px;
       cursor: pointer;
       transition: all 0.15s;
     }
 
     .lang-btn:hover {
-      background: #efede6;
-      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.22);
+      color: #ffffff;
     }
 
     .lang-btn.active {
-      background: var(--text-main);
-      color: #ffffff;
-      border-color: var(--text-main);
+      background: #ffffff;
+      color: #0f172a;
+      border-color: #ffffff;
       font-weight: 700;
     }
 
     /* メインコンテナ */
     main {
-      max-width: 1080px;
+      max-width: 1120px;
       margin: 0 auto;
-      padding: 1.75rem 1.25rem 3.5rem;
+      padding: 1.5rem 1.25rem 3.5rem;
     }
 
     .intro-box {
       background: var(--bg-card);
       border: 1px solid var(--border-soft);
       border-radius: 10px;
-      padding: 1.25rem 1.5rem;
-      margin-bottom: 1.75rem;
+      padding: 1.15rem 1.5rem;
+      margin-bottom: 1.5rem;
     }
 
     .intro-box h1 {
-      font-size: 1.25rem;
-      margin-bottom: 0.4rem;
+      font-size: 1.2rem;
+      margin-bottom: 0.3rem;
       color: var(--text-main);
     }
 
     .intro-box p {
-      font-size: 0.93rem;
+      font-size: 0.92rem;
       color: var(--text-sub);
     }
 
@@ -159,39 +171,41 @@
     .project-list {
       display: flex;
       flex-direction: column;
-      gap: 1.6rem;
+      gap: 1.5rem;
     }
 
     .project-card {
       background: var(--bg-card);
       border: 1px solid var(--border-soft);
+      border-top: 4px solid var(--accent-blue);
       border-radius: 12px;
-      padding: 1.65rem;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      padding: 1.5rem 1.65rem;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .project-card.theme-tanka { border-top-color: var(--accent-amber); }
+    .project-card.theme-threekingdom { border-top-color: var(--accent-green); }
+    .project-card.theme-utamakura { border-top-color: var(--accent-red); }
+
+    .project-top-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0.85rem;
+      margin-bottom: 0.9rem;
+      padding-bottom: 0.85rem;
+      border-bottom: 1px solid #eceae2;
     }
 
     .project-header {
-      border-left: 5px solid var(--accent-blue);
-      padding-left: 0.9rem;
-      margin-bottom: 1rem;
-    }
-
-    .project-card.theme-tanka .project-header {
-      border-left-color: var(--accent-amber);
-    }
-
-    .project-card.theme-threekingdom .project-header {
-      border-left-color: var(--accent-green);
-    }
-
-    .project-card.theme-utamakura .project-header {
-      border-left-color: var(--accent-red);
+      flex: 1 1 460px;
     }
 
     .project-title {
-      font-size: 1.3rem;
+      font-size: 1.28rem;
       font-weight: 700;
-      line-height: 1.4;
+      line-height: 1.35;
     }
 
     .project-title a {
@@ -206,32 +220,32 @@
     .project-subtitle {
       font-size: 0.9rem;
       color: var(--text-sub);
-      margin-top: 0.2rem;
+      margin-top: 0.25rem;
     }
 
     .project-body p {
-      font-size: 0.95rem;
+      font-size: 0.94rem;
       color: #333333;
-      margin-bottom: 0.85rem;
+      margin-bottom: 0.8rem;
     }
 
     .feature-list {
-      margin: 0.7rem 0 1.2rem 1.25rem;
+      margin: 0.6rem 0 1.1rem 1.25rem;
       color: #333333;
-      font-size: 0.92rem;
+      font-size: 0.91rem;
     }
 
     .feature-list li {
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.38rem;
     }
 
     /* サブリンク一覧（三国志の各巻リンク） */
     .subpage-box {
-      background: #f9f8f4;
+      background: #f8fafc;
       border: 1px solid var(--border-soft);
       border-radius: 8px;
-      padding: 1rem 1.2rem;
-      margin: 0.9rem 0 1.2rem;
+      padding: 0.95rem 1.15rem;
+      margin: 0.8rem 0 1.1rem;
     }
 
     .subpage-box-title {
@@ -244,31 +258,31 @@
     .subpage-links {
       list-style: none;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 0.6rem;
+      grid-template-columns: repeat(auto-fit, minmax(245px, 1fr));
+      gap: 0.55rem;
     }
 
     .subpage-links li a {
       display: block;
       background: #ffffff;
-      border: 1px solid #dcd8ce;
+      border: 1px solid #cbd5e1;
       border-radius: 6px;
       padding: 0.6rem 0.85rem;
-      color: var(--accent-blue);
+      color: var(--accent-green);
       text-decoration: none;
-      font-size: 0.89rem;
+      font-size: 0.88rem;
       font-weight: 700;
       transition: background-color 0.15s, border-color 0.15s;
     }
 
     .subpage-links li a:hover {
-      background: #eef4fc;
-      border-color: var(--accent-blue);
+      background: #f0fdf4;
+      border-color: var(--accent-green);
     }
 
     .subpage-desc {
       display: block;
-      font-size: 0.81rem;
+      font-size: 0.8rem;
       font-weight: 400;
       color: var(--text-sub);
       margin-top: 0.2rem;
@@ -278,9 +292,9 @@
     .action-links {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.7rem;
+      gap: 0.65rem;
       align-items: center;
-      margin-top: 1rem;
+      margin-top: 0.85rem;
     }
 
     .btn-primary {
@@ -289,10 +303,12 @@
       color: #ffffff;
       text-decoration: none;
       font-weight: 700;
-      font-size: 0.93rem;
-      padding: 0.6rem 1.25rem;
+      font-size: 0.92rem;
+      padding: 0.58rem 1.2rem;
       border-radius: 7px;
-      transition: opacity 0.2s;
+      white-space: nowrap;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12);
+      transition: opacity 0.15s, transform 0.15s;
     }
 
     .theme-tanka .btn-primary { background: var(--accent-amber); }
@@ -300,28 +316,29 @@
     .theme-utamakura .btn-primary { background: var(--accent-red); }
 
     .btn-primary:hover {
-      opacity: 0.88;
+      opacity: 0.9;
+      transform: translateY(-1px);
     }
 
     .btn-secondary {
       display: inline-block;
-      background: #ffffff;
+      background: #f8fafc;
       color: var(--text-main);
-      border: 1px solid #c8c4b8;
+      border: 1px solid #cbd5e1;
       text-decoration: none;
-      font-size: 0.88rem;
+      font-size: 0.86rem;
       font-weight: 700;
-      padding: 0.58rem 1.05rem;
+      padding: 0.54rem 1rem;
       border-radius: 7px;
-      transition: background-color 0.2s;
+      transition: background-color 0.15s;
     }
 
     .btn-secondary:hover {
-      background: #f0eee8;
+      background: #e2e8f0;
     }
 
     .policy-mini-links {
-      font-size: 0.81rem;
+      font-size: 0.8rem;
       color: var(--text-sub);
       margin-left: auto;
     }
@@ -334,71 +351,67 @@
 
     /* 読み物・背景解説セクション */
     .editorial-section {
-      margin-top: 2.25rem;
+      margin-top: 2rem;
       background: var(--bg-card);
       border: 1px solid var(--border-soft);
       border-radius: 12px;
-      padding: 1.65rem;
+      padding: 1.5rem 1.65rem;
     }
 
     .editorial-section h2 {
-      font-size: 1.15rem;
-      margin-bottom: 0.85rem;
+      font-size: 1.12rem;
+      margin-bottom: 0.8rem;
       padding-bottom: 0.4rem;
       border-bottom: 2px solid var(--border-soft);
     }
 
     .editorial-section h3 {
-      font-size: 1rem;
-      margin-top: 1.15rem;
-      margin-bottom: 0.35rem;
+      font-size: 0.98rem;
+      margin-top: 1.1rem;
+      margin-bottom: 0.3rem;
       color: var(--text-main);
     }
 
     .editorial-section p {
-      font-size: 0.92rem;
+      font-size: 0.9rem;
       color: #333333;
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.7rem;
     }
 
     /* フッター（サイト共通ポリシー直書き） */
     footer {
       border-top: 1px solid var(--border-soft);
-      background: #efede6;
-      padding: 1.85rem 1.25rem;
-      margin-top: 2.75rem;
+      background: #e5e3dc;
+      padding: 1.75rem 1.25rem;
+      margin-top: 2.5rem;
     }
 
     .footer-inner {
-      max-width: 1080px;
+      max-width: 1120px;
       margin: 0 auto;
-      font-size: 0.83rem;
+      font-size: 0.82rem;
       color: var(--text-sub);
-      line-height: 1.7;
+      line-height: 1.65;
     }
 
     .footer-policy-title {
       font-weight: 700;
       color: var(--text-main);
-      margin-bottom: 0.35rem;
+      margin-bottom: 0.3rem;
     }
 
     .footer-copy {
-      margin-top: 0.9rem;
-      font-size: 0.79rem;
-      color: #666666;
+      margin-top: 0.8rem;
+      font-size: 0.78rem;
+      color: #64748b;
     }
 
     @media (max-width: 680px) {
-      .header-inner {
-        flex-direction: column;
-        align-items: flex-start;
-      }
       .project-card {
-        padding: 1.25rem;
+        padding: 1.2rem;
       }
       .project-title {
-        font-size: 1.15rem;
+        font-size: 1.14rem;
       }
       .policy-mini-links {
         width: 100%;
@@ -410,14 +423,15 @@
 </head>
 <body>
 
+  <!-- 上部バー：濃色背景＋各アプリへ直接飛べる色付きボタン -->
   <header>
     <div class="header-inner">
       <a href="/" class="site-brand" id="ui-brand">わさびとからし</a>
-      <nav class="header-nav" aria-label="コンテンツ一覧">
-        <a href="#section-linealigned" class="header-nav-link" id="nav-linealigned">Line-aligned</a>
-        <a href="#section-tanka" class="header-nav-link" id="nav-tanka">Short Verse Studio</a>
-        <a href="#section-threekingdom" class="header-nav-link" id="nav-3k">地図と一緒によむ三国志</a>
-        <a href="#section-utamakura" class="header-nav-link" id="nav-uta">地図と一緒によむ奥の細道</a>
+      <nav class="header-nav" aria-label="Apps">
+        <a href="/linealigned/" class="header-nav-btn nav-la" id="nav-la">📄 Line-aligned ➔</a>
+        <a href="/tanka/" class="header-nav-btn nav-sv" id="nav-sv">🎬 Short Verse Studio ➔</a>
+        <a href="/threekingdom/" class="header-nav-btn nav-tk" id="nav-3k">🗺️ 地図と一緒によむ三国志 ➔</a>
+        <a href="/utamakura/" class="header-nav-btn nav-ut" id="nav-uta">🗾 地図と一緒によむ奥の細道 ➔</a>
       </nav>
       <div class="lang-bar" role="group" aria-label="Language">
         <button type="button" class="lang-btn active" data-lang="ja">日本語</button>
@@ -431,7 +445,7 @@
 
   <main>
     <section class="intro-box">
-      <h1 id="intro-title">わさびとからし</h1>
+      <h1 id="intro-title">わさびとからし (wasabikarashi.com)</h1>
       <p id="intro-desc">ブラウザ上で登録不要ですぐに使えるノート組版ツール・短詩動画生成スタジオと、古典の原文・書き下し文・現代語訳を地図と一緒に読み解く読書ノートを置いています。</p>
     </section>
 
@@ -439,19 +453,22 @@
 
       <!-- 1. Line-aligned -->
       <article id="section-linealigned" class="project-card">
-        <div class="project-header">
-          <h2 class="project-title"><a href="/linealigned/" id="la-title">Line-aligned（罫線・方眼ノート精密組版ツール）</a></h2>
-          <p class="project-subtitle" id="la-sub">文書・Word・Google ドキュメント™ をルーズリーフ罫線・方眼・原稿用紙に1pt単位で揃えてPDF出力</p>
+        <div class="project-top-row">
+          <div class="project-header">
+            <h2 class="project-title"><a href="/linealigned/" id="la-title">Line-aligned（罫線・方眼ノート精密組版ツール）</a></h2>
+            <p class="project-subtitle" id="la-sub">文書・Word・Google ドキュメント™ をルーズリーフ罫線・方眼・原稿用紙に1pt単位で揃えてPDF出力</p>
+          </div>
+          <a href="/linealigned/" class="btn-primary" id="la-btn-top">Web版スタジオを開く ➔</a>
         </div>
         <div class="project-body">
           <p id="la-p1">普段作成している文章や学習ノート、数式、表、画像を、A4・B5・Letterサイズのルーズリーフ罫線（6mm・7mm・7.5mm・8mm・方眼5mm・ドット罫線・縦書き）の行間にピタッと一致させてPDF化できる組版ツールです。Google アカウント不要でブラウザだけで完結するWeb版スタジオと、Google ドキュメント™ から直接起動できるアドオン版を提供しています。</p>
-          <ul class="feature-list" id="la-features">
-            <li><strong>ベースライングリッド完全同期:</strong> JIS X 4051（日本語組版規則）に基づき、見出し・本文・数式・表の行送りをノートの罫線ピッチへ自動スナップします。</li>
-            <li><strong>自由配置テキストボックス＆画像回り込み:</strong> 紙面上の好きな位置にメモ枠や図版を配置し、周囲の本文を罫線に沿って自動で回り込ませることができます。</li>
-            <li><strong>日・英・中・台・韓サンプル内蔵:</strong> ログイン不要で5言語混在の数式・グラフ入りサンプル原稿をワンクリックで試せます。</li>
+          <ul class="feature-list">
+            <li id="la-f1"><strong>ベースライングリッド完全同期:</strong> 見出し・本文・数式・表の行送りをノートの罫線ピッチへ自動スナップします。</li>
+            <li id="la-f2"><strong>自由配置テキストボックス＆画像回り込み:</strong> 紙面上の好きな位置にメモ枠や図版を配置し、周囲の本文を罫線に沿って自動で回り込ませます。</li>
+            <li id="la-f3"><strong>5言語サンプル原稿を内蔵:</strong> ログイン不要で「サンプルをセット」ボタン1つで数式・グラフ入り原稿の組版をその場で試せます。</li>
           </ul>
           <div class="action-links">
-            <a href="/linealigned/" class="btn-primary" id="la-btn-open">Web版スタジオを開く</a>
+            <a href="/linealigned/" class="btn-primary" id="la-btn-open">Web版スタジオを開く ➔</a>
             <a href="/linealigned/guide.html" class="btn-secondary" id="la-btn-guide">詳しい使い方・機能ガイド</a>
             <a href="https://workspace.google.com/marketplace/app/linealigned/435629186234" target="_blank" rel="noopener" class="btn-secondary">Google Workspace Marketplace</a>
             <span class="policy-mini-links">
@@ -464,19 +481,22 @@
 
       <!-- 2. Short Verse Studio -->
       <article id="section-tanka" class="project-card theme-tanka">
-        <div class="project-header">
-          <h2 class="project-title"><a href="/tanka/" id="sv-title">Short Verse Studio（短歌・俳句・漢詩・世界短詩の縦型動画生成スタジオ）</a></h2>
-          <p class="project-subtitle" id="sv-sub">短歌・俳句・絶句・時調・ルバイヤートなどの短詩を、1文字ずつ筆で書き進める縦型MP4動画に自動変換</p>
+        <div class="project-top-row">
+          <div class="project-header">
+            <h2 class="project-title"><a href="/tanka/" id="sv-title">Short Verse Studio（短歌・俳句・漢詩・世界短詩の縦型動画生成スタジオ）</a></h2>
+            <p class="project-subtitle" id="sv-sub">短歌・俳句・絶句・時調・ルバイヤートなどの短詩を、1文字ずつ筆で書き進める縦型MP4動画に自動変換</p>
+          </div>
+          <a href="/tanka/" class="btn-primary" id="sv-btn-top">Short Verse Studio を開く ➔</a>
         </div>
         <div class="project-body">
           <p id="sv-p1">自作の短歌（5・7・5・7・7）や俳句（5・7・5）、自由律俳句、漢詩（絶句）などの短い言葉をフォームに入力するだけで、和紙や四季の情景背景の上に1文字ずつ毛筆・明朝体で浮かび上がる高精細フルHD縦型動画（1080×1920 MP4）をブラウザ内で即座に生成できるスタジオです。</p>
-          <ul class="feature-list" id="sv-features">
-            <li><strong>世界9つの短詩ジャンルに対応:</strong> 俳句・短歌・漢詩（絶句）の縦書き組版に加え、韓国の時調（シジョ）、ペルシャのルバイヤート・ガザル、英語のリメリック・エピグラムにも対応しています。</li>
-            <li><strong>全16種類の背景テーマ:</strong> 伝統和紙、春の桜、夏の新緑、秋の紅葉、冬の雪椿、山水画、高麗青磁、星月夜など作品の世界観に合わせた背景をワンタップで選択できます。</li>
-            <li><strong>端末保存・SNS共有・YouTube Shorts™ 投稿:</strong> 生成したMP4動画はその場でスマホやPCに保存でき、X（旧Twitter）や Instagram 等への共有にも対応しています。</li>
+          <ul class="feature-list">
+            <li id="sv-f1"><strong>世界9つの短詩ジャンルに対応:</strong> 俳句・短歌・漢詩（絶句）の縦書きに加え、韓国の時調（シジョ）、ペルシャのルバイヤート・ガザル、英語のリメリック・エピグラムにも対応しています。</li>
+            <li id="sv-f2"><strong>全16種類の背景テーマ:</strong> 伝統和紙、春の桜、夏の新緑、秋の紅葉、冬の雪椿、山水画、高麗青磁、星月夜など16種の背景をワンタップで選択できます。</li>
+            <li id="sv-f3"><strong>MP4保存・SNS共有・YouTube Shorts™ 投稿:</strong> 生成した動画はその場で端末に保存でき、X（旧Twitter）等への共有にも対応しています。</li>
           </ul>
           <div class="action-links">
-            <a href="/tanka/" class="btn-primary" id="sv-btn-open">Short Verse Studio を開く</a>
+            <a href="/tanka/" class="btn-primary" id="sv-btn-open">Short Verse Studio を開く ➔</a>
             <span class="policy-mini-links">
               <a href="/tanka/privacy.html" id="sv-link-privacy">プライバシーポリシー</a>
               <a href="/tanka/terms.html" id="sv-link-terms">利用規約</a>
@@ -487,37 +507,40 @@
 
       <!-- 3. 地図と一緒によむ三国志 -->
       <article id="section-threekingdom" class="project-card theme-threekingdom">
-        <div class="project-header">
-          <h2 class="project-title"><a href="/threekingdom/" id="tk-title">地図と一緒によむ三国志</a></h2>
-          <p class="project-subtitle" id="tk-sub">陳寿『三國志』（正史・裴松之注）の原文・書き下し文・現代語訳と、当時の州郡・進軍ルート地図を連動</p>
+        <div class="project-top-row">
+          <div class="project-header">
+            <h2 class="project-title"><a href="/threekingdom/" id="tk-title">地図と一緒によむ三国志</a></h2>
+            <p class="project-subtitle" id="tk-sub">陳寿『三國志』（正史・裴松之注）の原文・書き下し文・現代語訳と、当時の州郡・進軍ルート地図を連動</p>
+          </div>
+          <a href="/threekingdom/" class="btn-primary" id="tk-btn-top">地図と一緒によむ三国志 を開く ➔</a>
         </div>
         <div class="project-body">
           <p id="tk-p1">歴史書『正史三國志』（陳寿撰・裴松之注）の本文と裴注を1段落ずつ丁寧に追いながら、そこに登場する都市・戦場・山河・進軍経路を左側の歴史地図上で同時に確認できる2ペイン構成のリーダーです。文中の地名をクリックすると地図がその地点へ移動し、人物名や官職・故事をクリックすると詳しい解説が表示されます。</p>
 
           <div class="subpage-box">
-            <div class="subpage-box-title" id="tk-vol-heading">現在公開中の巻（各巻へ直接移動できます）</div>
+            <div class="subpage-box-title" id="tk-vol-heading">現在公開中の巻（クリックで直接開きます）</div>
             <ul class="subpage-links">
               <li>
                 <a href="/threekingdom/vol01.html">
-                  <span id="tk-v1-title">巻1：魏書・武帝紀（曹操）</span>
+                  <span id="tk-v1-title">巻1：魏書・武帝紀（曹操） ➔</span>
                   <span class="subpage-desc" id="tk-v1-desc">黄巾の乱・董卓討伐から官渡の戦い・赤壁・魏公即位に至る曹操の一代記</span>
                 </a>
               </li>
               <li>
                 <a href="/threekingdom/vol17.html">
-                  <span id="tk-v17-title">巻17：魏書・張楽于張徐伝（五将軍伝）</span>
+                  <span id="tk-v17-title">巻17：魏書・張楽于張徐伝（五将軍伝） ➔</span>
                   <span class="subpage-desc" id="tk-v17-desc">張遼（合肥の戦い）・楽進・于禁・張郃・徐晃ら魏の五大将軍の戦歴</span>
                 </a>
               </li>
               <li>
                 <a href="/threekingdom/vol31.html">
-                  <span id="tk-v31-title">巻31：蜀書・劉二牧伝（劉焉・劉璋）</span>
+                  <span id="tk-v31-title">巻31：蜀書・劉二牧伝（劉焉・劉璋） ➔</span>
                   <span class="subpage-desc" id="tk-v31-desc">益州（巴蜀）の独立と、劉備による入蜀・成都包囲までの経緯</span>
                 </a>
               </li>
               <li>
                 <a href="/threekingdom/vol46.html">
-                  <span id="tk-v46-title">巻46：呉書・孫破虜討逆伝（孫堅・孫策）</span>
+                  <span id="tk-v46-title">巻46：呉書・孫破虜討逆伝（孫堅・孫策） ➔</span>
                   <span class="subpage-desc" id="tk-v46-desc">孫堅の奮戦と、孫策による劇的な江東平定戦の記録</span>
                 </a>
               </li>
@@ -525,26 +548,29 @@
           </div>
 
           <div class="action-links">
-            <a href="/threekingdom/" class="btn-primary" id="tk-btn-open">地図と一緒によむ三国志 を開く</a>
+            <a href="/threekingdom/" class="btn-primary" id="tk-btn-open">地図と一緒によむ三国志 を開く ➔</a>
           </div>
         </div>
       </article>
 
       <!-- 4. 地図と一緒によむ奥の細道 -->
       <article id="section-utamakura" class="project-card theme-utamakura">
-        <div class="project-header">
-          <h2 class="project-title"><a href="/utamakura/" id="ut-title">地図と一緒によむ奥の細道</a></h2>
-          <p class="project-subtitle" id="ut-sub">松尾芭蕉『おくのほそ道』の原文・読み・現代語訳と旅のルート地図、発句の縦書き動画再生が連動</p>
+        <div class="project-top-row">
+          <div class="project-header">
+            <h2 class="project-title"><a href="/utamakura/" id="ut-title">地図と一緒によむ奥の細道</a></h2>
+            <p class="project-subtitle" id="ut-sub">松尾芭蕉『おくのほそ道』の原文・読み・現代語訳と旅のルート地図、発句の縦書き動画再生が連動</p>
+          </div>
+          <a href="/utamakura/" class="btn-primary" id="ut-btn-top">地図と一緒によむ奥の細道 を開く ➔</a>
         </div>
         <div class="project-body">
           <p id="ut-p1">元禄二年（1689年）春、江戸・深川から奥州・北陸を経て大垣へと旅立った松尾芭蕉と門人・曽良の紀行文『おくのほそ道』を、実際の旅の経路・歌枕（名所・旧跡）ピンと照らし合わせながら読み進めるリーダーです。</p>
-          <ul class="feature-list" id="ut-features">
-            <li><strong>歌枕・史跡マップと本文の連動:</strong> 千住の船上がり、草加、室の八島、日光、白河の関、松島、平泉など、芭蕉が訪ねた各地の位置関係と距離感を地図上で直感的に把握できます。</li>
-            <li><strong>原文・現代仮名遣い読み・平易な現代語訳:</strong> 古文の言い回しや背景にある漢詩（李白・杜甫）・和歌（西行・能因）の典拠をわかりやすく解説しています。</li>
-            <li><strong>発句の縦書き動画ワンクリック再生:</strong> 作中に登場する名句の再生ボタンを押すと、Short Verse Studio と連動してその場で縦書き毛筆アニメーションを鑑賞できます。</li>
+          <ul class="feature-list">
+            <li id="ut-f1"><strong>歌枕・史跡マップと本文の連動:</strong> 千住、草加、室の八島、日光、白河の関、松島、平泉など、芭蕉が歩いた各地の位置関係と距離感を地図上で直感的に把握できます。</li>
+            <li id="ut-f2"><strong>原文・現代仮名遣い読み・平易な現代語訳:</strong> 古文の言い回しや背景にある漢詩（李白・杜甫）・和歌（西行・能因）の典拠をわかりやすく解説しています。</li>
+            <li id="ut-f3"><strong>発句の縦書き動画ワンクリック再生:</strong> 作中に登場する名句の再生ボタンを押すと、Short Verse Studio と連動してその場で縦書き毛筆アニメーションを鑑賞できます。</li>
           </ul>
           <div class="action-links">
-            <a href="/utamakura/" class="btn-primary" id="ut-btn-open">地図と一緒によむ奥の細道 を開く</a>
+            <a href="/utamakura/" class="btn-primary" id="ut-btn-open">地図と一緒によむ奥の細道 を開く ➔</a>
           </div>
         </div>
       </article>
@@ -574,136 +600,271 @@
     const PORTAL_I18N = {
       'ja': {
         brand: 'わさびとからし',
-        nav3k: '地図と一緒によむ三国志',
-        navUta: '地図と一緒によむ奥の細道',
-        introTitle: 'わさびとからし',
+        navLa: '📄 Line-aligned ➔',
+        navSv: '🎬 Short Verse Studio ➔',
+        nav3k: '🗺️ 地図と一緒によむ三国志 ➔',
+        navUta: '🗾 地図と一緒によむ奥の細道 ➔',
+        introTitle: 'わさびとからし (wasabikarashi.com)',
         introDesc: 'ブラウザ上で登録不要ですぐに使えるノート組版ツール・短詩動画生成スタジオと、古典の原文・書き下し文・現代語訳を地図と一緒に読み解く読書ノートを置いています。',
         laTitle: 'Line-aligned（罫線・方眼ノート精密組版ツール）',
         laSub: '文書・Word・Google ドキュメント™ をルーズリーフ罫線・方眼・原稿用紙に1pt単位で揃えてPDF出力',
         laP1: '普段作成している文章や学習ノート、数式、表、画像を、A4・B5・Letterサイズのルーズリーフ罫線（6mm・7mm・7.5mm・8mm・方眼5mm・ドット罫線・縦書き）の行間にピタッと一致させてPDF化できる組版ツールです。Google アカウント不要でブラウザだけで完結するWeb版スタジオと、Google ドキュメント™ から直接起動できるアドオン版を提供しています。',
-        laBtnOpen: 'Web版スタジオを開く',
+        laF1: '<strong>ベースライングリッド完全同期:</strong> 見出し・本文・数式・表の行送りをノートの罫線ピッチへ自動スナップします。',
+        laF2: '<strong>自由配置テキストボックス＆画像回り込み:</strong> 紙面上の好きな位置にメモ枠や図版を配置し、周囲の本文を罫線に沿って自動で回り込ませます。',
+        laF3: '<strong>5言語サンプル原稿を内蔵:</strong> ログイン不要で「サンプルをセット」ボタン1つで数式・グラフ入り原稿の組版をその場で試せます。',
+        laBtnOpen: 'Web版スタジオを開く ➔',
         laBtnGuide: '詳しい使い方・機能ガイド',
         svTitle: 'Short Verse Studio（短歌・俳句・漢詩・世界短詩の縦型動画生成スタジオ）',
         svSub: '短歌・俳句・絶句・時調・ルバイヤートなどの短詩を、1文字ずつ筆で書き進める縦型MP4動画に自動変換',
         svP1: '自作の短歌（5・7・5・7・7）や俳句（5・7・5）、自由律俳句、漢詩（絶句）などの短い言葉をフォームに入力するだけで、和紙や四季の情景背景の上に1文字ずつ毛筆・明朝体で浮かび上がる高精細フルHD縦型動画（1080×1920 MP4）をブラウザ内で即座に生成できるスタジオです。',
-        svBtnOpen: 'Short Verse Studio を開く',
+        svF1: '<strong>世界9つの短詩ジャンルに対応:</strong> 俳句・短歌・漢詩（絶句）の縦書きに加え、韓国の時調（シジョ）、ペルシャのルバイヤート・ガザル、英語のリメリック・エピグラムにも対応しています。',
+        svF2: '<strong>全16種類の背景テーマ:</strong> 伝統和紙、春の桜、夏の新緑、秋の紅葉、冬の雪椿、山水画、高麗青磁、星月夜など16種の背景をワンタップで選択できます。',
+        svF3: '<strong>MP4保存・SNS共有・YouTube Shorts™ 投稿:</strong> 生成した動画はその場で端末に保存でき、X（旧Twitter）等への共有にも対応しています。',
+        svBtnOpen: 'Short Verse Studio を開く ➔',
         tkTitle: '地図と一緒によむ三国志',
         tkSub: '陳寿『三國志』（正史・裴松之注）の原文・書き下し文・現代語訳と、当時の州郡・進軍ルート地図を連動',
         tkP1: '歴史書『正史三國志』（陳寿撰・裴松之注）の本文と裴注を1段落ずつ丁寧に追いながら、そこに登場する都市・戦場・山河・進軍経路を左側の歴史地図上で同時に確認できる2ペイン構成のリーダーです。文中の地名をクリックすると地図がその地点へ移動し、人物名や官職・故事をクリックすると詳しい解説が表示されます。',
-        tkVolHeading: '現在公開中の巻（各巻へ直接移動できます）',
-        tkBtnOpen: '地図と一緒によむ三国志 を開く',
+        tkVolHeading: '現在公開中の巻（クリックで直接開きます）',
+        tkV1Title: '巻1：魏書・武帝紀（曹操） ➔',
+        tkV1Desc: '黄巾の乱・董卓討伐から官渡の戦い・赤壁・魏公即位に至る曹操の一代記',
+        tkV17Title: '巻17：魏書・張楽于張徐伝（五将軍伝） ➔',
+        tkV17Desc: '張遼（合肥の戦い）・楽進・于禁・張郃・徐晃ら魏の五大将軍の戦歴',
+        tkV31Title: '巻31：蜀書・劉二牧伝（劉焉・劉璋） ➔',
+        tkV31Desc: '益州（巴蜀）の独立と、劉備による入蜀・成都包囲までの経緯',
+        tkV46Title: '巻46：呉書・孫破虜討逆伝（孫堅・孫策） ➔',
+        tkV46Desc: '孫堅の奮戦と、孫策による劇的な江東平定戦の記録',
+        tkBtnOpen: '地図と一緒によむ三国志 を開く ➔',
         utTitle: '地図と一緒によむ奥の細道',
         utSub: '松尾芭蕉『おくのほそ道』の原文・読み・現代語訳と旅のルート地図、発句の縦書き動画再生が連動',
         utP1: '元禄二年（1689年）春、江戸・深川から奥州・北陸を経て大垣へと旅立った松尾芭蕉と門人・曽良の紀行文『おくのほそ道』を、実際の旅の経路・歌枕（名所・旧跡）ピンと照らし合わせながら読み進めるリーダーです。',
-        utBtnOpen: '地図と一緒によむ奥の細道 を開く',
+        utF1: '<strong>歌枕・史跡マップと本文の連動:</strong> 千住、草加、室の八島、日光、白河の関、松島、平泉など、芭蕉が歩いた各地の位置関係と距離感を地図上で直感的に把握できます。',
+        utF2: '<strong>原文・現代仮名遣い読み・平易な現代語訳:</strong> 古文の言い回しや背景にある漢詩（李白・杜甫）・和歌（西行・能因）の典拠をわかりやすく解説しています。',
+        utF3: '<strong>発句の縦書き動画ワンクリック再生:</strong> 作中に登場する名句の再生ボタンを押すと、Short Verse Studio と連動してその場で縦書き毛筆アニメーションを鑑賞できます。',
+        utBtnOpen: '地図と一緒によむ奥の細道 を開く ➔',
+        edHeading: '当サイトの制作方針と特徴について',
+        edH1: '1. 文字組版と読みやすさへのこだわり',
+        edP1: 'デジタル画面上のテキストであっても、紙のノートや書籍のように「行間と文字の並びが整っていること」「縦書き・横書きそれぞれの美しさが保たれていること」を重視して開発しています。「Line-aligned」では実際のルーズリーフノートのミリ単位の罫線ピッチに文章を一致させる計算エンジンを搭載し、「Short Verse Studio」では句や歌の文字数に応じて全体のフォントサイズと字間を自動調整する縦書き描画エンジンを採用しています。',
+        edH2: '2. 古典文学を「地理（空間）」と結びつけて読む体験',
+        edP2: '『三國志』のような歴史記録や『おくのほそ道』のような紀行文学には、数多くの地名・河川・関所・街道が登場します。文字だけでは想像しにくい「どこからどこへ移動したのか」「なぜその土地が戦略上または文学上重要だったのか」を地図上のピンとルート線で可視化することで、古典をより深く、立体的に味わえる読書環境を目指しています。',
+        ftTitle: 'サイト共通ポリシー・免責事項',
+        ftBody: '当サイト（wasabikarashi.com）では、アクセス解析のために Google Analytics を、また広告配信および関連書籍紹介のために Google AdSense・楽天アフィリエイト等を利用しています（Cookie を通じて匿名のトラフィックデータを収集しますが、個人を特定する情報は含まれません。ブラウザ設定や Google の広告設定からパーソナライズ広告を無効にすることが可能です）。各Webツール（Line-aligned / Short Verse Studio）におけるAPI利用規約・プライバシーポリシーは各ツール内のページをご確認ください。',
+        ftContact: 'お問い合わせ連絡先: <code>shintanikarashi@gmail.com</code>',
         privacy: 'プライバシーポリシー',
         terms: '利用規約'
       },
       'en': {
         brand: 'Wasabi & Karashi',
-        nav3k: 'Records of the Three Kingdoms Map',
-        navUta: 'Oku no Hosomichi Poetic Map',
+        navLa: '📄 Line-aligned ➔',
+        navSv: '🎬 Short Verse Studio ➔',
+        nav3k: '🗺️ Three Kingdoms Map ➔',
+        navUta: '🗾 Oku no Hosomichi Map ➔',
         introTitle: 'Wasabi & Karashi (wasabikarashi.com)',
         introDesc: 'Free, no-signup web tools for ruled-notebook PDF typesetting and short poetry video generation, alongside interactive historical map readers for East Asian classics.',
         laTitle: 'Line-aligned (Precision Ruled-Line & Grid Notebook Typesetting)',
         laSub: 'Align Word (.docx), Google Docs™, and PDFs onto loose-leaf ruled lines and grids with 1pt precision',
         laP1: 'Typeset your documents, study notes, math equations, tables, and figures directly onto A4, B5, or Letter ruled notebooks (6mm, 7mm, 7.5mm, 8mm, 5mm grid, dot grid, and vertical script). Available immediately in your browser with no Google sign-in required, or as a Google Docs™ add-on.',
-        laBtnOpen: 'Open Web Studio',
+        laF1: '<strong>Baseline Grid Synchronization:</strong> Automatically snaps headings, body text, math formulas, and tables onto exact notebook line pitches.',
+        laF2: '<strong>Floating Text Boxes & Image Wrapping:</strong> Place callout boxes and figures anywhere on the page with automatic ruled-line text wrapping.',
+        laF3: '<strong>Built-in 5-Language STEM Sample:</strong> Click "Load Sample" to test math equations, physics plots, and tables in your browser with zero login.',
+        laBtnOpen: 'Open Web Studio ➔',
         laBtnGuide: 'User Guide & Features',
         svTitle: 'Short Verse Studio (Vertical & Multilingual Poetry Video Maker)',
         svSub: 'Turn Haiku, Tanka, Jueju, Sijo, Rubaiyat, Ghazal, and Epigrams into 1080×1920 MP4 videos',
         svP1: 'Enter your short poem and watch each character appear stroke by stroke over 16 seasonal and traditional paper backgrounds. Exports high-definition vertical MP4 videos directly in your browser.',
-        svBtnOpen: 'Open Short Verse Studio',
+        svF1: '<strong>9 World Poetry Genres:</strong> Supports Japanese Haiku & Tanka, Chinese Jueju, Korean Sijo, Persian Rubaiyat & Ghazal (RTL), and English Limerick & Epigram.',
+        svF2: '<strong>16 Seasonal & Artistic Backgrounds:</strong> Choose from Washi paper, Sakura, Autumn leaves, Ink landscape, Celadon, Starry night, and more.',
+        svF3: '<strong>Instant MP4 Download & Share:</strong> Save full-HD 1080×1920 MP4 videos to your device or share directly to X, Instagram, and YouTube Shorts™.',
+        svBtnOpen: 'Open Short Verse Studio ➔',
         tkTitle: 'Reading the Three Kingdoms with Maps (正史三國志)',
         tkSub: 'Chen Shou’s Records of the Three Kingdoms & Pei Songzhi’s Annotations linked with historical maps',
         tkP1: 'A dual-pane classical reader pairing the original Chinese text, Japanese reading, and modern translation with an interactive Leaflet map of provinces, battlefields, and troop movements.',
-        tkVolHeading: 'Available Volumes (Direct Links)',
-        tkBtnOpen: 'Open Three Kingdoms Map Reader',
+        tkVolHeading: 'Available Volumes (Click to Open Directly)',
+        tkV1Title: 'Vol. 1: Annals of Emperor Wu (Cao Cao) ➔',
+        tkV1Desc: 'Cao Cao’s rise from the Yellow Turban Rebellion through Guandu, Red Cliffs, and Duke of Wei',
+        tkV17Title: 'Vol. 17: The Five Elite Generals of Wei ➔',
+        tkV17Desc: 'Campaigns of Zhang Liao (Battle of Hefei), Yue Jin, Yu Jin, Zhang He, and Xu Huang',
+        tkV31Title: 'Vol. 31: The Two Governors of Yi Province (Liu Yan & Liu Zhang) ➔',
+        tkV31Desc: 'Governance of Bashu (Sichuan) and Liu Bei’s campaign into Chengdu',
+        tkV46Title: 'Vol. 46: Biographies of Sun Jian & Sun Ce ➔',
+        tkV46Desc: 'Sun Jian’s battles and Sun Ce’s rapid conquest of Jiangdong (Wu)',
+        tkBtnOpen: 'Open Three Kingdoms Map Reader ➔',
         utTitle: 'Reading Oku no Hosomichi with Maps (奥の細道)',
         utSub: 'Matsuo Basho’s Narrow Road to the Deep North linked with travel routes and Haiku video playback',
         utP1: 'Follow Matsuo Basho’s 1689 journey from Edo through northern Japan on an interactive map, complete with original text, commentary, and one-click vertical Haiku video animations.',
-        utBtnOpen: 'Open Oku no Hosomichi Reader',
+        utF1: '<strong>Interactive Route & Utamakura Pins:</strong> Trace Basho and Sora’s footsteps across Senju, Nikko, Shirakawa Barrier, Matsushima, and Hiraizumi.',
+        utF2: '<strong>Classical Text & Poetic Allusions:</strong> Includes original text, modern Japanese translation, and notes on Chinese poetry (Li Bai, Du Fu) and Waka.',
+        utF3: '<strong>One-Click Haiku Video Playback:</strong> Click any Haiku in the text to play a vertical brush-stroke animation powered by Short Verse Studio.',
+        utBtnOpen: 'Open Oku no Hosomichi Reader ➔',
+        edHeading: 'Design Philosophy & Features',
+        edH1: '1. Precision Digital Typesetting',
+        edP1: 'We build web tools that bring print-grade baseline alignment and vertical/horizontal calligraphy to the browser. Line-aligned calculates millimeter-accurate ruled-line grids, while Short Verse Studio dynamically balances font sizing and character spacing across 9 poetic traditions.',
+        edH2: '2. Reading Classical Literature Through Geography',
+        edP2: 'Historical chronicles and travel diaries come alive when you can see every city, mountain pass, river, and marching route on a map alongside the primary text.',
+        ftTitle: 'Site Policy & Disclaimer',
+        ftBody: 'This site (wasabikarashi.com) uses Google Analytics for traffic analysis and Google AdSense / affiliate programs for advertising. Cookies are used to collect anonymous traffic data without identifying individuals. For API terms regarding Line-aligned and Short Verse Studio, please refer to each tool’s policy links.',
+        ftContact: 'Contact: <code>shintanikarashi@gmail.com</code>',
         privacy: 'Privacy Policy',
         terms: 'Terms of Service'
       },
       'zh-CN': {
         brand: 'わさびとからし (Wasabi & Karashi)',
-        nav3k: '配图共读三国志',
-        navUta: '配图共读奥之细道',
+        navLa: '📄 Line-aligned ➔',
+        navSv: '🎬 Short Verse Studio ➔',
+        nav3k: '🗺️ 配图共读三国志 ➔',
+        navUta: '🗾 配图共读奥之细道 ➔',
         introTitle: 'わさびとからし (wasabikarashi.com)',
-        introDesc: '无需注册即可在浏览器中使用的横线方格笔记排版工具、短诗竖屏视频生成工作室，以及结合历史地图共读古典名著的数字阅读笔记。',
+        introDesc: '无需注册即可在浏览器中直接使用的横线方格笔记排版工具、短诗竖屏视频生成工作室，以及结合历史地图共读古典名著的数字阅读器。',
         laTitle: 'Line-aligned（横线与方格活页笔记精密排版工具）',
         laSub: '将 Word (.docx)、Google 文档™ 与 PDF 精准对齐至活页横线与方格纸并导出 PDF',
         laP1: '将日常文档、学习笔记、数学公式、表格与图片精准对齐至 A4/B5 活页横线（6mm/7mm/7.5mm/8mm/5mm方格/点阵/竖排）行距。支持免登录网页版工作室及 Google 文档™ 插件版。',
-        laBtnOpen: '打开网页版工作室',
+        laF1: '<strong>基线网格完全同步：</strong> 标题、正文、数学公式与表格自动对齐至活页纸横线间距。',
+        laF2: '<strong>自由文本框与图文环绕：</strong> 在页面任意位置放置批注框或图表，周围正文沿横线自动环绕。',
+        laF3: '<strong>内置5语言数理样本：</strong> 免登录点击“加载样本”即可立即体验包含公式与图表的排版效果。',
+        laBtnOpen: '打开网页版工作室 ➔',
         laBtnGuide: '详细功能指南',
         svTitle: 'Short Verse Studio（短歌・俳句・绝句・世界短诗竖屏视频生成）',
         svSub: '将绝句、俳句、短歌、时调、鲁拜集等短诗自动转化为逐字书写的全高清 MP4 视频',
         svP1: '只需输入绝句（五言/七言）、俳句或短歌，即可在山水画、红梅、四季和纸等16种背景上生成逐字浮现的 1080×1920 竖屏 MP4 视频。',
-        svBtnOpen: '打开 Short Verse Studio',
+        svF1: '<strong>支持世界9大短诗体裁：</strong> 涵盖汉诗绝句、俳句、短歌竖排，以及韩国时调、波斯鲁拜集与英诗。',
+        svF2: '<strong>16种传统与四季背景：</strong> 水墨山水、红梅、和纸、樱花、红叶、高丽青磁、星月夜等一键切换。',
+        svF3: '<strong>直接保存 MP4 与分享：</strong> 在浏览器内高速合成高清 MP4 视频，支持直接下载或分享至社交平台。',
+        svBtnOpen: '打开 Short Verse Studio ➔',
         tkTitle: '配图共读三国志（陈寿《三国志》正史地图阅读器）',
         tkSub: '《三国志》原文、训读、现代译文与汉末三国州郡、行军路线地图实时联动',
         tkP1: '左图右史双栏设计，逐段研读陈寿《三国志》正文与裴松之注。点击文中地名即可在地图上定位城池与战场，点击人物或官职即可查看详细考证。',
-        tkVolHeading: '目前已公开卷目（点击直接阅读）',
-        tkBtnOpen: '打开《三国志》地图阅读器',
+        tkVolHeading: '目前已公开卷目（点击直接打开）',
+        tkV1Title: '卷1：魏书・武帝纪（曹操） ➔',
+        tkV1Desc: '从黄巾起义、讨伐董卓到官渡之战、赤壁、进爵魏公的曹操本纪',
+        tkV17Title: '卷17：魏书・张乐于张徐传（五子良将） ➔',
+        tkV17Desc: '张辽（合肥之战）、乐进、于禁、张郃、徐晃五位曹魏名将战史',
+        tkV31Title: '卷31：蜀书・刘二牧传（刘焉・刘璋） ➔',
+        tkV31Desc: '益州巴蜀割据与刘备入蜀进围成都的完整经过',
+        tkV46Title: '卷46：吴书・孙破虏讨逆传（孙坚・孙策） ➔',
+        tkV46Desc: '孙坚讨伐董卓与孙策平定江东六郡的战役记录',
+        tkBtnOpen: '打开《三国志》地图阅读器 ➔',
         utTitle: '配图共读奥之细道（松尾芭蕉纪行地图）',
         utSub: '松尾芭蕉《奥之细道》原文、译注与旅程路线图及俳句竖排动画联动',
-        utP1: '沿着1689年松尾芭蕉从江户深川出发游历奥州与北陆的足迹，在地图上直观查看名胜歌枕，并可一键播放剧中名句的毛笔竖排视频。',
-        utBtnOpen: '打开《奥之细道》地图阅读器',
+        utP1: '沿着1689年松尾芭蕉从江户深川出发游历奥州与北陆的足迹，在地图上直观查看名胜歌枕，并可一键播放文中名句的毛笔竖排视频。',
+        utF1: '<strong>名胜歌枕地图联动：</strong> 直观展示千住、日光、白河关、松岛、平泉等芭蕉行脚路线。',
+        utF2: '<strong>原文、读音与典故解析：</strong> 详尽解析文中引用的李白、杜甫汉诗及日本古歌典故。',
+        utF3: '<strong>俳句竖排视频一键播放：</strong> 点击文中俳句即可联动 Short Verse Studio 播放毛笔动画。',
+        utBtnOpen: '打开《奥之细道》地图阅读器 ➔',
+        edHeading: '网站设计理念与特色',
+        edH1: '1. 专注于数字文字排版与阅读美感',
+        edP1: '无论是活页横线笔记的毫米级行距对齐，还是汉诗、俳句、短歌的竖排字距均衡，我们致力于在浏览器中重现纸质书籍与书法的整洁美感。',
+        edH2: '2. 左图右史：将古典文学与地理空间相结合',
+        edP2: '通过交互式地图将《三国志》的州郡战场与《奥之细道》的名胜古迹可视化，让读者在空间移动中立体读懂古典。',
+        ftTitle: '网站政策与免责声明',
+        ftBody: '本站（wasabikarashi.com）使用 Google Analytics 进行访问统计，并使用 Google AdSense 等展示广告。各工具的 API 隐私政策与服务条款请参阅对应页面链接。',
+        ftContact: '联系邮箱: <code>shintanikarashi@gmail.com</code>',
         privacy: '隐私政策',
         terms: '服务条款'
       },
       'zh-TW': {
         brand: 'わさびとからし (Wasabi & Karashi)',
-        nav3k: '配圖共讀三國志',
-        navUta: '配圖共讀奧之細道',
+        navLa: '📄 Line-aligned ➔',
+        navSv: '🎬 Short Verse Studio ➔',
+        nav3k: '🗺️ 配圖共讀三國志 ➔',
+        navUta: '🗾 配圖共讀奧之細道 ➔',
         introTitle: 'わさびとからし (wasabikarashi.com)',
-        introDesc: '免註冊即可在瀏覽器中使用的橫線方格筆記排版工具、短詩直式影片生成工作室，以及結合歷史地圖共讀古典名著的數位閱讀筆記。',
+        introDesc: '免註冊即可在瀏覽器中直接使用的橫線方格筆記排版工具、短詩直式影片生成工作室，以及結合歷史地圖共讀古典名著的數位閱讀器。',
         laTitle: 'Line-aligned（橫線與方格活頁筆記精密排版工具）',
         laSub: '將 Word (.docx)、Google 文件™ 與 PDF 精準對齊至活頁橫線與方格紙並匯出 PDF',
         laP1: '將日常文件、學習筆記、數學公式、表格與圖片精準對齊至 A4/B5 活頁橫線（6mm/7mm/7.5mm/8mm/5mm方格/點陣/直書）行距。支援免登入網頁版工作室及 Google 文件™ 外掛版。',
-        laBtnOpen: '開啟網頁版工作室',
+        laF1: '<strong>基線網格完全同步：</strong> 標題、內文、數學公式與表格自動對齊至活頁紙橫線間距。',
+        laF2: '<strong>自由文字框與文繞圖：</strong> 在頁面任意位置放置註解框或圖表，周圍內文沿橫線自動環繞。',
+        laF3: '<strong>內建5語言數理範本：</strong> 免登入點擊「載入範本」即可立即體驗包含公式與圖表的排版效果。',
+        laBtnOpen: '開啟網頁版工作室 ➔',
         laBtnGuide: '詳細功能指南',
         svTitle: 'Short Verse Studio（短歌・俳句・絕句・世界短詩直式影片生成）',
         svSub: '將絕句、俳句、短歌、時調、魯拜集等短詩自動轉化為逐字書寫的全高清 MP4 影片',
         svP1: '只需輸入絕句（五言/七言）、俳句或短歌，即可在山水畫、紅梅、四季和紙等16種背景上生成逐字浮現的 1080×1920 直式 MP4 影片。',
-        svBtnOpen: '開啟 Short Verse Studio',
+        svF1: '<strong>支援世界9大短詩體裁：</strong> 涵蓋漢詩絕句、俳句、短歌直書，以及韓國時調、波斯魯拜集與英詩。',
+        svF2: '<strong>16種傳統與四季背景：</strong> 水墨山水、紅梅、和紙、櫻花、紅葉、高麗青磁、星月夜等一鍵切換。',
+        svF3: '<strong>直接儲存 MP4 與分享：</strong> 在瀏覽器內高速合成高清 MP4 影片，支援直接下載或分享至社群平台。',
+        svBtnOpen: '開啟 Short Verse Studio ➔',
         tkTitle: '配圖共讀三國志（陳壽《三國志》正史地圖閱讀器）',
         tkSub: '《三國志》原文、訓讀、現代譯文與漢末三國州郡、行軍路線地圖即時連動',
         tkP1: '左圖右史雙欄設計，逐段研讀陳壽《三國志》正文與裴松之注。點擊文中地名即可在地圖上定位城池與戰場，點擊人物或官職即可查看詳細考證。',
-        tkVolHeading: '目前已公開卷目（點擊直接閱讀）',
-        tkBtnOpen: '開啟《三國志》地圖閱讀器',
+        tkVolHeading: '目前已公開卷目（點擊直接開啟）',
+        tkV1Title: '卷1：魏書・武帝紀（曹操） ➔',
+        tkV1Desc: '從黃巾之亂、討伐董卓到官渡之戰、赤壁、進爵魏公的曹操本紀',
+        tkV17Title: '卷17：魏書・張樂于張徐傳（五子良將） ➔',
+        tkV17Desc: '張遼（合肥之戰）、樂進、于禁、張郃、徐晃五位曹魏名將戰史',
+        tkV31Title: '卷31：蜀書・劉二牧傳（劉焉・劉璋） ➔',
+        tkV31Desc: '益州巴蜀割據與劉備入蜀進圍成都的完整經過',
+        tkV46Title: '卷46：吳書・孫破虜討逆傳（孫堅・孫策） ➔',
+        tkV46Desc: '孫堅討伐董卓與孫策平定江東六郡的戰役記錄',
+        tkBtnOpen: '開啟《三國志》地圖閱讀器 ➔',
         utTitle: '配圖共讀奧之細道（松尾芭蕉紀行地圖）',
         utSub: '松尾芭蕉《奧之細道》原文、譯注與旅程路線圖及俳句直書動畫連動',
-        utP1: '沿著1689年松尾芭蕉從江戶深川出發遊歷奧州與北陸的足跡，在地圖上直觀查看名勝歌枕，並可一鍵播放劇中名句的毛筆直書影片。',
-        utBtnOpen: '開啟《奧之細道》地圖閱讀器',
+        utP1: '沿著1689年松尾芭蕉從江戶深川出發遊歷奧州與北陸的足跡，在地圖上直觀查看名勝歌枕，並可一鍵播放文中名句的毛筆直書影片。',
+        utF1: '<strong>名勝歌枕地圖連動：</strong> 直觀展示千住、日光、白河關、松島、平泉等芭蕉行腳路線。',
+        utF2: '<strong>原文、讀音與典故解析：</strong> 詳盡解析文中引用的李白、杜甫漢詩及日本古歌典故。',
+        utF3: '<strong>俳句直書影片一鍵播放：</strong> 點擊文中俳句即可連動 Short Verse Studio 播放毛筆動畫。',
+        utBtnOpen: '開啟《奧之細道》地圖閱讀器 ➔',
+        edHeading: '網站設計理念與特色',
+        edH1: '1. 專注於數位文字排版與閱讀美感',
+        edP1: '無論是活頁橫線筆記的毫米級行距對齊，還是漢詩、俳句、短歌的直書字距均衡，我們致力於在瀏覽器中重現紙本書籍與書法的整潔美感。',
+        edH2: '2. 左圖右史：將古典文學與地理空間相結合',
+        edP2: '透過互動式地圖將《三國志》的州郡戰場與《奧之細道》的名勝古蹟視覺化，讓讀者在空間移動中立體讀懂古典。',
+        ftTitle: '網站政策與免責聲明',
+        ftBody: '本站（wasabikarashi.com）使用 Google Analytics 進行訪問統計，並使用 Google AdSense 等展示廣告。各工具的 API 隱私權政策與服務條款請參閱對應頁面連結。',
+        ftContact: '聯絡信箱: <code>shintanikarashi@gmail.com</code>',
         privacy: '隱私權政策',
         terms: '服務條款'
       },
       'ko': {
-        brand: '와사비와 카라시 (わさびとからし)',
-        nav3k: '지도와 함께 읽는 삼국지',
-        navUta: '지도와 함께 읽는 오쿠노 호소미치',
+        brand: '와사비와 카라시',
+        navLa: '📄 Line-aligned ➔',
+        navSv: '🎬 Short Verse Studio ➔',
+        nav3k: '🗺️ 지도와 함께 읽는 삼국지 ➔',
+        navUta: '🗾 지도와 함께 읽는 오쿠노 호소미치 ➔',
         introTitle: '와사비와 카라시 (wasabikarashi.com)',
         introDesc: '가입 없이 브라우저에서 바로 사용하는 줄공책·방안지 정밀 조판 도구, 단시(시조·하이쿠·단가·한시) 세로형 영상 스튜디오, 그리고 역사 지도와 함께 읽는 고전 리더를 공개하고 있습니다.',
         laTitle: 'Line-aligned（줄공책·방안지 정밀 조판 도구）',
         laSub: 'Word(.docx), Google 문서™, PDF를 루즈리프 줄공책 및 방안지 줄 간격에 1pt 단위로 맞춰 PDF 출력',
         laP1: '문서, 학습 노트, 수식, 표, 이미지를 A4·B5 루즈리프 줄공책(6mm·7mm·7.5mm·8mm·5mm 방안·도트·세로쓰기) 줄 간격에 정확히 맞춰 PDF로 변환합니다. 로그인 없이 바로 쓰는 웹 스튜디오와 Google 문서™ 부가기능을 제공합니다.',
-        laBtnOpen: '웹 스튜디오 열기',
+        laF1: '<strong>베이스라인 그리드 완전 동기화:</strong> 제목, 본문, 수식, 표의 줄 간격을 공책 줄에 자동으로 맞춥니다.',
+        laF2: '<strong>자유 텍스트 상자 및 이미지 둘러싸기:</strong> 원하는 위치에 메모 상자나 도표를 배치하고 본문을 줄에 맞춰 자동 배치합니다.',
+        laF3: '<strong>5개 국어 수식·그래프 샘플 내장:</strong> 로그인 없이 "샘플 불러오기" 버튼 하나로 즉시 조판을 체험할 수 있습니다.',
+        laBtnOpen: '웹 스튜디오 열기 ➔',
         laBtnGuide: '상세 사용 가이드',
         svTitle: 'Short Verse Studio（시조·단가·하이쿠·한시 세로형 영상 스튜디오）',
         svSub: '시조, 하이쿠, 단가, 절구, 루바이야트 등 짧은 시를 한 글자씩 써 내려가는 Full HD MP4 영상으로 변환',
         svP1: '시조(초장·중장·종장), 하이쿠, 단가, 한시 등을 입력하면 한지·고려청자·사계절 배경 위에 한 글자씩 붓글씨처럼 나타나는 1080×1920 세로형 MP4 영상을 브라우저에서 즉시 생성합니다.',
-        svBtnOpen: 'Short Verse Studio 열기',
+        svF1: '<strong>세계 9개 단시 장르 지원:</strong> 한국 시조(가로쓰기 균등 조판)를 비롯해 하이쿠, 단가, 한시 절구, 루바이야트, 영시를 지원합니다.',
+        svF2: '<strong>16가지 전통 및 사계절 배경:</strong> 한지·고려청자, 수묵 산수, 봄 벚꽃, 가을 단풍, 별이 빛나는 밤 등 16종 배경을 선택할 수 있습니다.',
+        svF3: '<strong>MP4 저장 및 SNS 공유:</strong> 생성된 영상을 즉시 기기에 저장하거나 X, Instagram, YouTube Shorts™에 공유할 수 있습니다.',
+        svBtnOpen: 'Short Verse Studio 열기 ➔',
         tkTitle: '지도와 함께 읽는 삼국지（정사 삼국지 역사지도 리더）',
         tkSub: '진수 『삼국지』(정사·배송지주) 원문·해석과 당시 주군·진군 루트 지도를 실시간 연동',
         tkP1: '정사 『삼국지』 본문과 배송지 주석을 한 단락씩 읽으면서 등장하는 도시, 전장, 이동 경로를 왼쪽 역사 지도에서 동시에 확인할 수 있는 2페인 리더입니다.',
-        tkVolHeading: '현재 공개 중인 권 (직접 이동)',
-        tkBtnOpen: '삼국지 지도 리더 열기',
+        tkVolHeading: '현재 공개 중인 권 (클릭하여 바로 열기)',
+        tkV1Title: '권1：위서·무제기 (조조) ➔',
+        tkV1Desc: '황건적의 난·동탁 토벌부터 관도대전·적벽·위공 즉위에 이르는 조조의 일대기',
+        tkV17Title: '권17：위서·장악우장서전 (오자양장) ➔',
+        tkV17Desc: '장료(합비 전투)·악진·우금·장합·서황 등 위나라 5대 명장의 전적',
+        tkV31Title: '권31：촉서·유이목전 (유언·유장) ➔',
+        tkV31Desc: '익주(파촉)의 독립과 유비의 입촉·성도 포위까지의 경위',
+        tkV46Title: '권46：오서·손파로토역전 (손견·손책) ➔',
+        tkV46Desc: '손견의 분전과 손책의 극적인 강동 평정전 기록',
+        tkBtnOpen: '삼국지 지도 리더 열기 ➔',
         utTitle: '지도와 함께 읽는 오쿠노 호소미치（마쓰오 바쇼 기행 지도）',
         utSub: '마쓰오 바쇼 『오쿠노 호소미치』 원문·해설과 여정 지도 및 하이쿠 세로쓰기 영상 재생 연동',
         utP1: '1689년 에도 후카가와를 출발해 오슈와 호쿠리쿠를 여행한 마쓰오 바쇼의 기행문을 실제 경로 핀과 대조하며 읽고, 명구(하이쿠)를 원클릭으로 세로쓰기 영상으로 감상할 수 있습니다.',
-        utBtnOpen: '오쿠노 호소미치 리더 열기',
+        utF1: '<strong>명소(우타마쿠라) 지도와 본문 연동:</strong> 센주, 닛코, 시라카와 관문, 마쓰시마, 히라이즈미 등 바쇼의 여정을 지도에서 직관적으로 확인합니다.',
+        utF2: '<strong>원문·현대어 역 및 고전 출전 해설:</strong> 이백·두보의 한시와 일본 고가(와카)의 배경을 알기 쉽게 해설합니다.',
+        utF3: '<strong>하이쿠 세로쓰기 영상 원클릭 재생:</strong> 작품 속 명구의 재생 버튼을 누르면 Short Verse Studio와 연동되어 붓글씨 애니메이션이 재생됩니다.',
+        utBtnOpen: '오쿠노 호소미치 리더 열기 ➔',
+        edHeading: '사이트 제작 방침 및 특징',
+        edH1: '1. 정밀한 디지털 조판과 가독성',
+        edP1: '디지털 화면에서도 종이 공책이나 서적처럼 줄 간격과 글자 배열이 정돈된 조판을 추구합니다. Line-aligned는 실제 루즈리프 줄 간격에 맞춘 조판 엔진을, Short Verse Studio는 글자 수에 맞춰 폰트 크기와 자간을 자동 조절하는 엔진을 탑재하고 있습니다.',
+        edH2: '2. 고전 문학을 지리(공간)와 결합하여 읽는 체험',
+        edP2: '『삼국지』나 『오쿠노 호소미치』에 등장하는 수많은 지명과 이동 경로를 지도 위의 핀과 루트 선으로 시각화하여 고전을 더욱 입체적으로 즐길 수 있습니다.',
+        ftTitle: '사이트 공통 정책 및 면책사항',
+        ftBody: '본 사이트(wasabikarashi.com)는 방문 분석을 위해 Google Analytics를, 광고 게재를 위해 Google AdSense 등을 사용합니다. 각 웹 도구의 API 개인정보처리방침 및 이용약관은 해당 페이지의 링크를 확인해 주세요.',
+        ftContact: '문의 이메일: <code>shintanikarashi@gmail.com</code>',
         privacy: '개인정보처리방침',
         terms: '이용약관'
       }
@@ -713,6 +874,8 @@
       const d = PORTAL_I18N[lang] || PORTAL_I18N['ja'];
       document.documentElement.lang = lang;
       document.getElementById('ui-brand').textContent = d.brand;
+      document.getElementById('nav-la').textContent = d.navLa;
+      document.getElementById('nav-sv').textContent = d.navSv;
       document.getElementById('nav-3k').textContent = d.nav3k;
       document.getElementById('nav-uta').textContent = d.navUta;
       document.getElementById('intro-title').textContent = d.introTitle;
@@ -721,6 +884,10 @@
       document.getElementById('la-title').textContent = d.laTitle;
       document.getElementById('la-sub').textContent = d.laSub;
       document.getElementById('la-p1').textContent = d.laP1;
+      document.getElementById('la-f1').innerHTML = d.laF1;
+      document.getElementById('la-f2').innerHTML = d.laF2;
+      document.getElementById('la-f3').innerHTML = d.laF3;
+      document.getElementById('la-btn-top').textContent = d.laBtnOpen;
       document.getElementById('la-btn-open').textContent = d.laBtnOpen;
       document.getElementById('la-btn-guide').textContent = d.laBtnGuide;
       document.getElementById('la-link-privacy').textContent = d.privacy;
@@ -729,6 +896,10 @@
       document.getElementById('sv-title').textContent = d.svTitle;
       document.getElementById('sv-sub').textContent = d.svSub;
       document.getElementById('sv-p1').textContent = d.svP1;
+      document.getElementById('sv-f1').innerHTML = d.svF1;
+      document.getElementById('sv-f2').innerHTML = d.svF2;
+      document.getElementById('sv-f3').innerHTML = d.svF3;
+      document.getElementById('sv-btn-top').textContent = d.svBtnOpen;
       document.getElementById('sv-btn-open').textContent = d.svBtnOpen;
       document.getElementById('sv-link-privacy').textContent = d.privacy;
       document.getElementById('sv-link-terms').textContent = d.terms;
@@ -737,12 +908,34 @@
       document.getElementById('tk-sub').textContent = d.tkSub;
       document.getElementById('tk-p1').textContent = d.tkP1;
       document.getElementById('tk-vol-heading').textContent = d.tkVolHeading;
+      document.getElementById('tk-v1-title').textContent = d.tkV1Title;
+      document.getElementById('tk-v1-desc').textContent = d.tkV1Desc;
+      document.getElementById('tk-v17-title').textContent = d.tkV17Title;
+      document.getElementById('tk-v17-desc').textContent = d.tkV17Desc;
+      document.getElementById('tk-v31-title').textContent = d.tkV31Title;
+      document.getElementById('tk-v31-desc').textContent = d.tkV31Desc;
+      document.getElementById('tk-v46-title').textContent = d.tkV46Title;
+      document.getElementById('tk-v46-desc').textContent = d.tkV46Desc;
+      document.getElementById('tk-btn-top').textContent = d.tkBtnOpen;
       document.getElementById('tk-btn-open').textContent = d.tkBtnOpen;
 
       document.getElementById('ut-title').textContent = d.utTitle;
       document.getElementById('ut-sub').textContent = d.utSub;
       document.getElementById('ut-p1').textContent = d.utP1;
+      document.getElementById('ut-f1').innerHTML = d.utF1;
+      document.getElementById('ut-f2').innerHTML = d.utF2;
+      document.getElementById('ut-f3').innerHTML = d.utF3;
+      document.getElementById('ut-btn-top').textContent = d.utBtnOpen;
       document.getElementById('ut-btn-open').textContent = d.utBtnOpen;
+
+      document.getElementById('ed-heading').textContent = d.edHeading;
+      document.getElementById('ed-h1').textContent = d.edH1;
+      document.getElementById('ed-p1').textContent = d.edP1;
+      document.getElementById('ed-h2').textContent = d.edH2;
+      document.getElementById('ed-p2').textContent = d.edP2;
+      document.getElementById('ft-title').textContent = d.ftTitle;
+      document.getElementById('ft-body').textContent = d.ftBody;
+      document.getElementById('ft-contact').innerHTML = d.ftContact;
 
       document.querySelectorAll('.lang-btn').forEach((btn) => {
         btn.classList.toggle('active', btn.dataset.lang === lang);
@@ -752,6 +945,22 @@
     document.querySelectorAll('.lang-btn').forEach((btn) => {
       btn.addEventListener('click', () => applyPortalLang(btn.dataset.lang));
     });
+
+    // アクセスしたユーザーのブラウザ言語を自動判定して初期表示（海外アクセスは最初から英語・中・韓で表示）
+    (function autoDetectLanguage() {
+      const navLang = String(navigator.language || '').toLowerCase();
+      if (navLang.startsWith('ja')) {
+        applyPortalLang('ja');
+      } else if (navLang.startsWith('ko')) {
+        applyPortalLang('ko');
+      } else if (navLang === 'zh-tw' || navLang === 'zh-hk' || navLang === 'zh-hant') {
+        applyPortalLang('zh-TW');
+      } else if (navLang.startsWith('zh')) {
+        applyPortalLang('zh-CN');
+      } else {
+        applyPortalLang('en');
+      }
+    })();
   </script>
 
 </body>
