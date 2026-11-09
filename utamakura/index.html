@@ -1175,14 +1175,16 @@
   const baseAreaGroup = L.layerGroup().addTo(map);
   const pinMarkerGroup = L.layerGroup().addTo(map);
 
-  function getActivePlaceKeysSet() {
-    if (isEditModeActive()) {
-      return new Set(PLACES.map(p => p.key));
-    }
-    const visibleRecs = getVisibleRecords();
+  function getActivePlaceKeysSet(extraPlaceKey = '') {
+    // 案1：現在読んでいる章段（currentParaIndex）に登場する地名ピンと親エリアのみを表示する
+    const paraRecs = getVisibleRecords().filter(rec => rec.para_index === currentParaIndex);
+    const targetRecs = paraRecs.length > 0 ? paraRecs : getVisibleRecords();
     const usedKeys = new Set();
+    if (extraPlaceKey) {
+      usedKeys.add(extraPlaceKey);
+    }
     const tagRegex = /\{\{place:([^|}]+)\|/g;
-    visibleRecs.forEach(rec => {
+    targetRecs.forEach(rec => {
       [rec.raw_tagged, rec.kakikudashi_tagged, rec.translation_tagged].forEach(txt => {
         if (!txt) return;
         let m;
@@ -1204,10 +1206,10 @@
     return labelStr.replace(/：[^）]*）$/, '）');
   }
 
-  function renderMapLayersForCurrentMode() {
+  function renderMapLayersForCurrentMode(extraPlaceKey = '') {
     baseAreaGroup.clearLayers();
     pinMarkerGroup.clearLayers();
-    const activeKeys = getActivePlaceKeysSet();
+    const activeKeys = getActivePlaceKeysSet(extraPlaceKey);
 
     PLACES.filter(p => p.is_area && p.area_polygon && activeKeys.has(p.key)).forEach(area => {
       const isCommandery = area.category.includes('郡') || area.category.includes('旧国');
@@ -1258,6 +1260,9 @@
   function focusPlaceOnMap(placeKey, clickedRawSurface = '') {
     closeModal();
     const found = PLACES.find(p => p.key === placeKey);
+    if (found && !document.getElementById(`pin-label-${found.key}`)) {
+      renderMapLayersForCurrentMode(found.key);
+    }
     document.querySelectorAll('.custom-label').forEach(el => el.classList.remove('selected-pin'));
     activeHighlightLayers.forEach(layer => map.removeLayer(layer));
     activeHighlightLayers = [];
@@ -1504,6 +1509,11 @@
     if (showAllEl && showAllEl.checked) {
       showAllEl.checked = false;
     }
+    activeHighlightLayers.forEach(layer => map.removeLayer(layer));
+    activeHighlightLayers = [];
+    const toastEl = document.getElementById('mapToast');
+    if (toastEl) toastEl.style.display = 'none';
+    renderMapLayersForCurrentMode();
     renderReaderList();
     recordListEl.scrollTop = 0;
     const firstRec = getVisibleRecords().find(r => r.para_index === currentParaIndex);
@@ -2061,6 +2071,15 @@
 
   function setActiveRecord(recId) {
     currentActiveId = recId;
+    const targetRec = RECORDS.find(r => r.id === recId);
+    if (targetRec && targetRec.para_index !== currentParaIndex) {
+      currentParaIndex = targetRec.para_index;
+      activeHighlightLayers.forEach(layer => map.removeLayer(layer));
+      activeHighlightLayers = [];
+      const toastEl = document.getElementById('mapToast');
+      if (toastEl) toastEl.style.display = 'none';
+      renderMapLayersForCurrentMode();
+    }
     document.querySelectorAll('.record-card').forEach(c => {
       c.classList.toggle('active-card', c.dataset.id === recId);
     });
