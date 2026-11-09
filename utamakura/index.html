@@ -177,6 +177,25 @@
       border-color: #4e342e;
       cursor: not-allowed;
     }
+    .portal-top-link {
+      position: absolute;
+      left: 10px;
+      background: #3e2723;
+      color: #ffe082;
+      border: 1px solid #8c6d46;
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 0.76rem;
+      font-weight: bold;
+      text-decoration: none;
+      line-height: 1.3;
+      transition: 0.15s;
+      white-space: nowrap;
+    }
+    .portal-top-link:hover {
+      background: #5d4037;
+      color: #fff;
+    }
     .para-select {
       background: #3e2723;
       color: #f7f1e5;
@@ -983,7 +1002,8 @@
 
 <div class="main-container">
   <div class="map-column">
-    <div class="vol-nav-bar">
+    <div class="vol-nav-bar" style="position:relative;">
+      <a href="https://wasabikarashi.com/" class="portal-top-link" title="総合トップページへ戻る">🏠 トップ</a>
       <button class="slim-nav-btn" disabled title="前の作品（なし）">←</button>
       <select class="para-select" style="font-family:'Yu Mincho','MS PMincho',serif; font-size:0.95rem; letter-spacing:0.05em;" onchange="if(this.value) window.location.href=this.value" title="作品を切り替え">
         <option value="index.html" selected>おくのほそ道　松尾芭蕉</option>

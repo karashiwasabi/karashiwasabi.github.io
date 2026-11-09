@@ -827,6 +827,38 @@
         max-height: 36vh;
       }
     }
+    .vol-nav-bar { position: relative; }
+    .home-top-link {
+      position: absolute;
+      left: 10px;
+      background: #3e2723;
+      color: #ffe082;
+      border: 1px solid #8c6d46;
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 0.76rem;
+      font-weight: bold;
+      text-decoration: none;
+      line-height: 1.3;
+      transition: 0.15s;
+      white-space: nowrap;
+    }
+    .home-top-link:hover {
+      background: #5d4037;
+      color: #fff;
+    }
+    @media (max-width: 520px) {
+      .vol-nav-bar {
+        gap: 6px;
+        padding: 0 6px;
+      }
+      .home-top-link {
+        position: static;
+        margin-right: auto;
+        padding: 2px 6px;
+        font-size: 0.72rem;
+      }
+    }
     /* 最新の更新・修正ジャンプバー（制作・校正時のみ表示） */
     .recent-updates-bar {
       background: #2b2118;
@@ -937,6 +969,7 @@
 <div class="main-container">
   <div class="map-column">
     <div class="vol-nav-bar">
+      <a href="https://wasabikarashi.com/" class="home-top-link" title="総合トップページへ戻る">🏠 トップ</a>
       <button class="slim-nav-btn" disabled title="前の巻（なし）">←</button>
       <select class="para-select" style="font-family:'Yu Mincho','MS PMincho',serif; font-size:0.95rem; letter-spacing:0.05em;" onchange="if(this.value) window.location.href=this.value" title="巻を切り替え">
         <option value="vol01.html" selected>魏書一　武帝紀</option>
