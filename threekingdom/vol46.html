@@ -139,6 +139,38 @@
       padding: 0 12px;
       z-index: 2000;
       user-select: none;
+      position: relative;
+    }
+    .home-top-link {
+      position: absolute;
+      left: 10px;
+      background: #3e2723;
+      color: #ffe082;
+      border: 1px solid #8c6d46;
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 0.76rem;
+      font-weight: bold;
+      text-decoration: none;
+      line-height: 1.3;
+      transition: 0.15s;
+      white-space: nowrap;
+    }
+    .home-top-link:hover {
+      background: #5d4037;
+      color: #fff;
+    }
+    @media (max-width: 520px) {
+      .vol-nav-bar {
+        gap: 6px;
+        padding: 0 6px;
+      }
+      .home-top-link {
+        position: static;
+        margin-right: auto;
+        padding: 2px 6px;
+        font-size: 0.72rem;
+      }
     }
     .vol-nav-title {
       font-family: "Yu Mincho", "MS PMincho", serif;
@@ -931,38 +963,6 @@
     .flash-card-target {
       animation: flashCardBorderPulse 0.9s ease-in-out 3;
     }
-    .vol-nav-bar { position: relative; }
-    .home-top-link {
-      position: absolute;
-      left: 10px;
-      background: #3e2723;
-      color: #ffe082;
-      border: 1px solid #8c6d46;
-      border-radius: 4px;
-      padding: 2px 8px;
-      font-size: 0.76rem;
-      font-weight: bold;
-      text-decoration: none;
-      line-height: 1.3;
-      transition: 0.15s;
-      white-space: nowrap;
-    }
-    .home-top-link:hover {
-      background: #5d4037;
-      color: #fff;
-    }
-    @media (max-width: 520px) {
-      .vol-nav-bar {
-        gap: 6px;
-        padding: 0 6px;
-      }
-      .home-top-link {
-        position: static;
-        margin-right: auto;
-        padding: 2px 6px;
-        font-size: 0.72rem;
-      }
-    }
   </style>
 </head>
 <body>
@@ -1137,14 +1137,15 @@
   const baseAreaGroup = L.layerGroup().addTo(map);
   const pinMarkerGroup = L.layerGroup().addTo(map);
 
-  function getActivePlaceKeysSet() {
-    if (isEditModeActive()) {
-      return new Set(PLACES.map(p => p.key));
-    }
-    const visibleRecs = getVisibleRecords();
+  function getActivePlaceKeysSet(extraPlaceKey = '') {
+    const paraRecs = getVisibleRecords().filter(rec => rec.para_index === currentParaIndex);
+    const targetRecs = paraRecs.length > 0 ? paraRecs : getVisibleRecords();
     const usedKeys = new Set();
+    if (extraPlaceKey) {
+      usedKeys.add(extraPlaceKey);
+    }
     const tagRegex = /\{\{place:([^|}]+)\|/g;
-    visibleRecs.forEach(rec => {
+    targetRecs.forEach(rec => {
       [rec.raw_tagged, rec.kakikudashi_tagged, rec.translation_tagged].forEach(txt => {
         if (!txt) return;
         let m;
@@ -1162,15 +1163,36 @@
     return usedKeys;
   }
 
+  function getAllVisiblePlaceKeysSet() {
+    const visibleRecs = getVisibleRecords();
+    const usedKeys = new Set();
+    const tagRegex = /\{\{place:([^|}]+)\|/g;
+    visibleRecs.forEach(rec => {
+      [rec.raw_tagged, rec.kakikudashi_tagged, rec.translation_tagged].forEach(txt => {
+        if (!txt) return;
+        let m;
+        while ((m = tagRegex.exec(txt)) !== null) {
+          usedKeys.add(m[1]);
+        }
+      });
+    });
+    PLACES.forEach(p => {
+      if (p.is_pin && usedKeys.has(p.key) && p.parent_area) {
+        usedKeys.add(p.parent_area);
+      }
+    });
+    return usedKeys;
+  }
+
   function getShortNameWithReading(labelStr) {
     if (!labelStr) return '';
     return labelStr.replace(/：[^）]*）$/, '）');
   }
 
-  function renderMapLayersForCurrentMode() {
+  function renderMapLayersForCurrentMode(extraPlaceKey = '') {
     baseAreaGroup.clearLayers();
     pinMarkerGroup.clearLayers();
-    const activeKeys = getActivePlaceKeysSet();
+    const activeKeys = getActivePlaceKeysSet(extraPlaceKey);
 
     PLACES.filter(p => p.is_area && p.area_polygon && activeKeys.has(p.key)).forEach(area => {
       const isCommandery = area.category.includes('郡');
@@ -1222,6 +1244,9 @@
   function focusPlaceOnMap(placeKey, clickedRawSurface = '') {
     closeModal();
     const found = PLACES.find(p => p.key === placeKey);
+    if (found && !document.getElementById(`pin-label-${found.key}`)) {
+      renderMapLayersForCurrentMode(found.key);
+    }
     document.querySelectorAll('.custom-label').forEach(el => el.classList.remove('selected-pin'));
     activeHighlightLayers.forEach(layer => map.removeLayer(layer));
     activeHighlightLayers = [];
@@ -1383,6 +1408,12 @@
     if (showAllEl && showAllEl.checked) {
       showAllEl.checked = false;
     }
+    activeHighlightLayers.forEach(layer => map.removeLayer(layer));
+    activeHighlightLayers = [];
+    const toastEl = document.getElementById('mapToast');
+    if (toastEl) toastEl.style.display = 'none';
+    renderRecentUpdatesBar();
+    renderMapLayersForCurrentMode();
     renderReaderList();
     recordListEl.scrollTop = 0;
     const firstRec = getVisibleRecords().find(r => r.para_index === currentParaIndex);
@@ -1490,6 +1521,15 @@
   }
 
   function setActiveRecord(recId) {
+    const rec = RECORDS.find(r => r.id === recId);
+    if (rec && rec.para_index !== currentParaIndex) {
+      currentParaIndex = rec.para_index;
+      activeHighlightLayers.forEach(layer => map.removeLayer(layer));
+      activeHighlightLayers = [];
+      const toastEl = document.getElementById('mapToast');
+      if (toastEl) toastEl.style.display = 'none';
+      renderMapLayersForCurrentMode();
+    }
     currentActiveId = recId;
     document.querySelectorAll('.record-card').forEach(c => {
       c.classList.toggle('active-card', c.dataset.id === recId);
@@ -1633,7 +1673,7 @@
   function openTocModal() {
     document.getElementById('modalTitle').textContent = '📑 巻46（呉書一・孫破虜討逆伝）目次・エリア＆地点インデックス';
     const bodyEl = document.getElementById('modalBody');
-    const activeKeys = getActivePlaceKeysSet();
+    const activeKeys = getAllVisiblePlaceKeysSet();
     const activePersons = getActivePersonsList();
     const visRecords = getVisibleRecords();
 
@@ -1719,6 +1759,11 @@
     if (!rec) return;
     if (currentParaIndex !== rec.para_index) {
       currentParaIndex = rec.para_index;
+      activeHighlightLayers.forEach(layer => map.removeLayer(layer));
+      activeHighlightLayers = [];
+      const toastEl = document.getElementById('mapToast');
+      if (toastEl) toastEl.style.display = 'none';
+      renderMapLayersForCurrentMode();
     }
     renderReaderList();
     const cardEl = document.getElementById(`card-${recId}`);
@@ -1862,7 +1907,6 @@
     if (showAllLabelEl) showAllLabelEl.style.display = editActive ? 'flex' : 'none';
     if (!editActive) hideSelectionFeedbackBar();
 
-    renderRecentUpdatesBar();
     renderMapLayersForCurrentMode();
     renderReaderList();
   }
