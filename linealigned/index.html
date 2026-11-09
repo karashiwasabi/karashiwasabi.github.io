@@ -640,23 +640,18 @@
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
 
-    var isWebDirect = (window.location && window.location.hostname === 'wasabikarashi.com');
-    var studioPageTitle = isWebDirect ? 'Line-aligned Studio (Web)' : 'Line-aligned Studio';
-    var studioPageLocation = isWebDirect
-      ? 'https://wasabikarashi.com/linealigned/'
-      : 'https://workspace.google.com/marketplace/app/linealigned/studio';
-
+    // Send pageview with location mapped to Marketplace domain so GA4 stream accepts it
     gtag('config', 'G-310XSTTWSM', {
-      'page_title': studioPageTitle,
-      'page_location': studioPageLocation,
+      'page_title': 'Line-aligned Studio',
+      'page_location': 'https://workspace.google.com/marketplace/app/linealigned/studio',
       'cookie_flags': 'SameSite=None;Secure',
       'cookie_update': false
     });
 
     // Explicit page_view event
     gtag('event', 'page_view', {
-      'page_title': studioPageTitle,
-      'page_location': studioPageLocation
+      'page_title': 'Line-aligned Studio',
+      'page_location': 'https://workspace.google.com/marketplace/app/linealigned/studio'
     });
 
     // Custom helper to track events safely
@@ -664,8 +659,8 @@
       try {
         if (typeof gtag === 'function') {
           var p = params || {};
-          p.page_location = studioPageLocation;
-          p.page_title = studioPageTitle;
+          p.page_location = 'https://workspace.google.com/marketplace/app/linealigned/studio';
+          p.page_title = 'Line-aligned Studio';
           gtag('event', eventName, p);
         }
       } catch (e) {
@@ -684,6 +679,7 @@
       <span style="color: #5f6368; font-size: 0.78rem; margin-left: 6px;">ver.156 (Build 20261106_0900)</span>
     </div>
     <div style="display: flex; align-items: center; gap: 6px;">
+      <a href="https://wasabikarashi.com/" style="display: inline-flex; align-items: center; gap: 3px; background: #f1f5f9; border: 1px solid #dadce0; border-radius: 8px; padding: 5px 10px; font-size: 0.75rem; font-weight: 700; color: #3c4043; text-decoration: none; white-space: nowrap;">🏠 トップ</a>
       <div style="display: inline-flex; background: #f1f5f9; border: 1px solid #dadce0; border-radius: 8px; padding: 2px; gap: 2px;">
         <button type="button" class="lang-btn active" id="btnLangJa" onclick="switchLanguage('ja')" style="background: #1a73e8; color: #fff; border: none; border-radius: 6px; padding: 4px 9px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">日</button>
         <button type="button" class="lang-btn" id="btnLangEn" onclick="switchLanguage('en')" style="background: transparent; color: #5f6368; border: none; border-radius: 6px; padding: 4px 9px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">En</button>
