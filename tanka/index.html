@@ -69,34 +69,36 @@
       position: relative;
     }
 
-    /* ヘッダー：Short Verse Studio と 言語切替 & 〇/× YouTube account */
+    /* ヘッダー：Short Verse Studio と 言語切替 & 〇/× YouTube account（常に1段に収める） */
     .header {
-      padding: 12px 14px;
+      padding: 10px 12px;
       background-color: #fdfbf7;
       border-bottom: 1px solid var(--border-color);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
+      gap: 6px;
+      flex-wrap: nowrap;
     }
     .header-title-group {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
+      min-width: 0;
     }
     .portal-top-link {
       display: inline-flex;
       align-items: center;
-      padding: 3px 8px;
+      padding: 3px 6px;
       font-size: 11px;
       font-weight: 700;
       color: var(--text-color-sub);
       background-color: #faf8f5;
       border: 1px solid var(--border-color);
-      border-radius: 12px;
+      border-radius: 10px;
       text-decoration: none;
       white-space: nowrap;
+      flex-shrink: 0;
       transition: all 0.15s;
     }
     .portal-top-link:hover {
@@ -105,22 +107,24 @@
       background-color: #fff6f6;
     }
     .header h1 {
-      font-size: 18px;
+      font-size: 16px;
       color: var(--accent-color);
-      letter-spacing: 0.5px;
+      letter-spacing: 0;
       white-space: nowrap;
     }
     .header-controls {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
+      flex-shrink: 0;
     }
     .lang-select {
-      padding: 5px 8px;
-      font-size: 12px;
+      padding: 4px 6px;
+      font-size: 11px;
       font-weight: 700;
+      max-width: 96px;
       border: 2px solid var(--border-color);
-      border-radius: 16px;
+      border-radius: 14px;
       background-color: #faf8f5;
       color: var(--text-color-main);
       cursor: pointer;
@@ -134,14 +138,15 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      padding: 6px 12px;
+      gap: 4px;
+      padding: 4px 9px;
       background: #f5f0eb;
       border: 2px solid var(--border-color);
-      border-radius: 24px;
-      font-size: 13px;
+      border-radius: 20px;
+      font-size: 11px;
       font-weight: 700;
       color: #777777;
+      white-space: nowrap;
       cursor: pointer;
       transition: all 0.2s;
       user-select: none;
