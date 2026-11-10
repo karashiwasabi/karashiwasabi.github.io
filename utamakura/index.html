@@ -1462,54 +1462,80 @@
     return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
+  // source_matrix.html（1対4ソース対照表）と完全に同一の除外パターン・画像取得定数
+  const MATRIX_RESOLVED_CACHE_KEY = 'utamakura_matrix_resolved_cache_v3';
+  const WIKI_API_THUMB_WIDTH_PX = 400;
+  const WIKI_ARTICLE_IMG_LIMIT = 15;
+  const WIKI_ARTICLE_SLICE_COUNT = 6;
+  const COMMONS_SEARCH_LIMIT = 5;
+  const FUKEICHI_BATCH_SIZE = 20;
+
+  const MATRIX_EXCLUDE_PATTERNS = [
+    /map/i, /locator/i, /location/i, /relief/i, /flag/i, /emblem/i, /symbol/i,
+    /seal/i, /logo/i, /icon/i, /coat_of_arms/i, /diagram/i, /chart/i, /graph/i,
+    /signature/i, /kaō/i, /kao/i, /stamp/i, /red_dot/i, /blank/i, /increase/i,
+    /decrease/i, /commons-logo/i, /wikidata/i, /wikibooks/i, /wikinews/i,
+    /wikiquote/i, /wikisource/i, /wikiversity/i, /wikivoyage/i, /wiktionary/i,
+    /disambig/i, /question_book/i, /padlock/i, /ambox/i, /edit-clear/i,
+    /prefecture/i, /municipality/i, /railway/i, /station_map/i, /route_map/i,
+    /町章/, /市章/, /村章/, /県章/, /区章/, /家紋/, /紋章/, /位置/,
+    /kamon/i, /monsho/i, /crest/i,
+    /[.]svg$/i, /[.]pdf$/i, /[.]djvu$/i, /[.]ogv$/i, /[.]webm$/i, /[.]ogg$/i
+  ];
+
+  function isMatrixExcludedImage(str) {
+    if (!str) return true;
+    return MATRIX_EXCLUDE_PATTERNS.some(pat => pat.test(str));
+  }
+
+  // source_matrix.html の fetchWikiArticleThumb と完全同一の個別Wiki画像取得
   async function fetchWikiLeadImage(wikiTitle) {
     if (!wikiTitle) return null;
     try {
       const wikiRes = await fetch(`https://ja.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(wikiTitle)}`);
       if (wikiRes.ok) {
         const wData = await wikiRes.json();
-        const imgUrl = (wData.originalimage && wData.originalimage.source) || (wData.thumbnail && wData.thumbnail.source);
-        // 行政区分図・位置図・町章・市章を風景写真から除外
-        if (imgUrl && !/(\.svg|map|location|locator|位置|町章|市章|村章|県章|家紋|紋章|crest|kamon|monsho|emblem|flag|symbol)/i.test(imgUrl)) {
-          return imgUrl;
+        const thumb = (wData.thumbnail && wData.thumbnail.source) || (wData.originalimage && wData.originalimage.source);
+        if (thumb && !isMatrixExcludedImage(thumb)) {
+          return thumb;
         }
       }
     } catch (e) {}
 
-    // summary代表画像が地図や町章だった場合、記事内の最初の有効な風景写真を取得する
     try {
-      const piUrl = `https://ja.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(wikiTitle)}&prop=pageimages|images&pithumbsize=500&imlimit=25&format=json&origin=*`;
+      const piUrl = `https://ja.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(wikiTitle)}&prop=pageimages|images&pithumbsize=${WIKI_API_THUMB_WIDTH_PX}&imlimit=${WIKI_ARTICLE_IMG_LIMIT}&format=json&origin=*`;
       const piRes = await fetch(piUrl);
       if (piRes.ok) {
         const piData = await piRes.json();
         const pages = (piData.query && piData.query.pages) ? Object.values(piData.query.pages) : [];
         const imgTitles = [];
         for (const pg of pages) {
-          if (pg.pageimage && !isExcludedInlineImage(pg.pageimage)) {
+          if (pg.pageimage && !isMatrixExcludedImage(pg.pageimage)) {
             imgTitles.push('File:' + pg.pageimage);
           }
           if (pg.images) {
             for (const im of pg.images) {
-              if (im.title && !isExcludedInlineImage(im.title) && !imgTitles.includes(im.title)) {
+              if (im.title && !isMatrixExcludedImage(im.title) && !imgTitles.includes(im.title)) {
                 imgTitles.push(im.title);
               }
             }
           }
         }
         if (imgTitles.length > 0) {
-          const sliceStr = imgTitles.slice(0, 8).join('|');
-          const iiUrl = `https://ja.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(sliceStr)}&prop=imageinfo&iiprop=url&iiurlwidth=600&format=json&origin=*`;
+          const sliceStr = imgTitles.slice(0, WIKI_ARTICLE_SLICE_COUNT).join('|');
+          const iiUrl = `https://ja.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(sliceStr)}&prop=imageinfo&iiprop=url&iiurlwidth=${WIKI_API_THUMB_WIDTH_PX}&format=json&origin=*`;
           const iiRes = await fetch(iiUrl);
           if (iiRes.ok) {
             const iiData = await iiRes.json();
             const iiPages = (iiData.query && iiData.query.pages) ? Object.values(iiData.query.pages) : [];
             for (const imgPg of iiPages) {
-              if (!imgPg.imageinfo || !imgPg.imageinfo[0]) continue;
-              const info = imgPg.imageinfo[0];
-              const cleanFk = (imgPg.title || '').replace(/^(File|ファイル):/i, '').trim();
-              if (isExcludedInlineImage(cleanFk)) continue;
-              const u = info.thumburl || info.url;
-              if (u) return u;
+              if (imgPg.imageinfo && imgPg.imageinfo[0]) {
+                const info = imgPg.imageinfo[0];
+                const cleanFk = (imgPg.title || '').replace(/^(File|ファイル):/i, '').trim();
+                if (!isMatrixExcludedImage(cleanFk) && (info.thumburl || info.url)) {
+                  return info.thumburl || info.url;
+                }
+              }
             }
           }
         }
@@ -1518,13 +1544,13 @@
     return null;
   }
 
-  async function resolveUkiyoeEntry(entry) {
+  // source_matrix.html の resolveUkiyoeThumb と完全同一の浮世絵画像取得
+  async function resolveUkiyoeEntry(entry, placeKeyFallback) {
     if (!entry) return null;
     if (resolvedUkiyoeByIdCache[entry.id] !== undefined) {
       return resolvedUkiyoeByIdCache[entry.id];
     }
 
-    // 0. ukiyoe_db.py で事前確定済みの測定バーなし画像URL（thumb_url / image_url）があれば即座に返す
     if (entry.file_key && (entry.thumb_url || entry.image_url) && !/\bNDL/i.test(entry.file_key)) {
       const preResolved = {
         fileKey: entry.file_key.replace(/^(File|ファイル):/i, '').trim(),
@@ -1538,10 +1564,9 @@
       return preResolved;
     }
 
-    // 1. entry.file_key が Wikimedia Commons 上に実在するか API で確認（404リンク切れ防止）
     if (entry.file_key && !/\bNDL/i.test(entry.file_key)) {
       try {
-        const fileCheckUrl = `https://commons.wikimedia.org/w/api.php?action=query&titles=${encodeURIComponent('File:' + entry.file_key)}&prop=imageinfo&iiprop=url&iiurlwidth=800&format=json&origin=*`;
+        const fileCheckUrl = `https://commons.wikimedia.org/w/api.php?action=query&titles=${encodeURIComponent('File:' + entry.file_key)}&prop=imageinfo&iiprop=url&iiurlwidth=${WIKI_API_THUMB_WIDTH_PX}&format=json&origin=*`;
         const fcRes = await fetch(fileCheckUrl);
         if (fcRes.ok) {
           const fcData = await fcRes.json();
@@ -1549,15 +1574,15 @@
           for (const pg of pages) {
             if (pg && !pg.missing && pg.imageinfo && pg.imageinfo[0]) {
               const info = pg.imageinfo[0];
-              const resolved = {
-                fileKey: (pg.title || entry.file_key).replace(/^(File|ファイル):/i, '').trim(),
-                url: info.url || ( info.thumburl || '' ),
-                thumbUrl: info.thumburl || info.url,
-                caption: entry.caption,
-                sourceType: 'ukiyoe',
-                articleTitle: `浮世絵DB（${entry.series}）`
-              };
-              if (resolved.thumbUrl) {
+              if (info.thumburl || info.url) {
+                const resolved = {
+                  fileKey: (pg.title || entry.file_key).replace(/^(File|ファイル):/i, '').trim(),
+                  url: info.url || info.thumburl,
+                  thumbUrl: info.thumburl || info.url,
+                  caption: entry.caption,
+                  sourceType: 'ukiyoe',
+                  articleTitle: `浮世絵DB（${entry.series}）`
+                };
                 resolvedUkiyoeByIdCache[entry.id] = resolved;
                 return resolved;
               }
@@ -1567,44 +1592,33 @@
       } catch (e) {}
     }
 
-    // 2. file_key が実在しない場合は作品名（commons_query）で Commons を検索（NDL測定バー付き画像を除外）
-    const queriesToTry = [];
-    if (entry.commons_query) queriesToTry.push(entry.commons_query);
-    if (entry.series && entry.places && entry.places[0]) {
-      queriesToTry.push(`${entry.series} ${entry.places[0]}`);
-    }
-    for (const qStr of queriesToTry) {
-      try {
-        const commonsApi = `https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent('filetype:bitmap -Brooklyn -NDL ' + qStr)}&gsrnamespace=6&gsrlimit=8&prop=imageinfo&iiprop=url&iiurlwidth=800&format=json&origin=*`;
-        const res = await fetch(commonsApi);
-        if (res.ok) {
-          const data = await res.json();
-          if (data.query && data.query.pages) {
-            const pages = Object.values(data.query.pages)
-              .filter(p => p && p.title && !/brooklyn/i.test(p.title) && !/\bNDL/i.test(p.title))
-              .sort((a, b) => (a.index || 0) - (b.index || 0));
-            for (const pg of pages) {
-              if (pg.imageinfo && pg.imageinfo[0]) {
-                const info = pg.imageinfo[0];
-                const thumbUrl = info.thumburl || info.url;
-                if (thumbUrl) {
-                  const resolved = {
-                    fileKey: (pg.title || '').replace(/^(File|ファイル):/i, '').trim(),
-                    url: info.url || thumbUrl,
-                    thumbUrl: thumbUrl,
-                    caption: entry.caption,
-                    sourceType: 'ukiyoe',
-                    articleTitle: `浮世絵DB（${entry.series}）`
-                  };
-                  resolvedUkiyoeByIdCache[entry.id] = resolved;
-                  return resolved;
-                }
-              }
+    const fallbackPlace = placeKeyFallback || (entry.places && entry.places[0]) || '';
+    const qStr = entry.commons_query || `${entry.series} ${fallbackPlace}`;
+    try {
+      const sUrl = `https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent('filetype:bitmap -Brooklyn -NDL ' + qStr)}&gsrnamespace=6&gsrlimit=${COMMONS_SEARCH_LIMIT}&prop=imageinfo&iiprop=url&iiurlwidth=${WIKI_API_THUMB_WIDTH_PX}&format=json&origin=*`;
+      const sRes = await fetch(sUrl);
+      if (sRes.ok) {
+        const sData = await sRes.json();
+        const pages = (sData.query && sData.query.pages) ? Object.values(sData.query.pages) : [];
+        for (const pg of pages) {
+          if (pg.imageinfo && pg.imageinfo[0]) {
+            const info = pg.imageinfo[0];
+            if (info.thumburl || info.url) {
+              const resolved = {
+                fileKey: (pg.title || '').replace(/^(File|ファイル):/i, '').trim(),
+                url: info.url || info.thumburl,
+                thumbUrl: info.thumburl || info.url,
+                caption: entry.caption,
+                sourceType: 'ukiyoe',
+                articleTitle: `浮世絵DB（${entry.series}）`
+              };
+              resolvedUkiyoeByIdCache[entry.id] = resolved;
+              return resolved;
             }
           }
         }
-      } catch (e) {}
-    }
+      }
+    } catch (e) {}
 
     resolvedUkiyoeByIdCache[entry.id] = null;
     return null;
@@ -1617,7 +1631,7 @@
     return r ? r.thumbUrl : null;
   }
 
-  // Wikipedia「おくのほそ道の風景地」（国指定名勝26か所一覧テーブル）から画像と各指定地の対応を解析・キャッシュ
+  // Wikipedia「おくのほそ道の風景地」（国指定名勝26か所一覧テーブル）から画像と各指定地の対応を解析・キャッシュ（source_matrix.html と同一）
   let fukeichiWikiParsedPromise = null;
   async function loadFukeichiWikiData() {
     if (fukeichiWikiParsedPromise) return fukeichiWikiParsedPromise;
@@ -1632,46 +1646,31 @@
 
         const wikitext = (pData.parse.wikitext && pData.parse.wikitext['*']) ? pData.parse.wikitext['*'] : '';
         const rawImages = Array.isArray(pData.parse.images) ? pData.parse.images : [];
-        const validFiles = rawImages.filter(fn => fn && !isExcludedInlineImage(fn));
+        const validFiles = rawImages.filter(fn => fn && !isMatrixExcludedImage(fn));
         if (validFiles.length === 0) return result;
 
-        // wikitext 内で各画像ファイル名（ギャラリー行・テーブル行・サムネイル）の周辺テキストを抽出して紐づける
         const rowContextByFile = {};
         const normWikitext = wikitext.replace(/_/g, ' ');
         for (const fn of validFiles) {
           const cleanFn = fn.replace(/^(File|ファイル|画像):/i, '').trim().replace(/_/g, ' ');
           const idx = normWikitext.toLowerCase().indexOf(cleanFn.toLowerCase());
           if (idx !== -1) {
-            // 該当箇所の前後（テーブル行またはギャラリー行）を切り出す
-            const lineStart = Math.max(0, normWikitext.lastIndexOf('\n', idx));
-            let lineEnd = normWikitext.indexOf('\n', idx + cleanFn.length);
-            if (lineEnd === -1) lineEnd = normWikitext.length;
-            let rawSlice = normWikitext.slice(lineStart, lineEnd);
-            // もしテーブルセル内なら、直前の |- から次の |- までを取得
             const rowStart = normWikitext.lastIndexOf('|-', idx);
+            let rawSlice = '';
             if (rowStart !== -1 && idx - rowStart < 500) {
               let rowEnd = normWikitext.indexOf('|-', idx + cleanFn.length);
               if (rowEnd === -1 || rowEnd - rowStart > 800) rowEnd = Math.min(normWikitext.length, idx + 350);
               rawSlice = normWikitext.slice(rowStart, rowEnd);
+            } else {
+              rawSlice = normWikitext.slice(Math.max(0, idx - 160), Math.min(normWikitext.length, idx + 200));
             }
-            const cleanText = rawSlice
-              .split(cleanFn).join(' ')
-              .replace(/\[\[(?:File|ファイル|画像):[^\]]+\]\]/gi, ' ')
-              .replace(/\[\[([^|\]]+\|)?([^\]]+)\]\]/g, '$2')
-              .replace(/\x7b\x7b[^\x7d]+\x7d\x7d/g, ' ')
-              .replace(/<[^>]+>/g, ' ')
-              .replace(/\b(thumb|thumbnail|right|left|center|[0-9]+px)\b/gi, ' ')
-              .replace(/[|!\n\r]+/g, ' ')
-              .replace(/\s+/g, ' ')
-              .trim();
-            rowContextByFile[cleanFn] = cleanText.slice(0, 120);
+            rowContextByFile[cleanFn] = rawSlice;
           }
         }
 
-        // 20件ずつ imageinfo を一括取得
-        for (let i = 0; i < validFiles.length; i += 20) {
-          const chunk = validFiles.slice(i, i + 20).map(f => 'File:' + f).join('|');
-          const iiUrl = `https://ja.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(chunk)}&prop=imageinfo&iiprop=url|extmetadata&iiurlwidth=500&format=json&origin=*`;
+        for (let i = 0; i < validFiles.length; i += FUKEICHI_BATCH_SIZE) {
+          const chunk = validFiles.slice(i, i + FUKEICHI_BATCH_SIZE).map(f => 'File:' + f).join('|');
+          const iiUrl = `https://ja.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(chunk)}&prop=imageinfo&iiprop=url&iiurlwidth=${WIKI_API_THUMB_WIDTH_PX}&format=json&origin=*`;
           const iiRes = await fetch(iiUrl);
           if (!iiRes.ok) continue;
           const iiData = await iiRes.json();
@@ -1682,21 +1681,13 @@
             const thumbUrl = info.thumburl || info.url;
             if (!thumbUrl) continue;
             const cleanFk = (pg.title || '').replace(/^(File|ファイル):/i, '').trim();
-            if (isExcludedInlineImage(cleanFk)) continue;
-
-            let desc = rowContextByFile[cleanFk] || '';
-            if (!desc && info.extmetadata && info.extmetadata.ImageDescription && info.extmetadata.ImageDescription.value) {
-              desc = info.extmetadata.ImageDescription.value.replace(/<[^>]+>/g, '').trim();
-            }
-            if (!desc || desc.length > 75) {
-              desc = `おくのほそ道の風景地（${cleanFk.slice(0, 36)}）`;
-            }
+            if (isMatrixExcludedImage(cleanFk)) continue;
             result.push({
               fileKey: cleanFk,
               url: info.url || thumbUrl,
               thumbUrl: thumbUrl,
-              caption: desc,
-              rowText: (rowContextByFile[cleanFk] || '') + ' ' + cleanFk + ' ' + desc,
+              caption: `おくのほそ道の風景地（${cleanFk.slice(0, 36)}）`,
+              rowText: (rowContextByFile[cleanFk] || '') + ' ' + cleanFk,
               sourceType: 'wiki',
               articleTitle: 'おくのほそ道の風景地'
             });
@@ -2063,14 +2054,22 @@
     }
   }
 
-  // ①名勝写真・②個別Wiki写真と記事・③浮世絵 を解決する（実際に表示できる画像のみ採用。④は常に利用可能）
+  // ①名勝写真・②個別Wiki写真と記事・③浮世絵 を解決する（source_matrix.html と完全同一ロジック。④は常に利用可能）
   function resolvePlaceSources(placeObj) {
     if (toastSourcePromiseCache[placeObj.key]) return toastSourcePromiseCache[placeObj.key];
     const p = (async () => {
       const out = { fukeichi: null, wiki: null, ukiyoe: null };
+      let matrixCache = null;
+      try {
+        const rawMc = localStorage.getItem(MATRIX_RESOLVED_CACHE_KEY);
+        if (rawMc) matrixCache = JSON.parse(rawMc);
+      } catch (e) {}
 
       if (placeObj.fukeichi_title) {
         const urls = [];
+        if (matrixCache && matrixCache.fukeichi && matrixCache.fukeichi[placeObj.key] && matrixCache.fukeichi[placeObj.key].thumbUrl) {
+          urls.push(matrixCache.fukeichi[placeObj.key].thumbUrl);
+        }
         try {
           const fm = await getFukeichiCandidatesForPlace(placeObj);
           fm.slice(0, TOAST_FUKEICHI_MATCH_LIMIT).forEach(f => urls.push(f.thumbUrl));
@@ -2098,6 +2097,9 @@
 
       if (placeObj.wiki_title) {
         const urls = [];
+        if (matrixCache && matrixCache.wiki && matrixCache.wiki[placeObj.key] && matrixCache.wiki[placeObj.key].thumbUrl) {
+          urls.push(matrixCache.wiki[placeObj.key].thumbUrl);
+        }
         if (placeObj.fixed_image_url && placeObj.default_source_type === 'wiki') urls.push(placeObj.fixed_image_url);
         urls.push(await fetchWikiLeadImage(placeObj.wiki_title));
         const url = await pickLoadableToastImage(urls);
@@ -2115,8 +2117,13 @@
       const entry = UKIYOE_DB.find(u => Array.isArray(u.places) && u.places.includes(placeObj.key))
         || (placeObj.ukiyoe_query ? UKIYOE_DB.find(u => u.commons_query === placeObj.ukiyoe_query || u.file_key === placeObj.ukiyoe_query) : null);
       if (entry) {
-        const r = await resolveUkiyoeEntry(entry);
-        const url = await pickLoadableToastImage([r && r.thumbUrl]);
+        const uUrls = [];
+        if (matrixCache && matrixCache.ukiyoe && matrixCache.ukiyoe[placeObj.key] && matrixCache.ukiyoe[placeObj.key].thumbUrl) {
+          uUrls.push(matrixCache.ukiyoe[placeObj.key].thumbUrl);
+        }
+        const r = await resolveUkiyoeEntry(entry, placeObj.key);
+        if (r && r.thumbUrl) uUrls.push(r.thumbUrl);
+        const url = await pickLoadableToastImage(uUrls);
         if (url) {
           out.ukiyoe = {
             url: url,
