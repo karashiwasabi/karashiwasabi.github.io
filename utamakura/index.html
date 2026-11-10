@@ -1374,32 +1374,15 @@
         <button class="toast-fb-btn" onclick="addPlaceToastFeedback('${safeKey}', '${safeSurface}', '❌ 地名タグ解除')">❌ タグ解除</button>
       </div>
     ` : '';
-    const shortTitle = getShortNameWithReading(found.label);
-    const activeOverride = getPlaceImageOverride(found.key);
-    const ukiyoeCaption = (activeOverride && activeOverride.caption) ? activeOverride.caption : (found.ukiyoe_caption || '');
-    const initialSourceText = (activeOverride && (activeOverride.thumbUrl || activeOverride.url))
-      ? `📌 ソース: ${escapeHtmlSimple(activeOverride.articleTitle || (activeOverride.sourceType === 'ukiyoe' ? '浮世絵DB' : found.wiki_title || found.key))}`
-      : (found.fixed_image_url
-        ? `📌 ソース: ${escapeHtmlSimple(found.wiki_title || found.key)}`
-        : `📌 専用ソース候補: ${escapeHtmlSimple(found.wiki_title || found.key)}`);
-    const sourceBadgeHtml = isEditModeActive()
-      ? `<div id="toastSourceBadge" style="font-size:0.68rem; color:#90caf9; margin-top:2px;">${initialSourceText}</div>`
-      : '';
-    // 左半分：上から順に「地名・現在地 → 図版タイトル → 絵の全体表示」を描画
     toast.innerHTML = `
-      <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:4px; flex-shrink:0;">
-        <div style="line-height:1.3;">
-          <div style="font-family:'Yu Mincho','MS PMincho',serif; font-size:0.84rem; font-weight:bold; color:#fff;">📍 ${shortTitle}</div>
-          <div class="toast-modern-loc" style="font-size:0.72rem; color:#d7ccc8; margin-top:2px;">現在の${found.modern}</div>
-          ${sourceBadgeHtml}
-        </div>
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:4px; flex-shrink:0;">
+        <div style="font-family:'Yu Mincho','MS PMincho',serif; font-size:0.86rem; font-weight:bold; color:#fff;">📍 ${escapeHtmlSimple(found.key)}</div>
         <button onclick="document.getElementById('mapToast').style.display='none'" style="background:transparent; border:none; color:#bbb; cursor:pointer; font-size:0.9rem; line-height:1; padding:0 2px; flex-shrink:0;" title="閉じる">✕</button>
       </div>
       <div id="toastSrcTabs" style="display:flex; gap:4px; flex-wrap:wrap; margin-top:5px; flex-shrink:0;"></div>
-      <div id="toastUkiyoeCaption" style="font-family:'Yu Mincho','MS PMincho',serif; font-size:0.70rem; color:#ffe082; margin-top:4px; line-height:1.25; flex-shrink:0; display:none;">${ukiyoeCaption}</div>
       <img id="toastUkiyoeImg" class="toast-img-el" src="" alt="${found.key}" />
       <div id="toastGmapWrap" style="display:none; width:100%; margin-top:5px; flex-shrink:0;"></div>
-      <div id="toastSrcNote" style="font-size:0.68rem; color:#d7ccc8; margin-top:4px; line-height:1.35; max-height:6.5em; overflow:auto; flex-shrink:0;"></div>
+      <div id="toastSrcNote" style="font-size:0.68rem; color:#d7ccc8; margin-top:4px; line-height:1.35; flex-shrink:0; display:none;"></div>
       ${toastFeedbackHtml}
     `;
     toast.style.display = 'flex';
@@ -2083,10 +2066,9 @@
         if (url) {
           out.fukeichi = {
             url: url,
-            caption: `名勝「おくのほそ道の風景地」${placeObj.fukeichi_title}`,
-            note: placeObj.label || '',
+            note: '',
             linkUrl: `https://ja.wikipedia.org/wiki/${encodeURIComponent(wikiUsed)}`,
-            linkText: `📖 Wikipedia「${wikiUsed}」 ↗`
+            linkText: `📖 ${placeObj.fukeichi_title || wikiUsed} ↗`
           };
         }
       }
@@ -2102,10 +2084,9 @@
         if (url) {
           out.wiki = {
             url: url,
-            caption: placeObj.wiki_title,
-            note: await fetchWikiExtract(placeObj.wiki_title),
+            note: '',
             linkUrl: `https://ja.wikipedia.org/wiki/${encodeURIComponent(placeObj.wiki_title)}`,
-            linkText: '📖 Wikipedia記事を開く ↗'
+            linkText: `📖 ${placeObj.wiki_title} ↗`
           };
         }
       }
@@ -2123,8 +2104,7 @@
         if (url) {
           out.ukiyoe = {
             url: url,
-            caption: entry.caption || placeObj.key,
-            note: `${entry.artist}『${entry.series} ${entry.title}』`,
+            note: entry.caption || `${entry.artist}『${entry.series} ${entry.title}』`,
             linkUrl: '',
             linkText: ''
           };
@@ -2143,15 +2123,13 @@
     resolvePlaceSources(placeObj).then(s => renderToastSources(placeObj, s));
   }
 
-  // ON になっているソースだけをタブにし、選択中のソースの内容（画像／地図・解説・リンク）を表示する
+  // ON になっているソースだけをタブにし、選択中のソースの内容を表示する
   function renderToastSources(placeObj, sources) {
     const tabsEl = document.getElementById('toastSrcTabs');
     if (!tabsEl || tabsEl.dataset.place !== placeObj.key) return;
     const imgEl = document.getElementById('toastUkiyoeImg');
     const gmapWrapEl = document.getElementById('toastGmapWrap');
-    const capEl = document.getElementById('toastUkiyoeCaption');
     const noteEl = document.getElementById('toastSrcNote');
-    const badgeEl = document.getElementById('toastSourceBadge');
 
     const avail = SOURCE_TAB_DEFS.filter(d => d.col === 'gmap'
       ? isSourceOn(placeObj, 'gmap', getSourceGmap(placeObj) !== null)
@@ -2161,8 +2139,10 @@
       tabsEl.innerHTML = '';
       if (imgEl) imgEl.style.display = 'none';
       if (gmapWrapEl) gmapWrapEl.style.display = 'none';
-      if (capEl) capEl.style.display = 'none';
-      if (noteEl) noteEl.innerHTML = '表示できるソースがありません（source_matrix.html で採用ONにしてください）';
+      if (noteEl) {
+        noteEl.textContent = '';
+        noteEl.style.display = 'none';
+      }
       return;
     }
 
@@ -2179,38 +2159,31 @@
       return `<button type="button" style="${style} font-size:0.68rem; font-weight:bold; padding:2px 7px; border-radius:3px; cursor:pointer;" onclick="selectToastSourceTab('${safeKey}', '${d.col}')">${d.label}</button>`;
     }).join('') : '';
 
-    const activeLabel = (avail.find(d => d.col === active) || { label: '' }).label;
-    if (badgeEl) badgeEl.textContent = `📌 ソース: ${activeLabel}`;
-
     if (active === 'gmap') {
       const g = getSourceGmap(placeObj);
       const coordQuery = g.query;
       const embedUrl = `https://maps.google.com/maps?q=${encodeURIComponent(coordQuery)}&t=m&z=${TOAST_GMAP_ZOOM}&output=embed&hl=ja`;
-      const openUrl = g.openUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(coordQuery)}`;
       if (imgEl) imgEl.style.display = 'none';
-      if (capEl) {
-        capEl.innerHTML = `<a href="${escapeHtmlSimple(openUrl)}" target="_blank" rel="noopener" style="color:#ffe082; text-decoration:none;">📍 ${escapeHtmlSimple(g.spot)} ↗</a>`;
-        capEl.style.display = 'block';
+      if (noteEl) {
+        noteEl.textContent = '';
+        noteEl.style.display = 'none';
       }
       if (gmapWrapEl) {
         gmapWrapEl.innerHTML = `
           <iframe src="${embedUrl}" style="width:100%; height:160px; border:1px solid #81c784; border-radius:4px; background:#111;" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
         gmapWrapEl.style.display = 'block';
       }
-      if (noteEl) noteEl.textContent = '';
       return;
     }
 
     const src = sources[active];
     if (gmapWrapEl) gmapWrapEl.style.display = 'none';
-    if (capEl) {
-      capEl.textContent = src.caption;
-      capEl.style.display = 'block';
-    }
     if (noteEl) {
-      noteEl.innerHTML = escapeHtmlSimple(src.note || '') + (src.linkUrl
-        ? ` <a href="${src.linkUrl}" target="_blank" rel="noopener" style="color:#90caf9;">${escapeHtmlSimple(src.linkText)}</a>`
+      const htmlStr = (src.note ? escapeHtmlSimple(src.note) : '') + (src.linkUrl
+        ? `<a href="${src.linkUrl}" target="_blank" rel="noopener" style="color:#90caf9; text-decoration:none;">${escapeHtmlSimple(src.linkText)}</a>`
         : '');
+      noteEl.innerHTML = htmlStr;
+      noteEl.style.display = htmlStr ? 'block' : 'none';
     }
     if (imgEl) {
       imgEl.onerror = () => {
@@ -2235,7 +2208,10 @@
     tabsEl.innerHTML = '';
     if (imgEl) imgEl.style.display = 'none';
     if (gmapWrapEl) gmapWrapEl.style.display = 'none';
-    if (noteEl) noteEl.textContent = '⏳ ソースを確認中...';
+    if (noteEl) {
+      noteEl.textContent = '';
+      noteEl.style.display = 'none';
+    }
     const sources = await resolvePlaceSources(placeObj);
     renderToastSources(placeObj, sources);
   }
