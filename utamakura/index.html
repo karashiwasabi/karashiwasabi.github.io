@@ -1928,17 +1928,13 @@
       badgeEl.textContent = `📌 ソース④: Googleマップ（${gmapInfo.spotName}${gmapInfo.plusCode ? ' ／ ' + gmapInfo.plusCode : ''}）`;
     }
     if (capEl) {
-      capEl.textContent = `📍 ${gmapInfo.spotName}${gmapInfo.plusCode ? '（' + gmapInfo.plusCode + '）' : ''}`;
+      capEl.textContent = `📍 ${gmapInfo.spotName}`;
       capEl.style.display = 'block';
     }
     if (gmapWrapEl) {
       const embedUrl = `https://maps.google.com/maps?q=${encodeURIComponent(gmapInfo.query)}&t=m&z=15&output=embed&hl=ja`;
-      const openUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(gmapInfo.query)}`;
       gmapWrapEl.innerHTML = `
-        <iframe src="${embedUrl}" style="width:100%; height:145px; border:1px solid #81c784; border-radius:4px; background:#111;" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-        <div style="margin-top:4px; text-align:right;">
-          <a href="${openUrl}" target="_blank" rel="noopener" style="display:inline-block; background:#1b5e20; color:#fff; text-decoration:none; font-size:0.72rem; padding:3px 8px; border-radius:3px; font-weight:bold;">🗺️ Googleマップで現地写真・詳細を開く ↗</a>
-        </div>
+        <iframe src="${embedUrl}" style="width:100%; height:160px; border:1px solid #81c784; border-radius:4px; background:#111;" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
       `;
       gmapWrapEl.style.display = 'block';
     }
@@ -1954,7 +1950,7 @@
     { col: 'fukeichi', label: '🏞️ 名勝Wiki' },
     { col: 'wiki', label: '📷 個別Wiki' },
     { col: 'ukiyoe', label: '🎨 浮世絵' },
-    { col: 'gmap', label: '📍 現地マップ' }
+    { col: 'gmap', label: '📍 Googleマップ' }
   ];
   // 名勝一覧Wikiの該当行から試す写真の最大件数
   const TOAST_FUKEICHI_MATCH_LIMIT = 3;
@@ -2193,18 +2189,15 @@
       const openUrl = g.openUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(coordQuery)}`;
       if (imgEl) imgEl.style.display = 'none';
       if (capEl) {
-        capEl.textContent = `📍 ${g.spot}${g.plus ? '（' + g.plus + '）' : ''}`;
+        capEl.innerHTML = `<a href="${escapeHtmlSimple(openUrl)}" target="_blank" rel="noopener" style="color:#ffe082; text-decoration:none;">📍 ${escapeHtmlSimple(g.spot)} ↗</a>`;
         capEl.style.display = 'block';
       }
       if (gmapWrapEl) {
         gmapWrapEl.innerHTML = `
-          <iframe src="${embedUrl}" style="width:100%; height:145px; border:1px solid #81c784; border-radius:4px; background:#111;" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-          <div style="margin-top:4px; text-align:right;">
-            <a href="${openUrl}" target="_blank" rel="noopener" style="display:inline-block; background:#1b5e20; color:#fff; text-decoration:none; font-size:0.72rem; padding:3px 8px; border-radius:3px; font-weight:bold;">🗺️ Googleマップで現地写真・詳細を開く ↗</a>
-          </div>`;
+          <iframe src="${embedUrl}" style="width:100%; height:160px; border:1px solid #81c784; border-radius:4px; background:#111;" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
         gmapWrapEl.style.display = 'block';
       }
-      if (noteEl) noteEl.textContent = `検索：${g.query}`;
+      if (noteEl) noteEl.textContent = '';
       return;
     }
 
