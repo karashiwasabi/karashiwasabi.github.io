@@ -68,5 +68,35 @@
     "place": "雲巌寺",
     "file_key": "Tozan_Unganji_Temple_02.jpg",
     "local_path": "images/wiki/Tozan_Unganji_Temple_02.jpg"
+  },
+  {
+    "place": "阿武隈川",
+    "file_key": "AbukumaGawaKako.jpg",
+    "local_path": "images/wiki/AbukumaGawaKako.jpg"
+  },
+  {
+    "place": "会津根",
+    "file_key": "Mt._Bandaisan_0811.JPG",
+    "local_path": "images/wiki/Mt._Bandaisan_0811.jpg"
+  },
+  {
+    "place": "安積山",
+    "file_key": "Asakayama_Park.jpg",
+    "local_path": "images/wiki/Asakayama_Park.jpg"
+  },
+  {
+    "place": "丸山",
+    "file_key": "Yakushidou_Iouji_(Fukushima).JPG",
+    "local_path": "images/wiki/Yakushidou_Iouji__Fukushima_.jpg"
+  },
+  {
+    "place": "飯塚",
+    "file_key": "Iizaka_Onsen_26-Aug-2018.jpg",
+    "local_path": "images/wiki/Iizaka_Onsen_26-Aug-2018.jpg"
+  },
+  {
+    "place": "宮城野",
+    "file_key": "Lespedeza_thunbergii_-_Flickr_-_peganum.jpg",
+    "local_path": "images/wiki/Lespedeza_thunbergii_-_Flickr_-_peganum.jpg"
   }
 ]
