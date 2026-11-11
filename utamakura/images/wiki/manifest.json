@@ -128,5 +128,10 @@
     "place": "敦賀",
     "file_key": "Kehi-matsubara_from_Mount_Tezutsu.jpg",
     "local_path": "images/wiki/Kehi-matsubara_from_Mount_Tezutsu.jpg"
+  },
+  {
+    "place": "吉崎",
+    "file_key": "Yoshizaki_Gobo_mark.jpg",
+    "local_path": "images/wiki/Yoshizaki_Gobo_mark.jpg"
   }
 ]
