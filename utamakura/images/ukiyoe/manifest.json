@@ -1,0 +1,162 @@
+[
+  {
+    "place": "深川",
+    "id": "edo_fukagawa_mannenbashi",
+    "artist": "歌川広重",
+    "series": "名所江戸百景",
+    "title": "深川万年橋",
+    "caption": "歌川広重『名所江戸百景 深川万年橋』",
+    "file_key": "100_views_edo_004.jpg",
+    "local_path": "images/ukiyoe/edo_fukagawa_mannenbashi.jpg"
+  },
+  {
+    "place": "隅田川",
+    "id": "edo_sumidagawa_suijin",
+    "artist": "歌川広重",
+    "series": "名所江戸百景",
+    "title": "隅田川水神の森真崎",
+    "caption": "歌川広重『名所江戸百景 隅田川水神の森真崎』",
+    "file_key": "100_views_edo_035.jpg",
+    "local_path": "images/ukiyoe/edo_sumidagawa_suijin.jpg"
+  },
+  {
+    "place": "上野",
+    "id": "edo_ueno_kiyomizudo",
+    "artist": "歌川広重",
+    "series": "名所江戸百景",
+    "title": "上野清水堂不忍ノ池",
+    "caption": "歌川広重『名所江戸百景 上野清水堂不忍ノ池』",
+    "file_key": "100_views_edo_011.jpg",
+    "local_path": "images/ukiyoe/edo_ueno_kiyomizudo.jpg"
+  },
+  {
+    "place": "谷中",
+    "id": "edo_nippori_yanaka",
+    "artist": "歌川広重",
+    "series": "名所江戸百景",
+    "title": "日暮里寺院の林泉",
+    "caption": "歌川広重『名所江戸百景 日暮里寺院の林泉』",
+    "file_key": "100_views_edo_014.jpg",
+    "local_path": "images/ukiyoe/edo_nippori_yanaka.jpg"
+  },
+  {
+    "place": "千住",
+    "id": "edo_senju_ohashi",
+    "artist": "歌川広重",
+    "series": "名所江戸百景",
+    "title": "千住の大はし",
+    "caption": "歌川広重『名所江戸百景 千住の大はし』",
+    "file_key": "100_views_edo_103.jpg",
+    "local_path": "images/ukiyoe/edo_senju_ohashi.jpg"
+  },
+  {
+    "place": "草加",
+    "id": "edo_ayasegawa_kanegafuchi",
+    "artist": "歌川広重",
+    "series": "名所江戸百景",
+    "title": "綾瀬川鐘か淵",
+    "caption": "歌川広重『名所江戸百景 綾瀬川鐘か淵』（綾瀬川水路）",
+    "file_key": "100_views_edo_069.jpg",
+    "local_path": "images/ukiyoe/edo_ayasegawa_kanegafuchi.jpg"
+  },
+  {
+    "place": "富士山",
+    "id": "hokusai_fuji_gaifu",
+    "artist": "葛飾北斎",
+    "series": "富嶽三十六景",
+    "title": "凱風快晴（赤富士）",
+    "caption": "葛飾北斎『富嶽三十六景 凱風快晴』",
+    "file_key": "Red Fuji southern wind clear morning.jpg",
+    "local_path": "images/ukiyoe/hokusai_fuji_gaifu.jpg"
+  },
+  {
+    "place": "黒髪山",
+    "id": "hokusai_taki_kurokami",
+    "artist": "葛飾北斎",
+    "series": "諸国瀧廻り",
+    "title": "下野黒髪山きりふりの滝",
+    "caption": "葛飾北斎『諸国瀧廻り 下野黒髪山きりふりの滝』",
+    "file_key": "Katsushika Hokusai, Japanese - Pilgrims at Kirifuri Waterfall on Mount Kurokami in Shimotsuke Province - Google Art Project.jpg",
+    "local_path": "images/ukiyoe/hokusai_taki_kurokami.jpg"
+  },
+  {
+    "place": "裏見の滝",
+    "id": "r60_shimotsuke_uraminotaki",
+    "artist": "歌川広重",
+    "series": "六十余州名所図会",
+    "title": "下野 日光山 裏見ノ滝",
+    "caption": "歌川広重『六十余州名所図会 下野 日光山裏見ノ滝』",
+    "file_key": "The Famous Scenes of the Sixty States 27 Shimotsuke.jpg",
+    "local_path": "images/ukiyoe/r60_shimotsuke_uraminotaki.jpg"
+  },
+  {
+    "place": "松島",
+    "id": "r60_mutsu_matsushima",
+    "artist": "歌川広重",
+    "series": "六十余州名所図会",
+    "title": "陸奥 松島風景 富山眺望之略図",
+    "caption": "歌川広重『六十余州名所図会 陸奥 松島風景』",
+    "file_key": "Mutsu Province, View of Matsushima, Sight Map from Mount Tomi.jpg",
+    "local_path": "images/ukiyoe/r60_mutsu_matsushima.jpg"
+  },
+  {
+    "place": "最上川",
+    "id": "r60_dewa_mogamigawa",
+    "artist": "歌川広重",
+    "series": "六十余州名所図会",
+    "title": "出羽 最上川 月山遠望",
+    "caption": "歌川広重『六十余州名所図会 出羽 最上川月山遠望』",
+    "file_key": "Dewa, mogamigawa, gassan enbō LCCN2008660292.jpg",
+    "local_path": "images/ukiyoe/r60_dewa_mogamigawa.jpg"
+  },
+  {
+    "place": "親不知",
+    "id": "r60_echigo_oyashirazu",
+    "artist": "歌川広重",
+    "series": "六十余州名所図会",
+    "title": "越後 親不知",
+    "caption": "歌川広重『六十余州名所図会 越後 親不知』",
+    "file_key": "The Famous Scenes of the Sixty States 35 Echigo Province, Oyashirazu.jpg",
+    "local_path": "images/ukiyoe/r60_echigo_oyashirazu.jpg"
+  },
+  {
+    "place": "佐渡",
+    "id": "r60_sado_kanayama",
+    "artist": "歌川広重",
+    "series": "六十余州名所図会",
+    "title": "佐渡 金山",
+    "caption": "歌川広重『六十余州名所図会 佐渡 金山』",
+    "file_key": "Sado LCCN2008660297.jpg",
+    "local_path": "images/ukiyoe/r60_sado_kanayama.jpg"
+  },
+  {
+    "place": "金沢",
+    "id": "r60_kaga_kanazawa",
+    "artist": "歌川広重",
+    "series": "六十余州名所図会",
+    "title": "加賀 金沢八勝之内 蓮湖之漁火",
+    "caption": "歌川広重『六十余州名所図会 加賀 金沢八勝之内蓮湖之漁火』",
+    "file_key": "32 Kaga.jpg",
+    "local_path": "images/ukiyoe/r60_kaga_kanazawa.jpg"
+  },
+  {
+    "place": "石山",
+    "id": "r60_omi_ishiyama",
+    "artist": "歌川広重",
+    "series": "六十余州名所図会",
+    "title": "近江 琵琶湖 石山月",
+    "caption": "歌川広重『六十余州名所図会 近江 琵琶湖 石山月』",
+    "file_key": "Omi Province, Lake Biwa, Ishiyama Temple (5765895834).jpg",
+    "local_path": "images/ukiyoe/r60_omi_ishiyama.jpg"
+  },
+  {
+    "place": "敦賀",
+    "id": "r60_echizen_tsuruga",
+    "artist": "歌川広重",
+    "series": "六十余州名所図会",
+    "title": "越前 敦賀 気比ノ松原",
+    "caption": "歌川広重『六十余州名所図会 越前 敦賀気比ノ松原』",
+    "file_key": "The Famous Scenes of the Sixty States 31 Echizen.jpg",
+    "local_path": "images/ukiyoe/r60_echizen_tsuruga.jpg"
+  }
+]

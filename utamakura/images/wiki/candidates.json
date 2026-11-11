@@ -1,0 +1,985 @@
+{
+  "深川": {
+    "wiki_title": "深川 (江東区)",
+    "candidates": [
+      "Fukagawameshi.jpg",
+      "Fuji_seen_through_the_Mannen_bridge_at_Fukagawa.jpg",
+      "富岡八幡宮ー１.JPG",
+      "小津安二郎誕生の地1.jpg"
+    ]
+  },
+  "上野": {
+    "wiki_title": "上野恩賜公園",
+    "candidates": [
+      "上野公園航空写真1984.jpg",
+      "100_views_edo_011.jpg",
+      "2014_02_08_ueno.jpg",
+      "2019_Kuroda_Memorial_Hall_02.jpg",
+      "Escalator_1914_Tokyo.png",
+      "Five-storied_Pagoda_-_Kan'ei-ji.jpg"
+    ]
+  },
+  "谷中": {
+    "wiki_title": "天王寺 (台東区)",
+    "candidates": [
+      "Tenno-ji_by_kolshica_in_Yanaka,_Tokyo_2.jpg",
+      "Tenno-ji_by_kolshica_in_Yanaka,_Tokyo_3.jpg",
+      "Yanaka_Five-Storied_Pagoda.JPG",
+      "Yanaka_Tenno-ji_temple_04.JPG"
+    ]
+  },
+  "千住": {
+    "wiki_title": "千住",
+    "candidates": [
+      "Senju_mildix_I.jpg",
+      "170824_Kita-Senju_Tokyo_Japan01s3.jpg",
+      "Nakahara_in_the_Sagami_province.jpg"
+    ]
+  },
+  "草加": {
+    "wiki_title": "草加松原",
+    "candidates": [
+      "草加松原1.jpg",
+      "Ayasegawa_Soka_city_2.JPG",
+      "Soka_Hyakutaibasi_1.jpg",
+      "Sōka-Matsubara.jpg",
+      "矢立橋.jpg"
+    ]
+  },
+  "室の八島": {
+    "wiki_title": "大神神社 (栃木市)",
+    "candidates": [
+      "Oomiwa-jinja_(tochigishi)_torii.JPG",
+      "Oomiwa-jinja_(tochigishi)_haiden.JPG",
+      "Oomiwa-jinja_(tochigishi)_honden.JPG",
+      "Oomiwa-jinja_(tochigishi)_ichinotorii.JPG",
+      "Oomiwa-jinja_(tochigishi)_jingu.JPG",
+      "Oomiwa-jinja_(tochigishi)_kaguraden.JPG"
+    ]
+  },
+  "日光山": {
+    "wiki_title": "日光東照宮",
+    "candidates": [
+      "Nikko_Toshogu_Yomeimon_Gate_2024.jpg",
+      "200801_Nikko_Tosho-gu_Nikko_Japan02s3.jpg",
+      "20100727_Nikko_Tosho-gu_5988.jpg",
+      "20100727_Nikko_Tosho-gu_Yomeimon_5914.jpg",
+      "20100727_Nikko_Tosho-gu_Yomeimon_5956.jpg",
+      "20100727_Nikko_Tosho-gu_Yomeimon_6001.jpg"
+    ]
+  },
+  "富士山": {
+    "wiki_title": "富士山",
+    "candidates": [
+      "Mt.Fuji_from_Mierula.jpg",
+      "01_Fujisan_from_Yamanakako_2004-2-7.jpg",
+      "080103_hakkai_fuji.jpg",
+      "Aconogonon_weyrichii_var._alpinum_01.jpg",
+      "Aerial_view_of_Mount_Fuji_and_Shimizu_Port_20190324.jpg",
+      "Asagiri_Highland_and_Mount_Fuji.JPG"
+    ]
+  },
+  "白河関": {
+    "wiki_title": "白河の関",
+    "candidates": [
+      "Shirakawa-no-Seki_monument.jpg",
+      "Château_de_Himeji02.jpg",
+      "Shirakawa-no-seki_Jinja_Sando.jpg",
+      "Shirakawa-no-seki_dry_Moat.jpg",
+      "Shirakawa_jinja.jpg",
+      "Shirakawanoseki-kuhi.jpg"
+    ]
+  },
+  "松島": {
+    "wiki_title": "松島",
+    "candidates": [
+      "Matsushima_miyagi_z.JPG",
+      "20091011松島.jpg",
+      "211030_Kameshima_Matsushima_Miyagi_pref_Japan01n.jpg",
+      "211030_Kanrantei_Matsushima_Miyagi_pref_Japan03s3.jpg",
+      "211030_Saigyo_Modoshi_no_Matsu_Park_Matsushima_Miyagi_pref_Japan01n.jpg",
+      "Amphitheatre_of_Shichigahama_Kokusai-mura_1.JPG"
+    ]
+  },
+  "黒髪山": {
+    "wiki_title": "男体山",
+    "candidates": [
+      "Mount_nantai_and_lake_chuzenji.jpg",
+      "Japan,_Tochigi,_Nikko_-_volcano_Nantai_top_2016.jpg",
+      "Japan,_Tochigi_-_Nikko_Nantai_volcano_Osawa_lava_flow_1948.jpg",
+      "Japan-Tochigi,_Nikko,_Nantaisan_top_sword_2015.jpg",
+      "Japan-_Tochigi,_Nikko,_Nantaisan_Fujisan_from_Nyohosan_2011.jpg",
+      "Japan-_Tochigi,_Nikko,_mount_Nantai_summit_2015.jpg"
+    ]
+  },
+  "裏見の滝": {
+    "wiki_title": "裏見ノ滝",
+    "candidates": [
+      "Urami_taki_(Nikko).jpg",
+      "The_Famous_Scenes_of_the_Sixty_States_27_Shimotsuke.jpg"
+    ]
+  },
+  "象潟": {
+    "wiki_title": "象潟",
+    "candidates": [
+      "Kisakata_byobu_(Kisakata_Historical_Museum).jpg",
+      "2018-07-08_11_10_22_Rosea_Mimosa_blooming_along_the_ramp_from_southbound_Interstate_95_(New_Jersey_Turnpike_Eastern_Spur)_to_westbound_Interstate_280_(Essex_Freeway)_in_the_New_Jersey_Meadowlands,_within_Kearny,_Hudson_County,_New_Jersey.jpg",
+      "Kisakata_air.jpg",
+      "Kisakata_to_Tyôkaisan1.jpg",
+      "Marsh_in_Pavlivka,_Svitlovodsk_Raion_(2019-06-09)_02.jpg",
+      "Matsura_Kiyoshi.jpg"
+    ]
+  },
+  "那須野": {
+    "wiki_title": "那須野が原",
+    "candidates": [
+      "20080525NasunoGaHara.jpg",
+      "EnnaKyuryoSabiKawaHokiGawa.jpg",
+      "NasuShiobaraKuroiso.jpg",
+      "NasunoGaHara2.jpg",
+      "NasunoGaHaraNanbu.jpg",
+      "NasunoGaHaraNearIC.jpg"
+    ]
+  },
+  "黒羽": {
+    "wiki_title": "黒羽城",
+    "candidates": [
+      "日本の城跡.png"
+    ]
+  },
+  "那須の篠原": {
+    "wiki_title": "玉藻稲荷神社",
+    "candidates": [
+      "Tamamoinari.jpg",
+      "Tamamoinari2.jpg",
+      "Tamamoinari3.jpg",
+      "Tamamoinari4.jpg"
+    ]
+  },
+  "那須八幡宮": {
+    "wiki_title": "那須神社",
+    "candidates": [
+      "Nasu-jinja,_roumon-1.jpg",
+      "Nasu-jinja,_Sando_20260705.jpg",
+      "Nasu-jinja,_chouzu.jpg",
+      "Nasu-jinja,_haiden.jpg",
+      "Nasu-jinja,_honden.jpg",
+      "Nasu-jinja,_roumon-3.jpg"
+    ]
+  },
+  "雲巌寺": {
+    "wiki_title": "雲巌寺",
+    "candidates": [
+      "Tozan_Unganji_Temple_02.jpg",
+      "Tozan_Unganji_Temple_03.jpg",
+      "Tozan_Unganji_Temple_06.jpg",
+      "Tozan_Unganji_Temple_08.jpg",
+      "Unganji-sanbutudou.jpg"
+    ]
+  },
+  "殺生石": {
+    "wiki_title": "殺生石",
+    "candidates": [
+      "180727_Sessho-seki_Nasu_Japan14.JPG",
+      "180726_Sessho-seki_Nasu_Japan05.JPG",
+      "180726_Sessho-seki_Nasu_Japan07.JPG",
+      "180727_Sessho-seki_Nasu_Japan01.JPG",
+      "180727_Sessho-seki_Nasu_Japan05.JPG",
+      "180727_Sessho-seki_Nasu_Japan15.JPG"
+    ]
+  },
+  "芦野": {
+    "wiki_title": "遊行柳",
+    "candidates": []
+  },
+  "都": {
+    "wiki_title": "平安京",
+    "candidates": [
+      "Heiankyouhukugenmokei.jpg",
+      "Daidairi_of_Heiankyo.jpg",
+      "Daigokuden-ato_(Heian_Palace)-4.jpg",
+      "Heiankyo_landsat.jpg",
+      "Heiankyo_overall_model.jpg"
+    ]
+  },
+  "会津根": {
+    "wiki_title": "磐梯山",
+    "candidates": [
+      "Mt._Bandaisan_0811.JPG",
+      "Bandaisan_funka_shinzu_by_Yamamoto_Hōsui.jpg",
+      "Mount_Bandai2010.05.02.JPG",
+      "Mount_Bandai_in_Autumn.jpg",
+      "Nekoma_volcano_from_Mount_Bandai_2010.05.02.jpg",
+      "Tankei_-_Eruption_of_Mount_Bandai.jpg"
+    ]
+  },
+  "三春": {
+    "wiki_title": "三春滝桜",
+    "candidates": [
+      "Miharu_Miharu-Takizakura_Front_1.jpg",
+      "Hōkō-ji,_Kitamoto,_Saitama.jpg",
+      "Illuminated_Takizakura.jpg",
+      "ItozakuraOfFukudenTemple.jpg",
+      "Kamaishi_Kanban.jpg",
+      "Miharu_Takizakura_09.jpg"
+    ]
+  },
+  "須賀川": {
+    "wiki_title": "須賀川宿",
+    "candidates": []
+  },
+  "安積山": {
+    "wiki_title": "安積山公園",
+    "candidates": [
+      "Asakayama_Park.jpg"
+    ]
+  },
+  "二本松": {
+    "wiki_title": "二本松城",
+    "candidates": [
+      "Nihonmatsu_Castle_Minowa_Gate_20100625-01.jpg",
+      "Nihonmatsu_Castle_Keep_Tower_Base_20100625-01.jpg",
+      "日本の城跡.png"
+    ]
+  },
+  "黒塚": {
+    "wiki_title": "安達ヶ原",
+    "candidates": []
+  },
+  "福島": {
+    "wiki_title": "福島城",
+    "candidates": [
+      "Fukushima_Prefectural_Government_(02.19.2009).jpg",
+      "日本の城跡.png"
+    ]
+  },
+  "しのぶの里": {
+    "wiki_title": "文知摺観音",
+    "candidates": []
+  },
+  "瀬の上": {
+    "wiki_title": "瀬上宿",
+    "candidates": []
+  },
+  "飯塚": {
+    "wiki_title": "飯坂温泉",
+    "candidates": [
+      "Iizaka_Onsen_26-Aug-2018.jpg",
+      "Iizaka-Onsen2.jpg",
+      "Iizakaonsen-Sabakoyu.JPG",
+      "NDL-DC_1209902-Keikan_wō_tazunete_1-64_飯坂温泉.jpg",
+      "Ticket_counter's_signboard_in_Iizaka_spa.jpg"
+    ]
+  },
+  "丸山": {
+    "wiki_title": "医王寺 (福島市)",
+    "candidates": [
+      "Yakushidou_Iouji_(Fukushima).JPG"
+    ]
+  },
+  "桑折": {
+    "wiki_title": "桑折宿",
+    "candidates": []
+  },
+  "伊達の大木戸": {
+    "wiki_title": "阿津賀志山防塁",
+    "candidates": [
+      "Atsukashiyama_ruins.jpg",
+      "Middle_Jomon_Period_rope_pottery_5000-4000BC.jpg",
+      "日本の城跡.png"
+    ]
+  },
+  "白石": {
+    "wiki_title": "白石城",
+    "candidates": [
+      "Shiroishijo_Castle_&_statue_of_Ōzutsu_Man'emon.JPG",
+      "Aerial_photo_of_Shiroishi_basin_in_1976.jpg",
+      "Château_de_Himeji02.jpg",
+      "Shiroishi-jyou2015.jpg",
+      "Top_floor_of_the_Shiroishi_Castle.jpg",
+      "日本の城跡.png"
+    ]
+  },
+  "岩沼": {
+    "wiki_title": "岩沼宿",
+    "candidates": []
+  },
+  "武隈の松": {
+    "wiki_title": "二木の松",
+    "candidates": []
+  },
+  "仙台": {
+    "wiki_title": "仙台城",
+    "candidates": [
+      "SendaiJoOtemonSumiYagura2003-11.jpg",
+      "Broken_Otemon_Wakiyagura.JPG",
+      "Burg_Sendai_Plan.jpg",
+      "Closing_information_by_statue_Date_Masamune_for_earthquake_damage.jpg",
+      "Closing_statue_Date_Masamune_for_earthquake_damage.jpg",
+      "Fans_from_Sendai_Castle.jpg"
+    ]
+  },
+  "宮城野": {
+    "wiki_title": "宮城野",
+    "candidates": [
+      "Lespedeza_thunbergii_-_Flickr_-_peganum.jpg"
+    ]
+  },
+  "つつじが岡": {
+    "wiki_title": "榴岡公園",
+    "candidates": [
+      "Tutujigaokakouen.JPG",
+      "Aerial_photo_of_Tsutsujigaoka-kōen_Park_in_1975.jpg",
+      "Aerial_photo_of_Tsutsujigaoka-kōen_Park_in_1984.jpg",
+      "Ganbarō_Tohoku,_Tsutsujigaoka_no_sakura.jpg",
+      "NDL-DC_762376_0207_0010crd-TsutsujigaokaKoen.jpg",
+      "Sendai_City_Museum_of_History_and_Folklore_20090910.JPG"
+    ]
+  },
+  "木の下": {
+    "wiki_title": "陸奥国分寺",
+    "candidates": [
+      "Mutsu_Kokubunji_yakushi-dou.JPG",
+      "Bonboko_Yari_2009.jpg",
+      "Date_Masamune02.jpg",
+      "Emperor_Shomu.jpg",
+      "Mutsu_Kokubunji_Shushoe_2009-02-11.jpg",
+      "Mutsu_Kokubunji_Yakushido_in_2008.jpg"
+    ]
+  },
+  "壺の碑": {
+    "wiki_title": "多賀城碑",
+    "candidates": [
+      "Tagajo-hi.JPG",
+      "Château_de_Himeji02.jpg",
+      "Tagajo-hi_ooiya.JPG",
+      "Tagajo_Stele.jpg"
+    ]
+  },
+  "蝦夷が島": {
+    "wiki_title": "蝦夷地",
+    "candidates": []
+  },
+  "野田の玉川": {
+    "wiki_title": "玉川 (塩竈市)",
+    "candidates": []
+  },
+  "末の松山": {
+    "wiki_title": "末の松山",
+    "candidates": [
+      "Tagajo_Sue-no-Matsuyama_01.JPG",
+      "Tagajo_Sue-no-Matsuyama_02.JPG"
+    ]
+  },
+  "塩竈": {
+    "wiki_title": "鹽竈神社",
+    "candidates": [
+      "Shiogama-shrine1.JPG",
+      "211030_Shiogama-jinja_Shiogama_Miyagi_pref_Japan02s3.jpg",
+      "Aerial_photo_of_Shiogama-Jinja_shrine_in_1975.jpg",
+      "Arahabaki-jinja_shrine,Tagajo_city.JPG",
+      "Explanation_stone_of_Haraedo-no-yashiro_shrine.JPG",
+      "Haiden,_Betsugu,_Shiogama-jinja_20250323.jpg"
+    ]
+  },
+  "籬が島": {
+    "wiki_title": "籬島",
+    "candidates": []
+  },
+  "雄島": {
+    "wiki_title": "雄島 (宮城県)",
+    "candidates": []
+  },
+  "瑞巌寺": {
+    "wiki_title": "瑞巌寺",
+    "candidates": [
+      "211030_Zuigan-ji_Matsushima_Miyagi_pref_Japan11s3.jpg",
+      "211030_Godaido_Zuigan-ji_Matsushima_Miyagi_pref_Japan05s3.jpg",
+      "211030_Zuigan-ji_Matsushima_Miyagi_pref_Japan01s3.jpg",
+      "211030_Zuigan-ji_Matsushima_Miyagi_pref_Japan08s3.jpg",
+      "211030_Zuigan-ji_Matsushima_Miyagi_pref_Japan15s3.jpg",
+      "211030_Zuigan-ji_Matsushima_Miyagi_pref_Japan36s3.jpg"
+    ]
+  },
+  "緒絶の橋": {
+    "wiki_title": "緒絶橋",
+    "candidates": []
+  },
+  "石巻": {
+    "wiki_title": "日和山 (石巻市)",
+    "candidates": [
+      "Hiyoriyama_koen_isinomaki_city.JPG"
+    ]
+  },
+  "金華山": {
+    "wiki_title": "金華山 (宮城県)",
+    "candidates": [
+      "20091011金華山.jpg",
+      "Kinkasan-tozan.jpg",
+      "Kinkasan.jpg",
+      "Kinkasan_Lighthouse_Miyagi_Japan.jpg",
+      "Kinkasan_Senjojiki_2006-10-03.JPG",
+      "Kinkasan_in_Sanriku_Fukko_National_Park.jpg"
+    ]
+  },
+  "平泉": {
+    "wiki_title": "平泉",
+    "candidates": [
+      "230728_Motsuji_Hiraizumi_Iwate_pref_Japan37s3.jpg",
+      "230728_Chusonji_Hiraizumi_Iwate_pref_Japan01s3.jpg",
+      "230728_Kanjizaio-in_Hiraizumi_Iwate_pref_Japan14s3.jpg",
+      "230728_Muryokoin_Hiraizumi_Iwate_pref_Japan12s3.jpg",
+      "230728_Takkoku-no-iwaya_Bishamondo_Hiraizumi_Iwate_pref_Japan01s3.jpg",
+      "Cyoujagahara.JPG"
+    ]
+  },
+  "金鶏山": {
+    "wiki_title": "金鶏山",
+    "candidates": [
+      "Mount_Kinkeisan.JPG",
+      "230728_Muryokoin_Hiraizumi_Iwate_pref_Japan15s3trm.jpg",
+      "Château_de_Himeji02.jpg",
+      "Kinkeizan3.JPG",
+      "Kinkeizan4.JPG",
+      "Konjikido-Ooido.jpg"
+    ]
+  },
+  "高館": {
+    "wiki_title": "衣川館",
+    "candidates": [
+      "230728_Takadachi_Gikei-do_Hiraizumi_Iwate_pref_Japan03s3.jpg",
+      "230728_Takadachi_Gikei-do_Hiraizumi_Iwate_pref_Japan12s3.jpg",
+      "Château_de_Himeji02.jpg",
+      "Gikeidou2.JPG",
+      "Natukusaya.basyou.JPG",
+      "Takadate.JPG"
+    ]
+  },
+  "衣が関": {
+    "wiki_title": "衣川関",
+    "candidates": []
+  },
+  "光堂": {
+    "wiki_title": "中尊寺金色堂",
+    "candidates": [
+      "230728_Chusonji_Hiraizumi_Iwate_pref_Japan01s3.jpg",
+      "Esashi-Fujiwara_no_sato_02.JPG",
+      "Gilt-bronze_Bantou_(Banner_head)_(Chuson-ji_Konjikido).jpg",
+      "Gilt-bronze_Keman_with_Kalavinka_design_(Chuson-ji_Konjikido).jpg",
+      "Gilt-bronze_Keman_with_Kalavinka_design_(Chuson-ji_Konjikido)2.jpg",
+      "Interior_GoldenHall_Chusonji.JPG"
+    ]
+  },
+  "岩手の里": {
+    "wiki_title": "岩出山城",
+    "candidates": [
+      "Iwadeyama28Oct07.jpg",
+      "Château_de_Himeji02.jpg",
+      "Date_Masamune_Statue_Iwadeyama_01.jpg",
+      "Iwadeyama189.JPG",
+      "Iwadeyama190.JPG",
+      "Iwadeyama191.JPG"
+    ]
+  },
+  "鳴子の湯": {
+    "wiki_title": "鳴子温泉",
+    "candidates": [
+      "ViewOfNarukoOnsen.jpg",
+      "NarukoKuriDango.jpg",
+      "NarukoTakiNoYu.jpg",
+      "NarukoWasedaSajikiYu.jpg",
+      "Syoji.jpg",
+      "鳴子峡_-_panoramio_(3).jpg"
+    ]
+  },
+  "山形": {
+    "wiki_title": "山形城",
+    "candidates": [
+      "220430_Yamagata_Castle_Yamagata_Yamagata_pref_Japan21s3.jpg",
+      "220430_Yamagata_Castle_Yamagata_Yamagata_pref_Japan02s3.jpg",
+      "220430_Yamagata_Castle_Yamagata_Yamagata_pref_Japan04s3.jpg",
+      "220430_Yamagata_Castle_Yamagata_Yamagata_pref_Japan13s3.jpg",
+      "220430_Yamagata_Castle_Yamagata_Yamagata_pref_Japan23s3.jpg",
+      "Burg_Yamagata.jpg"
+    ]
+  },
+  "立石寺": {
+    "wiki_title": "立石寺",
+    "candidates": [
+      "Risshaku-ji_konponchudo.jpg",
+      "211029_Risshaku-ji_Yamagata_Yamagata_pref_Japan07s5.jpg",
+      "211029_Risshaku-ji_Yamagata_Yamagata_pref_Japan105s3.jpg",
+      "211029_Risshaku-ji_Yamagata_Yamagata_pref_Japan106s3.jpg",
+      "211029_Risshaku-ji_Yamagata_Yamagata_pref_Japan107s3.jpg",
+      "211029_Risshaku-ji_Yamagata_Yamagata_pref_Japan108s3.jpg"
+    ]
+  },
+  "酒田": {
+    "wiki_title": "日和山公園 (酒田市)",
+    "candidates": [
+      "酒田市日和山公園.JPG",
+      "日和山公園／酒田市_-_panoramio.jpg"
+    ]
+  },
+  "白糸の滝": {
+    "wiki_title": "白糸の滝 (山形県)",
+    "candidates": [
+      "Shiraito_no_taki_Waterfall_(Yamagata).jpg"
+    ]
+  },
+  "仙人堂": {
+    "wiki_title": "外川神社",
+    "candidates": []
+  },
+  "羽黒山": {
+    "wiki_title": "羽黒山 (山形県)",
+    "candidates": [
+      "出羽三山神社大鳥居と羽黒山.jpg",
+      "DewaSanZan_Japan_Bashou_s_spot.jpg",
+      "Hagurosan_Gohaiden_2006.jpg",
+      "Hagurosan_Gojunto_2006-A.jpg",
+      "羽黒神社参道の石段.jpg"
+    ]
+  },
+  "月山": {
+    "wiki_title": "月山",
+    "candidates": [
+      "Gassan_(5693125340).jpg",
+      "Gassan_Bus_stop_2006.jpg",
+      "Gassan_jinja.JPG",
+      "Mount_Gassann_20190811.JPG",
+      "Precincts_of_Gassan_jinja.JPG"
+    ]
+  },
+  "湯殿山": {
+    "wiki_title": "湯殿山",
+    "candidates": []
+  },
+  "鶴岡": {
+    "wiki_title": "鶴ヶ岡城",
+    "candidates": [
+      "Cherry_blossoms_in_Tsuruoka_Park_2024a.jpg",
+      "Tsurugaoka_Castle_air.jpg",
+      "日本の城跡.png"
+    ]
+  },
+  "温海山": {
+    "wiki_title": "温海岳",
+    "candidates": []
+  },
+  "吹浦": {
+    "wiki_title": "吹浦駅",
+    "candidates": []
+  },
+  "鳥海山": {
+    "wiki_title": "鳥海山",
+    "candidates": [
+      "Mount_Chōkai_(2017-05-19)_-_Flickr.jpg",
+      "20230924鳥海湖と月山.jpg",
+      "Arenaria_merckioides_var._chokaiensis_2.JPG",
+      "Chokai-san_spring.jpg",
+      "Choukai-azami.jpg",
+      "From_Mount_Chokai_(6185584662).jpg"
+    ]
+  },
+  "干満珠寺": {
+    "wiki_title": "蚶満寺",
+    "candidates": [
+      "Main_Hall,_Kanman-ji.jpg",
+      "Albizia_julibrissin4.jpg",
+      "Garden_of_the_Kanman-ji.jpg",
+      "Gate_of_Kanman-ji.jpg"
+    ]
+  },
+  "むやむやの関": {
+    "wiki_title": "有耶無耶の関",
+    "candidates": []
+  },
+  "秋田": {
+    "wiki_title": "久保田城",
+    "candidates": [
+      "Osumi-Yagura_of_Kubota-Castle_20160424.jpg",
+      "Honmaru_Omote-mon_gate_of_Kubota_Castle_20240525b.jpg",
+      "Kubota_Castle,_ruins_of_the_Karakane-bashi_bridge.jpg",
+      "Kuromon_no_Hori,_south_side.jpg",
+      "久保田城御物頭御番所.JPG",
+      "日本の城跡.png"
+    ]
+  },
+  "鼠の関": {
+    "wiki_title": "鼠ヶ関",
+    "candidates": [
+      "鼠ヶ関県境_(5989402241).jpg",
+      "Bentenjima_(Tsuruoka,_Yamagata).jpg",
+      "Itsukushima-jinja_(Tsuruoka,_Yamagata)_3.jpg",
+      "Nenju_no_Matsu_2.jpg",
+      "Nezugaseki_Marina.jpg",
+      "Nezugaseki_Minamoto_no_Yoshitsune_monument.jpg"
+    ]
+  },
+  "市振の関": {
+    "wiki_title": "市振",
+    "candidates": []
+  },
+  "佐渡": {
+    "wiki_title": "佐渡島",
+    "candidates": [
+      "SadoGaShima.jpg",
+      "DOUGLAS_AC-47D_C-47B-1-DK_43-48501_at_SADO_3.jpg",
+      "Find47_Niigata-Sado-shima_island,_Manjojiki-m.jpg",
+      "Kimpokusan_and_Kamoko.jpg",
+      "Noh_Performance_(235951661).jpeg",
+      "Sado_Shukunegi.jpg"
+    ]
+  },
+  "親不知": {
+    "wiki_title": "親不知",
+    "candidates": [
+      "35_Echigo.jpg",
+      "NDL-DC_2542755-46_Kobayashi_Kiyochika_M3004_crd.jpg",
+      "Old_Kazanami_Tunnel,_entrance.jpg",
+      "Old_Oyashirazu_Tunnel,_entrance.jpg",
+      "Oyashirazu_Coast.JPG",
+      "Oyashirazu_tenkendangai.jpg"
+    ]
+  },
+  "那古": {
+    "wiki_title": "奈呉の浦",
+    "candidates": []
+  },
+  "有磯海": {
+    "wiki_title": "雨晴海岸",
+    "candidates": [
+      "Himi-line-amaharashi.jpg",
+      "AmeharashiSeaside.JPG",
+      "Tateyama_Mountains_and_Onna-iwa_viewed_from_Amaharashi_Coast_20190309134344.jpg"
+    ]
+  },
+  "倶利伽羅が谷": {
+    "wiki_title": "倶利伽羅峠の戦い",
+    "candidates": [
+      "Battle_of_Kurikaradani_Kassen_Zu.jpg",
+      "Honden_shirayama_hime_shrine_ishikawa.jpg",
+      "Kiso-Yoshinaka&Tomoe-gozen_statue_Kiso-t.jpg",
+      "Taira_no_Koremori.jpg"
+    ]
+  },
+  "金沢": {
+    "wiki_title": "金沢城",
+    "candidates": [
+      "Kanazawa-M-5932.jpg",
+      "131109_Kanazawa_Castle_Kanazawa_Ishikawa_pref_Japan05s3.jpg",
+      "131109_Kanazawa_Castle_Kanazawa_Ishikawa_pref_Japan08n.jpg",
+      "131109_Kanazawa_Castle_Kanazawa_Ishikawa_pref_Japan16s3.jpg",
+      "131109_Kanazawa_Castle_Kanazawa_Ishikawa_pref_Japan17s3.jpg",
+      "20190705_Kanazawa_Castle-17.jpg"
+    ]
+  },
+  "大坂": {
+    "wiki_title": "大坂",
+    "candidates": [
+      "Osaka_Castle_and_Gokurakubashi_Bridge.jpg"
+    ]
+  },
+  "小松": {
+    "wiki_title": "小松城",
+    "candidates": [
+      "20210721_171937-COLLAGE.jpg",
+      "DSC_0176Komatsu_Castle.jpg",
+      "DSC_0181御樓閣天井板.jpg",
+      "DSC_0188_Komatsu_Castle.jpg",
+      "DSC_2164~2.jpg",
+      "DSC_2165_unagibashi_gate.jpg"
+    ]
+  },
+  "太田の神社": {
+    "wiki_title": "多太神社",
+    "candidates": []
+  },
+  "山中温泉": {
+    "wiki_title": "山中温泉",
+    "candidates": [
+      "260606_Kikuno-yu_Yamanaka_Onsen_Kaga_Ishikawa_pref_Japan01s3.jpg",
+      "20090913加賀三湖Tagged.jpg",
+      "260606_Basho-do_Yamanaka_Onsen_Kaga_Ishikawa_pref_Japan01s3.jpg",
+      "260606_Basho-no-Yakata_Yamanaka_Onsen_Kaga_Ishikawa_pref_Japan04s3.jpg",
+      "260606_Doumyogafuchi_Kakusenkei_Kaga_Ishikawa_pref_Japan03s3.jpg",
+      "260606_Yamanaka_Onsen_Kaga_Ishikawa_pref_Japan02s3.jpg"
+    ]
+  },
+  "白根が嶽": {
+    "wiki_title": "白山",
+    "candidates": [
+      "Mount_Haku_from_Onanjimine_2011-07-17.jpg",
+      "16_cardinal_points_ESE.png",
+      "16_cardinal_points_N.png",
+      "16_cardinal_points_NNE.png",
+      "16_cardinal_points_NNW.png",
+      "16_cardinal_points_O.png"
+    ]
+  },
+  "那谷寺": {
+    "wiki_title": "那谷寺",
+    "candidates": [
+      "260719_Natadera_Komatsu_Ishikawa_pref_Japan27s3.jpg",
+      "260719_Natadera_Komatsu_Ishikawa_pref_Japan07s3.jpg",
+      "260719_Natadera_Komatsu_Ishikawa_pref_Japan10s3.jpg",
+      "260719_Natadera_Komatsu_Ishikawa_pref_Japan19s3.jpg",
+      "260719_Natadera_Komatsu_Ishikawa_pref_Japan38s3.jpg",
+      "260719_Natadera_Komatsu_Ishikawa_pref_Japan43s4.jpg"
+    ]
+  },
+  "那智": {
+    "wiki_title": "青岸渡寺",
+    "candidates": [
+      "Seigantoji01.JPG",
+      "Daimonzaka8618.JPG",
+      "Dharma_wheel_1.png",
+      "Hokyointo,_Seigantoji.jpg",
+      "Kimiidera_Wakayama03n4272.jpg",
+      "Sanmon,_Seigantoji.jpg"
+    ]
+  },
+  "谷組": {
+    "wiki_title": "華厳寺",
+    "candidates": [
+      "Gifu-Kegonji.jpg",
+      "Dharma_wheel_1.png",
+      "Gifu-kegonj0060.JPG",
+      "Gifu-kegonji5616.JPG",
+      "Gifu-kegonji5624.JPG",
+      "Gifu-kegonji5660.JPG"
+    ]
+  },
+  "石山": {
+    "wiki_title": "石山寺",
+    "candidates": [
+      "Ishiyamadera29n4272.jpg",
+      "Bishamonten_Ishiyamadera.jpg",
+      "Dainichi_Nyorai_Ishiyamadera.jpg",
+      "Dharma_wheel_1.png",
+      "Fudō_Myōō_Ishiyamadera.jpg",
+      "Ishiyama_temple.jpg"
+    ]
+  },
+  "有明": {
+    "wiki_title": "有馬温泉",
+    "candidates": [
+      "170811_Rokko-Arima_Ropeway_Kobe_Japan00n.jpg",
+      "141108_Gekkoen_Yugetsusanso_Arima_Onsen_Kobe_Japan01bs3.jpg",
+      "161112_Taikou-no-yu_spa_Arima_Onsen_Kobe_Japan02s3.jpg",
+      "170811_Gin-no-yu_Arima_Onsen_Kobe_Japan01bs.jpg",
+      "170811_Rokko-Arima_Ropeway_Kobe_Japan03s3.jpg",
+      "2025-08-15_Tsuzumi_Falls,Arima_有馬温泉・鼓滝_DSCF8727.jpg"
+    ]
+  },
+  "長島": {
+    "wiki_title": "長島城",
+    "candidates": [
+      "Nagashima_castle_ootemon.JPG",
+      "Château_de_Himeji02.jpg",
+      "日本の城跡.png"
+    ]
+  },
+  "吉崎": {
+    "wiki_title": "吉崎御坊",
+    "candidates": [
+      "Yosizakigobou1.jpg",
+      "Bronze_statue_of_Rennyo_Syonin.jpg",
+      "Rennyosyouninnkinennkann1.jpg",
+      "Yoshizaki_Gobo_mark.jpg"
+    ]
+  },
+  "丸岡": {
+    "wiki_title": "丸岡城",
+    "candidates": [
+      "Maruoka_Castle_Keep_Tower,_Maruoka-cho_Sakai_2013.jpg",
+      "JapaneseCastle12ExistenceKeepTower.jpg",
+      "Maruoka_Castle_20100529-02.jpg",
+      "Maruoka_Castle_20100529-03.jpg",
+      "NDL1286488_〔日本古城絵図〕_北陸道之部（1）.224_越前丸岡城図.jpg",
+      "Osaka_Castle_Keep_tower_of_「A_figure_of_camp_screen_of_the_Osaka_summer」.jpg"
+    ]
+  },
+  "天龍寺": {
+    "wiki_title": "天龍寺 (永平寺町)",
+    "candidates": []
+  },
+  "永平寺": {
+    "wiki_title": "永平寺",
+    "candidates": [
+      "Eihei-ji_Temple_Chokushimon,_Eiheiji-cho_2013.jpg",
+      "Eiheiji13n4592.jpg",
+      "Eiheiji17nt3200.jpg",
+      "Eiheiji19n4592.jpg",
+      "Eiheiji21n4592.jpg",
+      "Eiheiji30n4592.jpg"
+    ]
+  },
+  "福井": {
+    "wiki_title": "福井城",
+    "candidates": [
+      "Fukui_Castle01st3200.jpg",
+      "Burg_Fukui_2.jpg",
+      "Fukui_Castle02bs3200.jpg",
+      "Fukui_Castle04bs4592.jpg",
+      "Fukui_Castle05n4592.jpg",
+      "Fukui_Castle07st3200.jpg"
+    ]
+  },
+  "比那が嵩": {
+    "wiki_title": "日野山",
+    "candidates": [
+      "Mountains_of_Japan_HINOSAN.jpg"
+    ]
+  },
+  "あさむづの橋": {
+    "wiki_title": "浅水川",
+    "candidates": []
+  },
+  "湯尾峠": {
+    "wiki_title": "湯尾峠",
+    "candidates": [
+      "Yuno-toge_Pass.jpg",
+      "Chikobe-Ike_Pond.jpg",
+      "Haiku_Monument_of_Matsuo_Basho_in_Yuno_Pass.jpg",
+      "Historic_sites_of_Emperor_Meiji's_resting_place.jpg",
+      "Mago-chakushi_Amulet.jpg",
+      "Magochakushi_Monument.jpg"
+    ]
+  },
+  "燧が城": {
+    "wiki_title": "火打城の戦い",
+    "candidates": []
+  },
+  "かへるやま": {
+    "wiki_title": "木ノ芽峠",
+    "candidates": [
+      "Kinome-touge.jpg",
+      "Kinome_Pass_Fortress_Army_Sign.jpg",
+      "Meiji_Tennou_Kinome_Pass_Rest_Area.jpg",
+      "Stone_marker_at_Kinome_Pass.jpg"
+    ]
+  },
+  "敦賀": {
+    "wiki_title": "気比松原",
+    "candidates": [
+      "Kehi-matsubara_from_Mount_Tezutsu.jpg",
+      "Kehi-no-Matsubara_of_beauty_spots.jpg",
+      "Memorial_playground_of_grown‐up_the_crown_prince_(Emperor_Showa).jpg",
+      "Monument_for_inspection_tour_of_the_crown_prince_(Emperor_Taisho).jpg",
+      "Poetry_monument_of_Ishizuka_Tomoji.jpg",
+      "Poetry_monument_of_Katsu_Kaishu_for_Emperor_Meiji.jpg"
+    ]
+  },
+  "気比の明神": {
+    "wiki_title": "氣比神宮",
+    "candidates": [
+      "Kehi-jingu_otorii-2.jpg",
+      "150228_Kehi-jingu_Tsuruga_Fukui_pref_Japan05s3.jpg",
+      "150228_Kehi-jingu_Tsuruga_Fukui_pref_Japan08n.jpg",
+      "150228_Kehi-jingu_Tsuruga_Fukui_pref_Japan10n.jpg",
+      "Ameno-izanahiko-jinja_(Kehi-jingu).JPG",
+      "Ameno-izanahime-jinja_(Kehi-jingu).JPG"
+    ]
+  },
+  "種の浜": {
+    "wiki_title": "色ヶ浜",
+    "candidates": []
+  },
+  "須磨": {
+    "wiki_title": "須磨",
+    "candidates": []
+  },
+  "大垣": {
+    "wiki_title": "大垣城",
+    "candidates": [
+      "Old_Ogaki_Castle_in_1933.jpg",
+      "110319_ogaki_cstl.jpg",
+      "Aerial_photo_of_Ōgaki_Castle.jpg",
+      "Ogaki_Castle.jpg",
+      "Ohgaki_Castle_-_panoramio.jpg",
+      "日本の城跡.png"
+    ]
+  },
+  "二見": {
+    "wiki_title": "二見浦",
+    "candidates": [
+      "Futanigaura.jpg",
+      "Hinjitsukan1.jpg",
+      "Hinjitsukan2.jpg",
+      "Kunisada_futamigaura.jpg",
+      "Meotoiwa.jpg",
+      "Sunrise_of_the_Wedded_Rocks03.jpg"
+    ]
+  },
+  "隅田川": {
+    "wiki_title": "隅田川",
+    "candidates": [
+      "Sumidagawa_bridge.png",
+      "100_views_edo_037.jpg",
+      "20080317-JPN140-Sumida-Tsukiji-more.jpg",
+      "Adumabashi.jpg",
+      "Aioi_Bridge(Tokyo)_in_2007.jpg",
+      "EitaiBridge_NightView.jpg"
+    ]
+  },
+  "阿武隈川": {
+    "wiki_title": "阿武隈川",
+    "candidates": [
+      "AbukumaGawaKako.jpg",
+      "20071201NasuDake.jpg",
+      "20080210MoniwakKo.jpg",
+      "20080501MoniwakKo.jpg",
+      "20080501ShichikashukuKo.jpg",
+      "20080524FujinumaDam.JPG"
+    ]
+  },
+  "名取川": {
+    "wiki_title": "名取川",
+    "candidates": [
+      "NatoriGawaM200701.jpg",
+      "211029_Natori_River_Sendai_Miyagi_pref_Japan01s5.jpg",
+      "Andon-matsu_Natori-Yuriage.jpg",
+      "NatoriGawa2005-3.jpg",
+      "Natori_Gawa_2008-02.jpg"
+    ]
+  },
+  "北上川": {
+    "wiki_title": "北上川",
+    "candidates": [
+      "Kitakami_river01s3872.jpg",
+      "070823_Waga_River_Nishiwaga_Iwate_pref_Japan01s.jpg",
+      "230728_Takadachi_Gikei-do_Hiraizumi_Iwate_pref_Japan13s3.jpg",
+      "Hiyori_ohashi_bridge_ishinomaki.JPG",
+      "KitakamiGgwaKyoaibu2.jpg",
+      "Kitakami_river_in_Morioka.jpg"
+    ]
+  },
+  "衣川": {
+    "wiki_title": "衣川",
+    "candidates": []
+  },
+  "最上川": {
+    "wiki_title": "最上川",
+    "candidates": [
+      "Tozawa_Mogami_Gorge_Of_Mogami_River_1.JPG",
+      "20080915MidzukuboDam.jpg",
+      "Aterazawa_Mogami_River_2006.jpg",
+      "Kamigo_Dam_left_view.jpg",
+      "Mogami_river_three_difficult_place.jpg",
+      "Mogamigawa-gassan-enbou-Hirosige.jpg"
+    ]
+  },
+  "黒部川": {
+    "wiki_title": "黒部川",
+    "candidates": [
+      "Kurobe_River.jpg",
+      "20081207黒部川扇状地.jpg",
+      "20100404黒部川源流部Tagged.jpg",
+      "American_engineer_and_railroad_journal_(1893)_(14572885609).jpg",
+      "KurobeGawaGenryubuTagged.jpg",
+      "KurobeKo.jpg"
+    ]
+  }
+}

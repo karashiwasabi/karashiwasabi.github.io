@@ -1,0 +1,27 @@
+[
+  {
+    "place": "深川",
+    "file_key": "Fuji_seen_through_the_Mannen_bridge_at_Fukagawa.jpg",
+    "local_path": "images/wiki/Fuji_seen_through_the_Mannen_bridge_at_Fukagawa.jpg"
+  },
+  {
+    "place": "白河関",
+    "file_key": "Shirakawa-no-Seki_monument.jpg",
+    "local_path": "images/wiki/Shirakawa-no-Seki_monument.jpg"
+  },
+  {
+    "place": "松島",
+    "file_key": "Matsushima_miyagi_z.JPG",
+    "local_path": "images/wiki/Matsushima_miyagi_z.jpg"
+  },
+  {
+    "place": "富士山",
+    "file_key": "Mt.Fuji_from_Mierula.jpg",
+    "local_path": "images/wiki/Mt.Fuji_from_Mierula.jpg"
+  },
+  {
+    "place": "千住",
+    "file_key": "Nakahara_in_the_Sagami_province.jpg",
+    "local_path": "images/wiki/Nakahara_in_the_Sagami_province.jpg"
+  }
+]
