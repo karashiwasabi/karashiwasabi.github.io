@@ -981,5 +981,83 @@
       "KurobeGawaGenryubuTagged.jpg",
       "KurobeKo.jpg"
     ]
+  },
+  "飛鳥": {
+    "wiki_title": "飛鳥",
+    "candidates": [
+      "Asuka_Nara_2009-5-23.jpg"
+    ]
+  },
+  "天の香具山": {
+    "wiki_title": "天香久山",
+    "candidates": [
+      "Kaguyama-mt.jpg"
+    ]
+  },
+  "柿本": {
+    "wiki_title": "柿本神社 (葛城市)",
+    "candidates": []
+  },
+  "田子の浦": {
+    "wiki_title": "田子の浦",
+    "candidates": [
+      "Japon-1886-30.jpg",
+      "Kanbara_Wakamiya_Shrine.jpg",
+      "Seikenji_temple-02.JPG",
+      "Shore_of_Tago_Bay,_Ejiri_at_Tokaido.jpg",
+      "Tego_no_Yobisaka.jpg",
+      "Tōkaidō_gojūsan_tsui,_Okitsu_by_Hiroshige.jpg"
+    ]
+  },
+  "小倉山": {
+    "wiki_title": "小倉山 (京都市)",
+    "candidates": [
+      "京都_嵐山_大堰川より小倉山（２８６ｍ）_Kyouto_Arashiyama_-_panoramio.jpg"
+    ]
+  },
+  "平城京": {
+    "wiki_title": "平城宮",
+    "candidates": [
+      "復元された第一次大極殿.jpg",
+      "200730_Model_of_the_main_part_of_Heijō_Palace.jpg",
+      "220325_Daigokumon_in_Heijo_Palace.jpg",
+      "220325_Lecture_Hall_of_Toshodai-ji.jpg",
+      "Daigoku-den_at_Heijō_Palace_under_repair_2010.jpg",
+      "Heijo_Palace,_Hyobusho-ato.jpg"
+    ]
+  },
+  "三笠山": {
+    "wiki_title": "三笠山 (奈良県)",
+    "candidates": []
+  },
+  "宇治山": {
+    "wiki_title": "宇治橋 (宇治市)",
+    "candidates": [
+      "Uji-Bridge.jpg",
+      "Uji_bridge10.jpg",
+      "Uji_bridge2.jpg",
+      "Uji_bridge4.jpg",
+      "Uji_bridge5.jpg",
+      "Uji_bridge6.jpg"
+    ]
+  },
+  "小野": {
+    "wiki_title": "隨心院",
+    "candidates": [
+      "Zuishinin_Kyoto03s3s4592.jpg",
+      "Zuishin-in_Ema.jpg",
+      "Zuishin-in_Komachi-Hall.jpg",
+      "Zuishin-in_Komachi-Tanka_inscription.jpg",
+      "Zuishin-in_Taishi-Hall.jpg",
+      "Zuishinin_Kyoto01s3s4592.jpg"
+    ]
+  },
+  "逢坂の関": {
+    "wiki_title": "逢坂関",
+    "candidates": [
+      "Three_barriers_in_Japan.png",
+      "伊勢参宮名所図会、逢坂山.jpg",
+      "逢坂山関址碑.jpg"
+    ]
   }
 }
