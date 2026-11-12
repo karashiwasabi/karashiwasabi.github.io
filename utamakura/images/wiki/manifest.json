@@ -133,5 +133,260 @@
     "place": "吉崎",
     "file_key": "Yoshizaki_Gobo_mark.jpg",
     "local_path": "images/wiki/Yoshizaki_Gobo_mark.jpg"
+  },
+  {
+    "place": "日光山",
+    "file_key": "Nikko_Toshogu_Yomeimon_Gate_2024.jpg",
+    "local_path": "images/wiki/Nikko_Toshogu_Yomeimon_Gate_2024.jpg"
+  },
+  {
+    "place": "三春",
+    "file_key": "Miharu_Miharu-Takizakura_Front_1.jpg",
+    "local_path": "images/wiki/Miharu_Miharu-Takizakura_Front_1.jpg"
+  },
+  {
+    "place": "二本松",
+    "file_key": "Nihonmatsu_Castle_Minowa_Gate_20100625-01.jpg",
+    "local_path": "images/wiki/Nihonmatsu_Castle_Minowa_Gate_20100625-01.jpg"
+  },
+  {
+    "place": "白石",
+    "file_key": "Shiroishi-jyou2015.jpg",
+    "local_path": "images/wiki/Shiroishi-jyou2015.jpg"
+  },
+  {
+    "place": "名取川",
+    "file_key": "211029_Natori_River_Sendai_Miyagi_pref_Japan01s5.jpg",
+    "local_path": "images/wiki/211029_Natori_River_Sendai_Miyagi_pref_Japan01s5.jpg"
+  },
+  {
+    "place": "仙台",
+    "file_key": "SendaiJoOtemonSumiYagura2003-11.jpg",
+    "local_path": "images/wiki/SendaiJoOtemonSumiYagura2003-11.jpg"
+  },
+  {
+    "place": "つつじが岡",
+    "file_key": "Ganbarō_Tohoku,_Tsutsujigaoka_no_sakura.jpg",
+    "local_path": "images/wiki/Ganbar__Tohoku__Tsutsujigaoka_no_sakura.jpg"
+  },
+  {
+    "place": "塩竈",
+    "file_key": "211030_Shiogama-jinja_Shiogama_Miyagi_pref_Japan02s3.jpg",
+    "local_path": "images/wiki/211030_Shiogama-jinja_Shiogama_Miyagi_pref_Japan02s3.jpg"
+  },
+  {
+    "place": "壺の碑",
+    "file_key": "Tagajo-hi.JPG",
+    "local_path": "images/wiki/Tagajo-hi.jpg"
+  },
+  {
+    "place": "末の松山",
+    "file_key": "Tagajo_Sue-no-Matsuyama_02.JPG",
+    "local_path": "images/wiki/Tagajo_Sue-no-Matsuyama_02.jpg"
+  },
+  {
+    "place": "瑞巌寺",
+    "file_key": "211030_Zuigan-ji_Matsushima_Miyagi_pref_Japan11s3.jpg",
+    "local_path": "images/wiki/211030_Zuigan-ji_Matsushima_Miyagi_pref_Japan11s3.jpg"
+  },
+  {
+    "place": "平泉",
+    "file_key": "230728_Motsuji_Hiraizumi_Iwate_pref_Japan37s3.jpg",
+    "local_path": "images/wiki/230728_Motsuji_Hiraizumi_Iwate_pref_Japan37s3.jpg"
+  },
+  {
+    "place": "石巻",
+    "file_key": "Hiyoriyama_koen_isinomaki_city.JPG",
+    "local_path": "images/wiki/Hiyoriyama_koen_isinomaki_city.jpg"
+  },
+  {
+    "place": "金華山",
+    "file_key": "20091011金華山.jpg",
+    "local_path": "images/wiki/20091011___.jpg"
+  },
+  {
+    "place": "金鶏山",
+    "file_key": "Mount_Kinkeisan.JPG",
+    "local_path": "images/wiki/Mount_Kinkeisan.jpg"
+  },
+  {
+    "place": "高館",
+    "file_key": "Natukusaya.basyou.JPG",
+    "local_path": "images/wiki/Natukusaya.basyou.jpg"
+  },
+  {
+    "place": "北上川",
+    "file_key": "230728_Takadachi_Gikei-do_Hiraizumi_Iwate_pref_Japan13s3.jpg",
+    "local_path": "images/wiki/230728_Takadachi_Gikei-do_Hiraizumi_Iwate_pref_Japan13s3.jpg"
+  },
+  {
+    "place": "光堂",
+    "file_key": "Esashi-Fujiwara_no_sato_02.JPG",
+    "local_path": "images/wiki/Esashi-Fujiwara_no_sato_02.jpg"
+  },
+  {
+    "place": "岩手の里",
+    "file_key": "Iwadeyama190.JPG",
+    "local_path": "images/wiki/Iwadeyama190.jpg"
+  },
+  {
+    "place": "鳴子の湯",
+    "file_key": "NarukoTakiNoYu.jpg",
+    "local_path": "images/wiki/NarukoTakiNoYu.jpg"
+  },
+  {
+    "place": "山中温泉",
+    "file_key": "260606_Basho-do_Yamanaka_Onsen_Kaga_Ishikawa_pref_Japan01s3.jpg",
+    "local_path": "images/wiki/260606_Basho-do_Yamanaka_Onsen_Kaga_Ishikawa_pref_Japan01s3.jpg"
+  },
+  {
+    "place": "山形",
+    "file_key": "220430_Yamagata_Castle_Yamagata_Yamagata_pref_Japan21s3.jpg",
+    "local_path": "images/wiki/220430_Yamagata_Castle_Yamagata_Yamagata_pref_Japan21s3.jpg"
+  },
+  {
+    "place": "立石寺",
+    "file_key": "211029_Risshaku-ji_Yamagata_Yamagata_pref_Japan106s3.jpg",
+    "local_path": "images/wiki/211029_Risshaku-ji_Yamagata_Yamagata_pref_Japan106s3.jpg"
+  },
+  {
+    "place": "最上川",
+    "file_key": "Tozawa_Mogami_Gorge_Of_Mogami_River_1.JPG",
+    "local_path": "images/wiki/Tozawa_Mogami_Gorge_Of_Mogami_River_1.jpg"
+  },
+  {
+    "place": "酒田",
+    "file_key": "酒田市日和山公園.JPG",
+    "local_path": "images/wiki/wiki_4478e83377.jpg"
+  },
+  {
+    "place": "白糸の滝",
+    "file_key": "Shiraito_no_taki_Waterfall_(Yamagata).jpg",
+    "local_path": "images/wiki/Shiraito_no_taki_Waterfall__Yamagata_.jpg"
+  },
+  {
+    "place": "羽黒山",
+    "file_key": "Hagurosan_Gojunto_2006-A.jpg",
+    "local_path": "images/wiki/Hagurosan_Gojunto_2006-A.jpg"
+  },
+  {
+    "place": "月山",
+    "file_key": "Mount_Gassann_20190811.JPG",
+    "local_path": "images/wiki/Mount_Gassann_20190811.jpg"
+  },
+  {
+    "place": "鶴岡",
+    "file_key": "Cherry_blossoms_in_Tsuruoka_Park_2024a.jpg",
+    "local_path": "images/wiki/Cherry_blossoms_in_Tsuruoka_Park_2024a.jpg"
+  },
+  {
+    "place": "鳥海山",
+    "file_key": "Mount_Chōkai_(2017-05-19)_-_Flickr.jpg",
+    "local_path": "images/wiki/Mount_Ch_kai__2017-05-19__-_Flickr.jpg"
+  },
+  {
+    "place": "干満珠寺",
+    "file_key": "Gate_of_Kanman-ji.jpg",
+    "local_path": "images/wiki/Gate_of_Kanman-ji.jpg"
+  },
+  {
+    "place": "秋田",
+    "file_key": "Osumi-Yagura_of_Kubota-Castle_20160424.jpg",
+    "local_path": "images/wiki/Osumi-Yagura_of_Kubota-Castle_20160424.jpg"
+  },
+  {
+    "place": "金沢",
+    "file_key": "20190705_Kanazawa_Castle-17.jpg",
+    "local_path": "images/wiki/20190705_Kanazawa_Castle-17.jpg"
+  },
+  {
+    "place": "鼠の関",
+    "file_key": "Bentenjima_(Tsuruoka,_Yamagata).jpg",
+    "local_path": "images/wiki/Bentenjima__Tsuruoka__Yamagata_.jpg"
+  },
+  {
+    "place": "佐渡",
+    "file_key": "Find47_Niigata-Sado-shima_island,_Manjojiki-m.jpg",
+    "local_path": "images/wiki/Find47_Niigata-Sado-shima_island__Manjojiki-m.jpg"
+  },
+  {
+    "place": "親不知",
+    "file_key": "Oyashirazu_tenkendangai.jpg",
+    "local_path": "images/wiki/Oyashirazu_tenkendangai.jpg"
+  },
+  {
+    "place": "黒部川",
+    "file_key": "Kurobe_River.jpg",
+    "local_path": "images/wiki/Kurobe_River.jpg"
+  },
+  {
+    "place": "有磯海",
+    "file_key": "Tateyama_Mountains_and_Onna-iwa_viewed_from_Amaharashi_Coast_20190309134344.jpg",
+    "local_path": "images/wiki/Tateyama_Mountains_and_Onna-iwa_viewed_from_Amaharashi_Coast_20190309134344.jpg"
+  },
+  {
+    "place": "倶利伽羅が谷",
+    "file_key": "Battle_of_Kurikaradani_Kassen_Zu.jpg",
+    "local_path": "images/wiki/Battle_of_Kurikaradani_Kassen_Zu.jpg"
+  },
+  {
+    "place": "小松",
+    "file_key": "DSC_2164~2.jpg",
+    "local_path": "images/wiki/DSC_2164_2.jpg"
+  },
+  {
+    "place": "那谷寺",
+    "file_key": "260719_Natadera_Komatsu_Ishikawa_pref_Japan27s3.jpg",
+    "local_path": "images/wiki/260719_Natadera_Komatsu_Ishikawa_pref_Japan27s3.jpg"
+  },
+  {
+    "place": "那智",
+    "file_key": "Daimonzaka8618.JPG",
+    "local_path": "images/wiki/Daimonzaka8618.jpg"
+  },
+  {
+    "place": "谷組",
+    "file_key": "Gifu-Kegonji.jpg",
+    "local_path": "images/wiki/Gifu-Kegonji.jpg"
+  },
+  {
+    "place": "石山",
+    "file_key": "Ishiyama_temple.jpg",
+    "local_path": "images/wiki/Ishiyama_temple.jpg"
+  },
+  {
+    "place": "有明",
+    "file_key": "2025-08-15_Tsuzumi_Falls,Arima_有馬温泉・鼓滝_DSCF8727.jpg",
+    "local_path": "images/wiki/2025-08-15_Tsuzumi_Falls_Arima_________DSCF8727.jpg"
+  },
+  {
+    "place": "長島",
+    "file_key": "Nagashima_castle_ootemon.JPG",
+    "local_path": "images/wiki/Nagashima_castle_ootemon.jpg"
+  },
+  {
+    "place": "丸岡",
+    "file_key": "Maruoka_Castle_Keep_Tower,_Maruoka-cho_Sakai_2013.jpg",
+    "local_path": "images/wiki/Maruoka_Castle_Keep_Tower__Maruoka-cho_Sakai_2013.jpg"
+  },
+  {
+    "place": "永平寺",
+    "file_key": "Eihei-ji_Temple_Chokushimon,_Eiheiji-cho_2013.jpg",
+    "local_path": "images/wiki/Eihei-ji_Temple_Chokushimon__Eiheiji-cho_2013.jpg"
+  },
+  {
+    "place": "福井",
+    "file_key": "Fukui_Castle04bs4592.jpg",
+    "local_path": "images/wiki/Fukui_Castle04bs4592.jpg"
+  },
+  {
+    "place": "気比の明神",
+    "file_key": "150228_Kehi-jingu_Tsuruga_Fukui_pref_Japan08n.jpg",
+    "local_path": "images/wiki/150228_Kehi-jingu_Tsuruga_Fukui_pref_Japan08n.jpg"
+  },
+  {
+    "place": "大垣",
+    "file_key": "Old_Ogaki_Castle_in_1933.jpg",
+    "local_path": "images/wiki/Old_Ogaki_Castle_in_1933.jpg"
   }
 ]
