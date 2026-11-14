@@ -698,9 +698,7 @@
     "caption": "歌川広重『六十余州名所図会 因幡 加路小山』",
     "province": "因幡国",
     "file_key": "Inaba Province, Karo, Koyama (5765347361).jpg",
-    "places": [
-      "いなばの山"
-    ],
+    "places": [],
     "works": [
       "小倉百人一首"
     ],
@@ -736,9 +734,7 @@
     "caption": "歌川広重『六十余州名所図会 伊予 西条』",
     "province": "伊予国",
     "file_key": "Hiroshige Iyo Saijō.jpg",
-    "places": [
-      "熟田津"
-    ],
+    "places": [],
     "works": [
       "万葉集"
     ],
@@ -914,9 +910,7 @@
     "caption": "葛飾北斎『富嶽三十六景 常州牛堀』",
     "province": "常陸国",
     "file_key": "Ushibori in the Hitachi province.jpg",
-    "places": [
-      "筑波山"
-    ],
+    "places": [],
     "works": [
       "小倉百人一首",
       "万葉集"
@@ -1029,8 +1023,7 @@
     "province": "近江国",
     "file_key": "Tokaido53 Otsu.jpg",
     "places": [
-      "逢坂の関",
-      "逢坂山"
+      "逢坂の関"
     ],
     "works": [
       "小倉百人一首",

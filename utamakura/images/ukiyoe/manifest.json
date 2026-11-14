@@ -190,26 +190,6 @@
     "local_path": "images/ukiyoe/r60_oki_takuhi.jpg"
   },
   {
-    "place": "筑波山",
-    "id": "hokusai_fuji_ushibori",
-    "artist": "葛飾北斎",
-    "series": "富嶽三十六景",
-    "title": "常州牛堀",
-    "caption": "葛飾北斎『富嶽三十六景 常州牛堀』",
-    "file_key": "Ushibori in the Hitachi province.jpg",
-    "local_path": "images/ukiyoe/hokusai_fuji_ushibori.jpg"
-  },
-  {
-    "place": "いなばの山",
-    "id": "r60_inaba_karo",
-    "artist": "歌川広重",
-    "series": "六十余州名所図会",
-    "title": "因幡 加路小山",
-    "caption": "歌川広重『六十余州名所図会 因幡 加路小山』",
-    "file_key": "Inaba Province, Karo, Koyama (5765347361).jpg",
-    "local_path": "images/ukiyoe/r60_inaba_karo.jpg"
-  },
-  {
     "place": "竜田川",
     "id": "r60_yamato_tatsutagawa",
     "artist": "歌川広重",
@@ -238,16 +218,6 @@
     "caption": "歌川広重『浪花名所図会 住吉出見の浜月見』",
     "file_key": "Viewing Rising Moon from Beach at Sumiyoshi in Naniwa by Hiroshige (Yamagata).jpg",
     "local_path": "images/ukiyoe/hiroshige_naniwa_sumiyoshi.jpg"
-  },
-  {
-    "place": "熟田津",
-    "id": "r60_iyo_saijo",
-    "artist": "歌川広重",
-    "series": "六十余州名所図会",
-    "title": "伊予 西条",
-    "caption": "歌川広重『六十余州名所図会 伊予 西条』",
-    "file_key": "Hiroshige Iyo Saijō.jpg",
-    "local_path": "images/ukiyoe/r60_iyo_saijo.jpg"
   },
   {
     "place": "和歌の浦",
