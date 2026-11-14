@@ -1,0 +1,23 @@
+[
+  {
+    "place": "和歌の浦",
+    "title": "国の名勝 和歌浦（三断橋と妹背山・観海閣）",
+    "wiki_page": "和歌浦",
+    "file_key": "Imoseyama_Wakanoura_Wakayama_Japan01bs5.jpg",
+    "local_path": "images/meisho_manyo/manyo_wakanoura.jpg"
+  },
+  {
+    "place": "玉津島",
+    "title": "国の名勝 和歌浦（妹背山・観海閣水辺）",
+    "wiki_page": "玉津島神社",
+    "file_key": "Kankaikaku_Wakanoura_Wakayama_Japan01n.jpg",
+    "local_path": "images/meisho_manyo/manyo_tamatsushima.jpg"
+  },
+  {
+    "place": "畝傍山",
+    "title": "国の名勝 大和三山（香具山・畝傍山・耳成山）",
+    "wiki_page": "大和三山",
+    "file_key": "Yamato-sanzan.jpg",
+    "local_path": "images/meisho_manyo/manyo_yamatosanzan.jpg"
+  }
+]

@@ -158,5 +158,105 @@
     "caption": "歌川広重『六十余州名所図会 越前 敦賀気比ノ松原』",
     "file_key": "The Famous Scenes of the Sixty States 31 Echizen.jpg",
     "local_path": "images/ukiyoe/r60_echizen_tsuruga.jpg"
+  },
+  {
+    "place": "小倉山",
+    "id": "r60_yamashiro_arashiyama",
+    "artist": "歌川広重",
+    "series": "六十余州名所図会",
+    "title": "山城 あらし山 渡月橋",
+    "caption": "歌川広重『六十余州名所図会 山城 あらし山 渡月橋』",
+    "file_key": "Hiroshige Yamashiro Arashiyama.jpg",
+    "local_path": "images/ukiyoe/r60_yamashiro_arashiyama.jpg"
+  },
+  {
+    "place": "逢坂の関",
+    "id": "tokaido_osakayama",
+    "artist": "歌川広重",
+    "series": "東海道五十三次",
+    "title": "大津 走井茶店（逢坂山）",
+    "caption": "歌川広重『東海道五十三次 大津 走井茶店』",
+    "file_key": "Tokaido53 Otsu.jpg",
+    "local_path": "images/ukiyoe/tokaido_osakayama.jpg"
+  },
+  {
+    "place": "隠岐",
+    "id": "r60_oki_takuhi",
+    "artist": "歌川広重",
+    "series": "六十余州名所図会",
+    "title": "隠岐 焚火の社",
+    "caption": "歌川広重『六十余州名所図会 隠岐 焚火の社』",
+    "file_key": "Hiroshige Oki Takuhinoyashiro.jpg",
+    "local_path": "images/ukiyoe/r60_oki_takuhi.jpg"
+  },
+  {
+    "place": "筑波山",
+    "id": "hokusai_fuji_ushibori",
+    "artist": "葛飾北斎",
+    "series": "富嶽三十六景",
+    "title": "常州牛堀",
+    "caption": "葛飾北斎『富嶽三十六景 常州牛堀』",
+    "file_key": "Ushibori in the Hitachi province.jpg",
+    "local_path": "images/ukiyoe/hokusai_fuji_ushibori.jpg"
+  },
+  {
+    "place": "いなばの山",
+    "id": "r60_inaba_karo",
+    "artist": "歌川広重",
+    "series": "六十余州名所図会",
+    "title": "因幡 加路小山",
+    "caption": "歌川広重『六十余州名所図会 因幡 加路小山』",
+    "file_key": "Inaba Province, Karo, Koyama (5765347361).jpg",
+    "local_path": "images/ukiyoe/r60_inaba_karo.jpg"
+  },
+  {
+    "place": "竜田川",
+    "id": "r60_yamato_tatsutagawa",
+    "artist": "歌川広重",
+    "series": "六十余州名所図会",
+    "title": "大和 龍田山 龍田川",
+    "caption": "歌川広重『六十余州名所図会 大和 龍田山 龍田川』",
+    "file_key": "The Famous Scenes of the Sixty States 02 Yamato.jpg",
+    "local_path": "images/ukiyoe/r60_yamato_tatsutagawa.jpg"
+  },
+  {
+    "place": "住の江",
+    "id": "r60_settsu_sumiyoshi",
+    "artist": "歌川広重",
+    "series": "六十余州名所図会",
+    "title": "摂津 住吉 出見のはま",
+    "caption": "歌川広重『六十余州名所図会 摂津 住吉 出見のはま』",
+    "file_key": "Settsu Province, Sumiyoshi, Idemi Beach.jpg",
+    "local_path": "images/ukiyoe/r60_settsu_sumiyoshi.jpg"
+  },
+  {
+    "place": "難波",
+    "id": "hiroshige_naniwa_sumiyoshi",
+    "artist": "歌川広重",
+    "series": "浪花名所図会",
+    "title": "住吉出見の浜月見",
+    "caption": "歌川広重『浪花名所図会 住吉出見の浜月見』",
+    "file_key": "Viewing Rising Moon from Beach at Sumiyoshi in Naniwa by Hiroshige (Yamagata).jpg",
+    "local_path": "images/ukiyoe/hiroshige_naniwa_sumiyoshi.jpg"
+  },
+  {
+    "place": "熟田津",
+    "id": "r60_iyo_saijo",
+    "artist": "歌川広重",
+    "series": "六十余州名所図会",
+    "title": "伊予 西条",
+    "caption": "歌川広重『六十余州名所図会 伊予 西条』",
+    "file_key": "Hiroshige Iyo Saijō.jpg",
+    "local_path": "images/ukiyoe/r60_iyo_saijo.jpg"
+  },
+  {
+    "place": "和歌の浦",
+    "id": "r60_kii_wakanoura",
+    "artist": "歌川広重",
+    "series": "六十余州名所図会",
+    "title": "紀伊 和歌之浦",
+    "caption": "歌川広重『六十余州名所図会 紀伊 和歌之浦』",
+    "file_key": "Hiroshige Wakanoura.jpg",
+    "local_path": "images/ukiyoe/r60_kii_wakanoura.jpg"
   }
 ]

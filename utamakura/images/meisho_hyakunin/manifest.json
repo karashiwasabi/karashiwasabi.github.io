@@ -1,0 +1,58 @@
+[
+  {
+    "place": "天の香具山",
+    "title": "国の特別史跡 藤原宮跡と天の香具山",
+    "wiki_page": "藤原京",
+    "file_key": "Fujiwara-kyo_Kashihara_Nara_pref_Japan03bs5.jpg",
+    "local_path": "images/meisho_hyakunin/hyakunin_fujiwarakyo.jpg"
+  },
+  {
+    "place": "小倉山",
+    "title": "国の史跡・名勝 嵐山（大堰川・小倉山対岸景勝地）",
+    "wiki_page": "嵐山",
+    "file_key": "Arashiyama_(8741759830).jpg",
+    "local_path": "images/meisho_hyakunin/hyakunin_arashiyama.jpg"
+  },
+  {
+    "place": "三笠山",
+    "title": "世界遺産・特別天然記念物 春日山原始林（御蓋山・春日山）",
+    "wiki_page": "春日山原始林",
+    "file_key": "Kasugayama_Primeval_Forest_02.jpg",
+    "local_path": "images/meisho_hyakunin/hyakunin_kasugayama.jpg"
+  },
+  {
+    "place": "宇治山",
+    "title": "世界遺産・国の史跡名勝 平等院庭園（宇治）",
+    "wiki_page": "平等院",
+    "file_key": "Phoenix_Hall_in_Byodo-in_Temple,_Ujirenge_Uji_city_2026.jpg",
+    "local_path": "images/meisho_hyakunin/hyakunin_byodoin.jpg"
+  },
+  {
+    "place": "隠岐",
+    "title": "国の名勝・天然記念物 隠岐国賀海岸",
+    "wiki_page": "国賀海岸",
+    "file_key": "Matengai_Cliff_at_Kuniga_coast,_Nishinoshima.jpg",
+    "local_path": "images/meisho_hyakunin/hyakunin_kuniga.jpg"
+  },
+  {
+    "place": "逢坂の関",
+    "title": "逢坂山 関蝉丸神社（逢坂の関ゆかりの古社）",
+    "wiki_page": "関蝉丸神社",
+    "file_key": "Seki-semimaru-jinja-shimosha3.jpg",
+    "local_path": "images/meisho_hyakunin/hyakunin_semimaru.jpg"
+  },
+  {
+    "place": "筑波山",
+    "title": "筑波山神社（筑波嶺・みなの川源流の霊峰古社）",
+    "wiki_page": "筑波山神社",
+    "file_key": "Tsukubasan-jinja_haiden.JPG",
+    "local_path": "images/meisho_hyakunin/hyakunin_tsukubasan_shrine.jpg"
+  },
+  {
+    "place": "住の江",
+    "title": "住吉大社 反橋（太鼓橋・住の江の象徴景観）",
+    "wiki_page": "住吉反橋",
+    "file_key": "Sumiyoshi-taisya_hashi.jpg",
+    "local_path": "images/meisho_hyakunin/hyakunin_sumiyoshi_taisha.jpg"
+  }
+]
