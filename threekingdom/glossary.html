@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>『正史三國志』</title>
+  <meta name="description" content="陳寿『正史三國志』全公開巻を一気通貫で引ける登場人物（五十音順・同姓同名分離）・歴史地名（地図連動）・官職（四分類）・引用史料索引データベース。">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" sizes="192x192" href="favicon.png?v=2">
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon.png?v=2">
+  <!-- Google Analytics (G-310XSTTWSM) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-310XSTTWSM"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-310XSTTWSM');
+  </script>
+  <!-- Google AdSense (ca-pub-4382223240782332) -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4382223240782332" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="shared_glossary_corpus.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      height: 100dvh;
+      background: #f5f5f0;
+      color: #222;
+      overflow: hidden;
+    }
+
+    /* 文中インラインリンク（本編と共通4分類＋検索対象強調） */
+    .inline-place {
+      border-bottom: 1.5px solid #2e7d32;
+      color: #1b5e20;
+      cursor: pointer;
+      padding-bottom: 1px;
+      transition: background 0.15s;
+    }
+    .inline-place:hover { background: #c8e6c9; }
+    .inline-person {
+      border-bottom: 1.5px dotted #d84315;
+      color: #bf360c;
+      cursor: pointer;
+      padding-bottom: 1px;
+      transition: background 0.15s;
+    }
+    .inline-person:hover { background: #ffe0b2; }
+    .inline-office {
+      border-bottom: 1.5px dashed #1565c0;
+      color: #0d47a1;
+      cursor: pointer;
+      padding-bottom: 1px;
+      transition: background 0.15s;
+    }
+    .inline-office:hover { background: #bbdefb; }
+    .inline-special {
+      border-bottom: 1.5px dotted #6a1b9a;
+      color: #4a148c;
+      cursor: pointer;
+      padding-bottom: 1px;
+      transition: background 0.15s;
+    }
+    .inline-special:hover { background: #e1bee7; }
+    .matched-target-term {
+      background: #fff176;
+      font-weight: bold;
+      padding: 0 3px;
+      border-radius: 3px;
+      box-shadow: 0 0 0 1px #fbc02d;
+    }
+
+    /* 左右2分割メインコンテナ（本編と100%共通比率） */
+    .main-container {
+      display: flex;
+      flex-direction: row;
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+    .map-column {
+      flex: 1.15;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      position: relative;
+      border-right: 2px solid #8c6d46;
+      background: #e6e2d8;
+      overflow: hidden;
+    }
+    #map {
+      flex: 1;
+      width: 100%;
+      min-height: 0;
+      background: #e6e2d8;
+      position: relative;
+    }
+    .reader-panel {
+      flex: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      background: #faf8f5;
+      overflow: hidden;
+    }
+
+    /* 上部ナビゲーションバー（本編と完全統一） */
+    .vol-nav-bar, .para-nav-bar {
+      height: 40px;
+      background: #2c241b;
+      color: #f7f1e5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 0 12px;
+      border-bottom: 1px solid #8c6d46;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .para-nav-bar {
+      background: #3d2f1d;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .home-top-link {
+      position: absolute;
+      left: 10px;
+      color: #f7f1e5;
+      text-decoration: none;
+      font-size: 0.78rem;
+      font-weight: bold;
+      padding: 3px 8px;
+      border: 1px solid #8c6d46;
+      border-radius: 4px;
+      background: #3d2f1d;
+      transition: 0.15s;
+      white-space: nowrap;
+    }
+    .home-top-link:hover { background: #5d4037; color: #fff; }
+    .slim-nav-btn {
+      background: #5c472c;
+      color: #fff;
+      border: 1px solid #a88a58;
+      border-radius: 4px;
+      padding: 3px 12px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+    .slim-nav-btn:hover:not(:disabled) { background: #7d613c; }
+    .slim-nav-btn:disabled { opacity: 0.35; cursor: default; }
+    .para-select {
+      background: #211a14;
+      color: #f7f1e5;
+      border: 1px solid #a88a58;
+      border-radius: 4px;
+      padding: 3px 8px;
+      font-size: 0.86rem;
+      font-weight: bold;
+      cursor: pointer;
+      max-width: 72%;
+    }
+
+    /* 左側：地図の上にかぶさる索引オーバーレイ */
+    .index-overlay {
+      position: absolute;
+      top: 40px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 4500;
+      background: rgba(250, 248, 243, 0.97);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border-top: 1px solid #cbbda6;
+    }
+    .index-overlay.hidden {
+      display: none;
+    }
+    .index-toolbar {
+      padding: 10px 12px 8px;
+      background: #efeadd;
+      border-bottom: 1px solid #cbbda6;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .index-search-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .index-search-input {
+      flex: 1;
+      padding: 7px 11px;
+      border: 1.5px solid #8c6d46;
+      border-radius: 5px;
+      font-size: 0.9rem;
+      background: #fff;
+      color: #222;
+    }
+    .index-search-input:focus {
+      outline: none;
+      border-color: #bf360c;
+      box-shadow: 0 0 0 2px rgba(191,54,12,0.15);
+    }
+    .map-peek-btn {
+      background: #3d2f1d;
+      color: #ffe082;
+      border: 1px solid #a88a58;
+      border-radius: 5px;
+      padding: 6px 10px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .map-peek-btn:hover { background: #5c472c; color: #fff; }
+
+    .cat-tabs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+    .cat-tab-btn {
+      background: #fff;
+      color: #3d2f1d;
+      border: 1px solid #bcaaa4;
+      border-radius: 5px;
+      padding: 6px 4px;
+      font-size: 0.82rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.15s;
+      text-align: center;
+    }
+    .cat-tab-btn:hover { background: #f5efe4; }
+    .cat-tab-btn.active.person { background: #bf360c; color: #fff; border-color: #870000; }
+    .cat-tab-btn.active.place { background: #2e7d32; color: #fff; border-color: #1b5e20; }
+    .cat-tab-btn.active.office { background: #1565c0; color: #fff; border-color: #0d47a1; }
+    .cat-tab-btn.active.special { background: #6a1b9a; color: #fff; border-color: #4a148c; }
+
+    .subfilter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      align-items: center;
+    }
+    .gojuon-btn {
+      background: #fff;
+      color: #4e342e;
+      border: 1px solid #cbbda6;
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 0.78rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .gojuon-btn:hover { background: #f3ece0; }
+    .gojuon-btn.active {
+      background: #5d4037;
+      color: #fff;
+      border-color: #3e2723;
+    }
+
+    .index-list-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px 12px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .index-group-block {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .index-group-heading {
+      font-size: 0.88rem;
+      font-weight: bold;
+      color: #3e2723;
+      background: #ede6d6;
+      padding: 4px 10px;
+      border-left: 4px solid #8c6d46;
+      border-radius: 3px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .index-chip-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .index-chip {
+      background: #fff;
+      color: #222;
+      border: 1px solid #d7ccc8;
+      border-left-width: 3.5px;
+      border-radius: 4px;
+      padding: 5px 9px;
+      font-size: 0.86rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: baseline;
+      gap: 5px;
+      transition: background 0.12s, transform 0.08s;
+      text-align: left;
+    }
+    .index-chip:hover {
+      background: #fff8e1;
+      border-color: #8c6d46;
+    }
+    .index-chip.person { border-left-color: #d84315; }
+    .index-chip.place { border-left-color: #2e7d32; }
+    .index-chip.office { border-left-color: #1565c0; }
+    .index-chip.special { border-left-color: #6a1b9a; }
+    .index-chip.selected {
+      background: #3e2723;
+      color: #fff;
+      border-color: #ffb300;
+    }
+    .index-chip.selected .chip-yomi,
+    .index-chip.selected .chip-count {
+      color: #ffe082;
+    }
+    .chip-label { font-weight: bold; }
+    .chip-yomi { font-size: 0.72rem; color: #6d4c41; }
+    .chip-count { font-size: 0.7rem; color: #8d6e63; }
+
+    /* 地図表示中に索引を再展開する左上ボタン */
+    .reopen-index-floating-btn {
+      position: absolute;
+      top: 52px;
+      left: 54px;
+      z-index: 4200;
+      background: #3e2723;
+      color: #ffe082;
+      border: 2px solid #d4af37;
+      border-radius: 6px;
+      padding: 7px 14px;
+      font-size: 0.86rem;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.45);
+      display: none;
+    }
+    .reopen-index-floating-btn:hover { background: #5d4037; color: #fff; }
+
+    /* 右側：解説＋Wikipedia＋本文リスト */
+    .record-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+    }
+    .vol-filter-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      align-items: center;
+      overflow-x: auto;
+    }
+    .vol-pill {
+      background: #5c472c;
+      color: #f7f1e5;
+      border: 1px solid #a88a58;
+      border-radius: 14px;
+      padding: 2px 9px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .vol-pill.active {
+      background: #ffb300;
+      color: #211a14;
+      border-color: #ffe082;
+    }
+    .vol-pill:disabled { opacity: 0.35; cursor: default; }
+
+    .head-summary-card {
+      background: #fffdf8;
+      border: 2px solid #8c6d46;
+      border-radius: 7px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+    .head-summary-title {
+      font-size: 1.15rem;
+      font-weight: bold;
+      color: #2c241b;
+      border-bottom: 1px solid #e0d6c3;
+      padding-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .wiki-lead-box {
+      background: #eef5fc;
+      border-left: 4px solid #1565c0;
+      border-radius: 4px;
+      padding: 10px 12px;
+      font-size: 0.9rem;
+      line-height: 1.65;
+      color: #1a2530;
+    }
+    .wiki-link-btn {
+      display: inline-block;
+      margin-top: 6px;
+      background: #1565c0;
+      color: #fff;
+      text-decoration: none;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 0.78rem;
+      font-weight: bold;
+    }
+    .wiki-link-btn:hover { background: #0d47a1; }
+    .primary-desc-box {
+      background: #f7f3eb;
+      border-left: 4px solid #8c6d46;
+      border-radius: 4px;
+      padding: 10px 12px;
+      font-size: 0.92rem;
+      line-height: 1.7;
+      color: #2b2118;
+    }
+    .homonym-alert-box {
+      background: #fff3e0;
+      border: 1.5px solid #ef6c00;
+      border-left: 5px solid #e65100;
+      border-radius: 5px;
+      padding: 9px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .homonym-switch-btn {
+      background: #e65100;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 5px 10px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      cursor: pointer;
+      align-self: flex-start;
+    }
+    .homonym-switch-btn:hover { background: #bf360c; }
+
+    /* 本文カード（本編と完全統一デザイン） */
+    .record-card {
+      border: 1px solid #ddd5c7;
+      border-radius: 6px;
+      padding: 15px 17px;
+      background: #fffdf9;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .record-card.pei-note {
+      background: #f4f7fa;
+      border-left: 4px solid #4a76a8;
+      margin-left: 12px;
+    }
+    .record-card.main-text {
+      border-left: 4px solid #2e7d32;
+    }
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      font-size: 0.86rem;
+      margin-bottom: 8px;
+      color: #555;
+    }
+    .vol-tag-badge {
+      display: inline-block;
+      background: #3d2f1d;
+      color: #ffe082;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.76rem;
+      font-weight: bold;
+      margin-right: 4px;
+    }
+    .badge {
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 0.76rem;
+      color: #fff;
+    }
+    .badge.main { background: #2e7d32; }
+    .badge.pei { background: #4a76a8; }
+    .read-in-vol-btn {
+      background: #2e7d32;
+      color: #fff;
+      border: 1px solid #1b5e20;
+      border-radius: 4px;
+      padding: 3px 9px;
+      font-size: 0.76rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+    .read-in-vol-btn:hover { background: #1b5e20; }
+    .raw-text {
+      font-family: "Yu Mincho", "MS PMincho", serif;
+      font-size: 1.15rem;
+      font-weight: bold;
+      color: #111;
+      margin-bottom: 9px;
+      line-height: 1.72;
+    }
+    .kakikudashi {
+      font-size: 1.02rem;
+      color: #333;
+      margin-bottom: 9px;
+      line-height: 1.78;
+      padding-left: 10px;
+      border-left: 3px solid #cbbda6;
+    }
+    .translation {
+      font-size: 1.04rem;
+      color: #1a1a1a;
+      line-height: 1.82;
+      background: rgba(255,255,255,0.82);
+      padding: 8px 10px;
+      border-radius: 4px;
+    }
+
+    .history-back-btn {
+      background: #c62828;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 5px 11px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      cursor: pointer;
+      align-self: flex-start;
+    }
+    .empty-guide-box {
+      background: #fffdf9;
+      border: 1px dashed #bcaaa4;
+      border-radius: 8px;
+      padding: 22px 18px;
+      color: #4e342e;
+      line-height: 1.8;
+    }
+
+    /* 地図ラベル・トースト（本編と完全統一） */
+    .custom-label {
+      background: rgba(44, 36, 27, 0.92);
+      color: #fff;
+      border: 1px solid #d4af37;
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 12px;
+      font-weight: bold;
+      white-space: nowrap;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.45);
+    }
+    .custom-label.selected-pin {
+      background: #c62828;
+      color: #ffff00;
+      font-size: 14px;
+      padding: 3px 8px;
+      border: 2px solid #fff;
+      z-index: 9999 !important;
+    }
+    .area-banner-label {
+      background: rgba(183, 28, 28, 0.9);
+      color: #fff;
+      border: 2px solid #ffd54f;
+      border-radius: 6px;
+      padding: 4px 12px;
+      font-size: 14px;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+    .parent-area-banner-label {
+      background: rgba(46, 125, 50, 0.88);
+      color: #fff;
+      border: 1.5px solid #c8e6c9;
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 12px;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+    .nat-Geo-label {
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      color: rgba(30, 60, 90, 0.72);
+      font-weight: bold;
+      font-size: 12px;
+      text-shadow: 1px 1px 2px #fff, -1px -1px 2px #fff;
+      pointer-events: none;
+    }
+    .nat-Geo-label.mountain { color: rgba(78, 52, 46, 0.78); font-size: 12.5px; }
+    .leaflet-tooltip.transparent-box { background: transparent; border: none; box-shadow: none; padding: 0; }
+    .leaflet-tooltip-top.transparent-box:before { display: none; }
+    .map-toast {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      z-index: 4300;
+      background: rgba(44, 36, 27, 0.95);
+      color: #fff;
+      border: 2px solid #d4af37;
+      border-radius: 6px;
+      padding: 9px 13px;
+      font-size: 0.85rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+      display: none;
+      max-width: 430px;
+    }
+    .ad-footer-box {
+      margin-top: 10px;
+      padding: 10px 12px;
+      background: #f3efe6;
+      border: 1px solid #dcd3c1;
+      border-radius: 6px;
+      text-align: center;
+      min-height: 90px;
+    }
+    .ad-footer-label { font-size: 0.68rem; color: #8c7b65; margin-bottom: 4px; }
+
+    @media (max-width: 900px) {
+      .main-container { flex-direction: column; }
+      .map-column {
+        flex: none;
+        height: 42%;
+        width: 100%;
+        border-right: none;
+        border-bottom: 2px solid #8c6d46;
+      }
+      .reader-panel {
+        flex: none;
+        height: 58%;
+        width: 100%;
+      }
+      .cat-tab-btn { font-size: 0.75rem; padding: 5px 2px; }
+      .index-chip { font-size: 0.8rem; padding: 4px 7px; }
+      .raw-text { font-size: 1.04rem; }
+      .kakikudashi { font-size: 0.95rem; }
+      .translation { font-size: 0.96rem; }
+    }
+    @media (max-width: 520px) {
+      .vol-nav-bar { gap: 6px; padding: 0 6px; }
+      .home-top-link { position: static; margin-right: auto; padding: 2px 6px; font-size: 0.72rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="main-container">
+  <div class="map-column">
+    <div class="vol-nav-bar">
+      <a href="https://wasabikarashi.com/" class="home-top-link" title="総合トップページへ戻る">🏠 トップ</a>
+      <button class="slim-nav-btn" disabled title="前の項目（なし）">←</button>
+      <select class="para-select" style="font-family:'Yu Mincho','MS PMincho',serif; font-size:0.95rem; letter-spacing:0.05em;" onchange="if(this.value) window.location.href=this.value" title="巻・索引を切り替え">
+        <option value="glossary.html" selected>📑 登場人物・地名・官職 索引</option>
+        <option value="vol01.html">魏書一　武帝紀</option>
+        <option value="vol17.html">魏書十七　張樂于張徐傳</option>
+        <option value="vol31.html">蜀書一　劉二牧傳</option>
+        <option value="vol46.html">呉書一　孫破虜討逆傳</option>
+      </select>
+      <button class="slim-nav-btn" onclick="window.location.href='vol01.html'" title="次の公開巻（魏書一　武帝紀）へ移動">→</button>
+    </div>
+
+    <div id="map">
+      <div class="map-toast" id="mapToast"></div>
+    </div>
+
+    <button class="reopen-index-floating-btn" id="reopenIndexBtn" onclick="showIndexOverlay()">📑 索引パネルを開く</button>
+
+    <!-- 左側（地図の上）にかぶさる五十音順・分類別 全巻索引パネル -->
+    <div class="index-overlay" id="indexOverlay">
+      <div class="index-toolbar">
+        <div class="index-search-row">
+          <input type="text" id="indexSearchInput" class="index-search-input" placeholder="🔍 名前・よみがな・官職・地名を入力して絞り込み（例：そうそう、曹操、王朗、太守、許…）" oninput="handleSearchFilterChange(this.value)">
+          <button class="map-peek-btn" onclick="hideIndexOverlay()" title="索引を一時的に閉じて下の地図を見る">🗺️ 地図を見る</button>
+        </div>
+        <div class="cat-tabs" id="catTabs"></div>
+        <div class="subfilter-bar" id="subfilterBar"></div>
+      </div>
+      <div class="index-list-scroll" id="indexListScroll"></div>
+    </div>
+  </div>
+
+  <div class="reader-panel">
+    <div class="para-nav-bar" id="rightTopBar">
+      <span style="font-size:0.88rem; font-weight:bold;">📑 全巻横断 登場人物・地名・官職 索引</span>
+    </div>
+    <div class="record-list" id="resultList"></div>
+  </div>
+</div>
+
+<script>
+  const CORPUS = window.THREEKINGDOM_GLOSSARY_CORPUS || {
+    volumes: [], records: [], places: [], natural_features: [], river_lines: [],
+    catalog: { person: [], place: [], office: [], special: [] },
+    occurrences: { person: {}, place: {}, office: {}, special: {} }
+  };
+
+  const CROSS_JUMP_STORAGE_KEY = 'threekingdom_cross_vol_return_v1';
+  const PLACE_FOCUS_MAX_ZOOM = 7;
+  const RIVER_FOCUS_ZOOM = 7;
+  const FALLBACK_PIN_ZOOM = 7;
+  const MAP_FIT_PADDING_PX = 36;
+
+  const GOJUON_ROWS = ['すべて', 'あ', 'か', 'さ', 'た', 'な', 'は', 'ま', 'や', 'ら', 'わ'];
+  const OFFICE_GROUPS = [
+    { id: 'central', label: '① 中央の官職（朝廷・三公・尚書・九卿・宮中）' },
+    { id: 'military', label: '② 軍の官職（将軍・校尉・都尉・軍師・幕僚）' },
+    { id: 'local', label: '③ 地方の官職（州牧・刺史・太守・国相・県令・属吏）' },
+    { id: 'title_priv', label: '④ 爵位・特権（王・公・侯・后妃・異民族王号・節鉞）' }
+  ];
+  const SPECIAL_GROUPS = [
+    { id: 'source_book', label: '📚 引用史料・典籍（裴松之注・本文所引の史書・経書）' },
+    { id: 'term', label: '🔖 歴史用語・年号・制度・故事' }
+  ];
+
+  // 高速参照用マップ
+  const recordById = new Map();
+  CORPUS.records.forEach(r => recordById.set(r.id, r));
+  const volById = new Map();
+  CORPUS.volumes.forEach(v => volById.set(v.id, v));
+  const catalogMapByType = {
+    person: new Map(CORPUS.catalog.person.map(x => [x.key, x])),
+    place: new Map(CORPUS.catalog.place.map(x => [x.key, x])),
+    office: new Map(CORPUS.catalog.office.map(x => [x.key, x])),
+    special: new Map(CORPUS.catalog.special.map(x => [x.key, x]))
+  };
+
+  let activeCategory = 'person';
+  let activeGojuonRow = 'すべて';
+  let activePlaceTypeFilter = 'all';
+  let searchQuery = '';
+  let selectedItem = null; // { type, key }
+  let activeVolumeFilter = 'all';
+  let selectionHistory = [];
+  let activeHighlightLayers = [];
+
+  function escapeHtml(str) {
+    return String(str || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  // =========================================================================
+  // 1. 全巻統合マップ初期化
+  // =========================================================================
+  const map = L.map('map').setView([33.8, 113.2], 5);
+  const shadedReliefLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}', {
+    attribution: 'Tiles &copy; Esri', maxNativeZoom: 13, maxZoom: 13
+  });
+  const physicalLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Physical_Map/MapServer/tile/{z}/{y}/{x}', {
+    attribution: 'Tiles &copy; Esri', maxNativeZoom: 8, maxZoom: 13
+  });
+  physicalLayer.addTo(map);
+  L.control.layers({ "自然地形図": physicalLayer, "陰影起伏図": shadedReliefLayer }, null, { position: 'topright' }).addTo(map);
+
+  const riverGroup = L.layerGroup().addTo(map);
+  const baseAreaGroup = L.layerGroup().addTo(map);
+  const pinMarkerGroup = L.layerGroup().addTo(map);
+
+  CORPUS.natural_features.forEach(nf => {
+    L.marker([nf.lat, nf.lng], {
+      icon: L.divIcon({
+        className: '',
+        html: `<span class="nat-Geo-label ${nf.type === 'mountain' ? 'mountain' : ''}">${escapeHtml(nf.name)}</span>`,
+        iconSize: [120, 20], iconAnchor: [60, 10]
+      }),
+      interactive: false
+    }).addTo(riverGroup);
+  });
+
+  CORPUS.river_lines.forEach(rv => {
+    const line = L.polyline(rv.coords, { color: '#1976d2', weight: 2.6, opacity: 0.72 }).addTo(riverGroup);
+    line.bindTooltip(`🌊 ${escapeHtml(rv.name)}`, { sticky: true });
+    line.on('click', () => selectGlossaryItem('place', rv.key, true));
+  });
+
+  CORPUS.places.filter(p => p.is_area && p.area_polygon).forEach(area => {
+    const isCmd = String(area.category || '').includes('郡');
+    const poly = L.polygon(area.area_polygon, {
+      color: isCmd ? '#5d4037' : '#1565c0',
+      weight: isCmd ? 1.4 : 1.1,
+      dashArray: isCmd ? '4, 4' : '8, 6',
+      fillColor: isCmd ? '#8d6e63' : '#42a5f5',
+      fillOpacity: isCmd ? 0.05 : 0.025
+    }).addTo(baseAreaGroup);
+    poly.bindTooltip(`🗺️ ${escapeHtml(area.key)}`, { sticky: true });
+    poly.on('click', () => selectGlossaryItem('place', area.key, true));
+  });
+
+  CORPUS.places.filter(p => p.is_pin).forEach(place => {
+    let fillColor = '#e65100';
+    if (place.province === '益州' || place.province === '涼州') fillColor = '#2e7d32';
+    else if (place.province === '荊州') fillColor = '#1565c0';
+    else if (place.province === '揚州' || place.province === '徐州') fillColor = '#6a1b9a';
+
+    const marker = L.circleMarker([place.lat, place.lng], {
+      radius: 6, fillColor: fillColor, color: '#fff', weight: 1.6, fillOpacity: 0.92
+    }).addTo(pinMarkerGroup);
+    marker.bindTooltip(`<span class="custom-label" id="pin-label-${escapeHtml(place.key)}">${escapeHtml(place.key)}</span>`, {
+      permanent: true, direction: 'top', offset: [0, -7], className: 'transparent-box'
+    });
+    marker.on('click', () => selectGlossaryItem('place', place.key, true));
+  });
+
+  window.addEventListener('resize', () => map.invalidateSize());
+
+  function showIndexOverlay() {
+    document.getElementById('indexOverlay').classList.remove('hidden');
+    document.getElementById('reopenIndexBtn').style.display = 'none';
+  }
+
+  function hideIndexOverlay() {
+    document.getElementById('indexOverlay').classList.add('hidden');
+    document.getElementById('reopenIndexBtn').style.display = 'block';
+    setTimeout(() => map.invalidateSize(), 30);
+  }
+
+  function focusPlaceOnGlossaryMap(placeKey) {
+    const found = CORPUS.places.find(p => p.key === placeKey);
+    document.querySelectorAll('.custom-label').forEach(el => el.classList.remove('selected-pin'));
+    activeHighlightLayers.forEach(l => map.removeLayer(l));
+    activeHighlightLayers = [];
+    if (!found) return;
+
+    hideIndexOverlay();
+    map.invalidateSize();
+    map.stop();
+
+    if (found.is_area && found.area_polygon) {
+      map.fitBounds(found.area_polygon, { padding: [MAP_FIT_PADDING_PX, MAP_FIT_PADDING_PX], maxZoom: PLACE_FOCUS_MAX_ZOOM });
+      const areaPoly = L.polygon(found.area_polygon, {
+        color: '#d84315', weight: 3.5, fillColor: '#ffab40', fillOpacity: 0.25
+      }).addTo(map);
+      const banner = L.marker([found.lat, found.lng], {
+        icon: L.divIcon({ className: '', html: `<span class="area-banner-label">🗺️ ${escapeHtml(found.key)}</span>`, iconSize: [140, 28], iconAnchor: [70, 14] }),
+        interactive: false
+      }).addTo(map);
+      activeHighlightLayers.push(areaPoly, banner);
+    } else if (found.is_river) {
+      map.setView([found.lat, found.lng], RIVER_FOCUS_ZOOM, { animate: true, duration: 0.45 });
+      CORPUS.river_lines.filter(r => r.key === found.key).forEach(rv => {
+        const hl = L.polyline(rv.coords, { color: '#ffeb3b', weight: 7, opacity: 0.85 }).addTo(map);
+        const fg = L.polyline(rv.coords, { color: '#d32f2f', weight: 3.5, opacity: 0.95 }).addTo(map);
+        activeHighlightLayers.push(hl, fg);
+      });
+    } else {
+      const labelEl = document.getElementById(`pin-label-${found.key}`);
+      if (labelEl) labelEl.classList.add('selected-pin');
+      const parentArea = CORPUS.places.find(a => a.is_area && a.key === found.parent_area);
+      if (parentArea && parentArea.area_polygon) {
+        map.fitBounds(parentArea.area_polygon, { padding: [MAP_FIT_PADDING_PX, MAP_FIT_PADDING_PX], maxZoom: PLACE_FOCUS_MAX_ZOOM });
+        const parentPoly = L.polygon(parentArea.area_polygon, {
+          color: '#2e7d32', weight: 2.5, dashArray: '6, 4', fillColor: '#66bb6a', fillOpacity: 0.12
+        }).addTo(map);
+        const pLat = parentArea.area_polygon[0][0];
+        const pLng = (parentArea.area_polygon[0][1] + parentArea.area_polygon[1][1]) / 2;
+        const parentBanner = L.marker([pLat, pLng], {
+          icon: L.divIcon({ className: '', html: `<span class="parent-area-banner-label">${escapeHtml(parentArea.key)}</span>`, iconSize: [100, 22], iconAnchor: [50, 11] }),
+          interactive: false
+        }).addTo(map);
+        activeHighlightLayers.push(parentPoly, parentBanner);
+      } else {
+        map.setView([found.lat, found.lng], FALLBACK_PIN_ZOOM);
+      }
+    }
+
+    const toastEl = document.getElementById('mapToast');
+    toastEl.innerHTML = `
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+        <span>📍 <strong>${escapeHtml(found.label || found.key)}</strong></span>
+        <button onclick="document.getElementById('mapToast').style.display='none'" style="background:transparent; border:none; color:#ccc; font-size:1rem; cursor:pointer;">✕</button>
+      </div>
+    `;
+    toastEl.style.display = 'block';
+  }
+
+  // =========================================================================
+  // 2. 左側：五十音順・分類別索引の描画
+  // =========================================================================
+  function setCategoryTab(catType) {
+    activeCategory = catType;
+    activeGojuonRow = 'すべて';
+    activePlaceTypeFilter = 'all';
+    renderIndexControls();
+    renderIndexCatalogList();
+    document.getElementById('indexListScroll').scrollTop = 0;
+  }
+
+  function setGojuonRow(rowLabel) {
+    activeGojuonRow = rowLabel;
+    renderIndexControls();
+    renderIndexCatalogList();
+    document.getElementById('indexListScroll').scrollTop = 0;
+  }
+
+  function setPlaceTypeFilter(pt) {
+    activePlaceTypeFilter = pt;
+    renderIndexControls();
+    renderIndexCatalogList();
+  }
+
+  function handleSearchFilterChange(val) {
+    searchQuery = String(val || '').trim().toLowerCase();
+    renderIndexCatalogList();
+  }
+
+  function renderIndexControls() {
+    const tabsEl = document.getElementById('catTabs');
+    const cPerson = CORPUS.catalog.person.length;
+    const cPlace = CORPUS.catalog.place.length;
+    const cOffice = CORPUS.catalog.office.length;
+    const cSpecial = CORPUS.catalog.special.length;
+
+    tabsEl.innerHTML = `
+      <button class="cat-tab-btn person ${activeCategory === 'person' ? 'active' : ''}" onclick="setCategoryTab('person')">👤 登場人物 (${cPerson})</button>
+      <button class="cat-tab-btn place ${activeCategory === 'place' ? 'active' : ''}" onclick="setCategoryTab('place')">📍 地名 (${cPlace})</button>
+      <button class="cat-tab-btn office ${activeCategory === 'office' ? 'active' : ''}" onclick="setCategoryTab('office')">👑 官職 (${cOffice})</button>
+      <button class="cat-tab-btn special ${activeCategory === 'special' ? 'active' : ''}" onclick="setCategoryTab('special')">🔖 用語・史書 (${cSpecial})</button>
+    `;
+
+    const subEl = document.getElementById('subfilterBar');
+    if (activeCategory === 'person' || activeCategory === 'place') {
+      let html = GOJUON_ROWS.map(r =>
+        `<button class="gojuon-btn ${activeGojuonRow === r ? 'active' : ''}" onclick="setGojuonRow('${r}')">${r === 'すべて' ? '全行' : r + '行'}</button>`
+      ).join('');
+      if (activeCategory === 'place') {
+        html += `<span style="margin-left:6px; color:#8d6e63;">｜</span>`;
+        [
+          ['all', 'すべて'],
+          ['area', '🗺️州郡エリア'],
+          ['pin', '📍地点'],
+          ['river', '🌊河川']
+        ].forEach(([val, lbl]) => {
+          html += `<button class="gojuon-btn ${activePlaceTypeFilter === val ? 'active' : ''}" onclick="setPlaceTypeFilter('${val}')">${lbl}</button>`;
+        });
+      }
+      subEl.innerHTML = html;
+      subEl.style.display = 'flex';
+    } else {
+      subEl.innerHTML = '';
+      subEl.style.display = 'none';
+    }
+  }
+
+  function matchesSearch(item) {
+    if (!searchQuery) return true;
+    const hay = [
+      item.key, item.label, item.yomi, item.title || '', item.full_label || '', item.name_heading || ''
+    ].join(' ').toLowerCase();
+    return hay.includes(searchQuery);
+  }
+
+  function buildChipHtml(catType, item) {
+    const isSel = selectedItem && selectedItem.type === catType && selectedItem.key === item.key;
+    const safeKey = String(item.key).replace(/'/g, "\\'");
+    let prefixIcon = '';
+    if (catType === 'place') {
+      prefixIcon = item.place_type === 'area' ? '🗺️ ' : (item.place_type === 'river' ? '🌊 ' : '📍 ');
+    }
+    const yomiHtml = item.yomi ? `<span class="chip-yomi">${escapeHtml(item.yomi)}</span>` : '';
+    return `
+      <button class="index-chip ${catType} ${isSel ? 'selected' : ''}" onclick="selectGlossaryItem('${catType}', '${safeKey}', false)">
+        <span class="chip-label">${prefixIcon}${escapeHtml(item.label)}</span>
+        ${yomiHtml}
+        <span class="chip-count">(${item.count})</span>
+      </button>
+    `;
+  }
+
+  function renderIndexCatalogList() {
+    const container = document.getElementById('indexListScroll');
+
+    // 検索文字が入力されている場合は4カテゴリ横断で一致項目を表示
+    if (searchQuery) {
+      const sections = [
+        ['person', '👤 登場人物', CORPUS.catalog.person.filter(matchesSearch)],
+        ['place', '📍 地名', CORPUS.catalog.place.filter(matchesSearch)],
+        ['office', '👑 官職', CORPUS.catalog.office.filter(matchesSearch)],
+        ['special', '🔖 用語・引用史料', CORPUS.catalog.special.filter(matchesSearch)]
+      ].filter(s => s[2].length > 0);
+
+      if (sections.length === 0) {
+        container.innerHTML = `<div style="padding:14px; color:#6d4c41;">「${escapeHtml(searchQuery)}」に一致する項目は見つかりませんでした。</div>`;
+        return;
+      }
+
+      container.innerHTML = sections.map(([cType, heading, list]) => `
+        <div class="index-group-block">
+          <div class="index-group-heading"><span>${heading}</span><span>${list.length} 件</span></div>
+          <div class="index-chip-grid">${list.map(it => buildChipHtml(cType, it)).join('')}</div>
+        </div>
+      `).join('');
+      return;
+    }
+
+    if (activeCategory === 'person' || activeCategory === 'place') {
+      const rawList = activeCategory === 'person'
+        ? CORPUS.catalog.person
+        : CORPUS.catalog.place.filter(p => activePlaceTypeFilter === 'all' || p.place_type === activePlaceTypeFilter);
+
+      const targetRows = activeGojuonRow === 'すべて'
+        ? GOJUON_ROWS.slice(1)
+        : [activeGojuonRow];
+
+      const blocks = [];
+      targetRows.forEach(rowChar => {
+        const rowItems = rawList.filter(x => x.row === rowChar);
+        if (rowItems.length === 0) return;
+        blocks.push(`
+          <div class="index-group-block">
+            <div class="index-group-heading"><span>【${rowChar}行】（五十音順）</span><span>${rowItems.length} 件</span></div>
+            <div class="index-chip-grid">${rowItems.map(it => buildChipHtml(activeCategory, it)).join('')}</div>
+          </div>
+        `);
+      });
+      container.innerHTML = blocks.join('') || `<div style="padding:14px; color:#6d4c41;">該当する項目はありません。</div>`;
+      return;
+    }
+
+    if (activeCategory === 'office') {
+      container.innerHTML = OFFICE_GROUPS.map(grp => {
+        const grpItems = CORPUS.catalog.office.filter(o => o.office_group === grp.id);
+        return `
+          <div class="index-group-block">
+            <div class="index-group-heading"><span>${escapeHtml(grp.label)}</span><span>${grpItems.length} 種（五十音順）</span></div>
+            <div class="index-chip-grid">${grpItems.map(it => buildChipHtml('office', it)).join('')}</div>
+          </div>
+        `;
+      }).join('');
+      return;
+    }
+
+    if (activeCategory === 'special') {
+      container.innerHTML = SPECIAL_GROUPS.map(grp => {
+        const grpItems = CORPUS.catalog.special.filter(s => s.sp_group === grp.id);
+        return `
+          <div class="index-group-block">
+            <div class="index-group-heading"><span>${escapeHtml(grp.label)}</span><span>${grpItems.length} 件</span></div>
+            <div class="index-chip-grid">${grpItems.map(it => buildChipHtml('special', it)).join('')}</div>
+          </div>
+        `;
+      }).join('');
+    }
+  }
+
+  // =========================================================================
+  // 3. 右側：Wikipedia概略＋一次史料解説＋第1巻〜最終巻の一致本文ガンガン表示
+  // =========================================================================
+  function selectGlossaryItem(catType, itemKey, pushHistory = true) {
+    if (!catalogMapByType[catType] || !catalogMapByType[catType].has(itemKey)) return;
+    if (pushHistory && selectedItem && (selectedItem.type !== catType || selectedItem.key !== itemKey)) {
+      selectionHistory.push({ ...selectedItem });
+    }
+    selectedItem = { type: catType, key: itemKey };
+    activeVolumeFilter = 'all';
+
+    if (window.history && window.history.replaceState) {
+      const nextUrl = `${window.location.pathname}?type=${encodeURIComponent(catType)}&key=${encodeURIComponent(itemKey)}`;
+      window.history.replaceState(null, '', nextUrl);
+    }
+
+    renderIndexCatalogList();
+
+    if (catType === 'place') {
+      focusPlaceOnGlossaryMap(itemKey);
+    }
+
+    renderRightResultPane();
+  }
+
+  function goBackSelectionHistory() {
+    if (selectionHistory.length === 0) return;
+    const prev = selectionHistory.pop();
+    selectGlossaryItem(prev.type, prev.key, false);
+  }
+
+  function setRightVolumeFilter(volIdOrAll) {
+    activeVolumeFilter = volIdOrAll;
+    renderRightResultPane();
+  }
+
+  function renderTaggedTextForGlossary(taggedStr, targetType, targetKey) {
+    if (!taggedStr) return '';
+    const tagRe = /\{\{(place|office|person|special):([^|}]+)\|([^}]+)\}\}?/g;
+    let out = '';
+    let lastIdx = 0;
+    let m;
+    while ((m = tagRe.exec(taggedStr)) !== null) {
+      out += escapeHtml(taggedStr.slice(lastIdx, m.index));
+      const tType = m[1];
+      const tKey = m[2];
+      const tSurf = m[3];
+      const safeKey = tKey.replace(/'/g, "\\'");
+      const matchedCls = (tType === targetType && tKey === targetKey) ? ' matched-target-term' : '';
+      out += `<span class="inline-${tType}${matchedCls}" onclick="handleResultInlineClick(event, '${tType}', '${safeKey}')">${escapeHtml(tSurf)}</span>`;
+      lastIdx = tagRe.lastIndex;
+    }
+    out += escapeHtml(taggedStr.slice(lastIdx));
+    return out;
+  }
+
+  function handleResultInlineClick(event, tType, tKey) {
+    event.stopPropagation();
+    selectGlossaryItem(tType, tKey, true);
+  }
+
+  function jumpFromGlossaryToVolume(volFile, recId) {
+    if (selectedItem) {
+      const itemObj = catalogMapByType[selectedItem.type].get(selectedItem.key);
+      const itemLabel = itemObj ? itemObj.label : selectedItem.key;
+      const icon = selectedItem.type === 'person' ? '👤' : (selectedItem.type === 'place' ? '📍' : (selectedItem.type === 'office' ? '👑' : '🔖'));
+      const retUrl = `glossary.html?type=${encodeURIComponent(selectedItem.type)}&key=${encodeURIComponent(selectedItem.key)}`;
+      try {
+        sessionStorage.setItem(CROSS_JUMP_STORAGE_KEY, JSON.stringify({
+          fromVolId: 'glossary',
+          fromVolLabel: `${icon} ${itemLabel}`,
+          fromFile: 'glossary.html',
+          fromRecId: recId,
+          returnUrl: retUrl
+        }));
+      } catch (e) {}
+    }
+    window.location.href = `${volFile}?jump=${encodeURIComponent(recId)}`;
+  }
+
+  async function loadLeadWikipediaBox(wikiTitle) {
+    const box = document.getElementById('leadWikiBox');
+    if (!box || !wikiTitle) return;
+    const encoded = encodeURIComponent(wikiTitle);
+    const wikiUrl = `https://ja.wikipedia.org/wiki/${encoded}`;
+    try {
+      const res = await fetch(`https://ja.wikipedia.org/api/rest_v1/page/summary/${encoded}`);
+      if (!res.ok) throw new Error('Not found');
+      const data = await res.json();
+      if (data.type === 'disambiguation') throw new Error('Disambiguation');
+      box.innerHTML = `
+        <div style="font-weight:bold; color:#0d47a1; margin-bottom:4px;">🌐 Wikipedia「${escapeHtml(data.title)}」</div>
+        <div>${escapeHtml(data.extract || '')}</div>
+        <a class="wiki-link-btn" href="${wikiUrl}" target="_blank" rel="noopener">Wikipediaで全文を開く ↗</a>
+      `;
+      box.style.display = 'block';
+    } catch (e) {
+      box.style.display = 'none';
+    }
+  }
+
+  const LAST_READING_STORAGE_KEY = 'threekingdom_last_reading_v1';
+
+  function renderInitialGuide() {
+    const rightBar = document.getElementById('rightTopBar');
+    rightBar.innerHTML = `<span style="font-size:0.88rem; font-weight:bold;">📑 全巻横断 登場人物・地名・官職 索引（公開4巻・全${CORPUS.records.length}段落と連動）</span>`;
+
+    let resumeBannerHtml = '';
+    try {
+      const rawLast = localStorage.getItem(LAST_READING_STORAGE_KEY);
+      if (rawLast) {
+        const lastSt = JSON.parse(rawLast);
+        if (lastSt && lastSt.file && lastSt.recId) {
+          const vMeta = volById.get(Number(lastSt.volId));
+          const recObj = recordById.get(String(lastSt.recId));
+          const volLabel = vMeta ? vMeta.full_label : String(lastSt.file);
+          const paraLabel = recObj ? `第${recObj.para_index}段落` : (lastSt.paraIndex ? `第${lastSt.paraIndex}段落` : '');
+          const resumeHref = `${encodeURI(String(lastSt.file))}?resume=${encodeURIComponent(String(lastSt.recId))}`;
+          resumeBannerHtml = `
+            <div style="background:#fff8e1; border:2px solid #d4af37; border-radius:8px; padding:12px 15px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; box-shadow:0 2px 6px rgba(0,0,0,0.06);">
+              <div style="font-size:0.9rem; color:#4e342e;">
+                <strong>🔖 前回のしおり：</strong>${escapeHtml(volLabel)}${paraLabel ? `（${escapeHtml(paraLabel)}）` : ''}
+              </div>
+              <a href="${resumeHref}" style="background:#2e7d32; color:#fff; text-decoration:none; padding:6px 14px; border-radius:5px; font-size:0.84rem; font-weight:bold; white-space:nowrap;">📖 前回の続きを読む ➔</a>
+            </div>
+          `;
+        }
+      }
+    } catch (e) {}
+
+    const volLinksHtml = CORPUS.volumes.map(v =>
+      `<a href="${encodeURI(v.file)}" style="background:#fff; border:1px solid #8c6d46; color:#2c241b; text-decoration:none; padding:6px 12px; border-radius:5px; font-size:0.84rem; font-weight:bold; transition:0.15s;">📕 ${escapeHtml(v.full_label)}</a>`
+    ).join('');
+
+    const resultList = document.getElementById('resultList');
+    resultList.innerHTML = `
+      ${resumeBannerHtml}
+      <div class="empty-guide-box">
+        <h3 style="margin-bottom:8px; color:#2c241b;">🔍 検索・索引から調べる</h3>
+        <p>左側の索引（<strong>登場人物：五十音順</strong> ／ <strong>地名：五十音順・地図連動</strong> ／ <strong>官職：四分類・五十音順</strong> ／ <strong>用語・引用史料</strong>）から調べたい項目を押してください。</p>
+        <p style="margin-top:6px;">ここに <strong>Wikipediaと史料解説</strong> が先頭に出たのち、<strong>第1巻から最終巻まで一致するすべての本文（原文・書き下し文・現代語訳）</strong> が順番に書き出されます。</p>
+        <div style="margin-top:14px; display:flex; flex-wrap:wrap; gap:6px; align-items:center;">
+          <span style="font-size:0.84rem; font-weight:bold;">💡 すぐ試す：</span>
+          <button class="index-chip person" onclick="selectGlossaryItem('person', '曹操', false)"><span class="chip-label">👤 曹操</span><span class="chip-yomi">そうそう</span></button>
+          <button class="index-chip person" onclick="selectGlossaryItem('person', '于禁', false)"><span class="chip-label">👤 于禁</span><span class="chip-yomi">うきん</span></button>
+          <button class="index-chip person" onclick="selectGlossaryItem('person', '王朗', false)"><span class="chip-label">👤 王朗（会稽太守・司徒）</span></button>
+          <button class="index-chip person" onclick="selectGlossaryItem('person', '王朗_将軍', false)"><span class="chip-label">👤 王朗（曹操軍の将軍）</span></button>
+          <button class="index-chip office" onclick="selectGlossaryItem('office', '太守', false)"><span class="chip-label">👑 太守</span><span class="chip-yomi">たいしゅ</span></button>
+          <button class="index-chip place" onclick="selectGlossaryItem('place', '許', false)"><span class="chip-label">📍 許</span><span class="chip-yomi">きょ</span></button>
+        </div>
+        <hr style="border:none; border-top:1px dashed #d7ccc8; margin:16px 0 12px 0;">
+        <div style="font-size:0.86rem; font-weight:bold; color:#2c241b; margin-bottom:8px;">📚 各巻の本編を通読する（左上のメニューからも切り替えられます）</div>
+        <div style="display:flex; flex-wrap:wrap; gap:8px;">
+          ${volLinksHtml}
+        </div>
+      </div>
+      <div class="ad-footer-box">
+        <div class="ad-footer-label">スポンサーリンク</div>
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-4382223240782332"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+      </div>
+    `;
+    try {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } catch (e) {}
+  }
+
+  function renderRightResultPane() {
+    const resultList = document.getElementById('resultList');
+    const rightBar = document.getElementById('rightTopBar');
+
+    if (!selectedItem) {
+      renderInitialGuide();
+      return;
+    }
+
+    const { type, key } = selectedItem;
+    const item = catalogMapByType[type].get(key);
+    if (!item) return;
+
+    const allOccs = (CORPUS.occurrences[type] && CORPUS.occurrences[type][key]) || [];
+    const countsByVol = new Map();
+    allOccs.forEach(o => {
+      const rec = recordById.get(o.rec_id);
+      if (rec) countsByVol.set(rec.vol_id, (countsByVol.get(rec.vol_id) || 0) + 1);
+    });
+
+    let pillsHtml = `<button class="vol-pill ${activeVolumeFilter === 'all' ? 'active' : ''}" onclick="setRightVolumeFilter('all')">全巻 (${allOccs.length})</button>`;
+    CORPUS.volumes.forEach(v => {
+      const c = countsByVol.get(v.id) || 0;
+      const activeCls = activeVolumeFilter === v.id ? 'active' : '';
+      const dis = c === 0 ? 'disabled' : '';
+      pillsHtml += `<button class="vol-pill ${activeCls}" ${dis} onclick="setRightVolumeFilter(${v.id})">${escapeHtml(v.short_label.split(' ')[0])} (${c})</button>`;
+    });
+
+    const typeIcon = type === 'person' ? '👤' : (type === 'place' ? '📍' : (type === 'office' ? '👑' : '🔖'));
+    rightBar.innerHTML = `
+      <span style="font-size:0.86rem; font-weight:bold; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${typeIcon} ${escapeHtml(item.label)}（全${allOccs.length}件）</span>
+      <div class="vol-filter-strip">${pillsHtml}</div>
+    `;
+
+    // 先頭カード組み立て（同姓同名切替 ＋ Wikipedia先頭 ＋ 当サイト史料解説）
+    let headingText = item.label;
+    let descText = '';
+    let wikiTitle = item.wiki_title || '';
+    let homonymHtml = '';
+
+    if (type === 'person') {
+      headingText = item.name_heading || `${item.label}（${item.yomi}）`;
+      descText = item.ai_desc || '';
+      if (Array.isArray(item.homonyms) && item.homonyms.length > 0) {
+        const btns = item.homonyms.map(h => {
+          const hk = String(h.key || '');
+          const safeHk = hk.replace(/'/g, "\\'");
+          const hCnt = ((CORPUS.occurrences.person && CORPUS.occurrences.person[hk]) || []).length;
+          return `<button class="homonym-switch-btn" onclick="selectGlossaryItem('person', '${safeHk}', true)">👤 ${escapeHtml(h.label || hk)} を見る（${hCnt}件） ➔</button>`;
+        }).join('');
+        homonymHtml = `
+          <div class="homonym-alert-box">
+            <div style="font-size:0.82rem; font-weight:bold; color:#bf360c;">⚠️ 同姓同名・同名異人の別人物が存在します（分離済み）</div>
+            <div style="display:flex; flex-wrap:wrap; gap:6px;">${btns}</div>
+          </div>
+        `;
+      }
+    } else if (type === 'office') {
+      headingText = item.title || item.label;
+      descText = item.ai_desc || '';
+    } else if (type === 'place') {
+      headingText = item.full_label || item.label;
+      descText = item.note || `親エリア：${item.parent_area || item.province || '広域'}`;
+    } else if (type === 'special') {
+      headingText = item.title || item.label;
+      descText = item.ai_desc || '';
+    }
+
+    const backBtnHtml = selectionHistory.length > 0
+      ? `<button class="history-back-btn" onclick="goBackSelectionHistory()">↩ ひとつ前の項目に戻る</button>`
+      : '';
+
+    const mapFocusBtnHtml = type === 'place'
+      ? `<button class="read-in-vol-btn" style="background:#5c472c; border-color:#8c6d46;" onclick="focusPlaceOnGlossaryMap('${String(key).replace(/'/g, "\\'")}')">🗺️ 地図でこの場所を再フォーカス</button>`
+      : '';
+
+    const wikiPlaceholderHtml = wikiTitle
+      ? `<div class="wiki-lead-box" id="leadWikiBox">🌐 Wikipediaから「${escapeHtml(wikiTitle)}」を取得中...</div>`
+      : '';
+
+    const primaryDescHtml = descText
+      ? `<div class="primary-desc-box">
+           <div style="font-weight:bold; color:#5d4037; margin-bottom:4px;">📖 史料・事典解説</div>
+           <div>${escapeHtml(descText)}</div>
+         </div>`
+      : '';
+
+    const filteredOccs = allOccs.filter(o => {
+      if (activeVolumeFilter === 'all') return true;
+      const rec = recordById.get(o.rec_id);
+      return rec && rec.vol_id === activeVolumeFilter;
+    });
+
+    const cardsHtml = filteredOccs.map(o => {
+      const rec = recordById.get(o.rec_id);
+      if (!rec) return '';
+      const vMeta = volById.get(rec.vol_id) || { file: 'vol01.html', short_label: '' };
+      const isPei = rec.type === '裴注';
+      const safeVolFile = String(vMeta.file).replace(/'/g, "\\'");
+      const safeRecId = String(rec.id).replace(/'/g, "\\'");
+      return `
+        <div class="record-card ${isPei ? 'pei-note' : 'main-text'}">
+          <div class="card-top">
+            <span>
+              <span class="vol-tag-badge">${escapeHtml(vMeta.short_label)}</span>
+              <strong>${escapeHtml(rec.id)}</strong> [${escapeHtml(rec.section_title)}]（第${rec.para_index}段落）${rec.era_year ? ` ｜ 📅 ${escapeHtml(rec.era_year)}` : ''}
+            </span>
+            <span style="display:inline-flex; align-items:center; gap:6px;">
+              <span class="badge ${isPei ? 'pei' : 'main'}">${escapeHtml(rec.type)}</span>
+              <button class="read-in-vol-btn" onclick="jumpFromGlossaryToVolume('${safeVolFile}', '${safeRecId}')">📖 この段落から本編を読む</button>
+            </span>
+          </div>
+          <div class="raw-text">${renderTaggedTextForGlossary(rec.raw_tagged, type, key)}</div>
+          <div class="kakikudashi">${renderTaggedTextForGlossary(rec.kakikudashi_tagged, type, key)}</div>
+          <div class="translation">${renderTaggedTextForGlossary(rec.translation_tagged, type, key)}</div>
+        </div>
+      `;
+    }).join('');
+
+    resultList.innerHTML = `
+      ${backBtnHtml}
+      <div class="head-summary-card">
+        <div class="head-summary-title">
+          <span>${typeIcon} ${escapeHtml(headingText)}</span>
+          ${mapFocusBtnHtml}
+        </div>
+        ${homonymHtml}
+        ${wikiPlaceholderHtml}
+        ${primaryDescHtml}
+      </div>
+      ${cardsHtml}
+      <div class="ad-footer-box">
+        <div class="ad-footer-label">スポンサーリンク</div>
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-4382223240782332"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+      </div>
+    `;
+    resultList.scrollTop = 0;
+
+    if (wikiTitle) {
+      loadLeadWikipediaBox(wikiTitle);
+    }
+    try {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } catch (e) {}
+  }
+
+  // 初期表示（URLパラメータ ?type=...&key=... があれば該当項目を即座に表示）
+  renderIndexControls();
+  renderIndexCatalogList();
+  const initParams = new URLSearchParams(window.location.search);
+  const initType = initParams.get('type');
+  const initKey = initParams.get('key');
+  if (initType && initKey && catalogMapByType[initType] && catalogMapByType[initType].has(initKey)) {
+    activeCategory = initType;
+    renderIndexControls();
+    selectGlossaryItem(initType, initKey, false);
+  } else {
+    renderInitialGuide();
+  }
+</script>
+</body>
+</html>
