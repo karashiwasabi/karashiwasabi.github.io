@@ -15,12 +15,16 @@
   </script>
   <meta name="google-site-verification" content="XTUyp1ouHdnj1jkzypNTPJRBj4YpdgQYlUPgpsipJKk" />
   <meta name="google-site-verification" content="PFRdOaNa6WskdaOeknn25M0Lw6TsZ5F0srdl46PWHEY" />
-  <title>わさびとからし | Line-aligned / Short Verse Studio / 地図と一緒によむ三国志・奥の細道・小倉百人一首</title>
+  <title>わさびとからし</title>
+  <meta name="apple-mobile-web-app-title" content="わさびとからし">
+  <meta name="application-name" content="わさびとからし">
   <meta name="description" content="わさびとからし（wasabikarashi.com）：罫線・方眼ノート精密組版ツール「Line-aligned」、短歌・俳句・世界短詩の縦型動画生成「Short Verse Studio」、「地図と一緒によむ三国志」「地図と一緒によむ奥の細道」「地図と一緒によむ小倉百人一首」を公開しています。">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="icon" type="image/x-icon" href="favicon.ico?v=2">
+  <link rel="icon" type="image/png" sizes="48x48" href="favicon-48x48.png?v=2">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png?v=2">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png?v=2">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=2">
+  <link rel="manifest" href="site.webmanifest?v=2">
   <style>
     :root {
       --bg-page: #f4f3ee;
@@ -940,6 +944,7 @@
     function applyPortalLang(lang) {
       const d = PORTAL_I18N[lang] || PORTAL_I18N['ja'];
       document.documentElement.lang = lang;
+      document.title = (lang === 'ja') ? 'わさびとからし' : d.brand;
       document.getElementById('ui-brand').textContent = d.brand;
       document.getElementById('nav-la').textContent = d.navLa;
       document.getElementById('nav-sv').textContent = d.navSv;
