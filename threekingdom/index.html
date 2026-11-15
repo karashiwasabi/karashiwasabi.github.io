@@ -754,6 +754,7 @@
         <option value="vol01.html">魏書一　武帝紀</option>
         <option value="vol17.html">魏書十七　張樂于張徐傳</option>
         <option value="vol31.html">蜀書一　劉二牧傳</option>
+        <option value="vol36.html">蜀書六　關張馬黃趙傳</option>
         <option value="vol46.html">呉書一　孫破虜討逆傳</option>
       </select>
       <button class="slim-nav-btn" onclick="window.location.href='vol01.html'" title="次の公開巻（魏書一　武帝紀）へ移動">→</button>
@@ -1056,16 +1057,11 @@
     toastEl.style.display = 'block';
   }
 
-  // 人物・官職・用語の記事カード1件に登場する地名だけを地図に描画して移動する
+  // 人物・官職・用語の記事カード1件に登場する地名だけを地図に描画し、縮尺を変えずに中心移動する
   function syncGlossaryMapToRecord(rec) {
     if (!rec) return;
     const keys = Array.isArray(rec.place_keys) ? rec.place_keys.filter(k => placeByKey.has(k)) : [];
     if (keys.length === 0) return;
-
-    if (keys.length === 1) {
-      focusSinglePlaceOnMap(keys[0], false, true);
-      return;
-    }
 
     hideIndexOverlay();
     clearAllDynamicMapPlaces();
@@ -1102,8 +1098,8 @@
     });
 
     if (boundsPoints.length > 0) {
-      const bounds = L.latLngBounds(boundsPoints);
-      map.fitBounds(bounds, { padding: [MAP_FIT_PADDING_PX, MAP_FIT_PADDING_PX], maxZoom: MULTI_PLACE_MAX_ZOOM });
+      const centerPt = L.latLngBounds(boundsPoints).getCenter();
+      map.panTo(centerPt, { animate: true, duration: 0.35 });
     }
   }
 
