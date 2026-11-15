@@ -22,15 +22,18 @@
   <script src="shared_glossary_corpus.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 100%;
+      height: 100%;
+      height: 100dvh;
+      overflow: hidden;
+    }
     body {
       font-family: "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
       display: flex;
       flex-direction: column;
-      height: 100vh;
-      height: 100dvh;
       background: #f5f5f0;
       color: #222;
-      overflow: hidden;
     }
 
     /* 文中インラインリンク（本編と共通4分類＋検索対象強調） */
@@ -74,35 +77,38 @@
       box-shadow: 0 0 0 1px #fbc02d;
     }
 
-    /* 左右2分割メインコンテナ（本編と100%共通比率） */
+    /* 左右2分割メインコンテナ（スマホでもFlex子要素が高さ超過しないよう min-height:0 を徹底） */
     .main-container {
       display: flex;
       flex-direction: row;
-      flex: 1;
+      flex: 1 1 0%;
       width: 100%;
       height: 100%;
+      min-height: 0;
       overflow: hidden;
     }
     .map-column {
-      flex: 1.15;
+      flex: 1.15 1 0%;
       display: flex;
       flex-direction: column;
       height: 100%;
+      min-height: 0;
       position: relative;
       border-right: 2px solid #8c6d46;
       background: #e6e2d8;
       overflow: hidden;
     }
     #map {
-      flex: 1;
+      flex: 1 1 0%;
       width: 100%;
       min-height: 0;
       background: #e6e2d8;
       position: relative;
     }
     .reader-panel {
-      flex: 1;
+      flex: 1 1 0%;
       height: 100%;
+      min-height: 0;
       display: flex;
       flex-direction: column;
       background: #faf8f5;
@@ -111,22 +117,27 @@
 
     /* 上部ナビゲーションバー（本編と完全統一） */
     .vol-nav-bar, .para-nav-bar {
-      height: 40px;
+      min-height: 40px;
       background: #2c241b;
       color: #f7f1e5;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 12px;
-      padding: 0 12px;
+      padding: 4px 12px;
       border-bottom: 1px solid #8c6d46;
       flex-shrink: 0;
       position: relative;
     }
+    .vol-nav-bar {
+      height: 40px;
+      padding: 0 12px;
+    }
     .para-nav-bar {
       background: #3d2f1d;
       justify-content: space-between;
-      gap: 8px;
+      flex-wrap: wrap;
+      gap: 6px;
     }
     .home-top-link {
       position: absolute;
@@ -175,6 +186,7 @@
       left: 0;
       right: 0;
       bottom: 0;
+      min-height: 0;
       z-index: 4500;
       background: rgba(250, 248, 243, 0.97);
       display: flex;
@@ -273,18 +285,25 @@
     }
 
     .index-list-scroll {
-      flex: 1;
+      flex: 1 1 0%;
+      min-height: 0;
       overflow-y: auto;
-      padding: 10px 12px 24px;
+      overscroll-behavior: contain;
+      touch-action: pan-y;
+      padding: 10px 12px calc(48px + env(safe-area-inset-bottom, 0px));
       display: flex;
       flex-direction: column;
       gap: 14px;
       -webkit-overflow-scrolling: touch;
     }
+    .index-list-scroll > * {
+      flex-shrink: 0;
+    }
     .index-group-block {
       display: flex;
       flex-direction: column;
       gap: 6px;
+      flex-shrink: 0;
     }
     .index-group-heading {
       font-size: 0.88rem;
@@ -358,16 +377,21 @@
     }
     .reopen-index-floating-btn:hover { background: #5d4037; color: #fff; }
 
-    /* 右側：解説＋Wikipedia＋本文リスト */
+    /* 右側：解説＋Wikipedia＋本文リスト（子要素の縮小による見切れを完全防止） */
     .record-list {
-      flex: 1;
+      flex: 1 1 0%;
+      min-height: 0;
       overflow-y: auto;
-      padding: 12px 14px;
+      overscroll-behavior: contain;
+      touch-action: pan-y;
+      padding: 12px 14px calc(48px + env(safe-area-inset-bottom, 0px));
       display: flex;
       flex-direction: column;
       gap: 12px;
-      scroll-behavior: smooth;
       -webkit-overflow-scrolling: touch;
+    }
+    .record-list > * {
+      flex-shrink: 0;
     }
     .vol-filter-strip {
       display: flex;
@@ -403,6 +427,10 @@
       flex-direction: column;
       gap: 10px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+      flex-shrink: 0;
+    }
+    .head-summary-card > * {
+      flex-shrink: 0;
     }
     .head-summary-title {
       font-size: 1.15rem;
@@ -571,7 +599,7 @@
       line-height: 1.8;
     }
 
-    /* 地図ラベル・トースト（本編と完全統一） */
+    /* 地図ラベル・トースト（本編と完全統一・ラベル自体もクリック可能） */
     .custom-label {
       background: rgba(44, 36, 27, 0.92);
       color: #fff;
@@ -582,6 +610,7 @@
       font-weight: bold;
       white-space: nowrap;
       box-shadow: 0 1px 4px rgba(0,0,0,0.45);
+      cursor: pointer;
     }
     .custom-label.selected-pin {
       background: #c62828;
@@ -647,28 +676,55 @@
       border-radius: 6px;
       text-align: center;
       min-height: 90px;
+      flex-shrink: 0;
     }
     .ad-footer-label { font-size: 0.68rem; color: #8c7b65; margin-bottom: 4px; }
 
     @media (max-width: 900px) {
-      .main-container { flex-direction: column; }
+      .main-container {
+        flex-direction: column;
+        min-height: 0;
+      }
       .map-column {
-        flex: none;
+        flex: 0 0 42%;
         height: 42%;
+        min-height: 0;
         width: 100%;
         border-right: none;
         border-bottom: 2px solid #8c6d46;
       }
       .reader-panel {
-        flex: none;
-        height: 58%;
+        flex: 1 1 0%;
+        height: auto;
+        min-height: 0;
         width: 100%;
       }
-      .cat-tab-btn { font-size: 0.75rem; padding: 5px 2px; }
+      .index-toolbar {
+        padding: 6px 8px;
+        gap: 5px;
+      }
+      .index-search-input {
+        padding: 5px 9px;
+        font-size: 16px;
+      }
+      .cat-tab-btn { font-size: 0.74rem; padding: 4px 2px; }
+      .gojuon-btn { padding: 2px 6px; font-size: 0.74rem; }
       .index-chip { font-size: 0.8rem; padding: 4px 7px; }
+      .head-summary-card { padding: 11px 12px; gap: 8px; }
+      .head-summary-title { font-size: 1.02rem; }
+      .wiki-lead-box, .primary-desc-box { font-size: 0.86rem; line-height: 1.62; padding: 8px 10px; }
+      .record-card { padding: 12px 13px; }
       .raw-text { font-size: 1.04rem; }
       .kakikudashi { font-size: 0.95rem; }
       .translation { font-size: 0.96rem; }
+      .map-toast {
+        bottom: 8px;
+        left: 8px;
+        right: 8px;
+        max-width: none;
+        padding: 7px 10px;
+        font-size: 0.78rem;
+      }
     }
     @media (max-width: 520px) {
       .vol-nav-bar { gap: 6px; padding: 0 6px; }
@@ -788,6 +844,12 @@
   physicalLayer.addTo(map);
   L.control.layers({ "自然地形図": physicalLayer, "陰影起伏図": shadedReliefLayer }, null, { position: 'topright' }).addTo(map);
 
+  // 地点ピン専用の上位ペインを作成（強調エリア枠400より常に前面に配置してクリック阻害を防止）
+  const PIN_MARKER_PANE_Z_INDEX = 620;
+  const PIN_MARKER_RADIUS_PX = 6.5;
+  map.createPane('pinsTopPane');
+  map.getPane('pinsTopPane').style.zIndex = String(PIN_MARKER_PANE_Z_INDEX);
+
   const riverGroup = L.layerGroup().addTo(map);
   const baseAreaGroup = L.layerGroup().addTo(map);
   const pinMarkerGroup = L.layerGroup().addTo(map);
@@ -829,10 +891,15 @@
     else if (place.province === '揚州' || place.province === '徐州') fillColor = '#6a1b9a';
 
     const marker = L.circleMarker([place.lat, place.lng], {
-      radius: 6, fillColor: fillColor, color: '#fff', weight: 1.6, fillOpacity: 0.92
+      pane: 'pinsTopPane',
+      radius: PIN_MARKER_RADIUS_PX,
+      fillColor: fillColor,
+      color: '#fff',
+      weight: 1.6,
+      fillOpacity: 0.92
     }).addTo(pinMarkerGroup);
     marker.bindTooltip(`<span class="custom-label" id="pin-label-${escapeHtml(place.key)}">${escapeHtml(place.key)}</span>`, {
-      permanent: true, direction: 'top', offset: [0, -7], className: 'transparent-box'
+      permanent: true, interactive: true, direction: 'top', offset: [0, -7], className: 'transparent-box'
     });
     marker.on('click', () => selectGlossaryItem('place', place.key, true));
   });
@@ -864,7 +931,7 @@
     if (found.is_area && found.area_polygon) {
       map.fitBounds(found.area_polygon, { padding: [MAP_FIT_PADDING_PX, MAP_FIT_PADDING_PX], maxZoom: PLACE_FOCUS_MAX_ZOOM });
       const areaPoly = L.polygon(found.area_polygon, {
-        color: '#d84315', weight: 3.5, fillColor: '#ffab40', fillOpacity: 0.25
+        color: '#d84315', weight: 3.5, fillColor: '#ffab40', fillOpacity: 0.25, interactive: false
       }).addTo(map);
       const banner = L.marker([found.lat, found.lng], {
         icon: L.divIcon({ className: '', html: `<span class="area-banner-label">🗺️ ${escapeHtml(found.key)}</span>`, iconSize: [140, 28], iconAnchor: [70, 14] }),
@@ -874,8 +941,8 @@
     } else if (found.is_river) {
       map.setView([found.lat, found.lng], RIVER_FOCUS_ZOOM, { animate: true, duration: 0.45 });
       CORPUS.river_lines.filter(r => r.key === found.key).forEach(rv => {
-        const hl = L.polyline(rv.coords, { color: '#ffeb3b', weight: 7, opacity: 0.85 }).addTo(map);
-        const fg = L.polyline(rv.coords, { color: '#d32f2f', weight: 3.5, opacity: 0.95 }).addTo(map);
+        const hl = L.polyline(rv.coords, { color: '#ffeb3b', weight: 7, opacity: 0.85, interactive: false }).addTo(map);
+        const fg = L.polyline(rv.coords, { color: '#d32f2f', weight: 3.5, opacity: 0.95, interactive: false }).addTo(map);
         activeHighlightLayers.push(hl, fg);
       });
     } else {
@@ -885,7 +952,7 @@
       if (parentArea && parentArea.area_polygon) {
         map.fitBounds(parentArea.area_polygon, { padding: [MAP_FIT_PADDING_PX, MAP_FIT_PADDING_PX], maxZoom: PLACE_FOCUS_MAX_ZOOM });
         const parentPoly = L.polygon(parentArea.area_polygon, {
-          color: '#2e7d32', weight: 2.5, dashArray: '6, 4', fillColor: '#66bb6a', fillOpacity: 0.12
+          color: '#2e7d32', weight: 2.5, dashArray: '6, 4', fillColor: '#66bb6a', fillOpacity: 0.12, interactive: false
         }).addTo(map);
         const pLat = parentArea.area_polygon[0][0];
         const pLng = (parentArea.area_polygon[0][1] + parentArea.area_polygon[1][1]) / 2;
