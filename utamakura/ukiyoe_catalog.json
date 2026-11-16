@@ -123,9 +123,7 @@
     "caption": "歌川広重『名所江戸百景 綾瀬川鐘か淵』（綾瀬川水路）",
     "province": "武蔵国",
     "file_key": "100_views_edo_069.jpg",
-    "places": [
-      "草加"
-    ],
+    "places": [],
     "works": [
       "おくのほそ道"
     ],
@@ -181,7 +179,6 @@
     "province": "山城国",
     "file_key": "Hiroshige Yamashiro Arashiyama.jpg",
     "places": [
-      "小倉山",
       "嵐山"
     ],
     "works": [
@@ -751,9 +748,7 @@
     "caption": "歌川広重『浪花名所図会 住吉出見の浜月見』",
     "province": "摂津国",
     "file_key": "Viewing Rising Moon from Beach at Sumiyoshi in Naniwa by Hiroshige (Yamagata).jpg",
-    "places": [
-      "難波"
-    ],
+    "places": [],
     "works": [
       "小倉百人一首",
       "万葉集"

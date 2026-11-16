@@ -20,11 +20,6 @@
     "local_path": "images/wiki/Mt.Fuji_from_Mierula.jpg"
   },
   {
-    "place": "千住",
-    "file_key": "Nakahara_in_the_Sagami_province.jpg",
-    "local_path": "images/wiki/Nakahara_in_the_Sagami_province.jpg"
-  },
-  {
     "place": "草加",
     "file_key": "草加松原1.jpg",
     "local_path": "images/wiki/wiki_e477a1382c.jpg"
@@ -95,11 +90,6 @@
     "local_path": "images/wiki/Iizaka_Onsen_26-Aug-2018.jpg"
   },
   {
-    "place": "宮城野",
-    "file_key": "Lespedeza_thunbergii_-_Flickr_-_peganum.jpg",
-    "local_path": "images/wiki/Lespedeza_thunbergii_-_Flickr_-_peganum.jpg"
-  },
-  {
     "place": "二見",
     "file_key": "Meotoiwa.jpg",
     "local_path": "images/wiki/Meotoiwa.jpg"
@@ -128,11 +118,6 @@
     "place": "敦賀",
     "file_key": "Kehi-matsubara_from_Mount_Tezutsu.jpg",
     "local_path": "images/wiki/Kehi-matsubara_from_Mount_Tezutsu.jpg"
-  },
-  {
-    "place": "吉崎",
-    "file_key": "Yoshizaki_Gobo_mark.jpg",
-    "local_path": "images/wiki/Yoshizaki_Gobo_mark.jpg"
   },
   {
     "place": "日光山",
@@ -218,11 +203,6 @@
     "place": "北上川",
     "file_key": "230728_Takadachi_Gikei-do_Hiraizumi_Iwate_pref_Japan13s3.jpg",
     "local_path": "images/wiki/230728_Takadachi_Gikei-do_Hiraizumi_Iwate_pref_Japan13s3.jpg"
-  },
-  {
-    "place": "光堂",
-    "file_key": "Esashi-Fujiwara_no_sato_02.JPG",
-    "local_path": "images/wiki/Esashi-Fujiwara_no_sato_02.jpg"
   },
   {
     "place": "岩手の里",
@@ -415,11 +395,6 @@
     "local_path": "images/wiki/wiki_69108dd966.jpg"
   },
   {
-    "place": "宇治山",
-    "file_key": "Uji-Bridge.jpg",
-    "local_path": "images/wiki/Uji-Bridge.jpg"
-  },
-  {
     "place": "小野",
     "file_key": "Zuishinin_Kyoto03s3s4592.jpg",
     "local_path": "images/wiki/Zuishinin_Kyoto03s3s4592.jpg"
@@ -435,19 +410,9 @@
     "local_path": "images/wiki/20090923____.jpg"
   },
   {
-    "place": "内裏",
-    "file_key": "Shishin-Den_Plaque.JPG",
-    "local_path": "images/wiki/Shishin-Den_Plaque.jpg"
-  },
-  {
     "place": "筑波山",
     "file_key": "Mount_Tsukuba_seen_from_the_WSW_(2006).jpg",
     "local_path": "images/wiki/Mount_Tsukuba_seen_from_the_WSW__2006_.jpg"
-  },
-  {
-    "place": "小松の里",
-    "file_key": "Ninnaji_Kyoto07n4500.jpg",
-    "local_path": "images/wiki/Ninnaji_Kyoto07n4500.jpg"
   },
   {
     "place": "いなばの山",
@@ -468,11 +433,6 @@
     "place": "難波",
     "file_key": "Naniwa_Palace_Site.jpg",
     "local_path": "images/wiki/Naniwa_Palace_Site.jpg"
-  },
-  {
-    "place": "熟田津",
-    "file_key": "Dōgo_Onsen.jpg",
-    "local_path": "images/wiki/D_go_Onsen.jpg"
   },
   {
     "place": "畝傍山",

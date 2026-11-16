@@ -1,0 +1,2248 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>地図と一緒によむ歌枕</title>
+  <meta name="apple-mobile-web-app-title" content="歌枕紀行">
+  <meta name="application-name" content="地図と一緒によむ歌枕">
+  <meta name="description" content="『おくのほそ道』『小倉百人一首』『万葉集』全3作品を横断して引ける歌枕地名（4大風景DB・浮世絵・現地マップ連動）・歌人（歌がるた付き）・官職・歌語索引データベース。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Yuji+Syuku&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" sizes="192x192" href="favicon.png?v=3">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=3">
+  <!-- Google Analytics (G-310XSTTWSM) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-310XSTTWSM"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-310XSTTWSM');
+  </script>
+  <!-- Google AdSense (ca-pub-4382223240782332) -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4382223240782332" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="shared_glossary_corpus.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 100%;
+      height: 100%;
+      height: 100dvh;
+      overflow: hidden;
+    }
+    body {
+      font-family: "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+      display: flex;
+      flex-direction: column;
+      background: #f5f5f0;
+      color: #222;
+    }
+
+    /* 文中インラインリンク（本編と共通4分類＋検索対象強調） */
+    .inline-place {
+      border-bottom: 1.5px solid #2e7d32;
+      color: #1b5e20;
+      cursor: pointer;
+      padding-bottom: 1px;
+      transition: background 0.15s;
+    }
+    .inline-place:hover { background: #c8e6c9; }
+    .inline-person {
+      border-bottom: 1.5px dotted #d84315;
+      color: #bf360c;
+      cursor: pointer;
+      padding-bottom: 1px;
+      transition: background 0.15s;
+    }
+    .inline-person:hover { background: #ffe0b2; }
+    .inline-office {
+      border-bottom: 1.5px dashed #1565c0;
+      color: #0d47a1;
+      cursor: pointer;
+      padding-bottom: 1px;
+      transition: background 0.15s;
+    }
+    .inline-office:hover { background: #bbdefb; }
+    .inline-special {
+      border-bottom: 1.5px dotted #6a1b9a;
+      color: #4a148c;
+      cursor: pointer;
+      padding-bottom: 1px;
+      transition: background 0.15s;
+    }
+    .inline-special:hover { background: #e1bee7; }
+    .matched-target-term {
+      background: #fff176;
+      font-weight: bold;
+      padding: 0 3px;
+      border-radius: 3px;
+      box-shadow: 0 0 0 1px #fbc02d;
+    }
+
+    /* 左右2分割メインコンテナ（スマホでもFlex子要素が高さ超過しないよう min-height:0 を徹底） */
+    .main-container {
+      display: flex;
+      flex-direction: row;
+      flex: 1 1 0%;
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      overflow: hidden;
+    }
+    .map-column {
+      flex: 1.15 1 0%;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      min-height: 0;
+      position: relative;
+      border-right: 2px solid #8c6d46;
+      background: #e6e2d8;
+      overflow: hidden;
+    }
+    #map {
+      flex: 1 1 0%;
+      width: 100%;
+      min-height: 0;
+      background: #e6e2d8;
+      position: relative;
+    }
+    .reader-panel {
+      flex: 1 1 0%;
+      height: 100%;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      background: #faf8f5;
+      overflow: hidden;
+    }
+
+    /* 上部ナビゲーションバー（本編と完全統一） */
+    .vol-nav-bar, .para-nav-bar {
+      min-height: 40px;
+      background: #2c241b;
+      color: #f7f1e5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 4px 12px;
+      border-bottom: 1px solid #8c6d46;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .vol-nav-bar {
+      height: 40px;
+      padding: 0 12px;
+    }
+    .para-nav-bar {
+      background: #3d2f1d;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .home-top-link {
+      position: absolute;
+      left: 10px;
+      color: #f7f1e5;
+      text-decoration: none;
+      font-size: 0.78rem;
+      font-weight: bold;
+      padding: 3px 8px;
+      border: 1px solid #8c6d46;
+      border-radius: 4px;
+      background: #3d2f1d;
+      transition: 0.15s;
+      white-space: nowrap;
+    }
+    .home-top-link:hover { background: #5d4037; color: #fff; }
+    .slim-nav-btn {
+      background: #5c472c;
+      color: #fff;
+      border: 1px solid #a88a58;
+      border-radius: 4px;
+      padding: 3px 12px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+    .slim-nav-btn:hover:not(:disabled) { background: #7d613c; }
+    .slim-nav-btn:disabled { opacity: 0.35; cursor: default; }
+    .para-select {
+      background: #211a14;
+      color: #f7f1e5;
+      border: 1px solid #a88a58;
+      border-radius: 4px;
+      padding: 3px 8px;
+      font-size: 0.86rem;
+      font-weight: bold;
+      cursor: pointer;
+      max-width: 72%;
+    }
+
+    /* 左側：地図の上にかぶさる索引オーバーレイ */
+    .index-overlay {
+      position: absolute;
+      top: 40px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      min-height: 0;
+      z-index: 4500;
+      background: rgba(250, 248, 243, 0.97);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border-top: 1px solid #cbbda6;
+    }
+    .index-overlay.hidden {
+      display: none;
+    }
+    .index-toolbar {
+      padding: 10px 12px 8px;
+      background: #efeadd;
+      border-bottom: 1px solid #cbbda6;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .index-search-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .index-search-input {
+      flex: 1;
+      padding: 7px 11px;
+      border: 1.5px solid #8c6d46;
+      border-radius: 5px;
+      font-size: 0.9rem;
+      background: #fff;
+      color: #222;
+    }
+    .index-search-input:focus {
+      outline: none;
+      border-color: #bf360c;
+      box-shadow: 0 0 0 2px rgba(191,54,12,0.15);
+    }
+    .map-peek-btn {
+      background: #3d2f1d;
+      color: #ffe082;
+      border: 1px solid #a88a58;
+      border-radius: 5px;
+      padding: 6px 10px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .map-peek-btn:hover { background: #5c472c; color: #fff; }
+
+    .cat-tabs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+    .cat-tab-btn {
+      background: #fff;
+      color: #3d2f1d;
+      border: 1px solid #bcaaa4;
+      border-radius: 5px;
+      padding: 6px 4px;
+      font-size: 0.82rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.15s;
+      text-align: center;
+    }
+    .cat-tab-btn:hover { background: #f5efe4; }
+    .cat-tab-btn.active.person { background: #bf360c; color: #fff; border-color: #870000; }
+    .cat-tab-btn.active.place { background: #2e7d32; color: #fff; border-color: #1b5e20; }
+    .cat-tab-btn.active.office { background: #1565c0; color: #fff; border-color: #0d47a1; }
+    .cat-tab-btn.active.special { background: #6a1b9a; color: #fff; border-color: #4a148c; }
+
+    .index-list-scroll {
+      flex: 1 1 0%;
+      min-height: 0;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      touch-action: pan-y;
+      padding: 8px 10px calc(48px + env(safe-area-inset-bottom, 0px));
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .index-list-scroll > * {
+      flex-shrink: 0;
+    }
+    .index-group-block {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+    .index-group-heading {
+      font-size: 0.84rem;
+      font-weight: bold;
+      color: #3e2723;
+      background: #ede6d6;
+      padding: 3px 9px;
+      border-left: 4px solid #8c6d46;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+    }
+    .index-chip-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+    .index-chip {
+      background: #fff;
+      color: #222;
+      border: 1px solid #d7ccc8;
+      border-left-width: 3.5px;
+      border-radius: 4px;
+      padding: 5px 8px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: baseline;
+      gap: 4px;
+      transition: background 0.12s, transform 0.08s;
+      text-align: left;
+    }
+    .index-chip:hover {
+      background: #fff8e1;
+      border-color: #8c6d46;
+    }
+    .index-chip.person { border-left-color: #d84315; }
+    .index-chip.place { border-left-color: #2e7d32; }
+    .index-chip.office { border-left-color: #1565c0; }
+    .index-chip.special { border-left-color: #6a1b9a; }
+    .index-chip.selected {
+      background: #3e2723;
+      color: #fff;
+      border-color: #ffb300;
+    }
+    .index-chip.selected .chip-yomi {
+      color: #ffe082;
+    }
+    .chip-label { font-weight: bold; }
+    .chip-yomi { font-size: 0.72rem; color: #6d4c41; }
+
+    /* 地図表示中に索引を再展開する左上ボタン＆右上の地図固定ボタン（ズーム・レイヤーボタンと高さを一直線に統一） */
+    .reopen-index-floating-btn {
+      position: absolute;
+      top: 10px;
+      left: 50px;
+      z-index: 4200;
+      background: rgba(62, 39, 35, 0.94);
+      color: #ffe082;
+      border: 1.5px solid #d4af37;
+      border-radius: 5px;
+      padding: 5px 11px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.38);
+      display: none;
+      white-space: nowrap;
+    }
+    .reopen-index-floating-btn:hover { background: #5d4037; color: #fff; }
+
+
+    /* 右側：解説＋Wikipedia＋本文リスト（子要素の縮小による見切れを完全防止） */
+    .record-list {
+      flex: 1 1 0%;
+      min-height: 0;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      touch-action: pan-y;
+      padding: 12px 14px calc(48px + env(safe-area-inset-bottom, 0px));
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .record-list > * {
+      flex-shrink: 0;
+    }
+    .vol-filter-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      align-items: center;
+      overflow-x: auto;
+    }
+    .vol-pill {
+      background: #5c472c;
+      color: #f7f1e5;
+      border: 1px solid #a88a58;
+      border-radius: 14px;
+      padding: 2px 9px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .vol-pill.active {
+      background: #ffb300;
+      color: #211a14;
+      border-color: #ffe082;
+    }
+    .vol-pill:disabled { opacity: 0.35; cursor: default; }
+
+    .head-summary-card {
+      background: #fffdf8;
+      border: 2px solid #8c6d46;
+      border-radius: 7px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+      flex-shrink: 0;
+    }
+    .head-summary-card > * {
+      flex-shrink: 0;
+    }
+    .head-summary-title {
+      font-size: 1.15rem;
+      font-weight: bold;
+      color: #2c241b;
+      border-bottom: 1px solid #e0d6c3;
+      padding-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .wiki-lead-box {
+      background: #eef5fc;
+      border-left: 4px solid #1565c0;
+      border-radius: 4px;
+      padding: 10px 12px;
+      font-size: 0.9rem;
+      line-height: 1.65;
+      color: #1a2530;
+    }
+    .wiki-link-btn {
+      display: inline-block;
+      margin-top: 6px;
+      background: #1565c0;
+      color: #fff;
+      text-decoration: none;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 0.78rem;
+      font-weight: bold;
+    }
+    .wiki-link-btn:hover { background: #0d47a1; }
+    .primary-desc-box {
+      background: #f7f3eb;
+      border-left: 4px solid #8c6d46;
+      border-radius: 4px;
+      padding: 10px 12px;
+      font-size: 0.92rem;
+      line-height: 1.7;
+      color: #2b2118;
+    }
+    .homonym-alert-box {
+      background: #fff3e0;
+      border: 1.5px solid #ef6c00;
+      border-left: 5px solid #e65100;
+      border-radius: 5px;
+      padding: 9px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .homonym-switch-btn {
+      background: #e65100;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 5px 10px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      cursor: pointer;
+      align-self: flex-start;
+    }
+    .homonym-switch-btn:hover { background: #bf360c; }
+
+    /* 本文カード（本編と完全統一デザイン・クリック＆スクロール連動対応） */
+    .record-card {
+      border: 1px solid #ddd5c7;
+      border-radius: 6px;
+      padding: 15px 17px;
+      background: #fffdf9;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .record-card.active-card {
+      border: 2px solid #8c6d46;
+      background: #fffef7;
+    }
+    .record-card.pei-note {
+      background: #f4f7fa;
+      border-left: 4px solid #4a76a8;
+      margin-left: 12px;
+    }
+    .record-card.main-text {
+      border-left: 4px solid #2e7d32;
+    }
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      font-size: 0.86rem;
+      margin-bottom: 8px;
+      color: #555;
+    }
+    .vol-tag-badge {
+      display: inline-block;
+      background: #3d2f1d;
+      color: #ffe082;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.76rem;
+      font-weight: bold;
+      margin-right: 4px;
+    }
+    .badge {
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 0.76rem;
+      color: #fff;
+    }
+    .badge.main { background: #2e7d32; }
+    .badge.pei { background: #4a76a8; }
+    .read-in-vol-btn {
+      background: #2e7d32;
+      color: #fff;
+      border: 1px solid #1b5e20;
+      border-radius: 4px;
+      padding: 3px 9px;
+      font-size: 0.76rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+    .read-in-vol-btn:hover { background: #1b5e20; }
+    .raw-text {
+      font-family: "Yu Mincho", "MS PMincho", serif;
+      font-size: 1.15rem;
+      font-weight: bold;
+      color: #111;
+      margin-bottom: 9px;
+      line-height: 1.72;
+    }
+    .kakikudashi {
+      font-size: 1.02rem;
+      color: #333;
+      margin-bottom: 9px;
+      line-height: 1.78;
+      padding-left: 10px;
+      border-left: 3px solid #cbbda6;
+    }
+    .translation {
+      font-size: 1.04rem;
+      color: #1a1a1a;
+      line-height: 1.82;
+      background: rgba(255,255,255,0.82);
+      padding: 8px 10px;
+      border-radius: 4px;
+    }
+
+    .history-back-btn {
+      background: #c62828;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 5px 11px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      cursor: pointer;
+      align-self: flex-start;
+    }
+    .empty-guide-box {
+      background: #fffdf9;
+      border: 1px dashed #bcaaa4;
+      border-radius: 8px;
+      padding: 18px 16px;
+      color: #4e342e;
+      line-height: 1.75;
+    }
+
+    /* 地図ラベル・トースト（本編と完全統一・ラベル自体もクリック可能） */
+    .custom-label {
+      background: rgba(44, 36, 27, 0.92);
+      color: #fff;
+      border: 1px solid #d4af37;
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 12px;
+      font-weight: bold;
+      white-space: nowrap;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.45);
+      cursor: pointer;
+    }
+    .custom-label.selected-pin {
+      background: #c62828;
+      color: #ffff00;
+      font-size: 14px;
+      padding: 3px 8px;
+      border: 2px solid #fff;
+      z-index: 9999 !important;
+    }
+    .area-banner-label {
+      background: rgba(183, 28, 28, 0.9);
+      color: #fff;
+      border: 2px solid #ffd54f;
+      border-radius: 6px;
+      padding: 4px 12px;
+      font-size: 14px;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+    .parent-area-banner-label {
+      background: rgba(46, 125, 50, 0.88);
+      color: #fff;
+      border: 1.5px solid #c8e6c9;
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 12px;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+    .nat-Geo-label {
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      color: rgba(30, 60, 90, 0.72);
+      font-weight: bold;
+      font-size: 12px;
+      text-shadow: 1px 1px 2px #fff, -1px -1px 2px #fff;
+      pointer-events: none;
+    }
+    .nat-Geo-label.mountain { color: rgba(78, 52, 46, 0.78); font-size: 12.5px; }
+    .leaflet-tooltip.transparent-box { background: transparent; border: none; box-shadow: none; padding: 0; }
+    .leaflet-tooltip-top.transparent-box:before { display: none; }
+    .map-toast {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      z-index: 4300;
+      background: rgba(34, 27, 21, 0.96);
+      color: #fff;
+      border: 1.5px solid #d4af37;
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-size: 0.8rem;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.48);
+      display: none;
+      flex-direction: column;
+      width: min(46%, 320px);
+      max-height: calc(100% - 16px);
+      overflow-y: auto;
+    }
+    .toast-img-el {
+      display: none;
+      width: 100%;
+      max-height: min(48vh, 340px);
+      object-fit: contain;
+      border-radius: 4px;
+      border: 1px solid #8c6d46;
+      background: #14100c;
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+    .nature-label-mountain {
+      color: rgba(93, 64, 55, 0.82);
+      font-weight: bold;
+      font-size: 12px;
+      text-shadow: 1px 1px 2px #fff, -1px -1px 2px #fff;
+      white-space: nowrap;
+      text-align: center;
+      pointer-events: none;
+    }
+    .nature-label-river {
+      color: rgba(21, 101, 192, 0.82);
+      font-weight: bold;
+      font-size: 11.5px;
+      text-shadow: 1px 1px 2px #fff, -1px -1px 2px #fff;
+      white-space: nowrap;
+      text-align: center;
+      pointer-events: none;
+    }
+    .english-translation {
+      margin-top: 7px;
+      padding: 6px 10px;
+      background: #f5f2eb;
+      border-left: 3px solid #a1887f;
+      border-radius: 3px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 0.92rem;
+      color: #3e2723;
+      line-height: 1.6;
+    }
+    .karuta-lead-box {
+      background: #2b1f18;
+      border: 1.5px solid #d4af37;
+      border-radius: 6px;
+      padding: 10px 12px;
+      text-align: center;
+      color: #f7f1e5;
+    }
+    .karuta-lead-img {
+      max-height: 220px;
+      max-width: 100%;
+      object-fit: contain;
+      border-radius: 4px;
+      border: 1px solid #a88a58;
+      background: #140e0a;
+    }
+    .verse-play-btn {
+      background: linear-gradient(135deg, #6a1b9a, #4a148c);
+      color: #fff;
+      border: 1px solid #ce93d8;
+      border-radius: 4px;
+      padding: 3px 9px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .verse-play-btn:hover { filter: brightness(1.12); }
+    .modal-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 5200;
+      background: rgba(20, 15, 10, 0.84);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+    }
+    .modal-box {
+      background: #241b14;
+      border: 2px solid #d4af37;
+      border-radius: 8px;
+      max-width: 96%;
+      max-height: 96%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.65);
+    }
+    .modal-header {
+      background: #3d2f1d;
+      color: #ffe082;
+      padding: 7px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid #8c6d46;
+    }
+    .modal-header h3 { font-size: 0.9rem; margin: 0; font-family: "Yu Mincho", serif; }
+    .modal-close {
+      background: #5c472c;
+      color: #fff;
+      border: 1px solid #a88a58;
+      border-radius: 4px;
+      padding: 2px 9px;
+      font-size: 0.78rem;
+      cursor: pointer;
+    }
+    .modal-body { padding: 10px; overflow-y: auto; }
+    .ad-footer-box {
+      margin-top: 10px;
+      padding: 10px 12px;
+      background: #f3efe6;
+      border: 1px solid #dcd3c1;
+      border-radius: 6px;
+      text-align: center;
+      min-height: 90px;
+      flex-shrink: 0;
+    }
+    .ad-footer-label { font-size: 0.68rem; color: #8c7b65; margin-bottom: 4px; }
+
+    @media (max-width: 900px) {
+      .main-container {
+        flex-direction: column;
+        min-height: 0;
+      }
+      .map-column {
+        flex: 0 0 42%;
+        height: 42%;
+        min-height: 0;
+        width: 100%;
+        border-right: none;
+        border-bottom: 2px solid #8c6d46;
+      }
+      .reader-panel {
+        flex: 1 1 0%;
+        height: auto;
+        min-height: 0;
+        width: 100%;
+      }
+      .index-toolbar {
+        padding: 5px 8px;
+        gap: 5px;
+      }
+      .index-search-input {
+        padding: 5px 8px;
+        font-size: 16px;
+      }
+      .cat-tab-btn { font-size: 0.78rem; padding: 5px 2px; }
+      .index-chip { font-size: 0.8rem; padding: 4px 7px; }
+      .reopen-index-floating-btn { padding: 4px 9px; font-size: 0.75rem; }
+      .head-summary-card { padding: 11px 12px; gap: 8px; }
+      .head-summary-title { font-size: 1.02rem; }
+      .wiki-lead-box, .primary-desc-box { font-size: 0.86rem; line-height: 1.62; padding: 8px 10px; }
+      .record-card { padding: 12px 13px; }
+      .raw-text { font-size: 1.04rem; }
+      .kakikudashi { font-size: 0.95rem; }
+      .translation { font-size: 0.96rem; }
+      .map-toast {
+        top: 6px;
+        left: 6px;
+        width: min(52%, 250px);
+        max-height: calc(100% - 12px);
+        padding: 6px 8px;
+        font-size: 0.74rem;
+      }
+    }
+    @media (max-width: 520px) {
+      .vol-nav-bar { gap: 6px; padding: 0 6px; }
+      .home-top-link { position: static; margin-right: auto; padding: 2px 6px; font-size: 0.72rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="main-container">
+  <div class="map-column">
+    <div class="vol-nav-bar">
+      <a href="https://wasabikarashi.com/" class="home-top-link" title="総合トップページへ戻る">🏠 トップ</a>
+      <button class="slim-nav-btn" disabled title="前の項目（なし）">←</button>
+      <select class="para-select" style="font-family:'Yu Mincho','MS PMincho',serif; font-size:0.95rem; letter-spacing:0.05em;" onchange="if(this.value) window.location.href=this.value" title="作品・索引を切り替え">
+        <option value="glossary.html" selected>📑 歌枕・歌人・用語 索引</option>
+        <option value="okunohosomichi.html">おくのほそ道　松尾芭蕉</option>
+        <option value="hyakunin.html">小倉百人一首　藤原定家撰</option>
+        <option value="manyoshu.html">万葉集　歌枕名歌選</option>
+      </select>
+      <button class="slim-nav-btn" onclick="window.location.href='okunohosomichi.html'" title="次の作品（おくのほそ道　松尾芭蕉）へ移動">→</button>
+    </div>
+
+    <div id="map">
+      <button class="reopen-index-floating-btn" id="reopenIndexBtn" style="left:10px;" onclick="event.stopPropagation(); showIndexOverlay()">📑 索引一覧に戻る</button>
+      <div class="map-toast" id="mapToast" onclick="event.stopPropagation()"></div>
+    </div>
+
+    <!-- 左側（地図の上）にかぶさる五十音順・分類別 全3作品横断索引パネル -->
+    <div class="index-overlay" id="indexOverlay">
+      <div class="index-toolbar">
+        <div class="index-search-row">
+          <input type="text" id="indexSearchInput" class="index-search-input" placeholder="🔍 歌枕（地名）・歌人・よみがな・歌語で検索" oninput="handleSearchFilterChange(this.value)">
+          <button class="map-peek-btn" onclick="hideIndexOverlay()" title="索引を閉じて全国の歌枕マップを見る">🗺️ 地図</button>
+        </div>
+        <div class="cat-tabs" id="catTabs"></div>
+      </div>
+      <div class="index-list-scroll" id="indexListScroll"></div>
+    </div>
+
+    <!-- 短文動画（Short Verse Studio）再生モーダル -->
+    <div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this) closeVideoModal()">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h3 id="modalTitle">短文動画</h3>
+          <button class="modal-close" onclick="closeVideoModal()">× 閉じる</button>
+        </div>
+        <div class="modal-body" id="modalBody"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="reader-panel">
+    <div class="para-nav-bar" id="rightTopBar">
+      <span style="font-size:0.88rem; font-weight:bold;">📑 全作品横断　歌枕・歌人・用語 索引</span>
+    </div>
+    <div class="record-list" id="resultList"></div>
+  </div>
+</div>
+
+<script>
+  const CORPUS = window.UTAMAKURA_GLOSSARY_CORPUS || {
+    volumes: [], records: [], places: [], natural_features: [], river_lines: [],
+    catalog: { person: [], place: [], office: [], special: [] },
+    occurrences: { person: {}, place: {}, office: {}, special: {} }
+  };
+
+  const CROSS_JUMP_STORAGE_KEY = 'utamakura_cross_vol_return_v1';
+  const LAST_READING_STORAGE_KEY = 'utamakura_last_reading_v1';
+  const OVERLAY_RESIZE_DELAY_MS = 30;
+  const MAP_MAX_NATIVE_ZOOM_LEVEL = 13;
+  const MAP_MAX_ZOOM_LEVEL = 13;
+  const INITIAL_OVERVIEW_LAT = 36.4;
+  const INITIAL_OVERVIEW_LNG = 137.4;
+  const INITIAL_OVERVIEW_ZOOM = 6;
+  const MAP_LEFT_PANEL_WIDTH_RATIO = 0.48;
+  const MAP_RIGHT_HALF_CENTER_OFFSET_RATIO = 0.24;
+  const TOAST_GMAP_ZOOM = 16;
+
+  const GOJUON_ROW_CHARS = ['あ', 'か', 'さ', 'た', 'な', 'は', 'ま', 'や', 'ら', 'わ'];
+  const OFFICE_GROUPS = [
+    { id: 'court', label: '① 朝廷・律令の官職・位階' },
+    { id: 'other', label: '② 武家・僧位・神職・称号' }
+  ];
+  const SPECIAL_GROUPS = [
+    { id: 'poetic', label: '🌸 歌語・枕詞・掛詞・季語・俳諧用語' },
+    { id: 'classic', label: '📚 勅撰集・漢籍典拠・歴史故事・神事' }
+  ];
+
+  // 高速参照用マップ
+  const recordById = new Map();
+  CORPUS.records.forEach(r => recordById.set(r.id, r));
+  const volById = new Map();
+  CORPUS.volumes.forEach(v => volById.set(v.id, v));
+  const placeByKey = new Map();
+  CORPUS.places.forEach(p => placeByKey.set(p.key, p));
+  const catalogMapByType = {
+    person: new Map(CORPUS.catalog.person.map(x => [x.key, x])),
+    place: new Map(CORPUS.catalog.place.map(x => [x.key, x])),
+    office: new Map(CORPUS.catalog.office.map(x => [x.key, x])),
+    special: new Map(CORPUS.catalog.special.map(x => [x.key, x]))
+  };
+
+  let activeCategory = 'place';
+  let searchQuery = '';
+  let selectedItem = null; // { type, key }
+  let activeVolumeFilter = 'all';
+  let selectionHistory = [];
+  let currentActiveGlossaryRecId = null;
+  let showJumpPlaceBtnInToast = false;
+
+  function escapeHtml(str) {
+    return String(str || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function getShortPlaceTitle(labelStr) {
+    if (!labelStr) return '';
+    return String(labelStr).replace(/：[^）]*）$/, '）');
+  }
+
+  // =========================================================================
+  // 1. 共通地図コントローラ（shared_map_controller.js）による全巻統合マップ制御
+  // =========================================================================
+  function showIndexOverlay() {
+    document.getElementById('indexOverlay').classList.remove('hidden');
+    document.getElementById('reopenIndexBtn').style.display = 'none';
+  }
+
+  function hideIndexOverlay() {
+    document.getElementById('indexOverlay').classList.add('hidden');
+    document.getElementById('reopenIndexBtn').style.display = 'block';
+    setTimeout(() => map.invalidateSize(), OVERLAY_RESIZE_DELAY_MS);
+  }
+
+  const map = L.map('map', { maxZoom: MAP_MAX_ZOOM_LEVEL, zoomControl: false }).setView([INITIAL_OVERVIEW_LAT, INITIAL_OVERVIEW_LNG], INITIAL_OVERVIEW_ZOOM);
+  L.control.zoom({ position: 'topright' }).addTo(map);
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}', {
+    attribution: 'Tiles &copy; Esri',
+    maxNativeZoom: MAP_MAX_NATIVE_ZOOM_LEVEL,
+    maxZoom: MAP_MAX_ZOOM_LEVEL
+  }).addTo(map);
+
+  const natureGroup = L.layerGroup().addTo(map);
+  const pinMarkerGroup = L.layerGroup().addTo(map);
+  let activeHighlightLayers = [];
+  const toastActiveColByPlace = {};
+  const SOURCE_TAB_DEFS = [
+    { col: 'fukeichi', label: '🏞️ 名勝Wiki' },
+    { col: 'wiki', label: '📷 個別Wiki' },
+    { col: 'ukiyoe', label: '🎨 浮世絵' },
+    { col: 'gmap', label: '📍 Googleマップ' }
+  ];
+
+  (CORPUS.river_lines || []).forEach(river => {
+    const rLine = L.polyline(river.coords, { color: '#1976d2', weight: 2.5, opacity: 0.75 }).addTo(natureGroup);
+    rLine.bindTooltip(river.name, { sticky: true });
+    rLine.on('click', () => {
+      if (catalogMapByType.place.has(river.key)) selectGlossaryItem('place', river.key, true);
+    });
+  });
+  (CORPUS.natural_features || []).forEach(feat => {
+    const icon = L.divIcon({
+      className: feat.type === 'mountain' ? 'nature-label-mountain' : 'nature-label-river',
+      html: feat.name,
+      iconSize: [140, 20],
+      iconAnchor: [70, 10]
+    });
+    L.marker([feat.lat, feat.lng], { icon: icon, interactive: false }).addTo(natureGroup);
+  });
+
+  function setMapViewInRightHalf(lat, lng, zoomLevel) {
+    const mapSize = map.getSize();
+    const offsetX = Math.round(mapSize.x * MAP_RIGHT_HALF_CENTER_OFFSET_RATIO);
+    const targetPoint = map.project([lat, lng], zoomLevel);
+    const shiftedCenter = map.unproject(targetPoint.subtract([offsetX, 0]), zoomLevel);
+    map.setView(shiftedCenter, zoomLevel, { animate: true, duration: 0.45 });
+  }
+
+  function clearMapHighlights() {
+    activeHighlightLayers.forEach(layer => map.removeLayer(layer));
+    activeHighlightLayers = [];
+    document.querySelectorAll('.custom-label').forEach(el => el.classList.remove('selected-pin'));
+  }
+
+  function addPinMarkerToGroup(place) {
+    let fillColor = '#e65100';
+    if (String(place.province || '').includes('東山道')) fillColor = '#2e7d32';
+    else if (String(place.province || '').includes('北陸道')) fillColor = '#1565c0';
+    const marker = L.circleMarker([place.lat, place.lng], {
+      radius: 6.5,
+      fillColor: fillColor,
+      color: '#fff',
+      weight: 1.8,
+      fillOpacity: 0.95
+    }).addTo(pinMarkerGroup);
+    marker.bindTooltip(`<span class="custom-label" id="pin-label-${escapeHtml(place.key)}">${escapeHtml(place.key)}</span>`, {
+      permanent: true,
+      direction: 'top',
+      offset: [0, -7],
+      className: 'transparent-box'
+    });
+    marker.on('click', () => {
+      if (selectedItem && selectedItem.type !== 'place') {
+        focusSinglePlaceOnMap(place.key, true, false);
+      } else if (catalogMapByType.place.has(place.key)) {
+        selectGlossaryItem('place', place.key, true);
+      } else {
+        focusSinglePlaceOnMap(place.key, false, false);
+      }
+    });
+  }
+
+  function renderOverviewPlacesOnMap() {
+    clearMapHighlights();
+    pinMarkerGroup.clearLayers();
+    const toastEl = document.getElementById('mapToast');
+    if (toastEl) toastEl.style.display = 'none';
+    CORPUS.places.filter(p => p.is_pin && catalogMapByType.place.has(p.key)).forEach(addPinMarkerToGroup);
+  }
+
+  function getGlossaryPlaceGmap(placeObj) {
+    if (placeObj.gmap_rejected) return null;
+    if (placeObj.gmap_embed_query) {
+      return { spot: placeObj.gmap_spot_name || placeObj.key, query: placeObj.gmap_embed_query };
+    }
+    const s = String(placeObj.gmap_spot_name || '').trim();
+    const p = String(placeObj.gmap_plus_code || '').trim();
+    if (!s && !p) return null;
+    if (/^https?:\/\//i.test(p)) {
+      return { spot: s || placeObj.key, query: s || placeObj.key };
+    }
+    return { spot: s, query: (s + ' ' + p).trim() };
+  }
+
+  function getGlossaryAvailableSources(placeObj) {
+    const sources = {};
+    if (placeObj.fukeichi_title && placeObj.fukeichi_image_path) {
+      const wp = placeObj.fukeichi_wiki_page || 'おくのほそ道の風景地';
+      sources.fukeichi = {
+        url: placeObj.fukeichi_image_path,
+        note: '',
+        linkUrl: `https://ja.wikipedia.org/wiki/${encodeURIComponent(wp)}`,
+        linkText: `📖 ${placeObj.fukeichi_title} ↗`
+      };
+    }
+    if (placeObj.wiki_image_path) {
+      sources.wiki = {
+        url: placeObj.wiki_image_path,
+        note: '',
+        linkUrl: placeObj.wiki_title ? `https://ja.wikipedia.org/wiki/${encodeURIComponent(placeObj.wiki_title)}` : '',
+        linkText: placeObj.wiki_title ? `📖 ${placeObj.wiki_title} ↗` : ''
+      };
+    }
+    if (placeObj.ukiyoe_image_path) {
+      sources.ukiyoe = {
+        url: placeObj.ukiyoe_image_path,
+        note: placeObj.ukiyoe_caption || '',
+        linkUrl: '',
+        linkText: ''
+      };
+    }
+    const gm = getGlossaryPlaceGmap(placeObj);
+    const gmapAllowed = !(placeObj.default_source_on && placeObj.default_source_on.gmap === false);
+    if (gm && gmapAllowed) {
+      sources.gmap = gm;
+    }
+    return sources;
+  }
+
+  function selectGlossaryToastTab(placeKey, col) {
+    const found = placeByKey.get(placeKey);
+    if (!found) return;
+    toastActiveColByPlace[placeKey] = col;
+    renderGlossaryToastSources(found);
+  }
+
+  function renderGlossaryToastSources(placeObj) {
+    const tabsEl = document.getElementById('toastSrcTabs');
+    const imgEl = document.getElementById('toastUkiyoeImg');
+    const gmapWrapEl = document.getElementById('toastGmapWrap');
+    const noteEl = document.getElementById('toastSrcNote');
+    if (!tabsEl) return;
+    const sources = getGlossaryAvailableSources(placeObj);
+    const avail = SOURCE_TAB_DEFS.filter(d => Boolean(sources[d.col]));
+    if (avail.length === 0) {
+      tabsEl.innerHTML = '';
+      if (imgEl) imgEl.style.display = 'none';
+      if (gmapWrapEl) gmapWrapEl.style.display = 'none';
+      if (noteEl) noteEl.style.display = 'none';
+      return;
+    }
+    let active = toastActiveColByPlace[placeObj.key];
+    if (!avail.some(d => d.col === active)) active = avail[0].col;
+    toastActiveColByPlace[placeObj.key] = active;
+    const safeKey = String(placeObj.key).replace(/'/g, "\\'");
+    tabsEl.innerHTML = avail.length > 1 ? avail.map(d => {
+      const isAct = d.col === active;
+      const st = isAct
+        ? 'background:#ffb300; color:#1a130e; border:1px solid #ffe082;'
+        : 'background:#3e2f26; color:#ffe082; border:1px solid #795548;';
+      return `<button type="button" style="${st} font-size:0.68rem; font-weight:bold; padding:2px 7px; border-radius:3px; cursor:pointer;" onclick="selectGlossaryToastTab('${safeKey}', '${d.col}')">${d.label}</button>`;
+    }).join('') : '';
+
+    if (active === 'gmap') {
+      const embedUrl = `https://maps.google.com/maps?q=${encodeURIComponent(sources.gmap.query)}&t=m&z=${TOAST_GMAP_ZOOM}&output=embed&hl=ja`;
+      if (imgEl) imgEl.style.display = 'none';
+      if (noteEl) noteEl.style.display = 'none';
+      if (gmapWrapEl) {
+        gmapWrapEl.innerHTML = `<iframe src="${embedUrl}" style="width:100%; height:160px; border:1px solid #81c784; border-radius:4px; background:#111;" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
+        gmapWrapEl.style.display = 'block';
+      }
+      return;
+    }
+    const src = sources[active];
+    if (gmapWrapEl) gmapWrapEl.style.display = 'none';
+    if (noteEl) {
+      const h = (src.note ? escapeHtml(src.note) + ' ' : '') + (src.linkUrl ? `<a href="${src.linkUrl}" target="_blank" rel="noopener" style="color:#90caf9; text-decoration:none;">${escapeHtml(src.linkText)}</a>` : '');
+      noteEl.innerHTML = h;
+      noteEl.style.display = h ? 'block' : 'none';
+    }
+    if (imgEl) {
+      imgEl.src = src.url;
+      imgEl.style.display = 'block';
+    }
+  }
+
+  function focusSinglePlaceOnMap(placeKey, showOpenArticleBtn = false, hideToast = false) {
+    const found = placeByKey.get(placeKey);
+    if (!found) return;
+    hideIndexOverlay();
+    showJumpPlaceBtnInToast = Boolean(showOpenArticleBtn);
+    clearMapHighlights();
+    pinMarkerGroup.clearLayers();
+    map.stop();
+
+    if (found.is_area && found.area_polygon) {
+      const areaZoom = Math.round(found.zoom || 9);
+      const mapSize = map.getSize();
+      const leftPadPx = Math.round(mapSize.x * MAP_LEFT_PANEL_WIDTH_RATIO) + 16;
+      map.fitBounds(found.area_polygon, { paddingTopLeft: [leftPadPx, 24], paddingBottomRight: [24, 24], maxZoom: areaZoom });
+      const areaPoly = L.polygon(found.area_polygon, { color: '#d84315', weight: 3.5, fillColor: '#ffab40', fillOpacity: 0.25 }).addTo(map);
+      const bannerMarker = L.marker([found.lat, found.lng], {
+        icon: L.divIcon({ className: '', html: `<span class="area-banner-label">🗺️ ${escapeHtml(found.key)}</span>`, iconSize: [140, 28], iconAnchor: [70, 14] }),
+        interactive: false
+      }).addTo(map);
+      activeHighlightLayers.push(areaPoly, bannerMarker);
+    } else if (found.is_river) {
+      const riverZoom = Math.round(found.zoom || 11);
+      setMapViewInRightHalf(found.lat, found.lng, riverZoom);
+      (CORPUS.river_lines || []).filter(r => r.key === found.key).forEach(river => {
+        const hl = L.polyline(river.coords, { color: '#ffeb3b', weight: 7, opacity: 0.85 }).addTo(map);
+        const fg = L.polyline(river.coords, { color: '#d32f2f', weight: 3.5, opacity: 0.95 }).addTo(map);
+        activeHighlightLayers.push(hl, fg);
+      });
+    } else {
+      addPinMarkerToGroup(found);
+      const labelEl = document.getElementById(`pin-label-${found.key}`);
+      if (labelEl) labelEl.classList.add('selected-pin');
+      const parentArea = CORPUS.places.find(a => a.is_area && a.key === found.parent_area);
+      const pointZoom = Math.round(found.zoom || 12);
+      if (parentArea && parentArea.area_polygon) {
+        const parentPoly = L.polygon(parentArea.area_polygon, {
+          color: '#2e7d32', weight: 2.5, dashArray: '6, 4', fillColor: '#66bb6a', fillOpacity: 0.10
+        }).addTo(map);
+        const pLat = parentArea.area_polygon[0][0];
+        const pLng = (parentArea.area_polygon[0][1] + parentArea.area_polygon[1][1]) / 2;
+        const parentBanner = L.marker([pLat, pLng], {
+          icon: L.divIcon({ className: '', html: `<span class="parent-area-banner-label">${escapeHtml(parentArea.key)}</span>`, iconSize: [180, 22], iconAnchor: [90, 24] }),
+          interactive: false
+        }).addTo(map);
+        activeHighlightLayers.push(parentPoly, parentBanner);
+      }
+      setMapViewInRightHalf(found.lat, found.lng, pointZoom);
+      const circleRadiusMeters = pointZoom >= 12 ? 350 : (pointZoom >= 11 ? 600 : (pointZoom >= 9 ? 3500 : 8000));
+      const ptCircle = L.circle([found.lat, found.lng], {
+        radius: circleRadiusMeters, color: '#c62828', weight: 2.5, fillColor: '#ff5252', fillOpacity: 0.25
+      }).addTo(map);
+      activeHighlightLayers.push(ptCircle);
+    }
+
+    const toast = document.getElementById('mapToast');
+    if (hideToast || !toast) return;
+    const safeKey = String(found.key).replace(/'/g, "\\'");
+    const jumpBtnHtml = (showJumpPlaceBtnInToast && catalogMapByType.place.has(found.key))
+      ? `<button class="read-in-vol-btn" style="padding:2px 7px; font-size:0.72rem;" onclick="selectGlossaryItem('place', '${safeKey}', true)">📑 この歌枕の一覧へ</button>`
+      : '';
+    toast.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:4px; flex-shrink:0;">
+        <div style="font-family:'Yu Mincho','MS PMincho',serif; font-size:0.86rem; font-weight:bold; color:#fff;">📍 ${escapeHtml(found.key)}</div>
+        <div style="display:flex; align-items:center; gap:4px;">
+          ${jumpBtnHtml}
+          <button onclick="document.getElementById('mapToast').style.display='none'" style="background:transparent; border:none; color:#bbb; cursor:pointer; font-size:0.9rem; line-height:1; padding:0 2px;" title="閉じる">✕</button>
+        </div>
+      </div>
+      <div style="font-size:0.72rem; color:#ffe082; margin-top:3px; line-height:1.35;">${escapeHtml(found.modern || found.province || '')}</div>
+      <div id="toastSrcTabs" style="display:flex; gap:4px; flex-wrap:wrap; margin-top:5px; flex-shrink:0;"></div>
+      <img id="toastUkiyoeImg" class="toast-img-el" src="" alt="${escapeHtml(found.key)}" />
+      <div id="toastGmapWrap" style="display:none; width:100%; margin-top:5px; flex-shrink:0;"></div>
+      <div id="toastSrcNote" style="font-size:0.68rem; color:#d7ccc8; margin-top:4px; line-height:1.35; flex-shrink:0; display:none;"></div>
+    `;
+    toast.style.display = 'flex';
+    renderGlossaryToastSources(found);
+  }
+  window.addEventListener('resize', () => map.invalidateSize());
+  // Short Verse Studio 縦書き毛筆Canvasアニメーションエンジン（モーダル内直接再生）
+  // 基準：YouTubeショート規格 1080 x 1920 px / mask_layout.png 和紙領域 (X:108-809, Y:400-1499)
+  // =========================================================================
+  const SVS_CANVAS_WIDTH_PX = 1080;
+  const SVS_CANVAS_HEIGHT_PX = 1920;
+  const SVS_PAPER_LEFT_X_PX = 108;
+  const SVS_PAPER_RIGHT_X_PX = 809;
+  const SVS_PAPER_TOP_Y_PX = 400;
+  const SVS_PAPER_BOTTOM_Y_PX = 1499;
+  const SVS_PAPER_SAFE_TOP_Y_PX = 465;
+  const SVS_PAPER_SAFE_BOTTOM_Y_PX = 1420;
+
+  const SVS_HAIKU_LINE_X_COORDS_PX = [665, 495, 325];
+  const SVS_HAIKU_AUTHOR_X_PX = 180;
+  const SVS_HAIKU_LINE_INDENT_Y_PX = [40, 76, 112];
+
+  const SVS_TANKA_LINE_X_COORDS_PX = [695, 585, 475, 365, 255];
+  const SVS_TANKA_AUTHOR_X_PX = 155;
+  const SVS_TANKA_LINE_INDENT_Y_PX = [24, 52, 80, 108, 136];
+
+  const SVS_INTRO_SILENCE_MS = 900;
+  const SVS_LINE_APPEAR_INTERVAL_MS = 1800;
+  const SVS_LINE_WRITE_SPAN_MS = 1250;
+  const SVS_AUTHOR_WRITE_SPAN_MS = 650;
+  const SVS_CHAR_FADE_DURATION_MS = 420;
+  const SVS_OUTRO_HOLD_MS = 3200;
+  const SVS_MS_PER_SECOND = 1000;
+  const SVS_GOLD_PARTICLE_COUNT = 28;
+
+  const SVS_REMOTE_ASSET_BASE = 'https://wasabikarashi.com/tanka/';
+
+  // 各句に1対1で割り当てる専用背景＆Short Verse Studio 背景マスター
+  const SVS_BG_THEMES = [
+    { key: 'hina_peach', label: '🎎 桃の節句・雛の家（第1句専用背景）', bgPath: 'shortliterature/bg_hina_peach.jpg', customScene: 'hina' },
+    { key: 'yukuharu_senju', label: '🌸 行く春・千住の舟出と矢立（第2句専用背景）', bgPath: 'shortliterature/bg_yukuharu_senju.jpg', customScene: 'yukuharu' },
+    { key: 'nikko_aoba', label: '🌿 日光・青葉若葉の日の光（第3句専用背景）', bgPath: 'shortliterature/bg_nikko_aoba.jpg', customScene: 'yukuharu' },
+    { key: 'kurokami_koromogae', label: '⛰️ 黒髪山・墨染の衣更（第4句専用背景）', bgPath: 'shortliterature/bg_kurokami_koromogae.jpg', customScene: 'hina' },
+    { key: 'urami_taki', label: '💧 裏見の滝・千岩の碧潭と夏籠（第5句専用背景）', bgPath: 'shortliterature/bg_urami_taki.jpg', customScene: 'yukuharu' },
+    { key: 'kasane_nadeshiko', label: '🌸 那須野・かさねと八重撫子（第6句専用背景）', bgPath: 'shortliterature/bg_kasane_nadeshiko.jpg', customScene: 'hina' },
+    { key: 'komyoji_ashida', label: '⛰️ 光明寺・夏山と役行者の足駄（第7句専用背景）', bgPath: 'shortliterature/bg_komyoji_ashida.jpg', customScene: 'yukuharu' },
+    { key: 'unganji_kitsutsuki', label: '🌲 雲巌寺・夏木立と仏頂和尚の石上小庵（第8句専用背景）', bgPath: 'shortliterature/bg_unganji_kitsutsuki.jpg', customScene: 'yukuharu' },
+    { key: 'nasu_hototogisu', label: '🐦 那須野・馬とほととぎす（第9句専用背景）', bgPath: 'shortliterature/bg_nasu_hototogisu.jpg', customScene: 'yukuharu' },
+    { key: 'yugyo_yanagi', label: '🌿 芦野・遊行柳と早苗の田（第10句専用背景）', bgPath: 'shortliterature/bg_yugyo_yanagi.jpg', customScene: 'yukuharu' },
+    { key: 'shirakawa_unohana', label: '🤍 白河の関・卯の花の晴着（第11句専用背景）', bgPath: 'shortliterature/bg_shirakawa_unohana.jpg', customScene: 'hina' },
+    { key: 'sukagawa_taueuta', label: '🌾 須賀川・おくの田植うた（第12句専用背景）', bgPath: 'shortliterature/bg_sukagawa_taueuta.jpg', customScene: 'yukuharu' },
+    { key: 'sukagawa_nokinokuri', label: '🌰 須賀川・可伸庵の軒の栗（第13句専用背景）', bgPath: 'shortliterature/bg_sukagawa_nokinokuri.jpg', customScene: 'hina' },
+    { key: 'shinobu_mojizuri', label: '🌿 しのぶの里・早苗と文字摺石（第14句専用背景）', bgPath: 'shortliterature/bg_shinobu_mojizuri.jpg', customScene: 'yukuharu' },
+    { key: 'iizaka_kaminobori', label: '🎏 医王寺・義経の太刀と弁慶の笈・紙幟（第15句専用背景）', bgPath: 'shortliterature/bg_iizaka_kaminobori.jpg', customScene: 'hina' },
+    { key: 'kasashima_samidare', label: '🌧️ 笠島・五月雨の菅笠とぬかり道（第16句専用背景）', bgPath: 'shortliterature/bg_kasashima_samidare.jpg', customScene: 'yukuharu' },
+    { key: 'takekuma_futaki', label: '🌲 武隈の松・二木の松と遅桜（第17句専用背景）', bgPath: 'shortliterature/bg_takekuma_futaki.jpg', customScene: 'hina' },
+    { key: 'sendai_ayame_waraji', label: '🩴 仙台・あやめ草と紺の染緒の草鞋（第18句専用背景）', bgPath: 'shortliterature/bg_sendai_ayame_waraji.jpg', customScene: 'yukuharu' },
+    { key: 'matsushima_tsuru', label: '🦢 松島・月夜の松島湾と白鶴・時鳥（第19句専用背景）', bgPath: 'shortliterature/bg_matsushima_tsuru.jpg', customScene: 'yukuharu' },
+    { key: 'hiraizumi_natsukusa', label: '🌿 平泉・高館の夏草と北上川（第20句専用背景）', bgPath: 'shortliterature/bg_hiraizumi_natsukusa.jpg', customScene: 'yukuharu' },
+    { key: 'hiraizumi_kanefusa', label: '🤍 平泉・高館の卯の花と老武者兼房の白髪（第21句専用背景）', bgPath: 'shortliterature/bg_hiraizumi_kanefusa.jpg', customScene: 'hina' },
+    { key: 'hiraizumi_hikarido', label: '✨ 平泉・五月雨の中尊寺金色堂（第22句専用背景）', bgPath: 'shortliterature/bg_hiraizumi_hikarido.jpg', customScene: 'hina' },
+    { key: 'shitomae_nomishirami', label: '🌧️ 尿前の関・風雨の山中封人の家（第23句専用背景）', bgPath: 'shortliterature/bg_shitomae_nomishirami.jpg', customScene: 'yukuharu' },
+    { key: 'obanazawa_suzushisa', label: '🎐 尾花沢・清風邸の涼風と寛ぎの座敷（第24句専用背景）', bgPath: 'shortliterature/bg_obanazawa_suzushisa.jpg', customScene: 'yukuharu' },
+    { key: 'obanazawa_hikigaeru', label: '🐸 尾花沢・飼屋の煙と縁の下の蟾蜍（第25句専用背景）', bgPath: 'shortliterature/bg_obanazawa_hikigaeru.jpg', customScene: 'yukuharu' },
+    { key: 'obanazawa_benibana', label: '🌺 尾花沢・眉掃きの面影と最上紅花（第26句専用背景）', bgPath: 'shortliterature/bg_obanazawa_benibana.jpg', customScene: 'hina' },
+    { key: 'obanazawa_kogai', label: '🧺 尾花沢・蚕飼する人と古代の面影（第27句専用背景）', bgPath: 'shortliterature/bg_obanazawa_kogai.jpg', customScene: 'hina' },
+    { key: 'risshakuji_semi', label: '⛰️ 立石寺（山寺）・奇岩の霊場と岩にしみ入る蝉の声（第28句専用背景）', bgPath: 'shortliterature/bg_risshakuji_semi.jpg', customScene: 'yukuharu' },
+    { key: 'mogamigawa_samidare', label: '🌊 最上川・五月雨の急流と白糸の滝・仙人堂（第29句専用背景）', bgPath: 'shortliterature/bg_mogamigawa_samidare.jpg', customScene: 'yukuharu' },
+    { key: 'haguro_minamidani', label: '🌲 羽黒山・南谷別院と残雪薫る杉木立（第30句専用背景）', bgPath: 'shortliterature/bg_haguro_minamidani.jpg', customScene: 'yukuharu' },
+    { key: 'haguro_mikazuki', label: '🌙 羽黒山・杉木立の五重塔とほの三日月（第31句専用背景）', bgPath: 'shortliterature/bg_haguro_mikazuki.jpg', customScene: 'yukuharu' },
+    { key: 'gassan_kumonomine', label: '⛰️ 月山・崩れゆく雲の峰と月の山（第32句専用背景）', bgPath: 'shortliterature/bg_gassan_kumonomine.jpg', customScene: 'yukuharu' },
+    { key: 'yudono_tamoto', label: '♨️ 湯殿山・神秘の霊峡と遅桜（第33句専用背景）', bgPath: 'shortliterature/bg_yudono_tamoto.jpg', customScene: 'hina' },
+    { key: 'yudono_zeni', label: '🪙 湯殿山・御幣と散り敷く賽銭の参道（第34句専用背景）', bgPath: 'shortliterature/bg_yudono_zeni.jpg', customScene: 'yukuharu' },
+    { key: 'sakata_fukiura', label: '🌊 酒田・温海岳から吹浦を望む日本海の夕涼み（第35句専用背景）', bgPath: 'shortliterature/bg_sakata_fukiura.jpg', customScene: 'yukuharu' },
+    { key: 'sakata_atsukihi', label: '🌅 酒田・最上川河口に沈む灼熱の夕日（第36句専用背景）', bgPath: 'shortliterature/bg_sakata_atsukihi.jpg', customScene: 'hina' },
+    { key: 'kisakata_nebunohana', label: '🌸 象潟・雨にけぶる九十九島と西施がねぶの花（第37句専用背景）', bgPath: 'shortliterature/bg_kisakata_nebunohana.jpg', customScene: 'hina' },
+    { key: 'kisakata_shiogoshi', label: '🦢 象潟・汐越の浅瀬に佇む白鶴（第38句専用背景）', bgPath: 'shortliterature/bg_kisakata_shiogoshi.jpg', customScene: 'yukuharu' },
+    { key: 'kisakata_kamimatsuri', label: '🏮 象潟・熊野権現の神祭と精進膳（第39句専用背景）', bgPath: 'shortliterature/bg_kisakata_kamimatsuri.jpg', customScene: 'hina' },
+    { key: 'kisakata_toita', label: '🏖️ 象潟・蜑の苫屋と戸板の夕涼み（第40句専用背景）', bgPath: 'shortliterature/bg_kisakata_toita.jpg', customScene: 'yukuharu' },
+    { key: 'kisakata_misago', label: '🦅 象潟・波間の奇岩と雎鳩（みさご）の巣（第41句専用背景）', bgPath: 'shortliterature/bg_kisakata_misago.jpg', customScene: 'yukuharu' },
+    { key: 'echigo_fumizuki', label: '🎋 越後路・文月六日の七夕前夜と日本海の星空（第42句専用背景）', bgPath: 'shortliterature/bg_echigo_fumizuki.jpg', customScene: 'yukuharu' },
+    { key: 'izumozaki_amanogawa', label: '🌌 越後出雲崎・荒海と佐渡に横たふ天河（第43句専用背景）', bgPath: 'shortliterature/bg_izumozaki_amanogawa.jpg', customScene: 'yukuharu' },
+    { key: 'ichiburi_hagitsuki', label: '🌕 市振の宿・萩と月に照らされる旅籠の夜（第44句専用背景）', bgPath: 'shortliterature/bg_ichiburi_hagitsuki.jpg', customScene: 'hina' },
+    { key: 'etchu_arisonoumi', label: '🌾 越中路・早稲の香りと右手に広がる有磯海（第45句専用背景）', bgPath: 'shortliterature/bg_etchu_arisonoumi.jpg', customScene: 'yukuharu' },
+    { key: 'kanazawa_tsuka', label: '🍂 金沢・小杉一笑の墓塚と吹きすさぶ秋の風（第46句専用背景）', bgPath: 'shortliterature/bg_kanazawa_tsuka.jpg', customScene: 'yukuharu' },
+    { key: 'kanazawa_urinasubi', label: '🍆 金沢・草庵の秋涼と手毎にむく瓜茄子（第47句専用背景）', bgPath: 'shortliterature/bg_kanazawa_urinasubi.jpg', customScene: 'hina' },
+    { key: 'kanazawa_akaaka', label: '🌇 金沢途上・あかあかと照る夕日と秋の風（第48句専用背景）', bgPath: 'shortliterature/bg_kanazawa_akaaka.jpg', customScene: 'hina' },
+    { key: 'komatsu_hagisusuki', label: '🌾 小松・若松を吹き抜ける秋風と萩・薄（第49句専用背景）', bgPath: 'shortliterature/bg_komatsu_hagisusuki.jpg', customScene: 'hina' },
+    { key: 'komatsu_kabuto', label: '🪖 小松・太田神社の実盛が甲と鳴くきりぎりす（第50句専用背景）', bgPath: 'shortliterature/bg_komatsu_kabuto.jpg', customScene: 'yukuharu' },
+    { key: 'natadera_ishiyama', label: '⛰️ 那谷寺・奇石の岩山と白く吹き渡る秋の風（第51句専用背景）', bgPath: 'shortliterature/bg_natadera_ishiyama.jpg', customScene: 'yukuharu' },
+    { key: 'yamanaka_yunonioi', label: '♨️ 山中温泉・渓谷の湯けむりと白菊の香り（第52句専用背景）', bgPath: 'shortliterature/bg_yamanaka_yunonioi.jpg', customScene: 'hina' },
+    { key: 'yamanaka_haginohara', label: '🌸 山中温泉・病をおして一人旅立つ曾良と萩の原（第53句専用背景）', bgPath: 'shortliterature/bg_yamanaka_haginohara.jpg', customScene: 'hina' },
+    { key: 'yamanaka_kasanotsuyu', label: '💧 山中温泉・同行二人の書付を濡らす菅笠の秋露（第54句専用背景）', bgPath: 'shortliterature/bg_yamanaka_kasanotsuyu.jpg', customScene: 'yukuharu' },
+    { key: 'zenshoji_akikaze', label: '🍃 大聖寺全昌寺・裏山の松林に鳴る夜すがらの秋風（第55句専用背景）', bgPath: 'shortliterature/bg_zenshoji_akikaze.jpg', customScene: 'yukuharu' },
+    { key: 'zenshoji_chiriyanagi', label: '🌿 大聖寺全昌寺・白砂の禅庭に散る柳と竹箒（第56句専用背景）', bgPath: 'shortliterature/bg_zenshoji_chiriyanagi.jpg', customScene: 'yukuharu' },
+    { key: 'kisakata_saigyo_sakura', label: '🌸 象潟・波に埋もれる桜と海人の釣舟（西行短歌専用描き下ろし背景）', bgPath: 'shortliterature/bg_kisakata_saigyo_sakura.jpg', customScene: 'hina' },
+    { key: 'shiogoshi_matsu', label: '🌲 汐越の松・夜すがらの嵐と月をたれたる松（西行短歌専用描き下ろし背景）', bgPath: 'shortliterature/bg_shiogoshi_matsu.jpg', customScene: 'yukuharu' },
+    { key: 'maruoka_ogi', label: '🪭 丸岡天龍寺・北枝との別れと引き裂く白扇（第57句専用描き下ろし背景）', bgPath: 'shortliterature/bg_maruoka_ogi.jpg', customScene: 'hina' },
+    { key: 'tsuruga_yugyo_suna', label: '🌕 敦賀・氣比神宮の松林と月光に輝く遊行の白砂（第58句専用描き下ろし背景）', bgPath: 'shortliterature/bg_tsuruga_yugyo_suna.jpg', customScene: 'yukuharu' },
+    { key: 'tsuruga_meigetsu', label: '🌧️ 敦賀の湊・雨に煙る十五夜と北国日和（第59句専用描き下ろし背景）', bgPath: 'shortliterature/bg_tsuruga_meigetsu.jpg', customScene: 'yukuharu' },
+    { key: 'ironohama_suma', label: '🌊 種の浜・須磨に勝る入江の秋夕暮（第60句専用描き下ろし背景）', bgPath: 'shortliterature/bg_ironohama_suma.jpg', customScene: 'yukuharu' },
+    { key: 'ironohama_kogai', label: '🐚 種の浜・白波の間のますほの小貝と萩の塵（第61句専用描き下ろし背景）', bgPath: 'shortliterature/bg_ironohama_kogai.jpg', customScene: 'hina' },
+    { key: 'ogaki_hamaguri', label: '⛵ 大垣水門川・伊勢二見浦へ舟出する行く秋の別れ（第62句・巻軸専用描き下ろし背景）', bgPath: 'shortliterature/bg_ogaki_hamaguri.jpg', customScene: 'yukuharu' },
+    { key: 'hyakunin_021_sosei', label: '🌙 長月の有明の月と秋草の露（第二十一首専用背景）', bgPath: 'shortliterature/bg_hyakunin_021_sosei.jpg', customScene: 'yukuharu' },
+    { key: 'hyakunin_022_yasuhide', label: '🍃 山風に靡く秋の薄と散り葉（第二十二首専用背景）', bgPath: 'shortliterature/bg_hyakunin_022_yasuhide.jpg', customScene: 'yukuharu' },
+    { key: 'hyakunin_023_chisato', label: '🌕 秋夜の澄める名月と萩の影（第二十三首専用背景）', bgPath: 'shortliterature/bg_hyakunin_023_chisato.jpg', customScene: 'yukuharu' },
+    { key: 'hyakunin_024_kanke', label: '🍁 手向山の紅葉の錦と五色の幣（第二十四首専用背景）', bgPath: 'shortliterature/bg_hyakunin_024_kanke.jpg', customScene: 'hina' },
+    { key: 'hyakunin_025_sadakata', label: '🌿 逢坂山のさねかづらと紅の実（第二十五首専用背景）', bgPath: 'shortliterature/bg_hyakunin_025_sadakata.jpg', customScene: 'hina' },
+    { key: 'spring_sakura', label: '🌸 春・桜', bgPath: SVS_REMOTE_ASSET_BASE + 'shortliterature/bg_spring_sakura.jpg' },
+    { key: 'ocean_sunset', label: '🌊 水辺・夕凪', bgPath: SVS_REMOTE_ASSET_BASE + 'shortliterature/bg_ocean_sunset.jpg?v=2' },
+    { key: 'default', label: '🖌️ 標準・古典和紙', bgPath: SVS_REMOTE_ASSET_BASE + 'shortliterature/Haiku（俳句）.jpg' },
+    { key: 'summer_green', label: '🌿 夏・新緑', bgPath: SVS_REMOTE_ASSET_BASE + 'shortliterature/bg_summer_green.jpg' },
+    { key: 'autumn_momiji', label: '🍁 秋・紅葉', bgPath: SVS_REMOTE_ASSET_BASE + 'shortliterature/bg_autumn_momiji.jpg' },
+    { key: 'winter_tsubaki', label: '❄️ 冬・雪椿', bgPath: SVS_REMOTE_ASSET_BASE + 'shortliterature/bg_winter_tsubaki.jpg' },
+    { key: 'rain_ajisai', label: '💧 雨・紫陽花', bgPath: SVS_REMOTE_ASSET_BASE + 'shortliterature/bg_rain_ajisai.jpg' },
+    { key: 'star_night', label: '🌌 星月夜', bgPath: SVS_REMOTE_ASSET_BASE + 'shortliterature/bg_star_night.jpg' },
+    { key: 'chinese_sansui', label: '🏔️ 松と山水', bgPath: SVS_REMOTE_ASSET_BASE + 'shortliterature/bg_chinese_sansui.jpg' },
+    { key: 'chinese_plum', label: '🏮 紅梅と香炉', bgPath: SVS_REMOTE_ASSET_BASE + 'shortliterature/bg_chinese_plum.jpg' },
+    { key: 'classic_alt', label: '📜 別抄和紙', bgPath: SVS_REMOTE_ASSET_BASE + 'shortliterature/短歌（Tanka）.jpg' }
+  ];
+
+  const SVS_BG_ASSET_VERSION = 'v3';
+  const svsBgImages = {};
+  function getVersionedBgUrl(url) {
+    if (!url) return '';
+    if (url.startsWith('http') || url.includes('?')) return url;
+    return `${url}?v=${SVS_BG_ASSET_VERSION}`;
+  }
+  function preloadSvsBgImage(url) {
+    if (!url) return null;
+    const vUrl = getVersionedBgUrl(url);
+    if (svsBgImages[url]) return svsBgImages[url];
+    const img = new Image();
+    img.src = encodeURI(vUrl);
+    svsBgImages[url] = img;
+    return img;
+  }
+  // RECORDS内の全句のbg_theme/bg_pathを自動同期し、未登録による第1句へのフォールバックを完全に防止する
+  CORPUS.records.forEach(rec => {
+    if (rec.verse && rec.verse.bg_theme && rec.verse.bg_path) {
+      const exists = SVS_BG_THEMES.some(t => t.key === rec.verse.bg_theme);
+      if (!exists) {
+        SVS_BG_THEMES.unshift({
+          key: rec.verse.bg_theme,
+          label: rec.verse.bg_title || rec.verse.bg_theme,
+          bgPath: rec.verse.bg_path,
+          customScene: 'yukuharu'
+        });
+      }
+    }
+  });
+  SVS_BG_THEMES.forEach(t => { if (t.bgPath) preloadSvsBgImage(t.bgPath); });
+
+  const svsGoldParticles = Array.from({ length: SVS_GOLD_PARTICLE_COUNT }, (_, i) => ({
+    x: (i * 197) % SVS_CANVAS_WIDTH_PX,
+    y: (i * 313) % SVS_CANVAS_HEIGHT_PX,
+    radius: 2.2 + (i % 4),
+    speedY: -14 - (i % 16),
+    speedX: 6 - (i % 13),
+    phase: i * 0.7
+  }));
+
+  let svsAnimFrameId = null;
+  let svsAnimStartTimeMs = 0;
+  let svsCurrentVerseState = null;
+
+  function stopSvsCanvasAnimation() {
+    if (svsAnimFrameId) {
+      cancelAnimationFrame(svsAnimFrameId);
+      svsAnimFrameId = null;
+    }
+  }
+
+  function drawUtamakuraCustomBackground(ctx, sceneType, elapsedMs) {
+    const tSec = elapsedMs / SVS_MS_PER_SECOND;
+    ctx.save();
+
+    if (sceneType === 'hina') {
+      // 🎎 桃の節句・草庵の雛（深川の草庵から春霞・桃色の彩りへ移り変わる情景）
+      const bgGrad = ctx.createLinearGradient(0, 0, SVS_CANVAS_WIDTH_PX, SVS_CANVAS_HEIGHT_PX);
+      bgGrad.addColorStop(0, '#3a2328');
+      bgGrad.addColorStop(0.45, '#593138');
+      bgGrad.addColorStop(1, '#2b1d18');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, SVS_CANVAS_WIDTH_PX, SVS_CANVAS_HEIGHT_PX);
+
+      // 上部・右側の春霞と桃の花びらシルエット
+      const glowGrad = ctx.createRadialGradient(860, 320, 40, 860, 320, 520);
+      glowGrad.addColorStop(0, 'rgba(255, 183, 197, 0.32)');
+      glowGrad.addColorStop(1, 'rgba(255, 183, 197, 0)');
+      ctx.fillStyle = glowGrad;
+      ctx.fillRect(0, 0, SVS_CANVAS_WIDTH_PX, SVS_CANVAS_HEIGHT_PX);
+
+      // 雛祭りの菱餅・ぼんぼりを思わせる雅な金砂子と桃色の霞帯
+      ctx.strokeStyle = 'rgba(218, 175, 105, 0.35)';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(SVS_PAPER_LEFT_X_PX - 14, SVS_PAPER_TOP_Y_PX - 14, (SVS_PAPER_RIGHT_X_PX - SVS_PAPER_LEFT_X_PX) + 28, (SVS_PAPER_BOTTOM_Y_PX - SVS_PAPER_TOP_Y_PX) + 28);
+    } else {
+      // 🚣 千住の舟出・行く春の水辺（暁の朧月・隅田川の水面・霞む富士のシルエット）
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, SVS_CANVAS_HEIGHT_PX);
+      skyGrad.addColorStop(0, '#1c2838');
+      skyGrad.addColorStop(0.35, '#3b4d63');
+      skyGrad.addColorStop(0.7, '#5c4b51');
+      skyGrad.addColorStop(1, '#18222c');
+      ctx.fillStyle = skyGrad;
+      ctx.fillRect(0, 0, SVS_CANVAS_WIDTH_PX, SVS_CANVAS_HEIGHT_PX);
+
+      // 有明の朧月（右上）
+      const moonGrad = ctx.createRadialGradient(880, 250, 15, 880, 250, 170);
+      moonGrad.addColorStop(0, 'rgba(255, 243, 200, 0.75)');
+      moonGrad.addColorStop(0.4, 'rgba(255, 235, 180, 0.22)');
+      moonGrad.addColorStop(1, 'rgba(255, 235, 180, 0)');
+      ctx.fillStyle = moonGrad;
+      ctx.beginPath();
+      ctx.arc(880, 250, 170, 0, Math.PI * 2);
+      ctx.fill();
+
+      // 下部の隅田川の水面さざ波
+      ctx.strokeStyle = 'rgba(190, 215, 235, 0.22)';
+      ctx.lineWidth = 2.5;
+      for (let w = 0; w < 6; w++) {
+        const waveY = 1560 + w * 48 + Math.sin(tSec * 1.6 + w) * 6;
+        ctx.beginPath();
+        ctx.moveTo(80, waveY);
+        ctx.quadraticCurveTo(540, waveY - 14, 980, waveY);
+        ctx.stroke();
+      }
+    }
+
+    // 中央の古典和紙短冊領域 (mask_layout.png 準拠: X:108-809, Y:400-1499)
+    const paperW = SVS_PAPER_RIGHT_X_PX - SVS_PAPER_LEFT_X_PX;
+    const paperH = SVS_PAPER_BOTTOM_Y_PX - SVS_PAPER_TOP_Y_PX;
+    const washiGrad = ctx.createLinearGradient(SVS_PAPER_LEFT_X_PX, SVS_PAPER_TOP_Y_PX, SVS_PAPER_RIGHT_X_PX, SVS_PAPER_BOTTOM_Y_PX);
+    if (sceneType === 'hina') {
+      washiGrad.addColorStop(0, '#fcf7f2');
+      washiGrad.addColorStop(0.5, '#f7efe6');
+      washiGrad.addColorStop(1, '#f2e3d5');
+    } else {
+      washiGrad.addColorStop(0, '#f8f5ec');
+      washiGrad.addColorStop(0.5, '#f3ede0');
+      washiGrad.addColorStop(1, '#e8e0cf');
+    }
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.45)';
+    ctx.shadowBlur = 28;
+    ctx.fillStyle = washiGrad;
+    ctx.fillRect(SVS_PAPER_LEFT_X_PX, SVS_PAPER_TOP_Y_PX, paperW, paperH);
+    ctx.shadowBlur = 0;
+
+    // 和紙内の淡い金箔・内枠
+    ctx.strokeStyle = 'rgba(168, 132, 87, 0.45)';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(SVS_PAPER_LEFT_X_PX + 12, SVS_PAPER_TOP_Y_PX + 12, paperW - 24, paperH - 24);
+    ctx.restore();
+  }
+
+  async function ensureUkiyoePlaceBgLoaded(placeKey) {
+    const found = PLACES.find(p => p.key === placeKey);
+    if (!found) return null;
+    const imgUrl = await fetchPublicDomainUkiyoeUrl(found.ukiyoe_query, found.wiki_title || found.key);
+    if (imgUrl) {
+      return preloadSvsBgImage(imgUrl);
+    }
+    return null;
+  }
+
+  function drawUkiyoeWithWashiFrame(ctx, img) {
+    // 浮世絵を1080x1920キャンバス全面にアスペクト比維持（cover）で描画し、中央に半透明の古典和紙短冊を重ねる
+    const iw = img.naturalWidth || SVS_CANVAS_WIDTH_PX;
+    const ih = img.naturalHeight || SVS_CANVAS_HEIGHT_PX;
+    const scale = Math.max(SVS_CANVAS_WIDTH_PX / iw, SVS_CANVAS_HEIGHT_PX / ih);
+    const dw = iw * scale;
+    const dh = ih * scale;
+    const dx = (SVS_CANVAS_WIDTH_PX - dw) * 0.5;
+    const dy = (SVS_CANVAS_HEIGHT_PX - dh) * 0.5;
+    ctx.drawImage(img, dx, dy, dw, dh);
+
+    // 周囲を落ち着かせる淡いビネット
+    ctx.fillStyle = 'rgba(20, 15, 10, 0.24)';
+    ctx.fillRect(0, 0, SVS_CANVAS_WIDTH_PX, SVS_CANVAS_HEIGHT_PX);
+
+    // 中央の和紙短冊領域（浮世絵がほんのり透ける上品な和紙）
+    const paperW = SVS_PAPER_RIGHT_X_PX - SVS_PAPER_LEFT_X_PX;
+    const paperH = SVS_PAPER_BOTTOM_Y_PX - SVS_PAPER_TOP_Y_PX;
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.55)';
+    ctx.shadowBlur = 28;
+    ctx.fillStyle = 'rgba(250, 245, 234, 0.88)';
+    ctx.fillRect(SVS_PAPER_LEFT_X_PX, SVS_PAPER_TOP_Y_PX, paperW, paperH);
+    ctx.shadowBlur = 0;
+
+    ctx.strokeStyle = 'rgba(168, 132, 87, 0.65)';
+    ctx.lineWidth = 2.5;
+    ctx.strokeRect(SVS_PAPER_LEFT_X_PX + 12, SVS_PAPER_TOP_Y_PX + 12, paperW - 24, paperH - 24);
+  }
+
+  function drawSvsBackgroundAndParticles(ctx, themeKey, elapsedMs) {
+    const themeObj = SVS_BG_THEMES.find(t => t.key === themeKey) || SVS_BG_THEMES[0];
+    ctx.save();
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+
+    const img = themeObj.bgPath ? svsBgImages[themeObj.bgPath] : null;
+    if (img && img.complete && img.naturalWidth > 0) {
+      ctx.drawImage(img, 0, 0, SVS_CANVAS_WIDTH_PX, SVS_CANVAS_HEIGHT_PX);
+    } else if (themeObj.customScene) {
+      drawUtamakuraCustomBackground(ctx, themeObj.customScene, elapsedMs);
+    } else {
+      drawUtamakuraCustomBackground(ctx, 'hina', elapsedMs);
+    }
+
+    // 金砂子・桜花びらの舞うパーティクル描画
+    const tSec = elapsedMs / SVS_MS_PER_SECOND;
+    const isPetalTheme = (themeKey === 'hina_peach' || themeKey === 'yukuharu_senju' || themeKey === 'spring_sakura');
+    for (const p of svsGoldParticles) {
+      const px = (p.x + p.speedX * tSec + SVS_CANVAS_WIDTH_PX) % SVS_CANVAS_WIDTH_PX;
+      const py = (p.y + p.speedY * tSec + SVS_CANVAS_HEIGHT_PX) % SVS_CANVAS_HEIGHT_PX;
+      const shimmer = 0.22 + 0.16 * Math.sin(tSec * 2.5 + p.phase);
+      ctx.beginPath();
+      if (isPetalTheme && (p.radius > 3.5)) {
+        ctx.ellipse(px, py, p.radius * 1.6, p.radius * 0.9, tSec + p.phase, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 192, 203, ${(shimmer * 1.15).toFixed(3)})`;
+      } else {
+        ctx.arc(px, py, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(218, 185, 110, ${shimmer.toFixed(3)})`;
+      }
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  function drawSvsVerticalChar(ctx, ch, x, y, fontSize, alpha, textColor) {
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = textColor;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    const smallKana = 'ぁぃぅぇぉっゃゅょゎァィゥェォッャュョヮ';
+    const puncChars = '、。';
+    const longDash = 'ー―‐';
+
+    if (puncChars.includes(ch)) {
+      ctx.fillText(ch, x + fontSize * 0.34, y - fontSize * 0.32);
+    } else if (smallKana.includes(ch)) {
+      ctx.font = `400 ${Math.round(fontSize * 0.82)}px 'Yuji Syuku', 'Yu Mincho', serif`;
+      ctx.fillText(ch, x + fontSize * 0.10, y - fontSize * 0.06);
+    } else if (longDash.includes(ch)) {
+      ctx.translate(x, y);
+      ctx.rotate(Math.PI / 2);
+      ctx.fillText('―', 0, 0);
+    } else {
+      ctx.fillText(ch, x, y);
+    }
+    ctx.restore();
+  }
+
+  function renderSvsFrame(ctx, elapsedMs) {
+    if (!svsCurrentVerseState) return;
+    const { genre, lines, author, bgTheme } = svsCurrentVerseState;
+    const isTanka = (genre === 'tanka');
+
+    const lineXCoords = isTanka ? SVS_TANKA_LINE_X_COORDS_PX : SVS_HAIKU_LINE_X_COORDS_PX;
+    const lineIndentY = isTanka ? SVS_TANKA_LINE_INDENT_Y_PX : SVS_HAIKU_LINE_INDENT_Y_PX;
+    const authorX = isTanka ? SVS_TANKA_AUTHOR_X_PX : SVS_HAIKU_AUTHOR_X_PX;
+    const baseFontSize = isTanka ? 64 : 82;
+    const baseCharSpacing = isTanka ? 82 : 106;
+    const authorFontSize = isTanka ? 44 : 50;
+    const authorCharSpacing = isTanka ? 58 : 66;
+    const fontFamily = isTanka ? "'Shippori Mincho', 'Yu Mincho', serif" : "'Yuji Syuku', 'Yu Mincho', serif";
+
+    const totalCycleMs = SVS_INTRO_SILENCE_MS + (lines.length * SVS_LINE_APPEAR_INTERVAL_MS) + SVS_AUTHOR_WRITE_SPAN_MS + SVS_OUTRO_HOLD_MS;
+    const loopElapsedMs = elapsedMs % totalCycleMs;
+
+    drawSvsBackgroundAndParticles(ctx, bgTheme, elapsedMs);
+
+    ctx.save();
+    lines.forEach((lineText, lineIdx) => {
+      const chars = Array.from(lineText || '');
+      if (chars.length === 0) return;
+
+      const x = lineXCoords[lineIdx] || lineXCoords[lineXCoords.length - 1];
+      const startY = SVS_PAPER_SAFE_TOP_Y_PX + (lineIndentY[lineIdx] || 0);
+      const maxAvailH = SVS_PAPER_SAFE_BOTTOM_Y_PX - startY;
+      const charSpacing = Math.min(baseCharSpacing, Math.floor(maxAvailH / Math.max(1, chars.length)));
+      const fontSize = Math.min(baseFontSize, Math.round(charSpacing * 0.84));
+
+      ctx.font = `400 ${fontSize}px ${fontFamily}`;
+
+      const lineStartMs = SVS_INTRO_SILENCE_MS + lineIdx * SVS_LINE_APPEAR_INTERVAL_MS;
+      const perCharDelayMs = chars.length > 1 ? (SVS_LINE_WRITE_SPAN_MS / chars.length) : 0;
+
+      chars.forEach((ch, cIdx) => {
+        const charTriggerMs = lineStartMs + cIdx * perCharDelayMs;
+        const rawProgress = (loopElapsedMs - charTriggerMs) / SVS_CHAR_FADE_DURATION_MS;
+        const alpha = Math.max(0, Math.min(1, rawProgress));
+        if (alpha > 0) {
+          const y = startY + cIdx * charSpacing + fontSize * 0.5;
+          drawSvsVerticalChar(ctx, ch, x, y, fontSize, alpha, '#181412');
+        }
+      });
+    });
+
+    // 作者名の縦書き描画（下揃え）
+    if (author) {
+      const authorChars = Array.from(author);
+      const authorStartMs = SVS_INTRO_SILENCE_MS + lines.length * SVS_LINE_APPEAR_INTERVAL_MS;
+      const perAuthorCharMs = authorChars.length > 1 ? (SVS_AUTHOR_WRITE_SPAN_MS / authorChars.length) : 0;
+      const totalAuthorH = authorChars.length * authorCharSpacing;
+      const authorTopY = SVS_PAPER_SAFE_BOTTOM_Y_PX - totalAuthorH;
+
+      ctx.font = `400 ${authorFontSize}px ${fontFamily}`;
+      authorChars.forEach((ch, aIdx) => {
+        const charTriggerMs = authorStartMs + aIdx * perAuthorCharMs;
+        const rawProgress = (loopElapsedMs - charTriggerMs) / SVS_CHAR_FADE_DURATION_MS;
+        const alpha = Math.max(0, Math.min(1, rawProgress));
+        if (alpha > 0) {
+          const y = authorTopY + aIdx * authorCharSpacing + authorFontSize * 0.5;
+          drawSvsVerticalChar(ctx, ch, authorX, y, authorFontSize, alpha, '#3a2b22');
+        }
+      });
+    }
+    ctx.restore();
+  }
+
+  function startSvsModalLoop() {
+    stopSvsCanvasAnimation();
+    const canvas = document.getElementById('svsModalCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    svsAnimStartTimeMs = performance.now();
+
+    function step(nowMs) {
+      const elapsed = nowMs - svsAnimStartTimeMs;
+      renderSvsFrame(ctx, elapsed);
+      svsAnimFrameId = requestAnimationFrame(step);
+    }
+    svsAnimFrameId = requestAnimationFrame(step);
+  }
+
+  function changeSvsModalBgTheme(newThemeKey) {
+    if (!svsCurrentVerseState) return;
+    svsCurrentVerseState.bgTheme = newThemeKey;
+    const themeObj = SVS_BG_THEMES.find(t => t.key === newThemeKey);
+    if (themeObj) {
+      if (themeObj.bgPath) preloadSvsBgImage(themeObj.bgPath);
+      if (themeObj.ukiyoePlaceKey) ensureUkiyoePlaceBgLoaded(themeObj.ukiyoePlaceKey);
+    }
+    svsAnimStartTimeMs = performance.now();
+  }
+
+  function addVerseBgFeedbackFromModal(actionType) {
+    if (!svsCurrentVerseState) return;
+    const { recId, lines, bgTheme } = svsCurrentVerseState;
+    const themeObj = SVS_BG_THEMES.find(t => t.key === bgTheme);
+    const themeLabel = themeObj ? themeObj.label : bgTheme;
+    const verseStr = lines.join(' ');
+    if (actionType === 'lock') {
+      addFeedbackItem({
+        recId: recId,
+        blockLabel: '🎬動画背景',
+        word: verseStr,
+        contextSnippet: `背景テーマ指定: ${bgTheme}`,
+        action: `🎨 この句の背景を「${themeLabel}」に決定`
+      });
+    } else {
+      const customIdea = window.prompt(`「${verseStr}」向けに新しく作りたい背景のイメージ（例：深川の芭蕉庵と川霧、千住の渡し舟と桜吹雪 など）を入力してください:`, '');
+      if (!customIdea || !customIdea.trim()) return;
+      addFeedbackItem({
+        recId: recId,
+        blockLabel: '🎬動画背景',
+        word: verseStr,
+        contextSnippet: `新規背景リクエスト`,
+        action: `🖌️ 新規背景作成リクエスト：「${customIdea.trim()}」`
+      });
+    }
+  }
+
+  function openShortVerseModal(recId, genre, linesOrL1, l2, l3, author, defaultBgTheme = 'hina_peach') {
+    const initialBg = defaultBgTheme || 'hina_peach';
+    const themeObj = SVS_BG_THEMES.find(t => t.key === initialBg) || SVS_BG_THEMES[0];
+    if (themeObj && themeObj.bgPath) {
+      preloadSvsBgImage(themeObj.bgPath);
+    }
+
+    const verseLines = Array.isArray(linesOrL1)
+      ? linesOrL1.filter(Boolean)
+      : [linesOrL1, l2, l3].filter(Boolean);
+
+    svsCurrentVerseState = {
+      recId: recId,
+      genre: genre || 'haiku',
+      lines: verseLines,
+      author: author || '松尾芭蕉',
+      bgTheme: initialBg
+    };
+
+    const overlayEl = document.getElementById('modalOverlay');
+    overlayEl.classList.add('video-mode');
+    document.getElementById('modalTitle').textContent = verseLines.join(' ');
+    document.getElementById('modalBody').innerHTML = `
+      <div style="position:relative; display:flex; justify-content:center; align-items:center;">
+        <canvas id="svsModalCanvas" width="1080" height="1920" onclick="svsAnimStartTimeMs = performance.now();" title="クリックで最初から再生" style="height:min(78vh, calc(100vh - 105px)); width:auto; max-width:100%; aspect-ratio:9/16; border-radius:4px; box-shadow:0 4px 18px rgba(0,0,0,0.65); background:#2c221a; cursor:pointer; display:block;"></canvas>
+      </div>
+    `;
+    overlayEl.style.display = 'flex';
+    document.getElementById('modalBody').scrollTop = 0;
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => startSvsModalLoop());
+    } else {
+      startSvsModalLoop();
+    }
+  }
+
+
+  function closeVideoModal() {
+    stopSvsCanvasAnimation();
+    const overlayEl = document.getElementById('modalOverlay');
+    if (overlayEl) overlayEl.style.display = 'none';
+  }
+
+
+  function activateGlossaryRecordCard(recId) {
+    if (!recId) return;
+    currentActiveGlossaryRecId = recId;
+    document.querySelectorAll('#resultList .record-card').forEach(el => {
+      el.classList.toggle('active-card', el.dataset.recId === recId);
+    });
+  }
+
+  // =========================================================================
+  // 2. 左側：分類別・五十音順索引の描画（件数・あ〜わ行ボタン列なしのスッキリ構成）
+  // =========================================================================
+  function setCategoryTab(catType) {
+    activeCategory = catType;
+    renderIndexControls();
+    renderIndexCatalogList();
+    document.getElementById('indexListScroll').scrollTop = 0;
+  }
+
+  function handleSearchFilterChange(val) {
+    searchQuery = String(val || '').trim().toLowerCase();
+    renderIndexCatalogList();
+  }
+
+  function renderIndexControls() {
+    const tabsEl = document.getElementById('catTabs');
+    tabsEl.innerHTML = `
+      <button class="cat-tab-btn place ${activeCategory === 'place' ? 'active' : ''}" onclick="setCategoryTab('place')">📍 歌枕</button>
+      <button class="cat-tab-btn person ${activeCategory === 'person' ? 'active' : ''}" onclick="setCategoryTab('person')">👤 歌人・人物</button>
+      <button class="cat-tab-btn office ${activeCategory === 'office' ? 'active' : ''}" onclick="setCategoryTab('office')">👑 官職</button>
+      <button class="cat-tab-btn special ${activeCategory === 'special' ? 'active' : ''}" onclick="setCategoryTab('special')">🔖 歌語・典拠</button>
+    `;
+  }
+
+  function matchesSearch(item) {
+    if (!searchQuery) return true;
+    const hay = [
+      item.key, item.label, item.yomi, item.title || '', item.full_label || '', item.name_heading || ''
+    ].join(' ').toLowerCase();
+    return hay.includes(searchQuery);
+  }
+
+  function buildChipHtml(catType, item) {
+    const isSel = selectedItem && selectedItem.type === catType && selectedItem.key === item.key;
+    const safeKey = String(item.key).replace(/'/g, "\\'");
+    let prefixIcon = '';
+    if (catType === 'place') {
+      prefixIcon = item.place_type === 'area' ? '🗺️ ' : (item.place_type === 'river' ? '🌊 ' : '📍 ');
+    }
+    const yomiHtml = item.yomi ? `<span class="chip-yomi">${escapeHtml(item.yomi)}</span>` : '';
+    return `
+      <button class="index-chip ${catType} ${isSel ? 'selected' : ''}" onclick="selectGlossaryItem('${catType}', '${safeKey}', false)">
+        <span class="chip-label">${prefixIcon}${escapeHtml(item.label)}</span>
+        ${yomiHtml}
+      </button>
+    `;
+  }
+
+  function renderIndexCatalogList() {
+    const container = document.getElementById('indexListScroll');
+
+    // 検索文字が入力されている場合は4カテゴリ横断で一致項目を表示
+    if (searchQuery) {
+      const sections = [
+        ['person', '👤 人物', CORPUS.catalog.person.filter(matchesSearch)],
+        ['place', '📍 地名', CORPUS.catalog.place.filter(matchesSearch)],
+        ['office', '👑 官職', CORPUS.catalog.office.filter(matchesSearch)],
+        ['special', '🔖 用語・引用史料', CORPUS.catalog.special.filter(matchesSearch)]
+      ].filter(s => s[2].length > 0);
+
+      if (sections.length === 0) {
+        container.innerHTML = `<div style="padding:14px; color:#6d4c41;">「${escapeHtml(searchQuery)}」に一致する項目は見つかりませんでした。</div>`;
+        return;
+      }
+
+      container.innerHTML = sections.map(([cType, heading, list]) => `
+        <div class="index-group-block">
+          <div class="index-group-heading"><span>${heading}</span></div>
+          <div class="index-chip-grid">${list.map(it => buildChipHtml(cType, it)).join('')}</div>
+        </div>
+      `).join('');
+      return;
+    }
+
+    if (activeCategory === 'person' || activeCategory === 'place') {
+      const rawList = activeCategory === 'person' ? CORPUS.catalog.person : CORPUS.catalog.place;
+      const blocks = [];
+      GOJUON_ROW_CHARS.forEach(rowChar => {
+        const rowItems = rawList.filter(x => x.row === rowChar);
+        if (rowItems.length === 0) return;
+        blocks.push(`
+          <div class="index-group-block">
+            <div class="index-group-heading"><span>${rowChar}行</span></div>
+            <div class="index-chip-grid">${rowItems.map(it => buildChipHtml(activeCategory, it)).join('')}</div>
+          </div>
+        `);
+      });
+      container.innerHTML = blocks.join('') || `<div style="padding:14px; color:#6d4c41;">該当する項目はありません。</div>`;
+      return;
+    }
+
+    if (activeCategory === 'office') {
+      container.innerHTML = OFFICE_GROUPS.map(grp => {
+        const grpItems = CORPUS.catalog.office.filter(o => o.office_group === grp.id);
+        return `
+          <div class="index-group-block">
+            <div class="index-group-heading"><span>${escapeHtml(grp.label)}</span></div>
+            <div class="index-chip-grid">${grpItems.map(it => buildChipHtml('office', it)).join('')}</div>
+          </div>
+        `;
+      }).join('');
+      return;
+    }
+
+    if (activeCategory === 'special') {
+      container.innerHTML = SPECIAL_GROUPS.map(grp => {
+        const grpItems = CORPUS.catalog.special.filter(s => s.sp_group === grp.id);
+        return `
+          <div class="index-group-block">
+            <div class="index-group-heading"><span>${escapeHtml(grp.label)}</span></div>
+            <div class="index-chip-grid">${grpItems.map(it => buildChipHtml('special', it)).join('')}</div>
+          </div>
+        `;
+      }).join('');
+    }
+  }
+
+  // =========================================================================
+  // 3. 右側：Wikipedia概略＋一次史料解説＋第1巻〜最終巻の一致本文表示
+  // =========================================================================
+  function selectGlossaryItem(catType, itemKey, pushHistory = true) {
+    if (!catalogMapByType[catType] || !catalogMapByType[catType].has(itemKey)) return;
+    if (pushHistory && selectedItem && (selectedItem.type !== catType || selectedItem.key !== itemKey)) {
+      selectionHistory.push({ ...selectedItem });
+    }
+    selectedItem = { type: catType, key: itemKey };
+    activeVolumeFilter = 'all';
+    currentActiveGlossaryRecId = null;
+
+    if (window.history && window.history.replaceState) {
+      const nextUrl = `${window.location.pathname}?type=${encodeURIComponent(catType)}&key=${encodeURIComponent(itemKey)}`;
+      window.history.replaceState(null, '', nextUrl);
+    }
+
+    renderIndexCatalogList();
+    hideIndexOverlay();
+    renderRightResultPane();
+
+    if (catType === 'place') {
+      focusSinglePlaceOnMap(itemKey, false, false);
+    }
+  }
+
+  function goBackSelectionHistory() {
+    if (selectionHistory.length === 0) return;
+    const prev = selectionHistory.pop();
+    selectGlossaryItem(prev.type, prev.key, false);
+  }
+
+  function setRightVolumeFilter(volIdOrAll) {
+    activeVolumeFilter = volIdOrAll;
+    currentActiveGlossaryRecId = null;
+    renderRightResultPane();
+  }
+
+  function renderTaggedTextForGlossary(taggedStr, targetType, targetKey) {
+    if (!taggedStr) return '';
+    const tagRe = /\{\{(place|office|person|special):([^|}]+)\|([^}]+)\}\}?/g;
+    let out = '';
+    let lastIdx = 0;
+    let m;
+    while ((m = tagRe.exec(taggedStr)) !== null) {
+      out += escapeHtml(taggedStr.slice(lastIdx, m.index));
+      const tType = m[1];
+      const tKey = m[2];
+      const tSurf = m[3];
+      const safeKey = tKey.replace(/'/g, "\\'");
+      const matchedCls = (tType === targetType && tKey === targetKey) ? ' matched-target-term' : '';
+      out += `<span class="inline-${tType}${matchedCls}" onclick="handleResultInlineClick(event, '${tType}', '${safeKey}')">${escapeHtml(tSurf)}</span>`;
+      lastIdx = tagRe.lastIndex;
+    }
+    out += escapeHtml(taggedStr.slice(lastIdx));
+    return out;
+  }
+
+  function handleResultInlineClick(event, tType, tKey) {
+    event.stopPropagation();
+    // 記事本文中の緑色の地名をクリックしたときは記事を切り替えず、左の地図でその地名1箇所だけを表示（本編と動きを統一）
+    if (tType === 'place') {
+      focusSinglePlaceOnMap(tKey, selectedItem && (selectedItem.type !== 'place' || selectedItem.key !== tKey), false);
+      return;
+    }
+    selectGlossaryItem(tType, tKey, true);
+  }
+
+  function jumpFromGlossaryToVolume(event, volFile, recId) {
+    if (event) event.stopPropagation();
+    if (selectedItem) {
+      const itemObj = catalogMapByType[selectedItem.type].get(selectedItem.key);
+      const itemLabel = itemObj ? itemObj.label : selectedItem.key;
+      const icon = selectedItem.type === 'person' ? '👤' : (selectedItem.type === 'place' ? '📍' : (selectedItem.type === 'office' ? '👑' : '🔖'));
+      const retUrl = `glossary.html?type=${encodeURIComponent(selectedItem.type)}&key=${encodeURIComponent(selectedItem.key)}`;
+      try {
+        sessionStorage.setItem(CROSS_JUMP_STORAGE_KEY, JSON.stringify({
+          fromVolId: 'glossary',
+          fromVolLabel: `${icon} ${itemLabel}`,
+          fromFile: 'glossary.html',
+          fromRecId: recId,
+          returnUrl: retUrl
+        }));
+      } catch (e) {}
+    }
+    window.location.href = `${volFile}?rec=${encodeURIComponent(recId)}`;
+  }
+
+  async function loadLeadWikipediaBox(wikiTitle) {
+    const box = document.getElementById('leadWikiBox');
+    if (!box || !wikiTitle) return;
+    const encoded = encodeURIComponent(wikiTitle);
+    const wikiUrl = `https://ja.wikipedia.org/wiki/${encoded}`;
+    try {
+      const res = await fetch(`https://ja.wikipedia.org/api/rest_v1/page/summary/${encoded}`);
+      if (!res.ok) throw new Error('Not found');
+      const data = await res.json();
+      if (data.type === 'disambiguation') throw new Error('Disambiguation');
+      box.innerHTML = `
+        <div style="font-weight:bold; color:#0d47a1; margin-bottom:4px;">🌐 Wikipedia「${escapeHtml(data.title)}」</div>
+        <div>${escapeHtml(data.extract || '')}</div>
+        <a class="wiki-link-btn" href="${wikiUrl}" target="_blank" rel="noopener">Wikipediaで全文を開く ↗</a>
+      `;
+      box.style.display = 'block';
+    } catch (e) {
+      box.style.display = 'none';
+    }
+  }
+
+  function renderInitialGuide() {
+    const rightBar = document.getElementById('rightTopBar');
+    rightBar.innerHTML = `<span style="font-size:0.88rem; font-weight:bold;">📑 全作品横断　歌枕・歌人・用語 索引</span>`;
+    renderOverviewPlacesOnMap();
+
+    let resumeBannerHtml = '';
+    try {
+      const rawLast = localStorage.getItem(LAST_READING_STORAGE_KEY);
+      if (rawLast) {
+        const lastSt = JSON.parse(rawLast);
+        if (lastSt && lastSt.file && lastSt.recId) {
+          const vMeta = volById.get(Number(lastSt.volId));
+          const recObj = recordById.get(String(lastSt.recId));
+          const volLabel = vMeta ? vMeta.full_label : String(lastSt.file);
+          const paraLabel = recObj ? `第${recObj.para_index}段落` : (lastSt.paraIndex ? `第${lastSt.paraIndex}段落` : '');
+          const resumeHref = `${encodeURI(String(lastSt.file))}?rec=${encodeURIComponent(String(lastSt.recId))}`;
+          resumeBannerHtml = `
+            <div style="background:#fff8e1; border:2px solid #d4af37; border-radius:8px; padding:11px 14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; box-shadow:0 2px 6px rgba(0,0,0,0.06);">
+              <div style="font-size:0.88rem; color:#4e342e;">
+                <strong>🔖 前回のしおり：</strong>${escapeHtml(volLabel)}${paraLabel ? `（${escapeHtml(paraLabel)}）` : ''}
+              </div>
+              <a href="${resumeHref}" style="background:#2e7d32; color:#fff; text-decoration:none; padding:6px 13px; border-radius:5px; font-size:0.84rem; font-weight:bold; white-space:nowrap;">📖 前回の続きを読む ➔</a>
+            </div>
+          `;
+        }
+      }
+    } catch (e) {}
+
+    const volLinksHtml = CORPUS.volumes.map(v =>
+      `<a href="${encodeURI(v.file)}" style="background:#fff; border:1px solid #8c6d46; color:#2c241b; text-decoration:none; padding:6px 12px; border-radius:5px; font-size:0.84rem; font-weight:bold; transition:0.15s;">📕 ${escapeHtml(v.full_label)}</a>`
+    ).join('');
+
+    const resultList = document.getElementById('resultList');
+    resultList.innerHTML = `
+      ${resumeBannerHtml}
+      <div class="empty-guide-box">
+        <h3 style="margin-bottom:8px; color:#2c241b;">🗺️ 地図と一緒によむ歌枕（全3作品横断データベース）</h3>
+        <p>左の索引（<strong>📍 歌枕</strong> ／ <strong>👤 歌人・人物</strong> ／ <strong>👑 官職</strong> ／ <strong>🔖 歌語・典拠</strong>）または「🗺️ 地図」ボタンから全国の歌枕・歌人を辿れます。</p>
+        <p style="margin-top:6px;">『おくのほそ道』『小倉百人一首』『万葉集』を横断して<strong>名勝写真・浮世絵・現地マップ・木版歌がるた・縦書き毛筆動画</strong>とともに読み比べられます。</p>
+        <div style="margin-top:12px; display:flex; flex-wrap:wrap; gap:6px; align-items:center;">
+          <span style="font-size:0.84rem; font-weight:bold;">💡 すぐ試す：</span>
+          <button class="index-chip place" onclick="selectGlossaryItem('place', '白河関', false)"><span class="chip-label">📍 白河関</span><span class="chip-yomi">しらかわのせき</span></button>
+          <button class="index-chip place" onclick="selectGlossaryItem('place', '松島', false)"><span class="chip-label">📍 松島</span><span class="chip-yomi">まつしま</span></button>
+          <button class="index-chip place" onclick="selectGlossaryItem('place', '天の香具山', false)"><span class="chip-label">📍 天の香具山</span><span class="chip-yomi">あまのかぐやま</span></button>
+          <button class="index-chip place" onclick="selectGlossaryItem('place', '和歌の浦', false)"><span class="chip-label">📍 和歌の浦</span><span class="chip-yomi">わかのうら</span></button>
+          <button class="index-chip person" onclick="selectGlossaryItem('person', '松尾芭蕉', false)"><span class="chip-label">👤 松尾芭蕉</span><span class="chip-yomi">まつおばしょう</span></button>
+          <button class="index-chip person" onclick="selectGlossaryItem('person', '柿本人麻呂', false)"><span class="chip-label">👤 柿本人麻呂</span><span class="chip-yomi">かきのもとのひとまろ</span></button>
+          <button class="index-chip person" onclick="selectGlossaryItem('person', '在原業平朝臣', false)"><span class="chip-label">👤 在原業平朝臣</span><span class="chip-yomi">ありわらのなりひらあそん</span></button>
+        </div>
+        <hr style="border:none; border-top:1px dashed #d7ccc8; margin:14px 0 10px 0;">
+        <div style="font-size:0.85rem; font-weight:bold; color:#2c241b; margin-bottom:8px;">📚 収録作品の本編をはじめから読む</div>
+        <div style="display:flex; flex-wrap:wrap; gap:8px;">
+          ${volLinksHtml}
+        </div>
+      </div>
+      <div class="ad-footer-box">
+        <div class="ad-footer-label">スポンサーリンク</div>
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-4382223240782332"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+      </div>
+    `;
+    try {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } catch (e) {}
+  }
+
+  function renderRightResultPane() {
+    const resultList = document.getElementById('resultList');
+    const rightBar = document.getElementById('rightTopBar');
+
+    if (!selectedItem) {
+      renderInitialGuide();
+      return;
+    }
+
+    const { type, key } = selectedItem;
+    const item = catalogMapByType[type].get(key);
+    if (!item) return;
+
+    const allOccs = (CORPUS.occurrences[type] && CORPUS.occurrences[type][key]) || [];
+    const presentVolIds = new Set();
+    allOccs.forEach(o => {
+      const rec = recordById.get(o.rec_id);
+      if (rec) presentVolIds.add(rec.vol_id);
+    });
+
+    // 複数巻に登場する場合のみ、件数なしのコンパクトな巻絞り込みボタンを表示
+    let pillsHtml = '';
+    if (presentVolIds.size > 1) {
+      pillsHtml = `<button class="vol-pill ${activeVolumeFilter === 'all' ? 'active' : ''}" onclick="setRightVolumeFilter('all')">全作品</button>`;
+      CORPUS.volumes.forEach(v => {
+        if (!presentVolIds.has(v.id)) return;
+        const activeCls = activeVolumeFilter === v.id ? 'active' : '';
+        pillsHtml += `<button class="vol-pill ${activeCls}" onclick="setRightVolumeFilter(${v.id})">${escapeHtml(v.short_label.split(' ')[0])}</button>`;
+      });
+    }
+
+    const typeIcon = type === 'person' ? '👤' : (type === 'place' ? '📍' : (type === 'office' ? '👑' : '🔖'));
+    rightBar.innerHTML = `
+      <span style="font-size:0.88rem; font-weight:bold; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${typeIcon} ${escapeHtml(item.label)}</span>
+      ${pillsHtml ? `<div class="vol-filter-strip">${pillsHtml}</div>` : ''}
+    `;
+
+    // 先頭カード組み立て（同姓同名切替 ＋ Wikipedia先頭 ＋ 当サイト史料解説）
+    let headingText = item.label;
+    let descText = '';
+    let wikiTitle = item.wiki_title || '';
+    let homonymHtml = '';
+
+    let karutaHtml = '';
+    if (type === 'person') {
+      headingText = item.name_heading || `${item.label}（${item.yomi}）`;
+      descText = item.ai_desc || '';
+      if (item.karuta_image) {
+        const noLbl = item.karuta_no ? `第${item.karuta_no}番` : '';
+        const poemLbl = item.karuta_poem ? `<div style="margin-top:6px; font-family:'Yu Mincho',serif; font-size:0.9rem; color:#ffe082;">「${escapeHtml(item.karuta_poem)}」</div>` : '';
+        karutaHtml = `
+          <div class="karuta-lead-box">
+            <div style="font-size:0.8rem; font-weight:bold; color:#ffd54f; margin-bottom:6px;">🃏 江戸時代『小倉百人一首』木版歌がるた（読み札 ${escapeHtml(noLbl)}）</div>
+            <img class="karuta-lead-img" src="${escapeHtml(item.karuta_image)}" alt="${escapeHtml(item.label)} 歌がるた" onerror="this.closest('.karuta-lead-box').style.display='none';">
+            ${poemLbl}
+          </div>
+        `;
+      }
+      if (Array.isArray(item.homonyms) && item.homonyms.length > 0) {
+        const btns = item.homonyms.map(h => {
+          const hk = String(h.key || '');
+          const safeHk = hk.replace(/'/g, "\\'");
+          return `<button class="homonym-switch-btn" onclick="selectGlossaryItem('person', '${safeHk}', true)">👤 ${escapeHtml(h.label || hk)} を見る ➔</button>`;
+        }).join('');
+        homonymHtml = `
+          <div class="homonym-alert-box">
+            <div style="font-size:0.82rem; font-weight:bold; color:#bf360c;">⚠️ 同姓同名・同名異人の別人物が存在します</div>
+            <div style="display:flex; flex-wrap:wrap; gap:6px;">${btns}</div>
+          </div>
+        `;
+      }
+    } else if (type === 'office') {
+      headingText = item.title || item.label;
+      descText = item.ai_desc || '';
+    } else if (type === 'place') {
+      headingText = item.full_label || item.label;
+      descText = item.note || `親エリア：${item.parent_area || item.province || '広域'}`;
+    } else if (type === 'special') {
+      headingText = item.title || item.label;
+      descText = item.ai_desc || '';
+    }
+
+    const backBtnHtml = selectionHistory.length > 0
+      ? `<button class="history-back-btn" onclick="goBackSelectionHistory()">↩ ひとつ前の項目に戻る</button>`
+      : '';
+
+    const mapFocusBtnHtml = type === 'place'
+      ? `<button class="read-in-vol-btn" style="background:#5c472c; border-color:#8c6d46;" onclick="focusSinglePlaceOnMap('${String(key).replace(/'/g, "\\'")}', false, false)">🗺️ 地図でこの場所を再フォーカス</button>`
+      : '';
+
+    const wikiPlaceholderHtml = wikiTitle
+      ? `<div class="wiki-lead-box" id="leadWikiBox">🌐 Wikipediaから「${escapeHtml(wikiTitle)}」を取得中...</div>`
+      : '';
+
+    const primaryDescHtml = descText
+      ? `<div class="primary-desc-box">
+           <div style="font-weight:bold; color:#5d4037; margin-bottom:4px;">📖 史料・事典解説</div>
+           <div>${escapeHtml(descText)}</div>
+         </div>`
+      : '';
+
+    const filteredOccs = allOccs.filter(o => {
+      if (activeVolumeFilter === 'all') return true;
+      const rec = recordById.get(o.rec_id);
+      return rec && rec.vol_id === activeVolumeFilter;
+    });
+
+    const cardsHtml = filteredOccs.map(o => {
+      const rec = recordById.get(o.rec_id);
+      if (!rec) return '';
+      const vMeta = volById.get(rec.vol_id) || { file: 'okunohosomichi.html', short_label: '' };
+      const isVerseCard = rec.type !== '本文';
+      const safeVolFile = String(vMeta.file).replace(/'/g, "\\'");
+      const safeRecId = String(rec.id).replace(/'/g, "\\'");
+      let playBtnHtml = '';
+      if (rec.verse) {
+        const v = rec.verse;
+        const vLines = [v.l1, v.l2, v.l3, v.l4, v.l5].filter(Boolean);
+        const linesJsonAttr = JSON.stringify(vLines).replace(/"/g, '&quot;');
+        const safeAuthor = String(v.author || '').replace(/'/g, "\\'");
+        const safeBg = String(v.bg_theme || 'spring_sakura').replace(/'/g, "\\'");
+        playBtnHtml = `<button class="verse-play-btn" onclick="event.stopPropagation(); openShortVerseModal('${safeRecId}', '${escapeHtml(v.genre || 'tanka')}', ${linesJsonAttr}, '', '', '${safeAuthor}', '${safeBg}')">🎬 動画で再生</button>`;
+      }
+      const showKundoku = Boolean(rec.kakikudashi_tagged) && (rec.vol_id !== 2) && (rec.raw_text !== rec.kakikudashi);
+      const badgeLabel = isVerseCard ? (rec.vol_id === 1 ? '発句・和歌' : '和歌') : '本文・解説';
+      return `
+        <div class="record-card ${isVerseCard ? 'pei-note' : 'main-text'}" id="gcard-${escapeHtml(rec.id)}" data-rec-id="${escapeHtml(rec.id)}" onclick="activateGlossaryRecordCard('${safeRecId}')">
+          <div class="card-top">
+            <span>
+              <span class="vol-tag-badge">${escapeHtml(vMeta.short_label)}</span>
+              <strong>${escapeHtml(rec.section_title)}</strong>${rec.era_year ? ` ｜ ${escapeHtml(rec.era_year)}` : ''}
+            </span>
+            <span style="display:inline-flex; align-items:center; gap:6px; flex-wrap:wrap;">
+              ${playBtnHtml}
+              <span class="badge ${isVerseCard ? 'pei' : 'main'}">${badgeLabel}</span>
+              <button class="read-in-vol-btn" onclick="jumpFromGlossaryToVolume(event, '${safeVolFile}', '${safeRecId}')">📖 本編で読む</button>
+            </span>
+          </div>
+          <div class="raw-text">${renderTaggedTextForGlossary(rec.raw_tagged, type, key)}</div>
+          ${showKundoku ? `<div class="kakikudashi">${renderTaggedTextForGlossary(rec.kakikudashi_tagged, type, key)}</div>` : ''}
+          <div class="translation">${renderTaggedTextForGlossary(rec.translation_tagged, type, key)}</div>
+          ${rec.english_tagged ? `<div class="english-translation">${renderTaggedTextForGlossary(rec.english_tagged, type, key)}</div>` : ''}
+        </div>
+      `;
+    }).join('');
+
+    resultList.innerHTML = `
+      ${backBtnHtml}
+      <div class="head-summary-card">
+        <div class="head-summary-title">
+          <span>${typeIcon} ${escapeHtml(headingText)}</span>
+          ${mapFocusBtnHtml}
+        </div>
+        ${homonymHtml}
+        ${karutaHtml}
+        ${wikiPlaceholderHtml}
+        ${primaryDescHtml}
+      </div>
+      ${cardsHtml}
+      <div class="ad-footer-box">
+        <div class="ad-footer-label">スポンサーリンク</div>
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-4382223240782332"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+      </div>
+    `;
+    resultList.scrollTop = 0;
+
+
+    if (wikiTitle) {
+      loadLeadWikipediaBox(wikiTitle);
+    }
+    try {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } catch (e) {}
+  }
+
+  // 初期表示（URLパラメータ ?type=...&key=... があれば該当項目を即座に表示）
+  renderIndexControls();
+  renderIndexCatalogList();
+  const initParams = new URLSearchParams(window.location.search);
+  const initType = initParams.get('type');
+  const initKey = initParams.get('key');
+  if (initType && initKey && catalogMapByType[initType] && catalogMapByType[initType].has(initKey)) {
+    activeCategory = initType;
+    renderIndexControls();
+    selectGlossaryItem(initType, initKey, false);
+  } else {
+    renderInitialGuide();
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+[
+  {
+    "place": "和歌の浦",
+    "title": "国の名勝 和歌浦",
+    "wiki_page": "和歌浦",
+    "file_key": "Imoseyama_Wakanoura_Wakayama_Japan01bs5.jpg",
+    "local_path": "images/meisho/meisho_wakanoura.jpg"
+  },
+  {
+    "place": "三笠山",
+    "title": "世界遺産・特別天然記念物 春日山原始林（御蓋山・春日山）",
+    "wiki_page": "春日山原始林",
+    "file_key": "Kasugayama_Primeval_Forest_02.jpg",
+    "local_path": "images/meisho/meisho_kasugayama.jpg"
+  },
+  {
+    "place": "隠岐",
+    "title": "国の名勝・天然記念物 隠岐国賀海岸",
+    "wiki_page": "国賀海岸",
+    "file_key": "Matengai_Cliff_at_Kuniga_coast,_Nishinoshima.jpg",
+    "local_path": "images/meisho/meisho_kuniga.jpg"
+  }
+]

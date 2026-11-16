@@ -50,16 +50,6 @@
     "local_path": "images/ukiyoe/edo_senju_ohashi.jpg"
   },
   {
-    "place": "草加",
-    "id": "edo_ayasegawa_kanegafuchi",
-    "artist": "歌川広重",
-    "series": "名所江戸百景",
-    "title": "綾瀬川鐘か淵",
-    "caption": "歌川広重『名所江戸百景 綾瀬川鐘か淵』（綾瀬川水路）",
-    "file_key": "100_views_edo_069.jpg",
-    "local_path": "images/ukiyoe/edo_ayasegawa_kanegafuchi.jpg"
-  },
-  {
     "place": "富士山",
     "id": "hokusai_fuji_gaifu",
     "artist": "葛飾北斎",
@@ -160,16 +150,6 @@
     "local_path": "images/ukiyoe/r60_echizen_tsuruga.jpg"
   },
   {
-    "place": "小倉山",
-    "id": "r60_yamashiro_arashiyama",
-    "artist": "歌川広重",
-    "series": "六十余州名所図会",
-    "title": "山城 あらし山 渡月橋",
-    "caption": "歌川広重『六十余州名所図会 山城 あらし山 渡月橋』",
-    "file_key": "Hiroshige Yamashiro Arashiyama.jpg",
-    "local_path": "images/ukiyoe/r60_yamashiro_arashiyama.jpg"
-  },
-  {
     "place": "逢坂の関",
     "id": "tokaido_osakayama",
     "artist": "歌川広重",
@@ -208,16 +188,6 @@
     "caption": "歌川広重『六十余州名所図会 摂津 住吉 出見のはま』",
     "file_key": "Settsu Province, Sumiyoshi, Idemi Beach.jpg",
     "local_path": "images/ukiyoe/r60_settsu_sumiyoshi.jpg"
-  },
-  {
-    "place": "難波",
-    "id": "hiroshige_naniwa_sumiyoshi",
-    "artist": "歌川広重",
-    "series": "浪花名所図会",
-    "title": "住吉出見の浜月見",
-    "caption": "歌川広重『浪花名所図会 住吉出見の浜月見』",
-    "file_key": "Viewing Rising Moon from Beach at Sumiyoshi in Naniwa by Hiroshige (Yamagata).jpg",
-    "local_path": "images/ukiyoe/hiroshige_naniwa_sumiyoshi.jpg"
   },
   {
     "place": "和歌の浦",

@@ -18,7 +18,7 @@
   <title>わさびとからし</title>
   <meta name="apple-mobile-web-app-title" content="わさびとからし">
   <meta name="application-name" content="わさびとからし">
-  <meta name="description" content="わさびとからし（wasabikarashi.com）：罫線・方眼ノート精密組版ツール「Line-aligned」、短歌・俳句・世界短詩の縦型動画生成「Short Verse Studio」、「地図と一緒によむ三国志」「地図と一緒によむ奥の細道」「地図と一緒によむ小倉百人一首」を公開しています。">
+  <meta name="description" content="わさびとからし（wasabikarashi.com）：罫線・方眼ノート精密組版ツール「Line-aligned」、短歌・俳句・世界短詩の縦型動画生成「Short Verse Studio」、「地図と一緒によむ三国志」「地図と一緒によむ歌枕」を公開しています。">
   <link rel="icon" type="image/x-icon" href="favicon.ico?v=2">
   <link rel="icon" type="image/png" sizes="48x48" href="favicon-48x48.png?v=2">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png?v=2">
@@ -439,8 +439,7 @@
         <a href="/linealigned/" class="header-nav-btn nav-la" id="nav-la">📄 Line-aligned</a>
         <a href="/tanka/" class="header-nav-btn nav-sv" id="nav-sv">🎬 Short Verse Studio</a>
         <a href="/threekingdom/" class="header-nav-btn nav-tk" id="nav-3k">🗺️ 地図と一緒によむ三国志</a>
-        <a href="/utamakura/" class="header-nav-btn nav-ut" id="nav-uta">🗾 地図と一緒によむ奥の細道</a>
-        <a href="/utamakura/hyakunin.html" class="header-nav-btn nav-hk" id="nav-hk">🍁 地図と一緒によむ小倉百人一首</a>
+        <a href="/utamakura/" class="header-nav-btn nav-ut" id="nav-uta">🗾 地図と一緒によむ歌枕</a>
       </nav>
       <div class="lang-bar" role="group" aria-label="Language">
         <button type="button" class="lang-btn active" data-lang="ja">日本語</button>
@@ -548,6 +547,12 @@
                 </a>
               </li>
               <li>
+                <a href="/threekingdom/vol36.html">
+                  <span id="tk-v36-title">巻36：蜀書・関張馬黄趙伝（五虎将伝）</span>
+                  <span class="subpage-desc" id="tk-v36-desc">関羽・張飛・馬超・黄忠・趙雲ら蜀漢を代表する五大名将の戦歴</span>
+                </a>
+              </li>
+              <li>
                 <a href="/threekingdom/vol46.html">
                   <span id="tk-v46-title">巻46：呉書・孫破虜討逆伝（孫堅・孫策）</span>
                   <span class="subpage-desc" id="tk-v46-desc">孫堅の奮戦と、孫策による劇的な江東平定戦の記録</span>
@@ -562,46 +567,24 @@
         </div>
       </article>
 
-      <!-- 4. 地図と一緒によむ奥の細道 -->
+      <!-- 4. 地図と一緒によむ歌枕 -->
       <article id="section-utamakura" class="project-card theme-utamakura">
         <div class="project-top-row">
           <div class="project-header">
-            <h2 class="project-title"><a href="/utamakura/" id="ut-title">地図と一緒によむ奥の細道</a></h2>
-            <p class="project-subtitle" id="ut-sub">松尾芭蕉『おくのほそ道』の原文・読み・現代語訳と旅のルート地図、発句の縦書き動画再生が連動</p>
+            <h2 class="project-title"><a href="/utamakura/" id="ut-title">地図と一緒によむ歌枕</a></h2>
+            <p class="project-subtitle" id="ut-sub">『おくのほそ道』『小倉百人一首』『万葉集』の名歌・名句と全国の歌枕マップ・浮世絵・縦書き動画が一体で連動</p>
           </div>
-          <a href="/utamakura/" class="btn-primary" id="ut-btn-top">地図と一緒によむ奥の細道 を開く</a>
+          <a href="/utamakura/" class="btn-primary" id="ut-btn-top">地図と一緒によむ歌枕 を開く</a>
         </div>
         <div class="project-body">
-          <p id="ut-p1">元禄二年（1689年）春、江戸・深川から奥州・北陸を経て大垣へと旅立った松尾芭蕉と門人・曽良の紀行文『おくのほそ道』を、実際の旅の経路・歌枕（名所・旧跡）ピンと照らし合わせながら読み進めるリーダーです。</p>
+          <p id="ut-p1">松尾芭蕉『おくのほそ道』、藤原定家撰『小倉百人一首』、『万葉集』などの名歌・名句に詠まれた日本全国の歌枕（名所・旧跡）を、共通の歴史地図・名勝写真・浮世絵・縦書き毛筆動画で一体として辿る古典リーダーです。</p>
           <ul class="feature-list">
-            <li id="ut-f1"><strong>歌枕・史跡マップと本文の連動:</strong> 千住、草加、室の八島、日光、白河の関、松島、平泉など、芭蕉が歩いた各地の位置関係と距離感を地図上で直感的に把握できます。</li>
-            <li id="ut-f2"><strong>原文・現代仮名遣い読み・平易な現代語訳:</strong> 古文の言い回しや背景にある漢詩（李白・杜甫）・和歌（西行・能因）の典拠をわかりやすく解説しています。</li>
-            <li id="ut-f3"><strong>発句の縦書き動画ワンクリック再生:</strong> 作中に登場する名句の再生ボタンを押すと、Short Verse Studio と連動してその場で縦書き毛筆アニメーションを鑑賞できます。</li>
+            <li id="ut-f1"><strong>全作品横断の歌枕・歌人索引と地図連動:</strong> 白河の関・松島・天の香具山・和歌の浦など、複数の古典にまたがる歌枕や歌人を五十音順・地図ピンから一体で検索できます。</li>
+            <li id="ut-f2"><strong>名勝写真・浮世絵・木版歌がるた・英訳を収録:</strong> 歌枕ごとの国指定名勝写真・江戸期の風景浮世絵・現地マップや、江戸時代の木版『歌がるた』、現代語訳・英訳・出典解説を備えています。</li>
+            <li id="ut-f3"><strong>和歌・俳句の縦書き毛筆動画をワンクリック再生:</strong> 各首・各句の再生ボタンを押すと、情景に合わせた専用和紙背景の上で縦書き毛筆アニメーションを鑑賞できます。</li>
           </ul>
           <div class="action-links">
-            <a href="/utamakura/" class="btn-primary" id="ut-btn-open">地図と一緒によむ奥の細道 を開く</a>
-          </div>
-        </div>
-      </article>
-
-      <!-- 5. 地図と一緒によむ小倉百人一首 -->
-      <article id="section-hyakunin" class="project-card theme-hyakunin">
-        <div class="project-top-row">
-          <div class="project-header">
-            <h2 class="project-title"><a href="/utamakura/hyakunin.html" id="hk-title">地図と一緒によむ小倉百人一首</a></h2>
-            <p class="project-subtitle" id="hk-sub">藤原定家撰『小倉百人一首』の和歌・現代語訳・英訳・出典解説と歌枕マップ、和歌の縦書き動画再生が連動</p>
-          </div>
-          <a href="/utamakura/hyakunin.html" class="btn-primary" id="hk-btn-top">地図と一緒によむ小倉百人一首 を開く</a>
-        </div>
-        <div class="project-body">
-          <p id="hk-p1">藤原定家が京都・嵯峨の小倉山荘で撰んだ『小倉百人一首』の名歌を、詠まれた歌枕（飛鳥・天の香具山・田子の浦・三笠山・宇治山・逢坂の関など）の地図ピンや現地の風景写真・浮世絵と照らし合わせながら読み進めるリーダーです（第一首〜第十首より順次公開中）。</p>
-          <ul class="feature-list">
-            <li id="hk-f1"><strong>歌枕マップ・現地写真・浮世絵と連動:</strong> 歌に詠まれた名所やゆかりの地の位置を地図上で確認でき、地名をクリックすると現地の風景写真や浮世絵・解説が表示されます。</li>
-            <li id="hk-f2"><strong>和歌・現代語訳・英訳と勅撰集の出典解説:</strong> 『古今和歌集』『後撰和歌集』などの詞書・詠歌背景や、歌人・官職・歌語の解説をわかりやすく収録しています。</li>
-            <li id="hk-f3"><strong>和歌の縦書き毛筆動画をワンクリック再生:</strong> 各首の再生ボタンを押すと、歌の情景に合わせた和紙デスク背景の上で縦書きアニメーションを鑑賞できます。</li>
-          </ul>
-          <div class="action-links">
-            <a href="/utamakura/hyakunin.html" class="btn-primary" id="hk-btn-open">地図と一緒によむ小倉百人一首 を開く</a>
+            <a href="/utamakura/" class="btn-primary" id="ut-btn-open">地図と一緒によむ歌枕 を開く</a>
           </div>
         </div>
       </article>
@@ -634,8 +617,7 @@
         navLa: '📄 Line-aligned',
         navSv: '🎬 Short Verse Studio',
         nav3k: '🗺️ 地図と一緒によむ三国志',
-        navUta: '🗾 地図と一緒によむ奥の細道',
-        navHk: '🍁 地図と一緒によむ小倉百人一首',
+        navUta: '🗾 地図と一緒によむ歌枕',
         introTitle: 'わさびとからし (wasabikarashi.com)',
         introDesc: 'ブラウザ上で登録不要ですぐに使えるノート組版ツール・短詩動画生成スタジオと、古典の原文・書き下し文・現代語訳を地図と一緒に読み解く読書ノートを置いています。',
         laTitle: 'Line-aligned（罫線・方眼ノート精密組版ツール）',
@@ -663,23 +645,18 @@
         tkV17Desc: '張遼（合肥の戦い）・楽進・于禁・張郃・徐晃ら魏の五大将軍の戦歴',
         tkV31Title: '巻31：蜀書・劉二牧伝（劉焉・劉璋）',
         tkV31Desc: '益州（巴蜀）の独立と、劉備による入蜀・成都包囲までの経緯',
+        tkV36Title: '巻36：蜀書・関張馬黄趙伝（五虎将伝）',
+        tkV36Desc: '関羽・張飛・馬超・黄忠・趙雲ら蜀漢を代表する五大名将の戦歴',
         tkV46Title: '巻46：呉書・孫破虜討逆伝（孫堅・孫策）',
         tkV46Desc: '孫堅の奮戦と、孫策による劇的な江東平定戦の記録',
         tkBtnOpen: '地図と一緒によむ三国志 を開く',
-        utTitle: '地図と一緒によむ奥の細道',
-        utSub: '松尾芭蕉『おくのほそ道』の原文・読み・現代語訳と旅のルート地図、発句の縦書き動画再生が連動',
-        utP1: '元禄二年（1689年）春、江戸・深川から奥州・北陸を経て大垣へと旅立った松尾芭蕉と門人・曽良の紀行文『おくのほそ道』を、実際の旅の経路・歌枕（名所・旧跡）ピンと照らし合わせながら読み進めるリーダーです。',
-        utF1: '<strong>歌枕・史跡マップと本文の連動:</strong> 千住、草加、室の八島、日光、白河の関、松島、平泉など、芭蕉が歩いた各地の位置関係と距離感を地図上で直感的に把握できます。',
-        utF2: '<strong>原文・現代仮名遣い読み・平易な現代語訳:</strong> 古文の言い回しや背景にある漢詩（李白・杜甫）・和歌（西行・能因）の典拠をわかりやすく解説しています。',
-        utF3: '<strong>発句の縦書き動画ワンクリック再生:</strong> 作中に登場する名句の再生ボタンを押すと、Short Verse Studio と連動してその場で縦書き毛筆アニメーションを鑑賞できます。',
-        utBtnOpen: '地図と一緒によむ奥の細道 を開く',
-        hkTitle: '地図と一緒によむ小倉百人一首',
-        hkSub: '藤原定家撰『小倉百人一首』の和歌・現代語訳・英訳・出典解説と歌枕マップ、和歌の縦書き動画再生が連動',
-        hkP1: '藤原定家が京都・嵯峨の小倉山荘で撰んだ『小倉百人一首』の名歌を、詠まれた歌枕（飛鳥・天の香具山・田子の浦・三笠山・宇治山・逢坂の関など）の地図ピンや現地の風景写真・浮世絵と照らし合わせながら読み進めるリーダーです（第一首〜第十首より順次公開中）。',
-        hkF1: '<strong>歌枕マップ・現地写真・浮世絵と連動:</strong> 歌に詠まれた名所やゆかりの地の位置を地図上で確認でき、地名をクリックすると現地の風景写真や浮世絵・解説が表示されます。',
-        hkF2: '<strong>和歌・現代語訳・英訳と勅撰集の出典解説:</strong> 『古今和歌集』『後撰和歌集』などの詞書・詠歌背景や、歌人・官職・歌語の解説をわかりやすく収録しています。',
-        hkF3: '<strong>和歌の縦書き毛筆動画をワンクリック再生:</strong> 各首の再生ボタンを押すと、歌の情景に合わせた和紙デスク背景の上で縦書きアニメーションを鑑賞できます。',
-        hkBtnOpen: '地図と一緒によむ小倉百人一首 を開く',
+        utTitle: '地図と一緒によむ歌枕',
+        utSub: '『おくのほそ道』『小倉百人一首』『万葉集』の名歌・名句と全国の歌枕マップ・浮世絵・縦書き動画が一体で連動',
+        utP1: '松尾芭蕉『おくのほそ道』、藤原定家撰『小倉百人一首』、『万葉集』などの名歌・名句に詠まれた日本全国の歌枕（名所・旧跡）を、共通の歴史地図・名勝写真・浮世絵・縦書き毛筆動画で一体として辿る古典リーダーです。',
+        utF1: '<strong>全作品横断の歌枕・歌人索引と地図連動:</strong> 白河の関・松島・天の香具山・和歌の浦など、複数の古典にまたがる歌枕や歌人を五十音順・地図ピンから一体で検索できます。',
+        utF2: '<strong>名勝写真・浮世絵・木版歌がるた・英訳を収録:</strong> 歌枕ごとの国指定名勝写真・江戸期の風景浮世絵・現地マップや、江戸時代の木版『歌がるた』、現代語訳・英訳・出典解説を備えています。',
+        utF3: '<strong>和歌・俳句の縦書き毛筆動画をワンクリック再生:</strong> 各首・各句の再生ボタンを押すと、情景に合わせた専用和紙背景の上で縦書き毛筆アニメーションを鑑賞できます。',
+        utBtnOpen: '地図と一緒によむ歌枕 を開く',
         edHeading: '当サイトの制作方針と特徴について',
         edH1: '1. 文字組版と読みやすさへのこだわり',
         edP1: 'デジタル画面上のテキストであっても、紙のノートや書籍のように「行間と文字の並びが整っていること」「縦書き・横書きそれぞれの美しさが保たれていること」を重視して開発しています。「Line-aligned」では実際のルーズリーフノートのミリ単位の罫線ピッチに文章を一致させる計算エンジンを搭載し、「Short Verse Studio」では句や歌の文字数に応じて全体のフォントサイズと字間を自動調整する縦書き描画エンジンを採用しています。',
@@ -696,8 +673,7 @@
         navLa: '📄 Line-aligned',
         navSv: '🎬 Short Verse Studio',
         nav3k: '🗺️ Three Kingdoms Map',
-        navUta: '🗾 Oku no Hosomichi Map',
-        navHk: '🍁 Hyakunin Isshu Map',
+        navUta: '🗾 Utamakura Poetic Atlas',
         introTitle: 'Wasabi & Karashi (wasabikarashi.com)',
         introDesc: 'Free, no-signup web tools for ruled-notebook PDF typesetting and short poetry video generation, alongside interactive historical map readers for East Asian classics.',
         laTitle: 'Line-aligned (Precision Ruled-Line & Grid Notebook Typesetting)',
@@ -725,23 +701,18 @@
         tkV17Desc: 'Campaigns of Zhang Liao (Battle of Hefei), Yue Jin, Yu Jin, Zhang He, and Xu Huang',
         tkV31Title: 'Vol. 31: The Two Governors of Yi Province (Liu Yan & Liu Zhang)',
         tkV31Desc: 'Governance of Bashu (Sichuan) and Liu Bei’s campaign into Chengdu',
+        tkV36Title: 'Vol. 36: Biographies of Guan, Zhang, Ma, Huang & Zhao',
+        tkV36Desc: 'Campaigns of Shu-Han’s five renowned generals: Guan Yu, Zhang Fei, Ma Chao, Huang Zhong, and Zhao Yun',
         tkV46Title: 'Vol. 46: Biographies of Sun Jian & Sun Ce',
         tkV46Desc: 'Sun Jian’s battles and Sun Ce’s rapid conquest of Jiangdong (Wu)',
         tkBtnOpen: 'Open Three Kingdoms Map Reader',
-        utTitle: 'Reading Oku no Hosomichi with Maps (奥の細道)',
-        utSub: 'Matsuo Basho’s Narrow Road to the Deep North linked with travel routes and Haiku video playback',
-        utP1: 'Follow Matsuo Basho’s 1689 journey from Edo through northern Japan on an interactive map, complete with original text, commentary, and one-click vertical Haiku video animations.',
-        utF1: '<strong>Interactive Route & Utamakura Pins:</strong> Trace Basho and Sora’s footsteps across Senju, Nikko, Shirakawa Barrier, Matsushima, and Hiraizumi.',
-        utF2: '<strong>Classical Text & Poetic Allusions:</strong> Includes original text, modern Japanese translation, and notes on Chinese poetry (Li Bai, Du Fu) and Waka.',
-        utF3: '<strong>One-Click Haiku Video Playback:</strong> Click any Haiku in the text to play a vertical brush-stroke animation powered by Short Verse Studio.',
-        utBtnOpen: 'Open Oku no Hosomichi Reader',
-        hkTitle: 'Reading Ogura Hyakunin Isshu with Maps (小倉百人一首)',
-        hkSub: 'Fujiwara no Teika’s One Hundred Poets, One Poem Each linked with Utamakura maps and Waka video playback',
-        hkP1: 'Explore the classic Waka anthology Ogura Hyakunin Isshu alongside an interactive map of poetic places (Asuka, Mount Kagu, Tago Bay, Mount Mikasa, Uji, Osaka Barrier), complete with scenic photos, Ukiyo-e prints, and English translations.',
-        hkF1: '<strong>Interactive Utamakura Map & Scenic Photos:</strong> Locate poetic landmarks across Japan and click place names to view photographs, Ukiyo-e prints, and historical notes.',
-        hkF2: '<strong>Original Waka, Modern Japanese, English & Imperial Anthology Notes:</strong> Includes headnotes from Kokin Wakashu and Gosen Wakashu alongside poet biographies and glossary popups.',
-        hkF3: '<strong>One-Click Vertical Waka Video Playback:</strong> Play vertical calligraphy animations set against custom seasonal Washi desk backgrounds.',
-        hkBtnOpen: 'Open Hyakunin Isshu Reader',
+        utTitle: 'Reading Utamakura with Maps (地図と一緒によむ歌枕)',
+        utSub: 'Oku no Hosomichi, Ogura Hyakunin Isshu & Man’yōshū united on an interactive poetic landmark map with Ukiyo-e and vertical video playback',
+        utP1: 'Explore sacred mountains, bays, barriers, and travel routes celebrated across Japanese classical literature—uniting Matsuo Basho’s Oku no Hosomichi, Fujiwara no Teika’s Ogura Hyakunin Isshu, and the Man’yōshū on one shared map.',
+        utF1: '<strong>Cross-Work Utamakura & Poet Index:</strong> Search poetic landmarks (Shirakawa Barrier, Matsushima, Mount Amanokagu, Wakanoura) and poets across works from a unified map and directory.',
+        utF2: '<strong>Scenic Photos, Ukiyo-e, Woodblock Karuta & English Translations:</strong> View national scenic spot photographs, Edo-period Ukiyo-e prints, local maps, woodblock Karuta cards, and bilingual notes.',
+        utF3: '<strong>One-Click Vertical Waka & Haiku Video Playback:</strong> Play vertical calligraphy animations set against custom seasonal Washi backgrounds.',
+        utBtnOpen: 'Open Utamakura Map Reader',
         edHeading: 'Design Philosophy & Features',
         edH1: '1. Precision Digital Typesetting',
         edP1: 'We build web tools that bring print-grade baseline alignment and vertical/horizontal calligraphy to the browser. Line-aligned calculates millimeter-accurate ruled-line grids, while Short Verse Studio dynamically balances font sizing and character spacing across 9 poetic traditions.',
@@ -758,8 +729,7 @@
         navLa: '📄 Line-aligned',
         navSv: '🎬 Short Verse Studio',
         nav3k: '🗺️ 配图共读三国志',
-        navUta: '🗾 配图共读奥之细道',
-        navHk: '🍁 配图共读小仓百人一首',
+        navUta: '🗾 配图共读歌枕',
         introTitle: 'わさびとからし (wasabikarashi.com)',
         introDesc: '无需注册即可在浏览器中直接使用的横线方格笔记排版工具、短诗竖屏视频生成工作室，以及结合历史地图共读古典名著的数字阅读器。',
         laTitle: 'Line-aligned（横线与方格活页笔记精密排版工具）',
@@ -787,23 +757,18 @@
         tkV17Desc: '张辽（合肥之战）、乐进、于禁、张郃、徐晃五位曹魏名将战史',
         tkV31Title: '卷31：蜀书・刘二牧传（刘焉・刘璋）',
         tkV31Desc: '益州巴蜀割据与刘备入蜀进围成都的完整经过',
+        tkV36Title: '卷36：蜀书・关张马黄赵传（五虎将传）',
+        tkV36Desc: '关羽、张飞、马超、黄忠、赵云五位蜀汉名将的完整战史',
         tkV46Title: '卷46：吴书・孙破虏讨逆传（孙坚・孙策）',
         tkV46Desc: '孙坚讨伐董卓与孙策平定江东六郡的战役记录',
         tkBtnOpen: '打开《三国志》地图阅读器',
-        utTitle: '配图共读奥之细道（松尾芭蕉纪行地图）',
-        utSub: '松尾芭蕉《奥之细道》原文、译注与旅程路线图及俳句竖排动画联动',
-        utP1: '沿着1689年松尾芭蕉从江户深川出发游历奥州与北陆的足迹，在地图上直观查看名胜歌枕，并可一键播放文中名句的毛笔竖排视频。',
-        utF1: '<strong>名胜歌枕地图联动：</strong> 直观展示千住、日光、白河关、松岛、平泉等芭蕉行脚路线。',
-        utF2: '<strong>原文、读音与典故解析：</strong> 详尽解析文中引用的李白、杜甫汉诗及日本古歌典故。',
-        utF3: '<strong>俳句竖排视频一键播放：</strong> 点击文中俳句即可联动 Short Verse Studio 播放毛笔动画。',
-        utBtnOpen: '打开《奥之细道》地图阅读器',
-        hkTitle: '配图共读小仓百人一首（和歌名胜歌枕地图）',
-        hkSub: '藤原定家《小仓百人一首》和歌原文、现代译注、英译与歌枕地图及竖排动画联动',
-        hkP1: '结合交互式历史名胜地图品读日本古典和歌集《小仓百人一首》，直观查看飞鸟、天香具山、田子浦、三笠山、宇治山、逢坂关等歌枕位置与实景照片、浮世绘。',
-        hkF1: '<strong>歌枕地图与实景照片、浮世绘联动：</strong> 点击文中地名即可查看日本各地名胜位置、风景照片与浮世绘解说。',
-        hkF2: '<strong>和歌原文、译文与敕撰集出处考证：</strong> 收录《古今和歌集》《后撰和歌集》等词书背景、歌人生平与古典语汇详解。',
-        hkF3: '<strong>和歌竖排毛笔动画一键播放：</strong> 点击各首再生按钮即可在四季和纸书案背景上欣赏竖排书法动画。',
-        hkBtnOpen: '打开《小仓百人一首》地图阅读器',
+        utTitle: '配图共读歌枕（日本古典名胜地图阅读器）',
+        utSub: '《奥之细道》《小仓百人一首》《万叶集》名歌名句与全国歌枕地图、浮世绘及竖排书法动画联动',
+        utP1: '以“歌枕（古典诗词名胜）”为轴，将松尾芭蕉《奥之细道》、藤原定家《小仓百人一首》与《万叶集》融为一体，在共同地图上结合名胜实景、浮世绘与毛笔动画跨作品品读日本古典。',
+        utF1: '<strong>跨作品歌枕与歌人总索引：</strong> 一键检索白河关、松岛、天香具山、和歌浦等跨越时代的古典名胜与歌人。',
+        utF2: '<strong>名胜照片、浮世绘、木版歌牌与出处详解：</strong> 收录国指定名胜实景、江户风景浮世绘、木版百人一首歌牌及敕撰集词书考证。',
+        utF3: '<strong>和歌与俳句竖排毛笔动画一键播放：</strong> 点击播放按钮即可在专属四季和纸背景上欣赏竖排书法动画。',
+        utBtnOpen: '打开《配图共读歌枕》',
         edHeading: '网站设计理念与特色',
         edH1: '1. 专注于数字文字排版与阅读美感',
         edP1: '无论是活页横线笔记的毫米级行距对齐，还是汉诗、俳句、短歌的竖排字距均衡，我们致力于在浏览器中重现纸质书籍与书法的整洁美感。',
@@ -820,8 +785,7 @@
         navLa: '📄 Line-aligned',
         navSv: '🎬 Short Verse Studio',
         nav3k: '🗺️ 配圖共讀三國志',
-        navUta: '🗾 配圖共讀奧之細道',
-        navHk: '🍁 配圖共讀小倉百人一首',
+        navUta: '🗾 配圖共讀歌枕',
         introTitle: 'わさびとからし (wasabikarashi.com)',
         introDesc: '免註冊即可在瀏覽器中直接使用的橫線方格筆記排版工具、短詩直式影片生成工作室，以及結合歷史地圖共讀古典名著的數位閱讀器。',
         laTitle: 'Line-aligned（橫線與方格活頁筆記精密排版工具）',
@@ -849,23 +813,18 @@
         tkV17Desc: '張遼（合肥之戰）、樂進、于禁、張郃、徐晃五位曹魏名將戰史',
         tkV31Title: '卷31：蜀書・劉二牧傳（劉焉・劉璋）',
         tkV31Desc: '益州巴蜀割據與劉備入蜀進圍成都的完整經過',
+        tkV36Title: '卷36：蜀書・關張馬黃趙傳（五虎將傳）',
+        tkV36Desc: '關羽、張飛、馬超、黃忠、趙雲五位蜀漢名將的完整戰史',
         tkV46Title: '卷46：吳書・孫破虜討逆傳（孫堅・孫策）',
         tkV46Desc: '孫堅討伐董卓與孫策平定江東六郡的戰役記錄',
         tkBtnOpen: '開啟《三國志》地圖閱讀器',
-        utTitle: '配圖共讀奧之細道（松尾芭蕉紀行地圖）',
-        utSub: '松尾芭蕉《奧之細道》原文、譯注與旅程路線圖及俳句直書動畫連動',
-        utP1: '沿著1689年松尾芭蕉從江戶深川出發遊歷奧州與北陸的足跡，在地圖上直觀查看名勝歌枕，並可一鍵播放文中名句的毛筆直書影片。',
-        utF1: '<strong>名勝歌枕地圖連動：</strong> 直觀展示千住、日光、白河關、松島、平泉等芭蕉行腳路線。',
-        utF2: '<strong>原文、讀音與典故解析：</strong> 詳盡解析文中引用的李白、杜甫漢詩及日本古歌典故。',
-        utF3: '<strong>俳句直書影片一鍵播放：</strong> 點擊文中俳句即可連動 Short Verse Studio 播放毛筆動畫。',
-        utBtnOpen: '開啟《奧之細道》地圖閱讀器',
-        hkTitle: '配圖共讀小倉百人一首（和歌名勝歌枕地圖）',
-        hkSub: '藤原定家《小倉百人一首》和歌原文、現代譯注、英譯與歌枕地圖及直書動畫連動',
-        hkP1: '結合互動式歷史名勝地圖品讀日本古典和歌集《小倉百人一首》，直觀查看飛鳥、天香具山、田子浦、三笠山、宇治山、逢坂關等歌枕位置與實景照片、浮世繪。',
-        hkF1: '<strong>歌枕地圖與實景照片、浮世繪連動：</strong> 點擊文中地名即可查看日本各地名勝位置、風景照片與浮世繪解說。',
-        hkF2: '<strong>和歌原文、譯文與敕撰集出處考證：</strong> 收錄《古今和歌集》《後撰和歌集》等詞書背景、歌人生平與古典語彙詳解。',
-        hkF3: '<strong>和歌直書毛筆動畫一鍵播放：</strong> 點擊各首播放按鈕即可在四季和紙書案背景上欣賞直書書法動畫。',
-        hkBtnOpen: '開啟《小倉百人一首》地圖閱讀器',
+        utTitle: '配圖共讀歌枕（日本古典名勝地圖閱讀器）',
+        utSub: '《奧之細道》《小倉百人一首》《萬葉集》名歌名句與全國歌枕地圖、浮世繪及直書書法動畫連動',
+        utP1: '以「歌枕（古典詩詞名勝）」為軸，將松尾芭蕉《奧之細道》、藤原定家《小倉百人一首》與《萬葉集》融為一體，在共同地圖上結合名勝實景、浮世繪與毛筆動畫跨作品品讀日本古典。',
+        utF1: '<strong>跨作品歌枕與歌人總索引：</strong> 一鍵檢索白河關、松島、天香具山、和歌浦等跨越時代的古典名勝與歌人。',
+        utF2: '<strong>名勝照片、浮世繪、木版歌牌與出處詳解：</strong> 收錄國指定名勝實景、江戶風景浮世繪、木版百人一首歌牌及敕撰集詞書考證。',
+        utF3: '<strong>和歌與俳句直書毛筆動畫一鍵播放：</strong> 點擊播放按鈕即可在專屬四季和紙背景上欣賞直書書法動畫。',
+        utBtnOpen: '開啟《配圖共讀歌枕》',
         edHeading: '網站設計理念與特色',
         edH1: '1. 專注於數位文字排版與閱讀美感',
         edP1: '無論是活頁橫線筆記的毫米級行距對齊，還是漢詩、俳句、短歌的直書字距均衡，我們致力於在瀏覽器中重現紙本書籍與書法的整潔美感。',
@@ -882,8 +841,7 @@
         navLa: '📄 Line-aligned',
         navSv: '🎬 Short Verse Studio',
         nav3k: '🗺️ 지도와 함께 읽는 삼국지',
-        navUta: '🗾 지도와 함께 읽는 오쿠노 호소미치',
-        navHk: '🍁 지도와 함께 읽는 오구라 백인일수',
+        navUta: '🗾 지도와 함께 읽는 우타마쿠라',
         introTitle: '와사비와 카라시 (wasabikarashi.com)',
         introDesc: '가입 없이 브라우저에서 바로 사용하는 줄공책·방안지 정밀 조판 도구, 단시(시조·하이쿠·단가·한시) 세로형 영상 스튜디오, 그리고 역사 지도와 함께 읽는 고전 리더를 공개하고 있습니다.',
         laTitle: 'Line-aligned（줄공책·방안지 정밀 조판 도구）',
@@ -911,23 +869,18 @@
         tkV17Desc: '장료(합비 전투)·악진·우금·장합·서황 등 위나라 5대 명장의 전적',
         tkV31Title: '권31：촉서·유이목전 (유언·유장)',
         tkV31Desc: '익주(파촉)의 독립과 유비의 입촉·성도 포위까지의 경위',
+        tkV36Title: '권36：촉서·관장마황조전 (오호장군전)',
+        tkV36Desc: '관우·장비·마초·황충·조운 등 촉한 5대 명장의 전적',
         tkV46Title: '권46：오서·손파로토역전 (손견·손책)',
         tkV46Desc: '손견의 분전과 손책의 극적인 강동 평정전 기록',
         tkBtnOpen: '삼국지 지도 리더 열기',
-        utTitle: '지도와 함께 읽는 오쿠노 호소미치（마쓰오 바쇼 기행 지도）',
-        utSub: '마쓰오 바쇼 『오쿠노 호소미치』 원문·해설과 여정 지도 및 하이쿠 세로쓰기 영상 재생 연동',
-        utP1: '1689년 에도 후카가와를 출발해 오슈와 호쿠리쿠를 여행한 마쓰오 바쇼의 기행문을 실제 경로 핀과 대조하며 읽고, 명구(하이쿠)를 원클릭으로 세로쓰기 영상으로 감상할 수 있습니다.',
-        utF1: '<strong>명소(우타마쿠라) 지도와 본문 연동:</strong> 센주, 닛코, 시라카와 관문, 마쓰시마, 히라이즈미 등 바쇼의 여정을 지도에서 직관적으로 확인합니다.',
-        utF2: '<strong>원문·현대어 역 및 고전 출전 해설:</strong> 이백·두보의 한시와 일본 고가(와카)의 배경을 알기 쉽게 해설합니다.',
-        utF3: '<strong>하이쿠 세로쓰기 영상 원클릭 재생:</strong> 작품 속 명구의 재생 버튼을 누르면 Short Verse Studio와 연동되어 붓글씨 애니메이션이 재생됩니다.',
-        utBtnOpen: '오쿠노 호소미치 리더 열기',
-        hkTitle: '지도와 함께 읽는 오구라 백인일수（와카 명소 지도 리더）',
-        hkSub: '후지와라노 데이카 『오구라 백인일수』 와카 원문·해설·영역과 우타마쿠라 지도 및 세로쓰기 영상 연동',
-        hkP1: '일본 고전 시가집 『오구라 백인일수』의 명가들을 아스카, 아마노카구야마, 다고노우라, 미카사산, 우지산, 오사카 관문 등 실제 명소(우타마쿠라) 지도 핀과 현지 사진·우키요에와 함께 감상하는 리더입니다.',
-        hkF1: '<strong>우타마쿠라 지도·현지 사진·우키요에 연동:</strong> 노래에 읊어진 명소의 위치를 지도에서 확인하고 지명을 클릭해 사진과 우키요에 해설을 볼 수 있습니다.',
-        hkF2: '<strong>와카 원문·현대어 역·영역 및 출전 해설:</strong> 『고킨와카슈』『고센와카슈』 등 창작 배경과 가인·관직·고어 해설을 수록했습니다.',
-        hkF3: '<strong>와카 세로쓰기 붓글씨 영상 원클릭 재생:</strong> 재생 버튼을 누르면 계절별 화지 책상 배경 위에서 세로쓰기 애니메이션을 감상할 수 있습니다.',
-        hkBtnOpen: '오구라 백인일수 리더 열기',
+        utTitle: '지도와 함께 읽는 우타마쿠라（일본 고전 명소 지도 리더）',
+        utSub: '『오쿠노 호소미치』『오구라 백인일수』『만엽집』의 명가·명구와 전국 우타마쿠라 지도·우키요에·세로쓰기 영상 연동',
+        utP1: '마쓰오 바쇼의 『오쿠노 호소미치』, 후지와라노 데이카의 『오구라 백인일수』, 『만엽집』에 읊어진 일본 전국의 명소(우타마쿠라)를 공통 지도, 현지 명승 사진, 우키요에, 세로쓰기 붓글씨 영상으로 통합 감상하는 고전 리더입니다.',
+        utF1: '<strong>전 작품 통합 우타마쿠라·가인 색인:</strong> 시라카와 관문, 마쓰시마, 아마노카구야마, 와카노우라 등 여러 고전에 등장하는 명소와 시인을 한눈에 검색합니다.',
+        utF2: '<strong>명승 사진·우키요에·목판 카루타·출전 해설:</strong> 국가 지정 명승 사진, 에도 시대 풍경 우키요에, 목판 백인일수 카루타 및 영역·고전 해설을 수록했습니다.',
+        utF3: '<strong>와카·하이쿠 세로쓰기 붓글씨 영상 원클릭 재생:</strong> 각 작품의 재생 버튼을 누르면 전용 화지 배경 위에서 세로쓰기 애니메이션을 감상할 수 있습니다.',
+        utBtnOpen: '지도와 함께 읽는 우타마쿠라 열기',
         edHeading: '사이트 제작 방침 및 특징',
         edH1: '1. 정밀한 디지털 조판과 가독성',
         edP1: '디지털 화면에서도 종이 공책이나 서적처럼 줄 간격과 글자 배열이 정돈된 조판을 추구합니다. Line-aligned는 실제 루즈리프 줄 간격에 맞춘 조판 엔진을, Short Verse Studio는 글자 수에 맞춰 폰트 크기와 자간을 자동 조절하는 엔진을 탑재하고 있습니다.',
@@ -950,7 +903,6 @@
       document.getElementById('nav-sv').textContent = d.navSv;
       document.getElementById('nav-3k').textContent = d.nav3k;
       document.getElementById('nav-uta').textContent = d.navUta;
-      document.getElementById('nav-hk').textContent = d.navHk;
       document.getElementById('intro-title').textContent = d.introTitle;
       document.getElementById('intro-desc').textContent = d.introDesc;
 
@@ -987,6 +939,8 @@
       document.getElementById('tk-v17-desc').textContent = d.tkV17Desc;
       document.getElementById('tk-v31-title').textContent = d.tkV31Title;
       document.getElementById('tk-v31-desc').textContent = d.tkV31Desc;
+      document.getElementById('tk-v36-title').textContent = d.tkV36Title;
+      document.getElementById('tk-v36-desc').textContent = d.tkV36Desc;
       document.getElementById('tk-v46-title').textContent = d.tkV46Title;
       document.getElementById('tk-v46-desc').textContent = d.tkV46Desc;
       document.getElementById('tk-btn-top').textContent = d.tkBtnOpen;
@@ -1000,15 +954,6 @@
       document.getElementById('ut-f3').innerHTML = d.utF3;
       document.getElementById('ut-btn-top').textContent = d.utBtnOpen;
       document.getElementById('ut-btn-open').textContent = d.utBtnOpen;
-
-      document.getElementById('hk-title').textContent = d.hkTitle;
-      document.getElementById('hk-sub').textContent = d.hkSub;
-      document.getElementById('hk-p1').textContent = d.hkP1;
-      document.getElementById('hk-f1').innerHTML = d.hkF1;
-      document.getElementById('hk-f2').innerHTML = d.hkF2;
-      document.getElementById('hk-f3').innerHTML = d.hkF3;
-      document.getElementById('hk-btn-top').textContent = d.hkBtnOpen;
-      document.getElementById('hk-btn-open').textContent = d.hkBtnOpen;
 
       document.getElementById('ed-heading').textContent = d.edHeading;
       document.getElementById('ed-h1').textContent = d.edH1;
