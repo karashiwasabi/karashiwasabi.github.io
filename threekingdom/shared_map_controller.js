@@ -59,6 +59,18 @@
     return String(labelStr).replace(/：[^）]*）$/, '）');
   }
 
+
+  // 4言語切替：shared_i18n.js 未読込・未翻訳・日本語表示では従来どおりの文字列をそのまま返す
+  function localizeName(key, fallback) {
+    const i18n = global.ThreeKingdomI18n;
+    return i18n ? i18n.localName('place', key, fallback) : (fallback !== undefined ? fallback : key);
+  }
+
+  function localizeModern(key, fallback) {
+    const i18n = global.ThreeKingdomI18n;
+    return i18n ? i18n.localPlaceModern(key, fallback) : fallback;
+  }
+
   function resolvePinFillColor(provinceName) {
     if (provinceName === '益州' || provinceName === '涼州') return '#2e7d32';
     if (provinceName === '荊州') return '#1565c0';
@@ -225,7 +237,7 @@
         }).addTo(pinMarkerGroup);
 
         marker.bindTooltip(
-          `<span class="custom-label" id="pin-label-${escapeHtml(place.key)}">${escapeHtml(place.key)}</span>`,
+          `<span class="custom-label" id="pin-label-${escapeHtml(place.key)}">${escapeHtml(localizeName(place.key))}</span>`,
           {
             permanent: true,
             interactive: true,
@@ -289,7 +301,7 @@
         const bannerMarker = L.marker([found.lat, found.lng], {
           icon: L.divIcon({
             className: '',
-            html: `<span class="area-banner-label">🗺️ ${escapeHtml(found.key)}</span>`,
+            html: `<span class="area-banner-label">🗺️ ${escapeHtml(localizeName(found.key))}</span>`,
             iconSize: [AREA_BANNER_WIDTH_PX, AREA_BANNER_HEIGHT_PX],
             iconAnchor: [AREA_BANNER_WIDTH_PX / 2, AREA_BANNER_HEIGHT_PX / 2]
           }),
@@ -339,7 +351,7 @@
           const parentBanner = L.marker([pLat, pLng], {
             icon: L.divIcon({
               className: '',
-              html: `<span class="parent-area-banner-label">${escapeHtml(parentArea.key)}</span>`,
+              html: `<span class="parent-area-banner-label">${escapeHtml(localizeName(parentArea.key))}</span>`,
               iconSize: [PARENT_BANNER_WIDTH_PX, PARENT_BANNER_HEIGHT_PX],
               iconAnchor: [PARENT_BANNER_WIDTH_PX / 2, PARENT_BANNER_HEIGHT_PX / 2]
             }),
@@ -371,9 +383,10 @@
         return true;
       }
 
-      const shortTitle = getShortNameWithReading(found.label || found.key);
-      const modernHtml = found.modern
-        ? ` <span style="font-size:0.8rem; color:#ddd;">（現在の${escapeHtml(found.modern)}）</span>`
+      const shortTitle = localizeName(found.key, getShortNameWithReading(found.label || found.key));
+      const modernText = localizeModern(found.key, found.modern);
+      const modernHtml = modernText
+        ? ` <span style="font-size:0.8rem; color:#ddd;">（現在の${escapeHtml(modernText)}）</span>`
         : '';
       const inlineActionHtml = typeof cfg.buildToastInlineActionHtml === 'function'
         ? cfg.buildToastInlineActionHtml(found, clickedRawSurface)
@@ -393,6 +406,11 @@
         `${bottomExtraHtml}`;
       toastEl.style.display = 'block';
       return true;
+    }
+
+    // 言語切替時：現在表示中のピン名を選択言語で再描画（中心移動・縮尺変更なし）
+    if (global.ThreeKingdomI18n) {
+      global.ThreeKingdomI18n.onChange(() => renderPlaceKeys(currentDirectKeys, true));
     }
 
     return {

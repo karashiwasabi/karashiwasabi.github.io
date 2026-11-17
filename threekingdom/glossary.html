@@ -22,6 +22,9 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4382223240782332" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="shared_i18n_data.js"></script>
+  <script src="shared_i18n.js"></script>
+  <script src="shared_i18n_ui.js"></script>
   <script src="shared_glossary_corpus.js"></script>
   <script src="shared_map_controller.js"></script>
   <style>
@@ -723,10 +726,10 @@
 <div class="main-container">
   <div class="map-column">
     <div class="vol-nav-bar">
-      <a href="https://wasabikarashi.com/" class="home-top-link" title="総合トップページへ戻る">🏠 トップ</a>
+      <a href="https://wasabikarashi.com/" class="home-top-link" data-i18n="home" title="総合トップページへ戻る">🏠 トップ</a>
       <button class="slim-nav-btn" disabled title="前の項目（なし）">←</button>
-      <select class="para-select" style="font-family:'Yu Mincho','MS PMincho',serif; font-size:0.95rem; letter-spacing:0.05em;" onchange="if(this.value) window.location.href=this.value" title="巻・索引を切り替え">
-        <option value="glossary.html" selected>📑 登場人物・地名・官職 索引</option>
+      <select class="para-select" style="font-family:'Yu Mincho','MS PMincho',serif; font-size:0.95rem; letter-spacing:0.05em;" onchange="handleTopNavSelectChange(this)" title="巻・索引を切り替え" data-i18n-title="volSelectTitle">
+        <option value="glossary.html" selected data-i18n="glossaryOption">📑 登場人物・地名・官職 索引</option>
         <option value="vol01.html">魏書一　武帝紀</option>
         <option value="vol17.html">魏書十七　張樂于張徐傳</option>
         <option value="vol31.html">蜀書一　劉二牧傳</option>
@@ -737,7 +740,7 @@
     </div>
 
     <div id="map">
-      <button class="reopen-index-floating-btn" id="reopenIndexBtn" onclick="event.stopPropagation(); showIndexOverlay()">📑 索引</button>
+      <button class="reopen-index-floating-btn" id="reopenIndexBtn" onclick="event.stopPropagation(); showIndexOverlay()" data-i18n="reopenIndexBtn">📑 索引</button>
       <div class="map-toast" id="mapToast" onclick="event.stopPropagation()"></div>
     </div>
 
@@ -745,8 +748,8 @@
     <div class="index-overlay" id="indexOverlay">
       <div class="index-toolbar">
         <div class="index-search-row">
-          <input type="text" id="indexSearchInput" class="index-search-input" placeholder="🔍 名前・よみがな・地名・官職で検索" oninput="handleSearchFilterChange(this.value)">
-          <button class="map-peek-btn" onclick="hideIndexOverlay()" title="索引を閉じて地図を見る">🗺️ 地図</button>
+          <input type="text" id="indexSearchInput" class="index-search-input" placeholder="🔍 名前・よみがな・地名・官職で検索" data-i18n-placeholder="searchPlaceholder" oninput="handleSearchFilterChange(this.value)">
+          <button class="map-peek-btn" onclick="hideIndexOverlay()" title="索引を閉じて地図を見る" data-i18n="mapPeekBtn">🗺️ 地図</button>
         </div>
         <div class="cat-tabs" id="catTabs"></div>
       </div>
@@ -756,7 +759,7 @@
 
   <div class="reader-panel">
     <div class="para-nav-bar" id="rightTopBar">
-      <span style="font-size:0.88rem; font-weight:bold;">📑 登場人物・地名・官職 索引</span>
+      <span id="rightTopBarTitle" style="font-size:0.88rem; font-weight:bold;" data-i18n="glossaryHeader">📑 登場人物・地名・官職 索引</span>
     </div>
     <div class="record-list" id="resultList"></div>
   </div>
@@ -774,6 +777,57 @@
   const OVERLAY_RESIZE_DELAY_MS = 30; // 索引オーバーレイ非表示後の地図サイズ再計算待機時間(ms)
 
   const GOJUON_ROW_CHARS = ['あ', 'か', 'さ', 'た', 'な', 'は', 'ま', 'や', 'ら', 'わ'];
+  const PINYIN_LETTERS = ['A','B','C','D','E','F','G','H','J','K','L','M','N','O','P','Q','R','S','T','W','X','Y','Z'];
+  const PINYIN_BOUNDARIES = [
+    { letter: 'A', char: '阿' }, { letter: 'B', char: '八' }, { letter: 'C', char: '嚓' },
+    { letter: 'D', char: '哒' }, { letter: 'E', char: '妸' }, { letter: 'F', char: '发' },
+    { letter: 'G', char: '旮' }, { letter: 'H', char: '哈' }, { letter: 'J', char: '讥' },
+    { letter: 'K', char: '咔' }, { letter: 'L', char: '垃' }, { letter: 'M', char: '妈' },
+    { letter: 'N', char: '拏' }, { letter: 'O', char: '噢' }, { letter: 'P', char: '妑' },
+    { letter: 'Q', char: '七' }, { letter: 'R', char: '呥' }, { letter: 'S', char: '仨' },
+    { letter: 'T', char: '他' }, { letter: 'W', char: '屲' }, { letter: 'X', char: '夕' },
+    { letter: 'Y', char: '丫' }, { letter: 'Z', char: '帀' }
+  ];
+  let pinyinCollator = null;
+  try {
+    pinyinCollator = new Intl.Collator(['zh-u-co-pinyin', 'zh-Hans-CN', 'zh-CN'], { sensitivity: 'base' });
+  } catch (e) {}
+
+  function getPinyinInitial(str) {
+    if (!str) return '#';
+    const first = str.trim().charAt(0);
+    if (!first) return '#';
+    if (/^[A-Za-z]/.test(first)) return first.toUpperCase();
+    if (!pinyinCollator) return '#';
+    for (let i = PINYIN_BOUNDARIES.length - 1; i >= 0; i--) {
+      if (pinyinCollator.compare(first, PINYIN_BOUNDARIES[i].char) >= 0) {
+        return PINYIN_BOUNDARIES[i].letter;
+      }
+    }
+    return 'A';
+  }
+
+  const HANGUL_CHOSUNG = ['ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
+  const HANGUL_BASE_MAP = {
+    'ㄱ': 'ㄱ', 'ㄲ': 'ㄱ', 'ㄴ': 'ㄴ', 'ㄷ': 'ㄷ', 'ㄸ': 'ㄷ',
+    'ㄹ': 'ㄹ', 'ㅁ': 'ㅁ', 'ㅂ': 'ㅂ', 'ㅃ': 'ㅂ', 'ㅅ': 'ㅅ',
+    'ㅆ': 'ㅅ', 'ㅇ': 'ㅇ', 'ㅈ': 'ㅈ', 'ㅉ': 'ㅈ', 'ㅊ': 'ㅊ',
+    'ㅋ': 'ㅋ', 'ㅌ': 'ㅌ', 'ㅍ': 'ㅍ', 'ㅎ': 'ㅎ'
+  };
+  const HANGUL_INITIAL_LIST = ['ㄱ', 'ㄴ', 'ㄷ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅅ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
+
+  function getHangulInitial(str) {
+    if (!str) return '#';
+    const first = str.trim().charAt(0);
+    const c = first.charCodeAt(0);
+    if (c >= 0xAC00 && c <= 0xD7A3) {
+      const idx = Math.floor((c - 0xAC00) / 588);
+      const cho = HANGUL_CHOSUNG[idx];
+      return HANGUL_BASE_MAP[cho] || cho;
+    }
+    return '#';
+  }
+
   const OFFICE_GROUPS = [
     { id: 'central', label: '① 中央の官職' },
     { id: 'military', label: '② 軍の官職' },
@@ -820,6 +874,14 @@
     return String(labelStr).replace(/：[^）]*）$/, '）');
   }
 
+  function getItemDispName(catType, item) {
+    const rawLabel = item.label || item.key;
+    if (window.ThreeKingdomI18n && window.ThreeKingdomI18n.dispName) {
+      return window.ThreeKingdomI18n.dispName(catType, item.key, rawLabel);
+    }
+    return rawLabel;
+  }
+
   // =========================================================================
   // 1. 共通地図コントローラ（shared_map_controller.js）による全巻統合マップ制御
   // =========================================================================
@@ -856,7 +918,8 @@
     buildToastInlineActionHtml: (found) => {
       if (!showJumpPlaceBtnInToast || !catalogMapByType.place.has(found.key)) return '';
       const safeKey = String(found.key).replace(/'/g, "\'");
-      return `<button class="read-in-vol-btn" style="padding:2px 8px; font-size:0.74rem; white-space:nowrap;" onclick="selectGlossaryItem('place', '${safeKey}', true)">📑 この地名の記事へ</button>`;
+      const toastBtnText = (window.ThreeKingdomI18n && window.ThreeKingdomI18n.t) ? window.ThreeKingdomI18n.t('jumpPlaceToast') : '📑 この地名の記事へ';
+      return `<button class="read-in-vol-btn" style="padding:2px 8px; font-size:0.74rem; white-space:nowrap;" onclick="selectGlossaryItem('place', '${safeKey}', true)">${escapeHtml(toastBtnText)}</button>`;
     }
   });
   const map = mapController.getMap();
@@ -881,7 +944,7 @@
   }
 
   // =========================================================================
-  // 2. 左側：分類別・五十音順索引の描画（件数・あ〜わ行ボタン列なしのスッキリ構成）
+  // 2. 左側：分類別・五十音順／ピンイン／ハングル索引の描画
   // =========================================================================
   function setCategoryTab(catType) {
     activeCategory = catType;
@@ -896,20 +959,39 @@
   }
 
   function renderIndexControls() {
+    const I = window.ThreeKingdomI18n;
     const tabsEl = document.getElementById('catTabs');
+    const pLabel = I ? I.t('tabPerson') : '👤 人物';
+    const plLabel = I ? I.t('tabPlace') : '📍 地名';
+    const oLabel = I ? I.t('tabOffice') : '👑 官職';
+    const sLabel = I ? I.t('tabSpecial') : '🔖 用語';
     tabsEl.innerHTML = `
-      <button class="cat-tab-btn person ${activeCategory === 'person' ? 'active' : ''}" onclick="setCategoryTab('person')">👤 人物</button>
-      <button class="cat-tab-btn place ${activeCategory === 'place' ? 'active' : ''}" onclick="setCategoryTab('place')">📍 地名</button>
-      <button class="cat-tab-btn office ${activeCategory === 'office' ? 'active' : ''}" onclick="setCategoryTab('office')">👑 官職</button>
-      <button class="cat-tab-btn special ${activeCategory === 'special' ? 'active' : ''}" onclick="setCategoryTab('special')">🔖 用語</button>
+      <button class="cat-tab-btn person ${activeCategory === 'person' ? 'active' : ''}" onclick="setCategoryTab('person')">${escapeHtml(pLabel)}</button>
+      <button class="cat-tab-btn place ${activeCategory === 'place' ? 'active' : ''}" onclick="setCategoryTab('place')">${escapeHtml(plLabel)}</button>
+      <button class="cat-tab-btn office ${activeCategory === 'office' ? 'active' : ''}" onclick="setCategoryTab('office')">${escapeHtml(oLabel)}</button>
+      <button class="cat-tab-btn special ${activeCategory === 'special' ? 'active' : ''}" onclick="setCategoryTab('special')">${escapeHtml(sLabel)}</button>
     `;
   }
 
-  function matchesSearch(item) {
+  function matchesSearch(item, catType) {
     if (!searchQuery) return true;
-    const hay = [
+    const hayArr = [
       item.key, item.label, item.yomi, item.title || '', item.full_label || '', item.name_heading || ''
-    ].join(' ').toLowerCase();
+    ];
+    if (window.ThreeKingdomI18n) {
+      hayArr.push(window.ThreeKingdomI18n.dispName(catType, item.key, item.label));
+      const i18nData = window.THREEKINGDOM_I18N;
+      if (i18nData) {
+        const secKey = { person: 'persons', place: 'places', office: 'offices', special: 'specials' }[catType];
+        const entry = i18nData[secKey] && i18nData[secKey][item.key];
+        if (entry) {
+          ['zh_tw', 'zh_cn', 'ko'].forEach(l => {
+            if (entry[l] && entry[l].name) hayArr.push(entry[l].name);
+          });
+        }
+      }
+    }
+    const hay = hayArr.join(' ').toLowerCase();
     return hay.includes(searchQuery);
   }
 
@@ -920,10 +1002,13 @@
     if (catType === 'place') {
       prefixIcon = item.place_type === 'area' ? '🗺️ ' : (item.place_type === 'river' ? '🌊 ' : '📍 ');
     }
-    const yomiHtml = item.yomi ? `<span class="chip-yomi">${escapeHtml(item.yomi)}</span>` : '';
+    const lang = (window.ThreeKingdomI18n && window.ThreeKingdomI18n.getLang) ? window.ThreeKingdomI18n.getLang() : 'ja';
+    const dispLabel = getItemDispName(catType, item);
+    // ja のみひらがな読みを表示し、zh_tw / zh_cn / ko では非表示
+    const yomiHtml = (lang === 'ja' && item.yomi) ? `<span class="chip-yomi">${escapeHtml(item.yomi)}</span>` : '';
     return `
       <button class="index-chip ${catType} ${isSel ? 'selected' : ''}" onclick="selectGlossaryItem('${catType}', '${safeKey}', false)">
-        <span class="chip-label">${prefixIcon}${escapeHtml(item.label)}</span>
+        <span class="chip-label">${prefixIcon}${escapeHtml(dispLabel)}</span>
         ${yomiHtml}
       </button>
     `;
@@ -931,53 +1016,113 @@
 
   function renderIndexCatalogList() {
     const container = document.getElementById('indexListScroll');
+    const I = window.ThreeKingdomI18n;
+    const lang = I ? I.getLang() : 'ja';
 
     // 検索文字が入力されている場合は4カテゴリ横断で一致項目を表示
     if (searchQuery) {
+      const pLabel = I ? I.t('tabPerson') : '👤 人物';
+      const plLabel = I ? I.t('tabPlace') : '📍 地名';
+      const oLabel = I ? I.t('tabOffice') : '👑 官職';
+      const sLabel = I ? I.t('tabSpecial') : '🔖 用語';
       const sections = [
-        ['person', '👤 人物', CORPUS.catalog.person.filter(matchesSearch)],
-        ['place', '📍 地名', CORPUS.catalog.place.filter(matchesSearch)],
-        ['office', '👑 官職', CORPUS.catalog.office.filter(matchesSearch)],
-        ['special', '🔖 用語・引用史料', CORPUS.catalog.special.filter(matchesSearch)]
+        ['person', pLabel, CORPUS.catalog.person.filter(it => matchesSearch(it, 'person'))],
+        ['place', plLabel, CORPUS.catalog.place.filter(it => matchesSearch(it, 'place'))],
+        ['office', oLabel, CORPUS.catalog.office.filter(it => matchesSearch(it, 'office'))],
+        ['special', sLabel, CORPUS.catalog.special.filter(it => matchesSearch(it, 'special'))]
       ].filter(s => s[2].length > 0);
 
       if (sections.length === 0) {
-        container.innerHTML = `<div style="padding:14px; color:#6d4c41;">「${escapeHtml(searchQuery)}」に一致する項目は見つかりませんでした。</div>`;
+        const noResText = I ? I.t('noSearchResults', { n: searchQuery }) : `「${searchQuery}」に一致する項目は見つかりませんでした。`;
+        container.innerHTML = `<div style="padding:14px; color:#6d4c41;">${escapeHtml(noResText)}</div>`;
         return;
       }
 
       container.innerHTML = sections.map(([cType, heading, list]) => `
         <div class="index-group-block">
-          <div class="index-group-heading"><span>${heading}</span></div>
+          <div class="index-group-heading"><span>${escapeHtml(heading)}</span></div>
           <div class="index-chip-grid">${list.map(it => buildChipHtml(cType, it)).join('')}</div>
         </div>
       `).join('');
       return;
     }
 
+    // 通常一覧（カテゴリ別）
     if (activeCategory === 'person' || activeCategory === 'place') {
       const rawList = activeCategory === 'person' ? CORPUS.catalog.person : CORPUS.catalog.place;
       const blocks = [];
-      GOJUON_ROW_CHARS.forEach(rowChar => {
-        const rowItems = rawList.filter(x => x.row === rowChar);
-        if (rowItems.length === 0) return;
-        blocks.push(`
-          <div class="index-group-block">
-            <div class="index-group-heading"><span>${rowChar}行</span></div>
-            <div class="index-chip-grid">${rowItems.map(it => buildChipHtml(activeCategory, it)).join('')}</div>
-          </div>
-        `);
-      });
-      container.innerHTML = blocks.join('') || `<div style="padding:14px; color:#6d4c41;">該当する項目はありません。</div>`;
+
+      if (lang === 'ja') {
+        GOJUON_ROW_CHARS.forEach(rowChar => {
+          const rowItems = rawList.filter(x => x.row === rowChar);
+          if (rowItems.length === 0) return;
+          blocks.push(`
+            <div class="index-group-block">
+              <div class="index-group-heading"><span>${escapeHtml(rowChar)}行</span></div>
+              <div class="index-chip-grid">${rowItems.map(it => buildChipHtml(activeCategory, it)).join('')}</div>
+            </div>
+          `);
+        });
+      } else if (lang === 'zh_tw' || lang === 'zh_cn') {
+        const itemsWithPinyin = rawList.map(it => {
+          const name = getItemDispName(activeCategory, it);
+          const initial = getPinyinInitial(name);
+          return { item: it, name: name, initial: initial };
+        });
+        PINYIN_LETTERS.forEach(letter => {
+          const matched = itemsWithPinyin.filter(x => x.initial === letter);
+          if (matched.length === 0) return;
+          if (pinyinCollator) {
+            matched.sort((a, b) => pinyinCollator.compare(a.name, b.name));
+          }
+          blocks.push(`
+            <div class="index-group-block">
+              <div class="index-group-heading"><span>${escapeHtml(letter)}</span></div>
+              <div class="index-chip-grid">${matched.map(x => buildChipHtml(activeCategory, x.item)).join('')}</div>
+            </div>
+          `);
+        });
+      } else if (lang === 'ko') {
+        let koCollator = null;
+        try { koCollator = new Intl.Collator('ko', { sensitivity: 'base' }); } catch (e) {}
+        const itemsWithHangul = rawList.map(it => {
+          const name = getItemDispName(activeCategory, it);
+          const initial = getHangulInitial(name);
+          return { item: it, name: name, initial: initial };
+        });
+        HANGUL_INITIAL_LIST.forEach(cho => {
+          const matched = itemsWithHangul.filter(x => x.initial === cho);
+          if (matched.length === 0) return;
+          if (koCollator) {
+            matched.sort((a, b) => koCollator.compare(a.name, b.name));
+          }
+          blocks.push(`
+            <div class="index-group-block">
+              <div class="index-group-heading"><span>${escapeHtml(cho)}</span></div>
+              <div class="index-chip-grid">${matched.map(x => buildChipHtml(activeCategory, x.item)).join('')}</div>
+            </div>
+          `);
+        });
+      }
+
+      const noItemsText = I ? I.t('noItems') : '該当する項目はありません。';
+      container.innerHTML = blocks.join('') || `<div style="padding:14px; color:#6d4c41;">${escapeHtml(noItemsText)}</div>`;
       return;
     }
 
     if (activeCategory === 'office') {
+      const officeGroupLabels = {
+        central: I ? I.t('officeCentral') : '① 中央の官職',
+        military: I ? I.t('officeMilitary') : '② 軍の官職',
+        local: I ? I.t('officeLocal') : '③ 地方の官職',
+        title_priv: I ? I.t('officeTitle') : '④ 爵位・特権'
+      };
       container.innerHTML = OFFICE_GROUPS.map(grp => {
         const grpItems = CORPUS.catalog.office.filter(o => o.office_group === grp.id);
+        const heading = officeGroupLabels[grp.id] || grp.label;
         return `
           <div class="index-group-block">
-            <div class="index-group-heading"><span>${escapeHtml(grp.label)}</span></div>
+            <div class="index-group-heading"><span>${escapeHtml(heading)}</span></div>
             <div class="index-chip-grid">${grpItems.map(it => buildChipHtml('office', it)).join('')}</div>
           </div>
         `;
@@ -986,11 +1131,16 @@
     }
 
     if (activeCategory === 'special') {
+      const specialGroupLabels = {
+        source_book: I ? I.t('specialSource') : '📚 引用史料・典籍',
+        term: I ? I.t('specialTerm') : '🔖 歴史用語・年号・故事'
+      };
       container.innerHTML = SPECIAL_GROUPS.map(grp => {
         const grpItems = CORPUS.catalog.special.filter(s => s.sp_group === grp.id);
+        const heading = specialGroupLabels[grp.id] || grp.label;
         return `
           <div class="index-group-block">
-            <div class="index-group-heading"><span>${escapeHtml(grp.label)}</span></div>
+            <div class="index-group-heading"><span>${escapeHtml(heading)}</span></div>
             <div class="index-chip-grid">${grpItems.map(it => buildChipHtml('special', it)).join('')}</div>
           </div>
         `;
@@ -1086,6 +1236,28 @@
     window.location.href = `${volFile}?jump=${encodeURIComponent(recId)}`;
   }
 
+  function backToGlossaryIndex() {
+    selectedItem = null;
+    activeVolumeFilter = 'all';
+    if (window.history && window.history.replaceState) {
+      window.history.replaceState(null, '', window.location.pathname);
+    }
+    showIndexOverlay();
+    renderIndexCatalogList();
+    renderRightResultPane();
+  }
+
+  function handleTopNavSelectChange(selectEl) {
+    if (!selectEl.value) return;
+    if (selectEl.value === 'glossary.html') {
+      if (selectedItem) {
+        backToGlossaryIndex();
+      }
+      return;
+    }
+    window.location.href = selectEl.value;
+  }
+
   async function loadLeadWikipediaBox(wikiTitle) {
     const box = document.getElementById('leadWikiBox');
     if (!box || !wikiTitle) return;
@@ -1108,8 +1280,11 @@
   }
 
   function renderInitialGuide() {
+    const I = window.ThreeKingdomI18n;
+    const lang = I ? I.getLang() : 'ja';
     const rightBar = document.getElementById('rightTopBar');
-    rightBar.innerHTML = `<span style="font-size:0.88rem; font-weight:bold;">📑 登場人物・地名・官職 索引</span>`;
+    const headerTitle = I ? I.t('glossaryHeader') : '📑 登場人物・地名・官職 索引';
+    rightBar.innerHTML = `<span id="rightTopBarTitle" style="font-size:0.88rem; font-weight:bold;">${escapeHtml(headerTitle)}</span>`;
     renderOverviewPlacesOnMap();
 
     let resumeBannerHtml = '';
@@ -1120,49 +1295,70 @@
         if (lastSt && lastSt.file && lastSt.recId) {
           const vMeta = volById.get(Number(lastSt.volId));
           const recObj = recordById.get(String(lastSt.recId));
-          const volLabel = vMeta ? vMeta.full_label : String(lastSt.file);
-          const paraLabel = recObj ? `第${recObj.para_index}段落` : (lastSt.paraIndex ? `第${lastSt.paraIndex}段落` : '');
+          const rawVolLabel = vMeta ? vMeta.full_label : String(lastSt.file);
+          const volLabel = I ? I.volLabel(rawVolLabel) : rawVolLabel;
+          const pIdx = recObj ? recObj.para_index : (lastSt.paraIndex || '');
+          const paraLabel = pIdx ? (I ? I.t('paraParen', { p: pIdx }) : `（第${pIdx}段落）`) : '';
           const resumeHref = `${encodeURI(String(lastSt.file))}?resume=${encodeURIComponent(String(lastSt.recId))}`;
+          const resumeTitle = I ? I.t('resumeTitle') : '前回のしおり：';
+          const resumeBtn = I ? I.t('resumeBtn') : '前回の続きを読む ➔';
           resumeBannerHtml = `
             <div style="background:#fff8e1; border:2px solid #d4af37; border-radius:8px; padding:11px 14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; box-shadow:0 2px 6px rgba(0,0,0,0.06);">
               <div style="font-size:0.88rem; color:#4e342e;">
-                <strong>🔖 前回のしおり：</strong>${escapeHtml(volLabel)}${paraLabel ? `（${escapeHtml(paraLabel)}）` : ''}
+                <strong>🔖 ${escapeHtml(resumeTitle)}</strong>${escapeHtml(volLabel)} ${escapeHtml(paraLabel)}
               </div>
-              <a href="${resumeHref}" style="background:#2e7d32; color:#fff; text-decoration:none; padding:6px 13px; border-radius:5px; font-size:0.84rem; font-weight:bold; white-space:nowrap;">📖 前回の続きを読む ➔</a>
+              <a href="${resumeHref}" style="background:#2e7d32; color:#fff; text-decoration:none; padding:6px 13px; border-radius:5px; font-size:0.84rem; font-weight:bold; white-space:nowrap;">📖 ${escapeHtml(resumeBtn)}</a>
             </div>
           `;
         }
       }
     } catch (e) {}
 
-    const volLinksHtml = CORPUS.volumes.map(v =>
-      `<a href="${encodeURI(v.file)}" style="background:#fff; border:1px solid #8c6d46; color:#2c241b; text-decoration:none; padding:6px 12px; border-radius:5px; font-size:0.84rem; font-weight:bold; transition:0.15s;">📕 ${escapeHtml(v.full_label)}</a>`
-    ).join('');
+    const volLinksHtml = CORPUS.volumes.map(v => {
+      const vLabel = I ? I.volLabel(v.full_label) : v.full_label;
+      return `<a href="${encodeURI(v.file)}" style="background:#fff; border:1px solid #8c6d46; color:#2c241b; text-decoration:none; padding:6px 12px; border-radius:5px; font-size:0.84rem; font-weight:bold; transition:0.15s;">📕 ${escapeHtml(vLabel)}</a>`;
+    }).join('');
+
+    const guideTitle = I ? I.t('guideTitle') : '🔍 検索・索引から調べる';
+    const guideDesc1 = I ? I.t('guideDesc1') : '索引（<strong>人物</strong> ／ <strong>地名</strong> ／ <strong>官職</strong> ／ <strong>用語</strong>）から調べたい項目を押してください。';
+    const guideDesc2 = (lang === 'ja' || !I)
+      ? (I ? I.t('guideDesc2') : '先頭に <strong>Wikipediaと史料解説</strong> が出たのち、<strong>第1巻から最終巻まで一致する本文</strong> が順番に並び、本文中の地名を押すと地図で場所を確認できます。')
+      : I.t('guideDesc2');
+    const tryQuickLabel = I ? I.t('tryQuick') : '💡 すぐ試す：';
+    const readVolsTitle = I ? I.t('readVolumesTitle') : '📚 各巻の本編を通読する';
+    const sponsorLabel = I ? I.t('sponsor') : 'スポンサーリンク';
+
+    const sampleChips = [
+      { type: 'person', key: '曹操' },
+      { type: 'person', key: '于禁' },
+      { type: 'person', key: '王朗' },
+      { type: 'person', key: '王朗_将軍' },
+      { type: 'office', key: '太守' },
+      { type: 'place',  key: '内黄' }
+    ].map(sc => {
+      const itemObj = catalogMapByType[sc.type] && catalogMapByType[sc.type].get(sc.key);
+      return itemObj ? buildChipHtml(sc.type, itemObj) : '';
+    }).join('');
 
     const resultList = document.getElementById('resultList');
     resultList.innerHTML = `
       ${resumeBannerHtml}
       <div class="empty-guide-box">
-        <h3 style="margin-bottom:8px; color:#2c241b;">🔍 検索・索引から調べる</h3>
-        <p>索引（<strong>人物</strong> ／ <strong>地名</strong> ／ <strong>官職</strong> ／ <strong>用語</strong>）から調べたい項目を押してください。</p>
-        <p style="margin-top:6px;">先頭に <strong>Wikipediaと史料解説</strong> が出たのち、<strong>第1巻から最終巻まで一致する本文</strong> が順番に並び、本文中の地名を押すと地図で場所を確認できます。</p>
+        <h3 style="margin-bottom:8px; color:#2c241b;">${escapeHtml(guideTitle)}</h3>
+        <p>${guideDesc1}</p>
+        <p style="margin-top:6px;">${guideDesc2}</p>
         <div style="margin-top:12px; display:flex; flex-wrap:wrap; gap:6px; align-items:center;">
-          <span style="font-size:0.84rem; font-weight:bold;">💡 すぐ試す：</span>
-          <button class="index-chip person" onclick="selectGlossaryItem('person', '曹操', false)"><span class="chip-label">👤 曹操</span><span class="chip-yomi">そうそう</span></button>
-          <button class="index-chip person" onclick="selectGlossaryItem('person', '于禁', false)"><span class="chip-label">👤 于禁</span><span class="chip-yomi">うきん</span></button>
-          <button class="index-chip person" onclick="selectGlossaryItem('person', '王朗', false)"><span class="chip-label">👤 王朗（会稽太守・司徒）</span></button>
-          <button class="index-chip person" onclick="selectGlossaryItem('person', '王朗_将軍', false)"><span class="chip-label">👤 王朗（曹操軍の将軍）</span></button>
-          <button class="index-chip office" onclick="selectGlossaryItem('office', '太守', false)"><span class="chip-label">👑 太守</span><span class="chip-yomi">たいしゅ</span></button>
-          <button class="index-chip place" onclick="selectGlossaryItem('place', '内黄', false)"><span class="chip-label">📍 内黄</span><span class="chip-yomi">ないこう</span></button>
+          <span style="font-size:0.84rem; font-weight:bold;">${escapeHtml(tryQuickLabel)}</span>
+          ${sampleChips}
         </div>
         <hr style="border:none; border-top:1px dashed #d7ccc8; margin:14px 0 10px 0;">
-        <div style="font-size:0.85rem; font-weight:bold; color:#2c241b; margin-bottom:8px;">📚 各巻の本編を通読する</div>
+        <div style="font-size:0.85rem; font-weight:bold; color:#2c241b; margin-bottom:8px;">${escapeHtml(readVolsTitle)}</div>
         <div style="display:flex; flex-wrap:wrap; gap:8px;">
           ${volLinksHtml}
         </div>
       </div>
       <div class="ad-footer-box">
-        <div class="ad-footer-label">スポンサーリンク</div>
+        <div class="ad-footer-label">${escapeHtml(sponsorLabel)}</div>
         <ins class="adsbygoogle"
              style="display:block"
              data-ad-client="ca-pub-4382223240782332"
@@ -1178,6 +1374,8 @@
   function renderRightResultPane() {
     const resultList = document.getElementById('resultList');
     const rightBar = document.getElementById('rightTopBar');
+    const I = window.ThreeKingdomI18n;
+    const lang = I ? I.getLang() : 'ja';
 
     if (!selectedItem) {
       renderInitialGuide();
@@ -1198,38 +1396,43 @@
     // 複数巻に登場する場合のみ、件数なしのコンパクトな巻絞り込みボタンを表示
     let pillsHtml = '';
     if (presentVolIds.size > 1) {
-      pillsHtml = `<button class="vol-pill ${activeVolumeFilter === 'all' ? 'active' : ''}" onclick="setRightVolumeFilter('all')">全巻</button>`;
+      const allBtnLabel = I ? I.t('allVolsBtn') : '全巻';
+      pillsHtml = `<button class="vol-pill ${activeVolumeFilter === 'all' ? 'active' : ''}" onclick="setRightVolumeFilter('all')">${escapeHtml(allBtnLabel)}</button>`;
       CORPUS.volumes.forEach(v => {
         if (!presentVolIds.has(v.id)) return;
         const activeCls = activeVolumeFilter === v.id ? 'active' : '';
-        pillsHtml += `<button class="vol-pill ${activeCls}" onclick="setRightVolumeFilter(${v.id})">${escapeHtml(v.short_label.split(' ')[0])}</button>`;
+        const vShort = I ? I.volLabel(v.short_label.split(' ')[0]) : v.short_label.split(' ')[0];
+        pillsHtml += `<button class="vol-pill ${activeCls}" onclick="setRightVolumeFilter(${v.id})">${escapeHtml(vShort)}</button>`;
       });
     }
 
     const typeIcon = type === 'person' ? '👤' : (type === 'place' ? '📍' : (type === 'office' ? '👑' : '🔖'));
+    const itemDispTitle = getItemDispName(type, item);
     rightBar.innerHTML = `
-      <span style="font-size:0.88rem; font-weight:bold; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${typeIcon} ${escapeHtml(item.label)}</span>
+      <span style="font-size:0.88rem; font-weight:bold; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${typeIcon} ${escapeHtml(itemDispTitle)}</span>
       ${pillsHtml ? `<div class="vol-filter-strip">${pillsHtml}</div>` : ''}
     `;
 
     // 先頭カード組み立て（同姓同名切替 ＋ Wikipedia先頭 ＋ 当サイト史料解説）
-    let headingText = item.label;
+    let headingText = itemDispTitle;
     let descText = '';
     let wikiTitle = item.wiki_title || '';
     let homonymHtml = '';
 
     if (type === 'person') {
-      headingText = item.name_heading || `${item.label}（${item.yomi}）`;
       descText = item.ai_desc || '';
       if (Array.isArray(item.homonyms) && item.homonyms.length > 0) {
         const btns = item.homonyms.map(h => {
           const hk = String(h.key || '');
           const safeHk = hk.replace(/'/g, "\\'");
-          return `<button class="homonym-switch-btn" onclick="selectGlossaryItem('person', '${safeHk}', true)">👤 ${escapeHtml(h.label || hk)} を見る ➔</button>`;
+          const hDisp = I ? I.dispName('person', hk, h.label || hk) : (h.label || hk);
+          const viewText = I ? I.t('viewPerson', { n: hDisp }) : `👤 ${hDisp} を見る ➔`;
+          return `<button class="homonym-switch-btn" onclick="selectGlossaryItem('person', '${safeHk}', true)">${escapeHtml(viewText)}</button>`;
         }).join('');
+        const alertTitle = I ? I.t('homonymAlert') : '⚠️ 同姓同名・同名異人の別人物が存在します（史料考証に基づき分離済み）';
         homonymHtml = `
           <div class="homonym-alert-box">
-            <div style="font-size:0.82rem; font-weight:bold; color:#bf360c;">⚠️ 同姓同名・同名異人の別人物が存在します</div>
+            <div style="font-size:0.82rem; font-weight:bold; color:#bf360c;">${escapeHtml(alertTitle)}</div>
             <div style="display:flex; flex-wrap:wrap; gap:6px;">${btns}</div>
           </div>
         `;
@@ -1245,22 +1448,33 @@
       descText = item.ai_desc || '';
     }
 
-    const backBtnHtml = selectionHistory.length > 0
-      ? `<button class="history-back-btn" onclick="goBackSelectionHistory()">↩ ひとつ前の項目に戻る</button>`
+    const backToListBtnHtml = `<button class="history-back-btn" onclick="backToGlossaryIndex()" style="background:#5c472c;">${escapeHtml(I ? I.t('backToList') : '← 索引一覧に戻る')}</button>`;
+    const prevItemBtnHtml = selectionHistory.length > 0
+      ? `<button class="history-back-btn" onclick="goBackSelectionHistory()">${escapeHtml(I ? I.t('backPrevItem') : '↩ ひとつ前の項目に戻る')}</button>`
       : '';
+    const topButtonsHtml = `
+      <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+        ${backToListBtnHtml}
+        ${prevItemBtnHtml}
+      </div>
+    `;
 
+    const refocusBtnText = I ? I.t('refocusPlaceBtn') : '🗺️ 地図でこの場所を再フォーカス';
     const mapFocusBtnHtml = type === 'place'
-      ? `<button class="read-in-vol-btn" style="background:#5c472c; border-color:#8c6d46;" onclick="focusSinglePlaceOnMap('${String(key).replace(/'/g, "\\'")}', false, false)">🗺️ 地図でこの場所を再フォーカス</button>`
+      ? `<button class="read-in-vol-btn" style="background:#5c472c; border-color:#8c6d46;" onclick="focusSinglePlaceOnMap('${String(key).replace(/'/g, "\\'")}', false, false)">${escapeHtml(refocusBtnText)}</button>`
       : '';
 
-    const wikiPlaceholderHtml = wikiTitle
+    // Wikipedia概略は ja のときのみ表示
+    const wikiPlaceholderHtml = (wikiTitle && lang === 'ja')
       ? `<div class="wiki-lead-box" id="leadWikiBox">🌐 Wikipediaから「${escapeHtml(wikiTitle)}」を取得中...</div>`
       : '';
 
-    const primaryDescHtml = descText
+    const descHeadText = I ? I.t('descHead') : '📖 史料・事典解説';
+    const localizedDescText = I ? I.localDesc(type, key, descText) : descText;
+    const primaryDescHtml = localizedDescText
       ? `<div class="primary-desc-box">
-           <div style="font-weight:bold; color:#5d4037; margin-bottom:4px;">📖 史料・事典解説</div>
-           <div>${escapeHtml(descText)}</div>
+           <div style="font-weight:bold; color:#5d4037; margin-bottom:4px;">${escapeHtml(descHeadText)}</div>
+           <div>${escapeHtml(localizedDescText)}</div>
          </div>`
       : '';
 
@@ -1277,27 +1491,59 @@
       const isPei = rec.type === '裴注';
       const safeVolFile = String(vMeta.file).replace(/'/g, "\\'");
       const safeRecId = String(rec.id).replace(/'/g, "\\'");
+
+      const vShort = I ? I.volLabel(vMeta.short_label) : vMeta.short_label;
+      const sTitle = I ? I.sectionTitle(rec.section_title) : rec.section_title;
+      const pLabel = I ? I.t('paraParen', { p: rec.para_index }) : `（第${rec.para_index}段落）`;
+      const eraStr = rec.era_year ? ` ｜ 📅 ${I ? I.eraYear(rec.era_year) : rec.era_year}` : '';
+      const tLabel = I ? I.typeLabel(rec.type) : rec.type;
+      const readBtnText = I ? I.t('readInVolBtn') : '📖 この段落から本編を読む';
+
+      let bodyHtml = '';
+      if (lang === 'ja' || !I) {
+        bodyHtml = `
+          <div class="raw-text">${renderTaggedTextForGlossary(rec.raw_tagged, type, key)}</div>
+          <div class="kakikudashi">${renderTaggedTextForGlossary(rec.kakikudashi_tagged, type, key)}</div>
+          <div class="translation">${renderTaggedTextForGlossary(rec.translation_tagged, type, key)}</div>
+        `;
+      } else {
+        const i18nData = window.THREEKINGDOM_I18N;
+        const tr = (i18nData && i18nData.records && i18nData.records[rec.id] && i18nData.records[rec.id][lang]) || null;
+        const rawTagged = (tr && tr.raw_tagged) ? tr.raw_tagged : rec.raw_tagged;
+        const trTagged = (tr && tr.translation_tagged) ? tr.translation_tagged : rec.translation_tagged;
+        const fallbackNote = {
+          zh_tw: '（此段尚未翻譯，暫以日文譯文顯示）',
+          zh_cn: '（此段尚未翻译，暂以日文译文显示）',
+          ko: '(이 단락은 아직 번역되지 않아 일본어 번역을 표시합니다)'
+        }[lang] || '';
+        const fallbackHtml = tr ? '' : `<div class="i18n-fallback-note">${escapeHtml(fallbackNote)}</div>`;
+        bodyHtml = `
+          <div class="raw-text">${renderTaggedTextForGlossary(rawTagged, type, key)}</div>
+          <div class="translation">${renderTaggedTextForGlossary(trTagged, type, key)}</div>
+          ${fallbackHtml}
+        `;
+      }
+
       return `
         <div class="record-card ${isPei ? 'pei-note' : 'main-text'}" id="gcard-${escapeHtml(rec.id)}" data-rec-id="${escapeHtml(rec.id)}" onclick="activateGlossaryRecordCard('${safeRecId}')">
           <div class="card-top">
             <span>
-              <span class="vol-tag-badge">${escapeHtml(vMeta.short_label)}</span>
-              <strong>${escapeHtml(rec.id)}</strong> [${escapeHtml(rec.section_title)}]（第${rec.para_index}段落）${rec.era_year ? ` ｜ 📅 ${escapeHtml(rec.era_year)}` : ''}
+              <span class="vol-tag-badge">${escapeHtml(vShort)}</span>
+              <strong>${escapeHtml(rec.id)}</strong> [${escapeHtml(sTitle)}] ${escapeHtml(pLabel)}${escapeHtml(eraStr)}
             </span>
             <span style="display:inline-flex; align-items:center; gap:6px;">
-              <span class="badge ${isPei ? 'pei' : 'main'}">${escapeHtml(rec.type)}</span>
-              <button class="read-in-vol-btn" onclick="jumpFromGlossaryToVolume(event, '${safeVolFile}', '${safeRecId}')">📖 この段落から本編を読む</button>
+              <span class="badge ${isPei ? 'pei' : 'main'}">${escapeHtml(tLabel)}</span>
+              <button class="read-in-vol-btn" onclick="jumpFromGlossaryToVolume(event, '${safeVolFile}', '${safeRecId}')">${escapeHtml(readBtnText)}</button>
             </span>
           </div>
-          <div class="raw-text">${renderTaggedTextForGlossary(rec.raw_tagged, type, key)}</div>
-          <div class="kakikudashi">${renderTaggedTextForGlossary(rec.kakikudashi_tagged, type, key)}</div>
-          <div class="translation">${renderTaggedTextForGlossary(rec.translation_tagged, type, key)}</div>
+          ${bodyHtml}
         </div>
       `;
     }).join('');
 
+    const sponsorLabel = I ? I.t('sponsor') : 'スポンサーリンク';
     resultList.innerHTML = `
-      ${backBtnHtml}
+      ${topButtonsHtml}
       <div class="head-summary-card">
         <div class="head-summary-title">
           <span>${typeIcon} ${escapeHtml(headingText)}</span>
@@ -1309,7 +1555,7 @@
       </div>
       ${cardsHtml}
       <div class="ad-footer-box">
-        <div class="ad-footer-label">スポンサーリンク</div>
+        <div class="ad-footer-label">${escapeHtml(sponsorLabel)}</div>
         <ins class="adsbygoogle"
              style="display:block"
              data-ad-client="ca-pub-4382223240782332"
@@ -1319,8 +1565,7 @@
     `;
     resultList.scrollTop = 0;
 
-
-    if (wikiTitle) {
+    if (wikiTitle && lang === 'ja') {
       loadLeadWikipediaBox(wikiTitle);
     }
     try {
