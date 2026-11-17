@@ -1,0 +1,1504 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>アーサー王物語</title>
+  <meta name="application-name" content="アーサー王物語">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="アーサー王物語">
+  <meta name="theme-color" content="#2c241b">
+  <link rel="icon" type="image/png" sizes="192x192" href="./favicon.png?v=3">
+  <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png?v=3">
+  <link rel="manifest" href="./manifest.webmanifest?v=3">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-310XSTTWSM"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-310XSTTWSM');
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4382223240782332" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <style>
+    /* =========================================================================
+       『正史三國志』総合索引（glossary.html / index.html）ブラウン／羊皮紙テーマ
+       ========================================================================= */
+    :root {
+      --bg-header-dark: #2c241b;
+      --bg-header-sub: #3d2f1d;
+      --bg-parchment: #f4f1ea;
+      --bg-card: #fffdf9;
+      --border-warm: #dcd3c1;
+      --accent-gold: #8c6d46;
+      --accent-gold-light: #d4b483;
+      --accent-red: #b3392b;
+      --text-primary: #261f18;
+      --text-muted: #6b5c4c;
+      --place-green: #1e6b3b;
+      --person-brown: #7c3f12;
+      --office-blue: #1e4e79;
+      --special-purple: #63317c;
+      --desktop-pane-width-pct: 50%;
+      --mobile-map-height-pct: 42%;
+      --mobile-reader-height-pct: 58%;
+      --reader-bottom-safe-px: 48px;
+      --z-map-controls: 700;
+      --z-map-toast: 720;
+      --z-index-overlay: 760;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      height: 100dvh;
+      overflow: hidden;
+      background: var(--bg-parchment);
+      color: var(--text-primary);
+      font-family: "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", Georgia, serif;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    .app-shell {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
+      min-height: 100vh;
+      min-height: 100dvh;
+      max-height: 100dvh;
+      overflow: hidden;
+    }
+
+    .left-pane {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      width: var(--desktop-pane-width-pct);
+      height: 100vh;
+      height: 100dvh;
+      min-height: 100dvh;
+      flex-shrink: 0;
+      border-right: 2px solid #bda988;
+      background: #dfd7c5;
+    }
+
+    #map {
+      width: 100%;
+      flex: 1 1 0%;
+      min-height: 0;
+    }
+
+    /* 地図上の巻切り替えバー（本家『正史三國志』と同一のスリム1行構成） */
+    .vol-nav-bar {
+      height: 38px;
+      min-height: 38px;
+      background: #2c241b;
+      color: #f7f1e5;
+      border-bottom: 1.5px solid #8c6d46;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      padding: 0 12px;
+      z-index: 2000;
+      user-select: none;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .home-top-link {
+      position: absolute;
+      left: 10px;
+      background: #3e2723;
+      color: #ffe082;
+      border: 1px solid #8c6d46;
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 0.76rem;
+      font-weight: bold;
+      text-decoration: none;
+      line-height: 1.3;
+      white-space: nowrap;
+    }
+    .home-top-link:hover { background: #5d4037; color: #fff; }
+    .slim-nav-btn {
+      background: #4e342e;
+      color: #ffd54f;
+      border: 1px solid #8c6d46;
+      border-radius: 4px;
+      padding: 2px 10px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      cursor: pointer;
+      line-height: 1.3;
+      text-decoration: none;
+    }
+    .slim-nav-btn:hover:not(:disabled) { background: #6d4c41; color: #fff; }
+    .slim-nav-btn:disabled {
+      background: transparent;
+      color: #6d5d4b;
+      border-color: #4e342e;
+      cursor: not-allowed;
+    }
+    .vol-nav-select {
+      background: #3e2723;
+      color: #f7f1e5;
+      border: 1px solid #8c6d46;
+      border-radius: 4px;
+      padding: 2px 10px;
+      font-size: 0.88rem;
+      font-weight: bold;
+      cursor: pointer;
+      text-align: center;
+      font-family: "Yu Mincho", "MS PMincho", serif;
+      letter-spacing: 0.05em;
+      min-width: 0;
+      max-width: 240px;
+    }
+    @media (max-width: 520px) {
+      .vol-nav-bar { gap: 6px; padding: 0 6px; }
+      .home-top-link { position: static; margin-right: auto; padding: 2px 6px; font-size: 0.72rem; }
+      .vol-nav-select { max-width: 150px; font-size: 0.8rem; }
+    }
+
+    /* 地図右上：[📌 地図固定] ボタン */
+    .map-lock-btn {
+      position: absolute;
+      top: 10px;
+      right: 54px;
+      z-index: var(--z-map-controls);
+      background: rgba(255, 253, 249, 0.95);
+      color: var(--text-primary);
+      border: 1px solid #a38e6d;
+      border-radius: 6px;
+      padding: 5px 9px;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 1px 5px rgba(0, 0, 0, 0.22);
+      white-space: nowrap;
+    }
+
+    .map-lock-btn.is-locked {
+      background: var(--accent-red);
+      color: #ffffff;
+      border-color: #7c1f15;
+    }
+
+    /* 左下1行トースト */
+    .map-toast {
+      position: absolute;
+      left: 10px;
+      bottom: 18px;
+      max-width: calc(100% - 20px);
+      z-index: var(--z-map-toast);
+      display: none;
+      align-items: center;
+      gap: 8px;
+      background: rgba(44, 36, 27, 0.94);
+      color: #fdf8ee;
+      border-left: 3px solid var(--accent-gold-light);
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 0.78rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .map-toast.is-visible {
+      display: inline-flex;
+    }
+
+    .map-toast-text {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .map-toast-close {
+      background: transparent;
+      border: none;
+      color: #dfd3be;
+      font-size: 0.85rem;
+      cursor: pointer;
+      padding: 0 2px;
+      flex-shrink: 0;
+    }
+
+    .nature-mtn-label {
+      color: #5c4328;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-shadow: 1px 1px 2px rgba(255,255,255,0.92), -1px -1px 2px rgba(255,255,255,0.92);
+      white-space: nowrap;
+      pointer-events: none;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    .nature-river-label {
+      color: #1f5a8a;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-shadow: 1px 1px 2px rgba(255,255,255,0.92), -1px -1px 2px rgba(255,255,255,0.92);
+      white-space: nowrap;
+      pointer-events: none;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    .place-pin-tooltip {
+      background: rgba(44, 36, 27, 0.9);
+      color: #fffdf8;
+      border: 1px solid #d4b483;
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 0.74rem;
+      font-weight: 700;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    }
+
+    .area-badge-label {
+      background: rgba(179, 57, 43, 0.84);
+      color: #ffffff;
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    /* 左ペイン上の五十音順 総合索引オーバーレイ（省スペース：件数表記なし・行ボタン列なし） */
+    .index-overlay {
+      position: absolute;
+      top: 50px;
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      z-index: var(--z-index-overlay);
+      background: rgba(255, 253, 249, 0.97);
+      border: 2px solid var(--accent-gold);
+      border-radius: 8px;
+      box-shadow: 0 6px 22px rgba(28, 22, 16, 0.3);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    .index-overlay.is-hidden {
+      display: none;
+    }
+
+    .index-top-controls {
+      background: var(--bg-header-dark);
+      padding: 7px 9px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .index-search-input {
+      flex: 1 1 auto;
+      min-width: 0;
+      background: #fffdf9;
+      color: var(--text-primary);
+      border: 1px solid #bda682;
+      border-radius: 5px;
+      padding: 5px 9px;
+      font-size: 0.82rem;
+    }
+
+    .view-map-btn {
+      background: var(--bg-header-sub);
+      color: #f6efe2;
+      border: 1px solid var(--accent-gold-light);
+      border-radius: 5px;
+      padding: 5px 9px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .index-cat-tabs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: var(--bg-header-sub);
+      border-bottom: 1px solid #6e5536;
+      flex-shrink: 0;
+    }
+
+    .cat-tab-btn {
+      background: transparent;
+      color: #e2d7c3;
+      border: none;
+      border-bottom: 3px solid transparent;
+      padding: 7px 4px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .cat-tab-btn.is-active {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.08);
+      border-bottom-color: var(--accent-gold-light);
+    }
+
+    .index-chips-scroll {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 10px 12px 18px;
+    }
+
+    .gojuon-group-heading {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--bg-header-sub);
+      border-bottom: 1px solid var(--border-warm);
+      padding-bottom: 2px;
+      margin: 10px 0 6px;
+    }
+
+    .gojuon-group-heading:first-child {
+      margin-top: 0;
+    }
+
+    .chips-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .index-chip {
+      background: #fbf7ef;
+      color: var(--text-primary);
+      border: 1px solid #d3c5ad;
+      border-radius: 5px;
+      padding: 4px 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+      line-height: 1.3;
+    }
+
+    .index-chip:hover {
+      background: #f1e7d4;
+      border-color: var(--accent-gold);
+    }
+
+    .index-chip.is-selected {
+      background: var(--bg-header-dark);
+      color: #ffffff;
+      border-color: var(--bg-header-dark);
+    }
+
+    .chip-yomi {
+      display: block;
+      font-size: 0.66rem;
+      font-weight: 400;
+      opacity: 0.78;
+    }
+
+    /* 右ペイン：選択項目の解説サマリー＋該当本文カード一覧 */
+    .right-pane {
+      width: var(--desktop-pane-width-pct);
+      height: 100%;
+      min-height: 0;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-parchment);
+    }
+
+    .reader-header {
+      background: var(--bg-header-dark);
+      color: #f6efe2;
+      padding: 8px 12px;
+      border-bottom: 1px solid #6e5536;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-shrink: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    .reader-app-name {
+      font-size: 0.72rem;
+      color: var(--accent-gold-light);
+      font-weight: 700;
+    }
+
+    .reader-vol-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .start-vol-link {
+      background: var(--accent-gold);
+      color: #ffffff;
+      text-decoration: none;
+      border-radius: 5px;
+      padding: 5px 10px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .records-scroll {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 12px 14px calc(var(--reader-bottom-safe-px) + env(safe-area-inset-bottom, 0px));
+    }
+
+    /* 選択項目の先頭解説カード */
+    .head-summary-card {
+      background: #fcf7ec;
+      border: 2px solid var(--accent-gold);
+      border-radius: 8px;
+      padding: 13px 15px;
+      margin-bottom: 14px;
+      font-family: system-ui, -apple-system, sans-serif;
+      box-shadow: 0 2px 8px rgba(44, 36, 27, 0.08);
+    }
+
+    .summary-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--bg-header-dark);
+      margin-bottom: 6px;
+    }
+
+    .summary-role-badge {
+      display: inline-block;
+      background: #ebe0cc;
+      color: #4a3720;
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .summary-desc {
+      font-size: 0.86rem;
+      line-height: 1.7;
+      color: var(--text-primary);
+    }
+
+    .homonym-switch-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 9px;
+      padding: 6px 8px;
+      background: #f3e8d6;
+      border-radius: 5px;
+    }
+
+    .homonym-btn {
+      background: #fffdf9;
+      color: var(--text-primary);
+      border: 1px solid #a88d63;
+      border-radius: 4px;
+      padding: 3px 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .homonym-btn.is-current {
+      background: var(--bg-header-sub);
+      color: #ffffff;
+    }
+
+    .summary-wiki-box {
+      margin-top: 9px;
+      padding: 8px 10px;
+      background: #f4f1ea;
+      border: 1px solid var(--border-warm);
+      border-radius: 6px;
+      font-size: 0.79rem;
+      line-height: 1.55;
+    }
+
+    /* 該当本文カード */
+    .record-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-warm);
+      border-left: 4px solid #cbbba0;
+      border-radius: 7px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+    }
+
+    .record-card.active-card {
+      border-left-color: var(--accent-red);
+      box-shadow: 0 2px 10px rgba(179, 57, 43, 0.14);
+    }
+
+    .card-meta-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      margin-bottom: 8px;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      flex-wrap: wrap;
+    }
+
+    .open-in-vol-link {
+      background: #efe6d5;
+      color: #3d2f1d;
+      text-decoration: none;
+      border: 1px solid #c5b190;
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-weight: 700;
+      font-size: 0.73rem;
+    }
+
+    .trans-box {
+      font-size: 0.95rem;
+      line-height: 1.88;
+      color: var(--text-primary);
+    }
+
+    .inline-place {
+      color: var(--place-green);
+      border-bottom: 2px solid var(--place-green);
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .inline-person {
+      color: var(--person-brown);
+      border-bottom: 1.5px dotted var(--person-brown);
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .inline-office {
+      color: var(--office-blue);
+      border-bottom: 1.5px dashed var(--office-blue);
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .inline-special {
+      color: var(--special-purple);
+      border-bottom: 1.5px dotted var(--special-purple);
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .matched-target-term {
+      background: #ffe58f;
+      border-radius: 3px;
+      padding: 0 2px;
+    }
+
+    .source-details {
+      margin-top: 9px;
+      border-top: 1px dashed var(--border-warm);
+      padding-top: 6px;
+    }
+
+    .source-details summary {
+      cursor: pointer;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .source-text-body {
+      margin-top: 6px;
+      padding: 8px 10px;
+      background: #f7f3eb;
+      border-radius: 5px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 0.88rem;
+      line-height: 1.7;
+    }
+
+    .adsense-footer-box {
+      margin-top: 18px;
+      padding: 10px;
+      background: #efeae0;
+      border: 1px solid var(--border-warm);
+      border-radius: 6px;
+      text-align: center;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    @media (max-width: 900px) {
+      .app-shell {
+        flex-direction: column;
+      }
+      .left-pane {
+        width: 100%;
+        height: var(--mobile-map-height-pct);
+        border-right: none;
+        border-bottom: 2px solid #bda988;
+      }
+      .right-pane {
+        width: 100%;
+        height: var(--mobile-reader-height-pct);
+      }
+      .map-lock-btn {
+        top: 6px;
+        right: 48px;
+        padding: 4px 7px;
+        font-size: 0.72rem;
+      }
+      .index-overlay {
+        top: 42px;
+        left: 6px;
+        right: 6px;
+        bottom: 6px;
+      }
+    }
+    /* 右ペイン上部：vol01.html と同一のスリム1行バー（左：本編リンク／右端：言語切替） */
+    .gloss-bar {
+      height: 38px;
+      min-height: 38px;
+      background: #2c241b;
+      border-bottom: 1.5px solid #8c6d46;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 10px;
+      flex-shrink: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+    .gloss-bar-link {
+      color: #ffe082;
+      background: #3e2723;
+      border: 1px solid #8c6d46;
+      border-radius: 4px;
+      padding: 2px 10px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .lang-switch-bar { margin-left: auto; display: inline-flex; gap: 3px; flex-shrink: 0; }
+    .lang-btn {
+      background: #4e342e;
+      color: #ffd54f;
+      border: 1px solid #8c6d46;
+      border-radius: 4px;
+      padding: 3px 7px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .lang-btn.is-active { background: #c9a66b; color: #ffffff; border-color: #e8d3a8; }
+    .back-to-index-btn {
+      background: #3e2723;
+      color: #ffe082;
+      border: 1px solid #8c6d46;
+      border-radius: 4px;
+      padding: 4px 12px;
+      font-size: 0.82rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 8px;
+    }
+    .back-to-index-btn:hover { background: #5d4037; color: #ffffff; }
+    /* 地図内部（Leaflet の [+][-]・レイヤーボタン等 z-index 最大1000）を独立スタッキングに閉じ込め、
+       索引オーバーレイ（z-index 1500）の上に突き抜けて検索欄へ重なるのを防ぐ */
+    #map {
+      position: relative;
+      z-index: 0;
+      isolation: isolate;
+    }
+    .index-overlay {
+      z-index: 1500;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- 左ペイン：地図 ＋ 五十音順総合索引オーバーレイ -->
+    <section class="left-pane" aria-label="歴史地図と総合索引ペイン">
+    <div class="vol-nav-bar">
+      <a href="https://wasabikarashi.com/" class="home-top-link" title="Portal" data-i18n="{&quot;ja&quot;: &quot;🏠 トップ&quot;, &quot;en&quot;: &quot;🏠 Top&quot;, &quot;zh_tw&quot;: &quot;🏠 首頁&quot;, &quot;zh_cn&quot;: &quot;🏠 首页&quot;, &quot;ko&quot;: &quot;🏠 홈&quot;}">🏠 トップ</a>
+      <button class="slim-nav-btn" disabled>←</button>
+      <select class="vol-nav-select" id="volNavSelect" onchange="if(window.arthurNavChange){window.arthurNavChange(this);return;} if(this.value) location.href=this.value;">
+        <option value="glossary.html" selected data-i18n="{&quot;ja&quot;: &quot;📑 登場人物・地名・称号 索引&quot;, &quot;en&quot;: &quot;📑 Index: People, Places, Titles&quot;, &quot;zh_tw&quot;: &quot;📑 人物・地名・稱號 索引&quot;, &quot;zh_cn&quot;: &quot;📑 人物・地名・称号 索引&quot;, &quot;ko&quot;: &quot;📑 인물·지명·칭호 색인&quot;}">📑 登場人物・地名・称号 索引</option>
+        <option value="vol01.html" data-i18n="{&quot;ja&quot;: &quot;序章 ユーサー王とマーリン&quot;, &quot;en&quot;: &quot;Prologue: King Uther and Merlin&quot;, &quot;zh_tw&quot;: &quot;序章 烏瑟王與梅林&quot;, &quot;zh_cn&quot;: &quot;序章 乌瑟王与梅林&quot;, &quot;ko&quot;: &quot;프롤로그: 우서 왕과 멀린&quot;}">序章 ユーサー王とマーリン</option>
+      </select>
+      <button class="slim-nav-btn" disabled>→</button>
+    </div>
+    <script>
+    window.applyNavLang = function(lang) {
+      var bar = document.querySelector('.vol-nav-bar');
+      if (!bar) return;
+      var home = bar.querySelector('.home-top-link');
+      if (home && home.getAttribute('data-i18n')) {
+        var h = JSON.parse(home.getAttribute('data-i18n'));
+        if (h[lang]) home.textContent = h[lang];
+      }
+      bar.querySelectorAll('option').forEach(function(o) {
+        if (!o.getAttribute('data-i18n')) return;
+        var d = JSON.parse(o.getAttribute('data-i18n'));
+        if (d[lang]) o.textContent = d[lang];
+      });
+    };
+    try {
+      var qLang = new URLSearchParams(location.search).get('lang');
+      window.applyNavLang(qLang || localStorage.getItem('arthur_selected_lang') || 'ja');
+    } catch (e) {}
+    </script>
+      <div id="map"></div>
+
+      <div id="mapToast" class="map-toast" role="status" aria-live="polite"></div>
+
+      <!-- 省スペース4分類索引パネル（件数表記・行ボタン列なし） -->
+      <div id="indexOverlay" class="index-overlay">
+        <div class="index-top-controls">
+          <input type="search" id="indexSearchInput" class="index-search-input" placeholder="人物・地名・部族・用語を検索…" aria-label="用語検索">
+          <button type="button" id="hideIndexViewMapBtn" class="view-map-btn">🗺️ 地図を見る</button>
+        </div>
+        <div class="index-cat-tabs" role="tablist">
+          <button type="button" class="cat-tab-btn is-active" data-cat="person">👤 人物</button>
+          <button type="button" class="cat-tab-btn" data-cat="place">🗺️ 地名</button>
+          <button type="button" class="cat-tab-btn" data-cat="office">👑 部族・称号</button>
+          <button type="button" class="cat-tab-btn" data-cat="special">🔖 用語</button>
+        </div>
+        <div id="indexChipsScroll" class="index-chips-scroll"></div>
+      </div>
+    </section>
+
+    <!-- 右ペイン：解説サマリー ＋ 登場本文カード一覧 -->
+    <main class="right-pane" aria-label="解説と本文一覧ペイン">
+      <div class="gloss-bar">
+        <a class="gloss-bar-link" id="startVolLink" href="vol01.html">📖 本編へ</a>
+        <div class="lang-switch-bar" id="langSwitchBar" role="group" aria-label="Language"></div>
+      </div>
+
+      <div id="recordsScroll" class="records-scroll">
+        <div id="headSummaryContainer"></div>
+        <div id="matchingRecordsContainer"></div>
+        <div class="adsense-footer-box">
+          <ins class="adsbygoogle"
+               style="display:block"
+               data-ad-client="ca-pub-4382223240782332"
+               data-ad-format="auto"
+               data-full-width-responsive="true"></ins>
+          <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script src="./shared_map_controller.js"></script>
+  <script src="./shared_glossary_corpus.js"></script>
+  <script>
+  (function() {
+    "use strict";
+
+    // =========================================================================
+    // 定数定義（マジックナンバー厳禁）
+    // =========================================================================
+    const INITIAL_MAP_LAT = 51.85;
+    const INITIAL_MAP_LNG = -2.6;
+    const INITIAL_MAP_ZOOM = 6;
+
+    const PLACES_MASTER = {"ブリテン島": {"key": "ブリテン島", "name": "ブリテン島", "yomi": "ぶりてんとう", "label": "ブリテン島（ぶりてんとう：アーサー王伝説の舞台となるグレートブリテン島）", "place_type": "area", "is_area": true, "is_river": false, "category": "島（広域エリア）", "province": "ブリテン島", "parent_area": "", "modern": "イギリス（イングランド・ウェールズ・スコットランド）", "lat": 52.5, "lng": -1.8, "zoom": 6, "is_pin": false, "area_polygon": [[59.5, -6.4], [59.5, 1.8], [49.9, 1.8], [49.9, -6.4]], "river_coords": [], "wiki_title": "グレートブリテン島", "role_i18n": {"ja": "島（広域エリア）／ イギリス（イングランド・ウェールズ・スコットランド）", "en": "Island (broad region) / United Kingdom (England, Wales, Scotland)", "zh_tw": "島嶼（廣域地區）／ 英國（英格蘭、威爾斯、蘇格蘭）", "zh_cn": "岛屿（广域地区）／ 英国（英格兰、威尔士、苏格兰）", "ko": "섬(광역 지역) / 영국(잉글랜드·웨일스·스코틀랜드)"}, "desc_i18n": {"ja": "アーサー王伝説の舞台となるグレートブリテン島。", "en": "Great Britain, the island that serves as the stage of Arthurian legend.", "zh_tw": "亞瑟王傳說的舞台——大不列顛島。", "zh_cn": "亚瑟王传说的舞台——大不列颠岛。", "ko": "아서 왕 전설의 무대가 되는 그레이트브리튼 섬."}, "sort_key_i18n": {"zh_tw": "B", "zh_cn": "B"}}, "ティンタジェル": {"key": "ティンタジェル", "name": "ティンタジェル", "yomi": "てぃんたじぇる", "label": "ティンタジェル（てぃんたじぇる：コーンウォール北岸の岬に残る城跡）", "place_type": "point", "is_area": false, "is_river": false, "category": "城・岬（地点ピン）", "province": "ブリテン島", "parent_area": "ブリテン島", "modern": "イギリス・イングランド・コーンウォール", "lat": 50.668, "lng": -4.76, "zoom": 7, "is_pin": true, "area_polygon": [], "river_coords": [], "wiki_title": "ティンタジェル城", "role_i18n": {"ja": "城・岬／ イギリス・イングランド・コーンウォール", "en": "Castle and headland / Cornwall, England, UK", "zh_tw": "城堡・海岬／ 英國・英格蘭・康瓦爾", "zh_cn": "城堡・海岬／ 英国・英格兰・康沃尔", "ko": "성·곶 / 영국·잉글랜드·콘월"}, "desc_i18n": {"ja": "コーンウォール北岸の岬に残る城跡。パイルの物語ではゲルロイス公の領地として語られる。", "en": "Castle ruins on a headland of the north Cornish coast. In Pyle's tale it is the seat of the Duke Gerlois.", "zh_tw": "位於康瓦爾北岸海岬上的城堡遺跡。在派爾的故事中是格洛伊斯公爵的領地。", "zh_cn": "位于康沃尔北岸海岬上的城堡遗迹。在派尔的故事中是格洛伊斯公爵的领地。", "ko": "콘월 북쪽 해안의 곶에 남아 있는 성터. 파일의 이야기에서는 게를루아 공작의 영지로 나온다."}, "sort_key_i18n": {"zh_tw": "T", "zh_cn": "T"}}, "オークニー": {"key": "オークニー", "name": "オークニー", "yomi": "おーくにー", "label": "オークニー（おーくにー：スコットランド北方に連なる島々）", "place_type": "point", "is_area": false, "is_river": false, "category": "島嶼（地点ピン）", "province": "ブリテン島", "parent_area": "ブリテン島", "modern": "イギリス・スコットランド・オークニー諸島", "lat": 58.981, "lng": -2.96, "zoom": 7, "is_pin": true, "area_polygon": [], "river_coords": [], "wiki_title": "オークニー諸島", "role_i18n": {"ja": "島嶼／ イギリス・スコットランド・オークニー諸島", "en": "Islands / Orkney Islands, Scotland, UK", "zh_tw": "島嶼／ 英國・蘇格蘭・奧克尼群島", "zh_cn": "岛屿／ 英国・苏格兰・奥克尼群岛", "ko": "섬 / 영국·스코틀랜드·오크니 제도"}, "desc_i18n": {"ja": "スコットランド北方に連なる島々。パイルの物語ではロット王の領地として語られる。", "en": "The islands lying north of Scotland. In Pyle's tale they are the domain of King Lot.", "zh_tw": "位於蘇格蘭北方的一群島嶼。在派爾的故事中是洛特國王的領地。", "zh_cn": "位于苏格兰北方的一群岛屿。在派尔的故事中是洛特国王的领地。", "ko": "스코틀랜드 북쪽에 이어진 섬들. 파일의 이야기에서는 로트 왕의 영지로 나온다."}, "sort_key_i18n": {"zh_tw": "A", "zh_cn": "A"}}, "カンタベリー": {"key": "カンタベリー", "name": "カンタベリー", "yomi": "かんたべりー", "label": "カンタベリー（かんたべりー：イングランド南東部ケント州にある、イングランド教会の中心都市）", "place_type": "point", "is_area": false, "is_river": false, "category": "都市・大司教座（地点ピン）", "province": "ブリテン島", "parent_area": "ブリテン島", "modern": "イギリス・イングランド・ケント州カンタベリー", "lat": 51.28, "lng": 1.08, "zoom": 7, "is_pin": true, "area_polygon": [], "river_coords": [], "wiki_title": "カンタベリー", "role_i18n": {"ja": "都市・大司教座／ イギリス・イングランド・ケント州", "en": "City and archbishopric / Kent, England, UK", "zh_tw": "城市・大主教座／ 英國・英格蘭・肯特郡", "zh_cn": "城市・大主教座／ 英国・英格兰・肯特郡", "ko": "도시·대주교좌 / 영국·잉글랜드·켄트주"}, "desc_i18n": {"ja": "イングランド南東部ケント州にある、イングランド教会の中心都市。本作ではカンタベリー大司教が登場する。", "en": "The centre of the Church of England, in Kent in south-eastern England. In this tale the Archbishop of Canterbury appears.", "zh_tw": "位於英格蘭東南部肯特郡、英格蘭教會的中心城市。本作中登場坎特伯里大主教。", "zh_cn": "位于英格兰东南部肯特郡、英格兰教会的中心城市。本作中登场坎特伯雷大主教。", "ko": "잉글랜드 남동부 켄트주에 있는 잉글랜드 교회의 중심 도시. 이 작품에는 캔터베리 대주교가 등장한다."}, "sort_key_i18n": {"zh_tw": "K", "zh_cn": "K"}}};
+    const PERSON_GLOSSARY = {"ユーサー": {"name": "ユーサー・ペンドラゴン（ゆーさー・ぺんどらごん：アーサーの父とされるブリテンの王）", "display_name": "ユーサー・ペンドラゴン（アーサーの父とされるブリテンの王）", "yomi": "ゆーさー・ぺんどらごん", "wiki_title": "ユーサー・ペンドラゴン", "role": "アーサーの父とされるブリテンの王", "ai_desc": "アーサー王伝説でアーサーの父とされるブリテンの王。ジェフリー・オブ・モンマス『ブリタニア列王史』以来の伝承に登場する。", "role_i18n": {"ja": "アーサーの父とされるブリテンの王", "en": "King of Britain, father of Arthur", "zh_tw": "不列顛國王，亞瑟之父", "zh_cn": "不列颠国王，亚瑟之父", "ko": "브리튼의 왕, 아서의 아버지"}, "desc_i18n": {"ja": "アーサー王伝説でアーサーの父とされるブリテンの王。ジェフリー・オブ・モンマス『ブリタニア列王史』以来の伝承に登場する。", "en": "In Arthurian legend, the King of Britain said to be Arthur's father. He appears in the tradition from Geoffrey of Monmouth's History of the Kings of Britain onward.", "zh_tw": "亞瑟王傳說中被視為亞瑟之父的不列顛國王。自蒙茅斯的傑弗里《不列顛諸王史》以來的傳承中即有其人。", "zh_cn": "亚瑟王传说中被视为亚瑟之父的不列颠国王。自蒙茅斯的杰弗里《不列颠诸王史》以来的传承中即有其人。", "ko": "아서 왕 전설에서 아서의 아버지로 여겨지는 브리튼의 왕. 제프리 오브 몬머스의 『브리튼 열왕사』 이래의 전승에 등장한다."}, "sort_key_i18n": {"zh_tw": "W", "zh_cn": "W"}}, "マーリン": {"name": "マーリン（まーりん：ユーサーとアーサーに仕える予言者・魔術師）", "display_name": "マーリン（ユーサーとアーサーに仕える予言者・魔術師）", "yomi": "まーりん", "wiki_title": "マーリン", "role": "ユーサーとアーサーに仕える予言者・魔術師", "ai_desc": "アーサー王伝説に登場する予言者にして魔術師。ジェフリー・オブ・モンマスの著作を通じて広く知られるようになった。", "role_i18n": {"ja": "ユーサーとアーサーに仕える予言者・魔術師", "en": "Prophet and enchanter serving Uther and Arthur", "zh_tw": "輔佐烏瑟與亞瑟的預言家、魔法師", "zh_cn": "辅佐乌瑟与亚瑟的预言家、魔法师", "ko": "우서와 아서를 섬기는 예언자·마법사"}, "desc_i18n": {"ja": "アーサー王伝説に登場する予言者にして魔術師。ジェフリー・オブ・モンマスの著作を通じて広く知られるようになった。", "en": "The prophet and enchanter of Arthurian legend, made widely known through the writings of Geoffrey of Monmouth.", "zh_tw": "亞瑟王傳說中的預言家與魔法師，因蒙茅斯的傑弗里的著作而廣為人知。", "zh_cn": "亚瑟王传说中的预言家与魔法师，因蒙茅斯的杰弗里的著作而广为人知。", "ko": "아서 왕 전설에 등장하는 예언자이자 마법사. 제프리 오브 몬머스의 저작을 통해 널리 알려졌다."}, "sort_key_i18n": {"zh_tw": "M", "zh_cn": "M"}}, "ウルフィアス": {"name": "ウルフィアス（うるふぃあす：ユーサーに仕える騎士）", "display_name": "ウルフィアス（ユーサーに仕える騎士）", "yomi": "うるふぃあす", "wiki_title": "", "role": "ユーサーに仕える騎士", "ai_desc": "ユーサー王に仕える騎士。マロリー『アーサー王の死』ではサー・ウルフィウスとして、王の側近の助言者・騎士として登場する。", "role_i18n": {"ja": "ユーサーに仕える騎士", "en": "Knight in Uther's service", "zh_tw": "烏瑟麾下的騎士", "zh_cn": "乌瑟麾下的骑士", "ko": "우서를 섬기는 기사"}, "desc_i18n": {"ja": "ユーサー王に仕える騎士。マロリー『アーサー王の死』ではサー・ウルフィウスとして、王の側近の助言者・騎士として登場する。", "en": "A knight in the service of King Uther. In Malory's Le Morte d'Arthur he appears as Sir Ulfius, a close adviser and knight of the king.", "zh_tw": "效力於烏瑟王的騎士。在馬洛禮《亞瑟王之死》中，他以Ulfius爵士之名登場，是國王身邊的謀士與騎士。", "zh_cn": "效力于乌瑟王的骑士。在马洛礼《亚瑟王之死》中，他以Ulfius爵士之名登场，是国王身边的谋士与骑士。", "ko": "우서 왕을 섬기는 기사. 맬러리의 『아서 왕의 죽음』에는 울피우스 경(Sir Ulfius)으로 나와 왕의 측근 조언자이자 기사로 등장한다."}, "sort_key_i18n": {"zh_tw": "W", "zh_cn": "W"}}, "イグレーヌ": {"name": "イグレーヌ（いぐれーぬ：アーサーの母とされる貴婦人）", "display_name": "イグレーヌ（アーサーの母とされる貴婦人）", "yomi": "いぐれーぬ", "wiki_title": "イグレーヌ", "role": "アーサーの母とされる貴婦人", "ai_desc": "アーサー王伝説でアーサーの母とされる女性。ティンタジェル公ゲルロイスの妻で、のちにユーサーの妃となる。", "role_i18n": {"ja": "アーサーの母とされる貴婦人", "en": "Noblewoman, mother of Arthur", "zh_tw": "貴婦人，亞瑟之母", "zh_cn": "贵妇人，亚瑟之母", "ko": "귀부인, 아서의 어머니"}, "desc_i18n": {"ja": "アーサー王伝説でアーサーの母とされる女性。ティンタジェル公ゲルロイスの妻で、のちにユーサーの妃となる。", "en": "In Arthurian legend, the woman said to be Arthur's mother. She is the wife of Gerlois, Duke of Tintagel, and later becomes Uther's queen.", "zh_tw": "亞瑟王傳說中被視為亞瑟之母的女性。她是廷塔哲公爵格洛伊斯之妻，後來成為烏瑟的王后。", "zh_cn": "亚瑟王传说中被视为亚瑟之母的女性。她是廷塔哲公爵格洛伊斯之妻，后来成为乌瑟的王后。", "ko": "아서 왕 전설에서 아서의 어머니로 여겨지는 여성. 틴타겔 공작 게를루아의 아내였으며 훗날 우서의 왕비가 된다."}, "sort_key_i18n": {"zh_tw": "Y", "zh_cn": "Y"}}, "ゲルロイス": {"name": "ゲルロイス（げるろいす：ティンタジェル公・イグレーヌの先夫）", "display_name": "ゲルロイス（ティンタジェル公・イグレーヌの先夫）", "yomi": "げるろいす", "wiki_title": "ゴルロイス", "role": "ティンタジェル公・イグレーヌの先夫", "ai_desc": "ティンタジェルの公爵で、イグレーヌの最初の夫。マロリー『アーサー王の死』ではゴルロイスの名で登場する。", "role_i18n": {"ja": "ティンタジェル公・イグレーヌの先夫", "en": "Duke of Tintagel, Igraine's first husband", "zh_tw": "廷塔哲公爵，伊格蕾茵的前夫", "zh_cn": "廷塔哲公爵，伊格蕾茵的前夫", "ko": "틴타겔 공작, 이그레인의 전남편"}, "desc_i18n": {"ja": "ティンタジェルの公爵で、イグレーヌの最初の夫。マロリー『アーサー王の死』ではゴルロイスの名で登場する。", "en": "Duke of Tintagel and the first husband of Igraine. In Malory's Le Morte d'Arthur he appears under the name Gorlois.", "zh_tw": "廷塔哲公爵，伊格蕾茵的第一任丈夫。在馬洛禮《亞瑟王之死》中以戈洛伊斯（Gorlois）之名登場。", "zh_cn": "廷塔哲公爵，伊格蕾茵的第一任丈夫。在马洛礼《亚瑟王之死》中以戈洛伊斯（Gorlois）之名登场。", "ko": "틴타겔의 공작으로 이그레인의 첫 남편. 맬러리의 『아서 왕의 죽음』에서는 고를루아(Gorlois)라는 이름으로 등장한다."}, "sort_key_i18n": {"zh_tw": "G", "zh_cn": "G"}}, "マルゲーズ": {"name": "マルゲーズ（まるげーず：イグレーヌとゲルロイスの娘）", "display_name": "マルゲーズ（イグレーヌとゲルロイスの娘）", "yomi": "まるげーず", "wiki_title": "", "role": "イグレーヌとゲルロイスの娘", "ai_desc": "イグレーヌとゲルロイスの間に生まれた娘の一人。パイル版ではゴアのユリエンス王に嫁ぐ。", "role_i18n": {"ja": "イグレーヌとゲルロイスの娘", "en": "Daughter of Igraine and Gerlois", "zh_tw": "伊格蕾茵與格洛伊斯之女", "zh_cn": "伊格蕾茵与格洛伊斯之女", "ko": "이그레인과 게를루아의 딸"}, "desc_i18n": {"ja": "イグレーヌとゲルロイスの間に生まれた娘の一人。パイル版ではゴアのユリエンス王に嫁ぐ。", "en": "One of the daughters born to Igraine and Gerlois. In Pyle's version she marries King Urien of Gore.", "zh_tw": "伊格蕾茵與格洛伊斯所生的女兒之一。在派爾的版本中，她嫁給戈爾的尤里安國王。", "zh_cn": "伊格蕾茵与格洛伊斯所生的女儿之一。在派尔的版本中，她嫁给戈尔的尤里安国王。", "ko": "이그레인과 게를루아 사이에서 태어난 딸 중 한 명. 파일 판본에서는 고어의 유리엔 왕에게 시집간다."}, "sort_key_i18n": {"zh_tw": "M", "zh_cn": "M"}}, "モルガン・ル・フェイ": {"name": "モルガン・ル・フェイ（もるがん・る・ふぇい：イグレーヌの娘・名高い魔女）", "display_name": "モルガン・ル・フェイ（イグレーヌの娘・名高い魔女）", "yomi": "もるがん・る・ふぇい", "wiki_title": "モルガン・ル・フェイ", "role": "イグレーヌの娘・名高い魔女", "ai_desc": "アーサー王伝説に登場する著名な魔女で、イグレーヌとゲルロイスの娘。アーサーの異父姉にあたる。", "role_i18n": {"ja": "イグレーヌの娘・名高い魔女", "en": "Daughter of Igraine, famed sorceress", "zh_tw": "伊格蕾茵之女，著名女巫", "zh_cn": "伊格蕾茵之女，著名女巫", "ko": "이그레인의 딸, 이름난 마녀"}, "desc_i18n": {"ja": "アーサー王伝説に登場する著名な魔女で、イグレーヌとゲルロイスの娘。アーサーの異父姉にあたる。", "en": "A famous sorceress of Arthurian legend, daughter of Igraine and Gerlois, and so Arthur's half-sister on his mother's side.", "zh_tw": "亞瑟王傳說中的著名女巫，伊格蕾茵與格洛伊斯之女，也是亞瑟同母異父的姊姊。", "zh_cn": "亚瑟王传说中的著名女巫，伊格蕾茵与格洛伊斯之女，也是亚瑟同母异父的姐姐。", "ko": "아서 왕 전설에 등장하는 이름난 마녀로, 이그레인과 게를루아의 딸이며 아서의 어머니가 같은 이부(異父) 누나이다."}, "sort_key_i18n": {"zh_tw": "M", "zh_cn": "M"}}, "ユリエンス": {"name": "ユリエンス（ゆりえんす：ゴアの王）", "display_name": "ユリエンス（ゴアの王）", "yomi": "ゆりえんす", "wiki_title": "", "role": "ゴアの王", "ai_desc": "ゴアの王。パイル版ではマルゲーズの夫として登場する。", "role_i18n": {"ja": "ゴアの王", "en": "King of Gore", "zh_tw": "戈爾的國王", "zh_cn": "戈尔的国王", "ko": "고어의 왕"}, "desc_i18n": {"ja": "ゴアの王。パイル版ではマルゲーズの夫として登場する。", "en": "King of Gore. In Pyle's version he appears as the husband of Margaise.", "zh_tw": "戈爾的國王。在派爾的版本中，他是瑪嘉絲的丈夫。", "zh_cn": "戈尔的国王。在派尔的版本中，他是玛嘉丝的丈夫。", "ko": "고어의 왕. 파일 판본에서는 마르게즈의 남편으로 등장한다."}, "sort_key_i18n": {"zh_tw": "Y", "zh_cn": "Y"}}, "ロット": {"name": "ロット（ろっと：オークニーの王）", "display_name": "ロット（オークニーの王）", "yomi": "ろっと", "wiki_title": "", "role": "オークニーの王", "ai_desc": "オークニーの王。パイル版ではモルガン・ル・フェイの夫として登場する。", "role_i18n": {"ja": "オークニーの王", "en": "King of Orkney", "zh_tw": "奧克尼的國王", "zh_cn": "奥克尼的国王", "ko": "오크니의 왕"}, "desc_i18n": {"ja": "オークニーの王。パイル版ではモルガン・ル・フェイの夫として登場する。", "en": "King of Orkney. In Pyle's version he appears as the husband of Morgana le Fay.", "zh_tw": "奧克尼的國王。在派爾的版本中，他是摩根勒菲的丈夫。", "zh_cn": "奥克尼的国王。在派尔的版本中，他是摩根勒菲的丈夫。", "ko": "오크니의 왕. 파일 판본에서는 모르가나 르 페이의 남편으로 등장한다."}, "sort_key_i18n": {"zh_tw": "L", "zh_cn": "L"}}};
+    const OFFICE_GLOSSARY = {"王": {"title": "王（おう：国を治める君主）", "yomi": "おう", "wiki_title": "王", "mapping_note": "", "office_group": "王権", "rank": "国を治める君主", "ai_desc": "国を統治する君主。アーサー王伝説では、ブリテンの諸王が覇権を競い、のちにアーサーが王位に就く。", "role_i18n": {"ja": "国を治める君主", "en": "Sovereign ruling a realm", "zh_tw": "統治國家的君主", "zh_cn": "统治国家的君主", "ko": "나라를 다스리는 군주"}, "desc_i18n": {"ja": "国を統治する君主。アーサー王伝説では、ブリテンの諸王が覇権を競い、のちにアーサーが王位に就く。", "en": "A monarch who governs a realm. In Arthurian legend the kings of Britain contend for supremacy until Arthur takes the throne.", "zh_tw": "統治國家的君主。在亞瑟王傳說中，不列顛的諸王爭奪霸權，直到亞瑟登上王位。", "zh_cn": "统治国家的君主。在亚瑟王传说中，不列颠的诸王争夺霸权，直到亚瑟登上王位。", "ko": "나라를 다스리는 군주. 아서 왕 전설에서는 브리튼의 여러 왕이 패권을 다투다가 훗날 아서가 왕위에 오른다."}, "sort_key_i18n": {"zh_tw": "G", "zh_cn": "G"}}, "騎士": {"title": "騎士（きし：馬に乗って戦う武装した貴族身分の戦士）", "yomi": "きし", "wiki_title": "騎士", "mapping_note": "", "office_group": "騎士身分", "rank": "武装した貴族身分の戦士", "ai_desc": "中世ヨーロッパで騎馬の武装戦士として主君に仕えた身分。アーサー王伝説では武勇と礼節を備えた者として描かれる。", "role_i18n": {"ja": "武装した貴族身分の戦士", "en": "Armed noble warrior", "zh_tw": "武裝的貴族戰士", "zh_cn": "武装的贵族战士", "ko": "무장한 귀족 전사"}, "desc_i18n": {"ja": "中世ヨーロッパで騎馬の武装戦士として主君に仕えた身分。アーサー王伝説では武勇と礼節を備えた者として描かれる。", "en": "A rank of mounted, armed warriors who served a lord in medieval Europe. In Arthurian legend knights are portrayed as men of both prowess and courtesy.", "zh_tw": "中世紀歐洲騎馬作戰、效力於領主的武裝戰士階層。在亞瑟王傳說中，騎士被描繪為兼具武勇與禮節的人物。", "zh_cn": "中世纪欧洲骑马作战、效力于领主的武装战士阶层。在亚瑟王传说中，骑士被描绘为兼具武勇与礼节的人物。", "ko": "중세 유럽에서 말을 타고 싸우며 영주를 섬긴 무장 전사 계층. 아서 왕 전설에서 기사는 무용과 예절을 겸비한 인물로 그려진다."}, "sort_key_i18n": {"zh_tw": "Q", "zh_cn": "Q"}}, "ペンドラゴン": {"title": "ペンドラゴン（ぺんどらごん：ブリテンの諸王を統べる最高君主の称号）", "yomi": "ぺんどらごん", "wiki_title": "ペンドラゴン", "mapping_note": "", "office_group": "王権", "rank": "ブリテンの諸王を統べる最高君主", "ai_desc": "アーサー王伝説に登場する、ブリテンの諸王を統べる上級王を指す称号。ユーサーの名の一部としても知られる。", "role_i18n": {"ja": "ブリテンの諸王を統べる最高君主", "en": "Supreme king over the kings of Britain", "zh_tw": "統御不列顛諸王的最高君主", "zh_cn": "统御不列颠诸王的最高君主", "ko": "브리튼의 여러 왕을 거느리는 최고 군주"}, "desc_i18n": {"ja": "アーサー王伝説に登場する、ブリテンの諸王を統べる上級王を指す称号。ユーサーの名の一部としても知られる。", "en": "A legendary title for the high king who rules over the kings of Britain in Arthurian legend. It is also familiar as part of Uther's name.", "zh_tw": "亞瑟王傳說中統御不列顛諸王的高階君王的稱號，也以烏瑟之名的一部分為人所知。", "zh_cn": "亚瑟王传说中统御不列颠诸王的高阶君王的称号，也以乌瑟之名的一部分为人所知。", "ko": "아서 왕 전설에서 브리튼의 여러 왕을 거느리는 상급 왕을 가리키는 칭호. 우서의 이름 일부로도 알려져 있다."}, "sort_key_i18n": {"zh_tw": "P", "zh_cn": "P"}}, "公爵": {"title": "公爵（こうしゃく：王に次ぐ高位の貴族爵位）", "yomi": "こうしゃく", "wiki_title": "公爵", "mapping_note": "", "office_group": "貴族", "rank": "王に次ぐ高位の爵位", "ai_desc": "中世ヨーロッパで王に次ぐ最上位の貴族に与えられた爵位。広い領地を統治した。", "role_i18n": {"ja": "王に次ぐ高位の爵位", "en": "Highest noble title below the king", "zh_tw": "僅次於國王的最高貴族爵位", "zh_cn": "仅次于国王的最高贵族爵位", "ko": "왕 다음가는 최고위 귀족 작위"}, "desc_i18n": {"ja": "中世ヨーロッパで王に次ぐ最上位の貴族に与えられた爵位。広い領地を統治した。", "en": "The title of the highest-ranking nobles below the king in medieval Europe, who governed broad territories.", "zh_tw": "中世紀歐洲僅次於國王的最高位貴族爵位，統治廣大的領地。", "zh_cn": "中世纪欧洲仅次于国王的最高位贵族爵位，统治广大的领地。", "ko": "중세 유럽에서 왕 다음가는 최상위 귀족에게 주어진 작위로, 넓은 영지를 다스렸다."}, "sort_key_i18n": {"zh_tw": "G", "zh_cn": "G"}}, "王妃": {"title": "王妃（おうひ：王の妃）", "yomi": "おうひ", "wiki_title": "王妃", "mapping_note": "", "office_group": "王権", "rank": "王の正妻", "ai_desc": "王の正妻。アーサー王伝説では、王妃が宮廷で重要な役割を担う場面が多い。", "role_i18n": {"ja": "王の正妻", "en": "Wife of a king", "zh_tw": "國王的正妻", "zh_cn": "国王的正妻", "ko": "왕의 정실 부인"}, "desc_i18n": {"ja": "王の正妻。アーサー王伝説では、王妃が宮廷で重要な役割を担う場面が多い。", "en": "The principal wife of a king. In Arthurian legend the queen often plays an important role at court.", "zh_tw": "國王的正妻。在亞瑟王傳說中，王后常在宮廷中扮演重要角色。", "zh_cn": "国王的正妻。在亚瑟王传说中，王后常在宫廷中扮演重要角色。", "ko": "왕의 정실 부인. 아서 왕 전설에서 왕비는 궁정에서 중요한 역할을 맡는 경우가 많다."}, "sort_key_i18n": {"zh_tw": "W", "zh_cn": "W"}}, "男爵": {"title": "男爵（だんしゃく：封建貴族の爵位の一つ）", "yomi": "だんしゃく", "wiki_title": "男爵", "mapping_note": "底本の baron を「男爵」と紐づけて解説しています。", "office_group": "貴族", "rank": "王に仕え領地を保有した封建貴族", "ai_desc": "中世ヨーロッパで、王や上級領主から領地を与えられ、その代わりに軍事奉仕を負った封建貴族。", "role_i18n": {"ja": "王に仕え領地を保有した封建貴族", "en": "Feudal noble holding land from the king", "zh_tw": "受國王封地的封建貴族", "zh_cn": "受国王封地的封建贵族", "ko": "왕에게서 영지를 받은 봉건 귀족"}, "desc_i18n": {"ja": "中世ヨーロッパで、王や上級領主から領地を与えられ、その代わりに軍事奉仕を負った封建貴族。", "en": "A feudal noble who held land from a king or senior lord and owed military service in return.", "zh_tw": "中世紀歐洲從國王或上級領主處受封領地、並負有軍事服務義務的封建貴族。", "zh_cn": "中世纪欧洲从国王或上级领主处受封领地、并负有军事服务义务的封建贵族。", "ko": "중세 유럽에서 왕이나 상급 영주에게서 영지를 받고 그 대가로 군사적 봉사를 맡은 봉건 귀족."}, "sort_key_i18n": {"zh_tw": "N", "zh_cn": "N"}}, "大司教": {"title": "大司教（だいしきょう：複数の司教区を統括する高位の聖職者）", "yomi": "だいしきょう", "wiki_title": "大司教", "mapping_note": "底本の Archbishop を「大司教」と紐づけて解説しています。", "office_group": "聖職者", "rank": "司教区を束ねる高位聖職者", "ai_desc": "キリスト教会で、複数の司教区を統括する高位の聖職者。カンタベリー大司教はイングランド教会の最高位にあたる。", "role_i18n": {"ja": "司教区を束ねる高位聖職者", "en": "High-ranking cleric over several dioceses", "zh_tw": "統轄數個教區的高階聖職者", "zh_cn": "统辖数个教区的高阶圣职者", "ko": "여러 교구를 통할하는 고위 성직자"}, "desc_i18n": {"ja": "キリスト教会で、複数の司教区を統括する高位の聖職者。カンタベリー大司教はイングランド教会の最高位にあたる。", "en": "A high-ranking cleric who oversees several dioceses. The Archbishop of Canterbury holds the highest rank in the Church of England.", "zh_tw": "統轄數個教區的高階聖職者。坎特伯里大主教是英格蘭教會的最高位。", "zh_cn": "统辖数个教区的高阶圣职者。坎特伯雷大主教是英格兰教会的最高位。", "ko": "여러 교구를 통할하는 고위 성직자. 캔터베리 대주교는 잉글랜드 교회의 최고위이다."}, "sort_key_i18n": {"zh_tw": "D", "zh_cn": "D"}}};
+    const SPECIAL_GLOSSARY = {"魔術師": {"title": "魔術師（まじゅつし：超自然の力を操るとされる術者。原文の enchanter）", "yomi": "まじゅつし", "wiki_title": "魔術師", "mapping_note": "底本の enchanter（魔法をかける者）を「魔術師」と訳し、紐づけて解説しています。", "ai_desc": "魔法や呪術で超自然の力を操るとされる術者。アーサー王伝説ではマーリンがその代表的な存在である。", "role_i18n": {"ja": "魔術・伝承の用語", "en": "Term: magic and legend", "zh_tw": "魔法與傳說用語", "zh_cn": "魔法与传说用语", "ko": "마법·전승 용어"}, "desc_i18n": {"ja": "魔法や呪術で超自然の力を操るとされる術者。アーサー王伝説ではマーリンがその代表的な存在である。", "en": "A practitioner believed to wield supernatural power through magic or sorcery. In Arthurian legend, Merlin is the foremost example.", "zh_tw": "被認為能以魔法或咒術操縱超自然力量的術者。在亞瑟王傳說中，梅林是其代表。", "zh_cn": "被认为能以魔法或咒术操纵超自然力量的术者。在亚瑟王传说中，梅林是其代表。", "ko": "마법이나 주술로 초자연적인 힘을 다룬다고 여겨지는 술사. 아서 왕 전설에서는 멀린이 그 대표적인 존재이다."}, "sort_key_i18n": {"zh_tw": "M", "zh_cn": "M"}}, "魔女": {"title": "魔女（まじょ：魔法や呪術を操るとされる女性。原文の sorceress）", "yomi": "まじょ", "wiki_title": "魔女", "mapping_note": "底本の sorceress（女の魔術師）を「魔女」と訳し、紐づけて解説しています。", "ai_desc": "魔法や呪術を操るとされる女性。アーサー王伝説ではモルガン・ル・フェイがその代表的な存在である。", "role_i18n": {"ja": "魔術・伝承の用語", "en": "Term: magic and legend", "zh_tw": "魔法與傳說用語", "zh_cn": "魔法与传说用语", "ko": "마법·전승 용어"}, "desc_i18n": {"ja": "魔法や呪術を操るとされる女性。アーサー王伝説ではモルガン・ル・フェイがその代表的な存在である。", "en": "A woman believed to wield magic or sorcery. In Arthurian legend, Morgana le Fay is a leading example.", "zh_tw": "被認為能操縱魔法或咒術的女性。在亞瑟王傳說中，摩根勒菲是其代表。", "zh_cn": "被认为能操纵魔法或咒术的女性。在亚瑟王传说中，摩根勒菲是其代表。", "ko": "마법이나 주술을 다룬다고 여겨지는 여성. 아서 왕 전설에서는 모르가나 르 페이가 그 대표적인 존재이다."}, "sort_key_i18n": {"zh_tw": "N", "zh_cn": "N"}}, "ゴア": {"title": "ゴア（ごあ：アーサー王伝説に登場する王国名。所在には諸説ある）", "yomi": "ごあ", "wiki_title": "", "mapping_note": "底本の Gore を伝説上の王国名として解説しています。", "ai_desc": "アーサー王伝説に登場する王国名。具体的な所在は定まっておらず、諸説がある。", "role_i18n": {"ja": "伝説上の王国名", "en": "Legendary kingdom", "zh_tw": "傳說中的王國名", "zh_cn": "传说中的王国名", "ko": "전설 속 왕국 이름"}, "desc_i18n": {"ja": "アーサー王伝説に登場する王国名。具体的な所在は定まっておらず、諸説がある。", "en": "The name of a kingdom in Arthurian legend. Its exact location is unknown, and several theories exist.", "zh_tw": "亞瑟王傳說中出現的王國名。確切位置不明，有多種說法。", "zh_cn": "亚瑟王传说中出现的王国名。确切位置不明，有多种说法。", "ko": "아서 왕 전설에 나오는 왕국 이름. 정확한 위치는 정해져 있지 않으며 여러 설이 있다."}, "sort_key_i18n": {"zh_tw": "G", "zh_cn": "G"}}, "予言": {"title": "予言（よげん：神的な霊感により未来を告げること。原文の prophecy）", "yomi": "よげん", "wiki_title": "予言", "mapping_note": "底本の spirit of prophecy（予言の霊）を「予言」と紐づけて解説しています。", "ai_desc": "霊感を受けて未来の出来事を語ること。アーサー王伝説ではマーリンが予言の力を備えた者として描かれる。", "role_i18n": {"ja": "霊感・予知の用語", "en": "Term: inspiration and foresight", "zh_tw": "靈感與預知用語", "zh_cn": "灵感与预知用语", "ko": "영감·예지 용어"}, "desc_i18n": {"ja": "霊感を受けて未来の出来事を語ること。アーサー王伝説ではマーリンが予言の力を備えた者として描かれる。", "en": "Telling of future events through inspiration. In Arthurian legend Merlin is portrayed as endowed with the power of prophecy.", "zh_tw": "憑靈感預告未來之事。在亞瑟王傳說中，梅林被描繪為具有預言能力的人物。", "zh_cn": "凭灵感预告未来之事。在亚瑟王传说中，梅林被描绘为具有预言能力的人物。", "ko": "영감을 받아 미래의 일을 말하는 것. 아서 왕 전설에서 멀린은 예언의 힘을 지닌 인물로 그려진다."}, "sort_key_i18n": {"zh_tw": "Y", "zh_cn": "Y"}}};
+    const NATURE_MOUNTAINS = [];
+    const NATURE_RIVERS = [];
+    const CORPUS_RECORDS = Array.isArray(window.SHARED_GLOSSARY_CORPUS) ? window.SHARED_GLOSSARY_CORPUS : [];
+
+    // 清音化マップ（濁音・半濁音・小書き仮名を五十音見出しに合流）
+    const VOICED_TO_SEION_MAP = {
+      "ぁ":"あ","ぃ":"い","ぅ":"う","ぇ":"え","ぉ":"お","ゔ":"う",
+      "が":"か","ぎ":"き","ぐ":"く","げ":"け","ご":"こ",
+      "ざ":"さ","じ":"し","ず":"す","ぜ":"せ","ぞ":"そ",
+      "だ":"た","ぢ":"ち","づ":"つ","っ":"つ","で":"て","ど":"と",
+      "ば":"は","び":"ひ","ぶ":"ふ","べ":"へ","ぼ":"ほ",
+      "ぱ":"は","ぴ":"ひ","ぷ":"ふ","ぺ":"へ","ぽ":"ほ",
+      "ゃ":"や","ゅ":"ゆ","ょ":"よ","ゎ":"わ"
+    };
+
+    function normalizeYomiForSort(yomiStr) {
+      const kataToHira = String(yomiStr || "").replace(/[ァ-ヶ]/g, function(ch) {
+        return String.fromCharCode(ch.charCodeAt(0) - 0x60);
+      });
+      let out = "";
+      for (let i = 0; i < kataToHira.length; i++) {
+        const c = kataToHira[i];
+        out += VOICED_TO_SEION_MAP[c] || c;
+      }
+      return out;
+    }
+
+    function getGojuonRowHeading(yomiStr) {
+      const norm = normalizeYomiForSort(yomiStr);
+      const first = norm.charAt(0);
+      if ("あいうえお".includes(first)) return "あ行";
+      if ("かきくけこ".includes(first)) return "か行";
+      if ("さしすせそ".includes(first)) return "さ行";
+      if ("たちつてと".includes(first)) return "た行";
+      if ("なにぬねの".includes(first)) return "な行";
+      if ("はひふへほ".includes(first)) return "は行";
+      if ("まみむめも".includes(first)) return "ま行";
+      if ("やゆよ".includes(first)) return "や行";
+      if ("らりるれろ".includes(first)) return "ら行";
+      if ("わをん".includes(first)) return "わ行";
+      return "その他";
+    }
+
+    function escapeHtml(str) {
+      return String(str || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    // =========================================================================
+    // 索引オーバーレイ開閉＆共通地図コントローラ（shared_map_controller.js）初期化
+    // =========================================================================
+    const indexOverlayEl = document.getElementById("indexOverlay");
+    const reopenIndexBtn = document.getElementById("reopenIndexBtn");
+    const hideIndexViewMapBtn = document.getElementById("hideIndexViewMapBtn");
+    const searchInputEl = document.getElementById("indexSearchInput");
+    const chipsScrollEl = document.getElementById("indexChipsScroll");
+
+    function setIndexOverlayVisible(visible) {
+      indexOverlayEl.classList.toggle("is-hidden", !visible);
+      if (reopenIndexBtn) {
+        reopenIndexBtn.style.display = visible ? "none" : "inline-flex";
+      }
+    }
+
+    hideIndexViewMapBtn.addEventListener("click", function() {
+      setIndexOverlayVisible(false);
+    });
+    if (reopenIndexBtn) {
+      reopenIndexBtn.addEventListener("click", function() {
+        setIndexOverlayVisible(true);
+      });
+    }
+
+    function syncCatTabButtons() {
+      document.querySelectorAll(".cat-tab-btn").forEach(function(b) {
+        b.classList.toggle("is-active", b.getAttribute("data-cat") === currentCategory);
+      });
+    }
+
+    const mapCtrl = window.AntaraMapController.create({
+      containerId: "map",
+      toastId: "mapToast",
+      initialCenter: [INITIAL_MAP_LAT, INITIAL_MAP_LNG],
+      initialZoom: INITIAL_MAP_ZOOM,
+      places: PLACES_MASTER,
+      naturalFeatures: NATURE_MOUNTAINS,
+      riverLines: NATURE_RIVERS,
+      singlePinOnlyOnFocus: true,
+      displayNameOf: function(k) { return localName("place", k); },
+      natureLabelMode: "glossary",
+      protectedControlIds: ["mapToast", "indexOverlay"],
+      beforeFocusPlace: function() {
+        setIndexOverlayVisible(false);
+      },
+      onPlaceShapeClick: function(placeKey) {
+        currentCategory = "place";
+        syncCatTabButtons();
+        selectGlossaryEntry("place", placeKey, true);
+      },
+      onRiverClick: function(riverKey) {
+        if (PLACES_MASTER[riverKey]) {
+          currentCategory = "place";
+          syncCatTabButtons();
+          selectGlossaryEntry("place", riverKey, true);
+        }
+      }
+    });
+
+    mapCtrl.renderOverviewProvinces();
+
+    function collectPlaceKeysFromCorpusRecords(recList) {
+      const keys = [];
+      const seen = new Set();
+      recList.forEach(function(rec) {
+        if (!rec.places) return;
+        rec.places.split(",").forEach(function(rawK) {
+          const k = rawK.trim();
+          if (k && PLACES_MASTER[k] && !seen.has(k)) {
+            seen.add(k);
+            keys.push(k);
+          }
+        });
+      });
+      return keys;
+    }
+
+    // =========================================================================
+    // 4分類索引データ構築
+    // =========================================================================
+    // =========================================================================
+    // 多言語（en / ja / zh_tw / zh_cn / ko）。本編 vol01.html と保存キー arthur_selected_lang を共有
+    // =========================================================================
+    const LANG_STORAGE_KEY = "arthur_selected_lang";
+    const SUPPORTED_LANGS = ["en", "ja", "zh_tw", "zh_cn", "ko"];
+    const LANG_BUTTONS = [
+      { code: "en", label: "EN" }, { code: "ja", label: "日" }, { code: "zh_tw", label: "繁" },
+      { code: "zh_cn", label: "簡" }, { code: "ko", label: "韓" }
+    ];
+    const LANG_TAGGED_FIELD = { en: "raw_tagged", ja: "translation_tagged", zh_tw: "zh_tw_tagged", zh_cn: "zh_cn_tagged", ko: "ko_tagged" };
+    const LANG_SORT_LOCALE = { en: "en", ja: "ja", zh_tw: "zh-Hant", zh_cn: "zh-Hans", ko: "ko" };
+    const GLOSS_I18N = {
+      ja: {
+        tabPerson: "👤 人物", tabPlace: "🗺️ 地名", tabOffice: "👑 称号", tabSpecial: "🔖 用語",
+        searchPh: "人物・地名・称号・用語を検索…", viewMap: "🗺️ 地図を見る", back: "← 索引一覧に戻る",
+        open: "📖 本編で開く", source: "📜 原典（英語底本）を表示", noMatch: "該当する項目がありません。",
+        noRec: "現在の公開範囲には該当する本文カードがまだありません。", startVol: "📖 本編へ",
+        typeProse: "本文", typeVerse: "詩篇",
+        paraFmt: function(v, n, t) { return v + "・第" + n + "段落（" + t + "）"; },
+        onMap: function(name) { return "地図上に「" + name + "」の位置を表示しています。"; }
+      },
+      en: {
+        tabPerson: "👤 People", tabPlace: "🗺️ Places", tabOffice: "👑 Titles", tabSpecial: "🔖 Terms",
+        searchPh: "Search people, places, titles, terms…", viewMap: "🗺️ View map", back: "← Back to index list",
+        open: "📖 Open in story", source: "📜 Show English source", noMatch: "No matching entries.",
+        noRec: "No story card in the published range yet.", startVol: "📖 Read",
+        typeProse: "Prose", typeVerse: "Verse",
+        paraFmt: function(v, n, t) { return v + " · Para " + n + " (" + t + ")"; },
+        onMap: function(name) { return "Showing the location of " + name + " on the map."; }
+      },
+      zh_tw: {
+        tabPerson: "👤 人物", tabPlace: "🗺️ 地名", tabOffice: "👑 稱號", tabSpecial: "🔖 用語",
+        searchPh: "搜尋人物、地名、稱號、用語…", viewMap: "🗺️ 查看地圖", back: "← 返回索引列表",
+        open: "📖 在本篇開啟", source: "📜 顯示英文底本", noMatch: "沒有符合的項目。",
+        noRec: "目前公開範圍內尚無相關正文卡片。", startVol: "📖 閱讀本篇",
+        typeProse: "正文", typeVerse: "詩篇",
+        paraFmt: function(v, n, t) { return v + "・第" + n + "段（" + t + "）"; },
+        onMap: function(name) { return "地圖上顯示「" + name + "」的位置。"; }
+      },
+      zh_cn: {
+        tabPerson: "👤 人物", tabPlace: "🗺️ 地名", tabOffice: "👑 称号", tabSpecial: "🔖 用语",
+        searchPh: "搜索人物、地名、称号、用语…", viewMap: "🗺️ 查看地图", back: "← 返回索引列表",
+        open: "📖 在本篇打开", source: "📜 显示英文底本", noMatch: "没有符合的项目。",
+        noRec: "目前公开范围内尚无相关正文卡片。", startVol: "📖 阅读本篇",
+        typeProse: "正文", typeVerse: "诗篇",
+        paraFmt: function(v, n, t) { return v + "・第" + n + "段（" + t + "）"; },
+        onMap: function(name) { return "地图上显示「" + name + "」的位置。"; }
+      },
+      ko: {
+        tabPerson: "👤 인물", tabPlace: "🗺️ 지명", tabOffice: "👑 칭호", tabSpecial: "🔖 용어",
+        searchPh: "인물·지명·칭호·용어 검색…", viewMap: "🗺️ 지도 보기", back: "← 색인 목록으로 돌아가기",
+        open: "📖 본편에서 열기", source: "📜 영문 저본 보기", noMatch: "해당하는 항목이 없습니다.",
+        noRec: "현재 공개 범위에는 해당하는 본문 카드가 아직 없습니다.", startVol: "📖 본편 읽기",
+        typeProse: "본문", typeVerse: "시편",
+        paraFmt: function(v, n, t) { return v + "・제" + n + "단락(" + t + ")"; },
+        onMap: function(name) { return "지도에 「" + name + "」의 위치를 표시하고 있습니다."; }
+      }
+    };
+
+    const glossQueryParams = new URLSearchParams(window.location.search);
+    const glossQueryLang = glossQueryParams.get("lang");
+    let currentLang = "ja";
+    if (glossQueryLang && SUPPORTED_LANGS.indexOf(glossQueryLang) >= 0) {
+      currentLang = glossQueryLang;
+    } else {
+      try {
+        const savedLang = localStorage.getItem(LANG_STORAGE_KEY);
+        if (savedLang && SUPPORTED_LANGS.indexOf(savedLang) >= 0) currentLang = savedLang;
+      } catch (e) {}
+    }
+
+    // 言語別の項目表示名：本文タグ {{kind:キー|表示語}} の表示語（各言語の最初の出現）から構築する
+    const LOCAL_NAMES = {};
+    function buildLocalNames() {
+      CORPUS_RECORDS.forEach(function(rec) {
+        SUPPORTED_LANGS.forEach(function(lg) {
+          const src = String(rec[LANG_TAGGED_FIELD[lg]] || "");
+          let m;
+          TAG_REGEX.lastIndex = 0;
+          while ((m = TAG_REGEX.exec(src)) !== null) {
+            const id = m[1] + ":" + m[2];
+            if (!LOCAL_NAMES[id]) LOCAL_NAMES[id] = {};
+            if (!LOCAL_NAMES[id][lg]) LOCAL_NAMES[id][lg] = m[3];
+          }
+        });
+      });
+    }
+
+    // 表示名：日本語は従来表記、他言語は本文タグの表示語（未登録時のみ日本語へ安全にフォールバック）
+    function localName(kind, key) {
+      const byLang = LOCAL_NAMES[kind + ":" + key];
+      if (currentLang !== "ja" && byLang && byLang[currentLang]) return byLang[currentLang];
+      if (kind === "person" && PERSON_GLOSSARY[key]) return PERSON_GLOSSARY[key].display_name || key;
+      return key;
+    }
+
+    // 言語別の肩書き（role_i18n）・解説（desc_i18n）：未登録時のみ日本語へ安全にフォールバック
+    function masterOf(kind, key) {
+      return kind === "person" ? PERSON_GLOSSARY[key]
+        : (kind === "place" ? PLACES_MASTER[key] : (kind === "office" ? OFFICE_GLOSSARY[key] : SPECIAL_GLOSSARY[key]));
+    }
+    function roleOf(kind, key) {
+      const d = masterOf(kind, key);
+      if (!d || !d.role_i18n) return "";
+      return d.role_i18n[currentLang] || d.role_i18n.ja || "";
+    }
+    function descOf(kind, key) {
+      const d = masterOf(kind, key);
+      if (!d || !d.desc_i18n) return "";
+      return d.desc_i18n[currentLang] || d.desc_i18n.ja || "";
+    }
+    // チップ副表示用の短い属性（「／」または「 / 」より前だけ）
+    function shortRoleOf(kind, key) {
+      return roleOf(kind, key).split("／")[0].split(" / ")[0].trim();
+    }
+
+    // ハングル音節 → 初声グループ（Unicode: 0xAC00 起点、初声1文字あたり588音節、全11172音節）
+    const HANGUL_SYLLABLE_BASE = 0xAC00;
+    const HANGUL_SYLLABLES_PER_INITIAL = 588;
+    const HANGUL_SYLLABLE_COUNT = 11172;
+    const KO_INITIAL_GROUP = ["ㄱ","ㄱ","ㄴ","ㄷ","ㄷ","ㄹ","ㅁ","ㅂ","ㅂ","ㅅ","ㅅ","ㅇ","ㅈ","ㅈ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
+    const KO_GROUP_ORDER = ["ㄱ","ㄴ","ㄷ","ㄹ","ㅁ","ㅂ","ㅅ","ㅇ","ㅈ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ","#"];
+    const KO_INITIAL_FALLBACK = "#";
+
+    function buildCategoryEntries(cat) {
+      const items = [];
+      const master = cat === "person" ? PERSON_GLOSSARY
+        : (cat === "place" ? PLACES_MASTER : (cat === "office" ? OFFICE_GLOSSARY : SPECIAL_GLOSSARY));
+      Object.keys(master).forEach(function(k) {
+        const d = master[k];
+        const baseName = localName(cat, k);
+        const role = roleOf(cat, k);
+        // 人物は日本語と同じく「名前（肩書き）」のリッチ表示（他言語も同一情報量）
+        let label = baseName;
+        if (cat === "person" && currentLang !== "ja" && role) {
+          label = currentLang === "en" ? baseName + " (" + role + ")" : baseName + "（" + role + "）";
+        }
+        const names = LOCAL_NAMES[cat + ":" + k] || {};
+        const allNames = Object.keys(names).map(function(lg) { return names[lg]; }).join(" ");
+        const allRoles = d.role_i18n ? Object.keys(d.role_i18n).map(function(lg) { return d.role_i18n[lg]; }).join(" ") : "";
+        const allDescs = d.desc_i18n ? Object.keys(d.desc_i18n).map(function(lg) { return d.desc_i18n[lg]; }).join(" ") : "";
+        items.push({
+          kind: cat,
+          key: k,
+          label: label,
+          sortName: baseName,
+          sortKey: (d.sort_key_i18n && d.sort_key_i18n[currentLang]) || "",
+          subText: shortRoleOf(cat, k),
+          yomi: d.yomi || k,
+          searchBlob: (k + " " + label + " " + allNames + " " + allRoles + " " + allDescs + " " + (d.display_name || "") + " " +
+            (d.name || "") + " " + (d.title || "") + " " + (d.yomi || "") + " " + (d.ai_desc || "") + " " + (d.label || "") + " " + (d.modern || "")).toLowerCase()
+        });
+      });
+
+      items.sort(function(a, b) {
+        if (currentLang === "ja") {
+          return normalizeYomiForSort(a.yomi).localeCompare(normalizeYomiForSort(b.yomi), "ja");
+        }
+        if (currentLang === "zh_tw" || currentLang === "zh_cn") {
+          if (a.sortKey !== b.sortKey) return a.sortKey.localeCompare(b.sortKey);
+        }
+        return String(a.sortName).toLowerCase().localeCompare(String(b.sortName).toLowerCase(), LANG_SORT_LOCALE[currentLang]);
+      });
+      return items;
+    }
+
+    let currentCategory = "person";
+    let selectedKind = "";
+    let selectedKey = "";
+
+    function getGroupHeading(it) {
+      if (currentLang === "ja") return getGojuonRowHeading(it.yomi);
+      if (currentLang === "en") {
+        const c = String(it.sortName).charAt(0).toUpperCase();
+        return (c >= "A" && c <= "Z") ? c : "#";
+      }
+      if (currentLang === "zh_tw" || currentLang === "zh_cn") {
+        // 辞書側 sort_key_i18n（ピンイン頭文字）でグループ化
+        const c = String(it.sortKey).charAt(0).toUpperCase();
+        return (c >= "A" && c <= "Z") ? c : "#";
+      }
+      if (currentLang === "ko") {
+        const idx = String(it.sortName).charCodeAt(0) - HANGUL_SYLLABLE_BASE;
+        if (idx >= 0 && idx < HANGUL_SYLLABLE_COUNT) {
+          return KO_INITIAL_GROUP[Math.floor(idx / HANGUL_SYLLABLES_PER_INITIAL)];
+        }
+        return KO_INITIAL_FALLBACK;
+      }
+      return "";
+    }
+
+    function renderIndexChips() {
+      const dict = GLOSS_I18N[currentLang] || GLOSS_I18N.ja;
+      const q = searchInputEl.value.trim().toLowerCase();
+      const entries = buildCategoryEntries(currentCategory).filter(function(item) {
+        return !q || item.searchBlob.includes(q);
+      });
+
+      const grouped = {};
+      const order = [];
+      entries.forEach(function(it) {
+        const g = getGroupHeading(it);
+        if (!grouped[g]) { grouped[g] = []; order.push(g); }
+        grouped[g].push(it);
+      });
+      let rowOrder = order;
+      if (currentLang === "ja") {
+        rowOrder = ["あ行","か行","さ行","た行","な行","は行","ま行","や行","ら行","わ行","その他"];
+      } else if (currentLang === "ko") {
+        rowOrder = KO_GROUP_ORDER;
+      } else {
+        rowOrder = order.slice().sort(function(a, b) {
+          if (a === "#") return 1;
+          if (b === "#") return -1;
+          return a.localeCompare(b);
+        });
+      }
+
+      const htmlParts = [];
+      rowOrder.forEach(function(rowName) {
+        const arr = grouped[rowName];
+        if (!arr || arr.length === 0) return;
+        htmlParts.push('<div class="gojuon-group-heading">' + escapeHtml(rowName) + '</div>');
+        htmlParts.push('<div class="chips-grid">');
+        arr.forEach(function(it) {
+          const selCls = (it.kind === selectedKind && it.key === selectedKey) ? " is-selected" : "";
+          // 日本語は読み仮名、他言語は短い肩書き（人物は名前と肩書きを併記済みのため副表示なし）
+          let subHtml = "";
+          if (currentLang === "ja") {
+            subHtml = '<span class="chip-yomi">' + escapeHtml(it.yomi) + '</span>';
+          } else if (it.kind !== "person" && it.subText) {
+            subHtml = '<span class="chip-yomi">' + escapeHtml(it.subText) + '</span>';
+          }
+          htmlParts.push(
+            '<button type="button" class="index-chip' + selCls + '" ' +
+            'data-chip-kind="' + escapeHtml(it.kind) + '" data-chip-key="' + escapeHtml(it.key) + '">' +
+            escapeHtml(it.label) + subHtml + '</button>'
+          );
+        });
+        htmlParts.push('</div>');
+      });
+
+      chipsScrollEl.innerHTML = htmlParts.length > 0
+        ? htmlParts.join("")
+        : '<div style="padding:14px;color:#6b5c4c;font-size:0.84rem;">' + escapeHtml(dict.noMatch) + '</div>';
+    }
+
+    document.querySelectorAll(".cat-tab-btn").forEach(function(btn) {
+      btn.addEventListener("click", function() {
+        currentCategory = btn.getAttribute("data-cat");
+        syncCatTabButtons();
+        renderIndexChips();
+      });
+    });
+
+    searchInputEl.addEventListener("input", function() {
+      renderIndexChips();
+    });
+
+    chipsScrollEl.addEventListener("click", function(ev) {
+      const baseTarget = (ev.target && ev.target.nodeType === 1) ? ev.target : (ev.target ? ev.target.parentElement : null);
+      if (!baseTarget) return;
+      const chip = baseTarget.closest("[data-chip-key]");
+      if (!chip) return;
+      const kind = chip.getAttribute("data-chip-kind");
+      const key = chip.getAttribute("data-chip-key");
+      selectGlossaryEntry(kind, key, true);
+    });
+
+    // =========================================================================
+    // 右ペイン：解説サマリー＋該当本文カードレンダリング（スクロール連動なし）
+    // =========================================================================
+    const TAG_REGEX = /\{\{(place|person|office|special):([^|}]+)\|([^}]+)\}\}/g;
+    const headSummaryContainerEl = document.getElementById("headSummaryContainer");
+    const matchingRecordsContainerEl = document.getElementById("matchingRecordsContainer");
+    const recordsScrollEl = document.getElementById("recordsScroll");
+
+    function recordContainsTag(rec, targetKind, targetKey) {
+      const text = SUPPORTED_LANGS.map(function(lg) { return rec[LANG_TAGGED_FIELD[lg]] || ""; }).join(" ");
+      let m;
+      TAG_REGEX.lastIndex = 0;
+      while ((m = TAG_REGEX.exec(text)) !== null) {
+        if (m[1] === targetKind && m[2] === targetKey) return true;
+      }
+      return false;
+    }
+
+    function convertTaggedTextWithHighlight(taggedStr, targetKind, targetKey) {
+      const src = String(taggedStr || "");
+      let result = "";
+      let lastIdx = 0;
+      let match;
+      TAG_REGEX.lastIndex = 0;
+      while ((match = TAG_REGEX.exec(src)) !== null) {
+        result += escapeHtml(src.slice(lastIdx, match.index));
+        const kind = match[1];
+        const key = match[2];
+        const surface = match[3];
+        const hitCls = (kind === targetKind && key === targetKey) ? " matched-target-term" : "";
+        result += (
+          '<span class="inline-' + escapeHtml(kind) + hitCls + '" ' +
+          'data-tag-kind="' + escapeHtml(kind) + '" data-tag-key="' + escapeHtml(key) + '">' +
+          escapeHtml(surface) + '</span>'
+        );
+        lastIdx = TAG_REGEX.lastIndex;
+      }
+      result += escapeHtml(src.slice(lastIdx));
+      return result;
+    }
+
+    function selectGlossaryEntry(kind, key, hideOverlayFlag, refreshOnly) {
+      const dict = GLOSS_I18N[currentLang] || GLOSS_I18N.ja;
+      selectedKind = kind;
+      selectedKey = key;
+      renderIndexChips();
+
+      if (hideOverlayFlag) {
+        setIndexOverlayVisible(false);
+      }
+
+      let titleStr = localName(kind, key);
+      let badgeStr = "";
+      let descStr = "";
+      let homonyms = [];
+
+      if (kind === "place" && PLACES_MASTER[key]) {
+        const p = PLACES_MASTER[key];
+        if (currentLang === "ja") titleStr = p.label || key;
+        badgeStr = p.category + (p.modern ? " ／ " + p.modern : "");
+        descStr = dict.onMap(localName("place", key));
+        if (!refreshOnly) mapCtrl.focusPlace(key, key, true);
+      } else if (kind === "person" && PERSON_GLOSSARY[key]) {
+        const d = PERSON_GLOSSARY[key];
+        if (currentLang === "ja") titleStr = d.name || key;
+        badgeStr = d.role || "";
+        descStr = d.ai_desc || "";
+        homonyms = Array.isArray(d.homonyms) ? d.homonyms : [];
+      } else if (kind === "office" && OFFICE_GLOSSARY[key]) {
+        const d = OFFICE_GLOSSARY[key];
+        if (currentLang === "ja") titleStr = d.title || key;
+        badgeStr = d.rank || "";
+        descStr = d.ai_desc || "";
+      } else if (kind === "special" && SPECIAL_GLOSSARY[key]) {
+        const d = SPECIAL_GLOSSARY[key];
+        if (currentLang === "ja") titleStr = d.title || key;
+        badgeStr = d.mapping_note || "";
+        descStr = d.ai_desc || "";
+      }
+
+      // 肩書きバッジ・解説文は選択言語の role_i18n / desc_i18n を優先（未登録時のみ従来の日本語）
+      const i18nRole = roleOf(kind, key);
+      const i18nDesc = descOf(kind, key);
+      if (i18nRole) badgeStr = i18nRole;
+      if (i18nDesc) descStr = i18nDesc;
+
+      // 詳細ビュー：必ず最上部に [← 索引一覧に戻る] を表示（解説はマスター辞書のみ・外部API取得枠なし）
+      const summaryParts = ['<div class="head-summary-card">'];
+      summaryParts.push('<button type="button" class="back-to-index-btn" id="backToIndexBtn">' + escapeHtml(dict.back) + '</button>');
+      if (kind === "person" && homonyms.length > 0) {
+        const allH = [key].concat(homonyms);
+        summaryParts.push('<div class="homonym-switch-bar">');
+        summaryParts.push('<span style="font-size:0.74rem;font-weight:700;width:100%;">👥 </span>');
+        allH.forEach(function(hk) {
+          const hd = PERSON_GLOSSARY[hk];
+          if (!hd) return;
+          const cur = hk === key ? " is-current" : "";
+          summaryParts.push(
+            '<button type="button" class="homonym-btn' + cur + '" data-homonym-key="' + escapeHtml(hk) + '">' +
+            escapeHtml(localName("person", hk)) + '</button>'
+          );
+        });
+        summaryParts.push('</div>');
+      }
+
+      summaryParts.push('<div class="summary-title">' + escapeHtml(titleStr) + '</div>');
+      if (badgeStr) {
+        summaryParts.push('<div class="summary-role-badge">' + escapeHtml(badgeStr) + '</div>');
+      }
+      summaryParts.push('<div class="summary-desc">' + escapeHtml(descStr) + '</div>');
+      summaryParts.push('</div>');
+      headSummaryContainerEl.innerHTML = summaryParts.join("");
+
+      const matchedRecs = CORPUS_RECORDS.filter(function(rec) {
+        return recordContainsTag(rec, kind, key);
+      });
+
+      if (matchedRecs.length === 0) {
+        matchingRecordsContainerEl.innerHTML = '<div class="record-card">' + escapeHtml(dict.noRec) + '</div>';
+        if (kind !== "place" && !refreshOnly) {
+          mapCtrl.renderOverviewProvinces();
+        }
+      } else {
+        matchingRecordsContainerEl.innerHTML = matchedRecs.map(function(rec) {
+          const jumpHref = rec.vol_file + "?para=" + rec.para_index + "&rec=" + encodeURIComponent(rec.id) + "&lang=" + currentLang;
+          const volLabel = (rec.vol_short_label_i18n && rec.vol_short_label_i18n[currentLang]) || rec.vol_short_label;
+          const typeLabel = rec.type === "詩篇" ? dict.typeVerse : dict.typeProse;
+          const mainTagged = rec[LANG_TAGGED_FIELD[currentLang]] || rec.translation_tagged;
+          const sourceHtml = currentLang === "en" ? "" : (
+            '<details class="source-details" open>' +
+              '<summary>' + escapeHtml(dict.source) + '</summary>' +
+              '<div class="source-text-body">' + convertTaggedTextWithHighlight(rec.raw_tagged, kind, key) + '</div>' +
+            '</details>'
+          );
+          return (
+            '<article class="record-card" data-rec-id="' + escapeHtml(rec.id) + '">' +
+              '<div class="card-meta-bar">' +
+                '<strong>' + escapeHtml(dict.paraFmt(volLabel, rec.para_index, typeLabel)) + '</strong>' +
+                '<a class="open-in-vol-link" href="' + escapeHtml(jumpHref) + '">' + escapeHtml(dict.open) + '</a>' +
+              '</div>' +
+              '<div class="trans-box">' + convertTaggedTextWithHighlight(mainTagged, kind, key) + '</div>' +
+              sourceHtml +
+            '</article>'
+          );
+        }).join("");
+
+        // 人物・称号・用語選択時は関連カードの地点丸ピンのみを描画（勝手な地図中心移動は行わない）
+        if (kind !== "place" && !refreshOnly) {
+          mapCtrl.renderPlaceKeys(collectPlaceKeysFromCorpusRecords(matchedRecs), false);
+        }
+      }
+
+      recordsScrollEl.scrollTop = 0;
+    }
+
+    // 詳細ビューから索引一覧へ戻る（検索をクリアして一覧オーバーレイを再表示）
+    function returnToIndexList() {
+      searchInputEl.value = "";
+      setIndexOverlayVisible(true);
+      renderIndexChips();
+      chipsScrollEl.scrollTop = 0;
+    }
+
+    // 言語切替：UI文言・ナビバー・索引・詳細・地図ピン表示名を一括更新
+    function applyGlossaryLang() {
+      const dict = GLOSS_I18N[currentLang] || GLOSS_I18N.ja;
+      document.documentElement.lang = currentLang === "zh_tw" ? "zh-Hant" : (currentLang === "zh_cn" ? "zh-Hans" : currentLang);
+      searchInputEl.placeholder = dict.searchPh;
+      hideIndexViewMapBtn.textContent = dict.viewMap;
+      const tabText = { person: dict.tabPerson, place: dict.tabPlace, office: dict.tabOffice, special: dict.tabSpecial };
+      document.querySelectorAll(".cat-tab-btn").forEach(function(b) {
+        b.textContent = tabText[b.getAttribute("data-cat")];
+      });
+      const startLinkEl = document.getElementById("startVolLink");
+      if (startLinkEl) startLinkEl.textContent = dict.startVol;
+      document.querySelectorAll("#langSwitchBar .lang-btn").forEach(function(b) {
+        b.classList.toggle("is-active", b.getAttribute("data-lang-code") === currentLang);
+      });
+      if (window.applyNavLang) window.applyNavLang(currentLang);
+    }
+
+    function setGlossaryLang(code) {
+      currentLang = code;
+      try { localStorage.setItem(LANG_STORAGE_KEY, code); } catch (e) {}
+      applyGlossaryLang();
+      renderIndexChips();
+      if (selectedKey) selectGlossaryEntry(selectedKind, selectedKey, false, true);
+    }
+
+    headSummaryContainerEl.addEventListener("click", function(ev) {
+      if (ev.target.closest("#backToIndexBtn")) {
+        returnToIndexList();
+        return;
+      }
+      const hBtn = ev.target.closest("[data-homonym-key]");
+      if (hBtn) {
+        selectGlossaryEntry("person", hBtn.getAttribute("data-homonym-key"), false);
+      }
+    });
+
+    // 本文内タグクリック（緑地名は記事一覧を切り替えず読書位置を維持したまま地図だけ移動）
+    matchingRecordsContainerEl.addEventListener("click", function(ev) {
+      const baseTarget = (ev.target && ev.target.nodeType === 1) ? ev.target : (ev.target ? ev.target.parentElement : null);
+      if (!baseTarget) return;
+      const tagEl = baseTarget.closest("[data-tag-kind]");
+      if (!tagEl) return;
+      const kind = tagEl.getAttribute("data-tag-kind");
+      const key = tagEl.getAttribute("data-tag-key");
+      if (kind === "place") {
+        mapCtrl.focusPlace(key, tagEl.textContent || key, true);
+      } else {
+        currentCategory = kind;
+        syncCatTabButtons();
+        selectGlossaryEntry(kind, key, true);
+      }
+    });
+
+    // ナビバー <select> で「索引」を再選択した場合も一覧画面へリセット復帰（同一値でも change が発火するよう開く時に未選択化）
+    const volNavSelectEl = document.getElementById("volNavSelect");
+    window.arthurNavChange = function(sel) {
+      if (sel.value === "glossary.html") {
+        returnToIndexList();
+        sel.blur();
+        return;
+      }
+      if (sel.value) window.location.href = sel.value;
+    };
+    if (volNavSelectEl) {
+      volNavSelectEl.addEventListener("focus", function() { volNavSelectEl.selectedIndex = -1; });
+      volNavSelectEl.addEventListener("blur", function() {
+        if (volNavSelectEl.selectedIndex < 0) volNavSelectEl.selectedIndex = 0;
+      });
+    }
+
+    // 言語ボタン（EN / 日 / 繁 / 簡 / 韓）
+    const langSwitchBarEl = document.getElementById("langSwitchBar");
+    LANG_BUTTONS.forEach(function(item) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "lang-btn";
+      btn.setAttribute("data-lang-code", item.code);
+      btn.textContent = item.label;
+      btn.addEventListener("click", function() { setGlossaryLang(item.code); });
+      langSwitchBarEl.appendChild(btn);
+    });
+
+    // 初期表示：索引パネルは開いたまま、最初の代表人物（ユーサー）を詳細表示
+    buildLocalNames();
+    applyGlossaryLang();
+    renderIndexChips();
+    const initialKey = PERSON_GLOSSARY["ユーサー"] ? "ユーサー" : Object.keys(PERSON_GLOSSARY)[0];
+    if (initialKey) {
+      selectGlossaryEntry("person", initialKey, false);
+    }
+  })();
+  </script>
+</body>
+</html>
