@@ -28,7 +28,7 @@
   // 言語切替バーを自動マウントする既存の上部スリムバーID（本編：paraTopNav／索引：rightTopBar）
   const HOST_BAR_IDS = ['paraTopNav', 'rightTopBar'];
   // 言語切替時に再描画する既存ページ側のグローバル関数名（存在するもののみ呼ぶ）
-  const RERENDER_FN_NAMES = ['renderReaderList', 'renderIndexCatalogList', 'renderRightResultPane'];
+  const RERENDER_FN_NAMES = ['renderCatTabs', 'renderIndexControls', 'renderReaderList', 'renderIndexCatalogList', 'renderRightResultPane'];
   const TYPE_TO_DATA_KEY = { place: 'places', person: 'persons', office: 'offices', special: 'specials' };
   const FALLBACK_NOTE = {
     zh_tw: '（此段尚未翻譯，暫以日文譯文顯示）',
@@ -38,18 +38,74 @@
 
   const DATA = global.THREEKINGDOM_I18N || {};
   const listeners = [];
+  let lastHandledSearch = null;
 
   function isValidLang(code) {
     return LANGS.some(l => l.code === code);
   }
 
+  /** URL ?lang= 等で渡された言語指定を正規の4コードへ正規化する（無効値は null）。 */
+  function normalizeQueryLang(raw) {
+    if (!raw) return null;
+    const s = String(raw).trim().toLowerCase().replace(/-/g, '_');
+    if (isValidLang(s)) return s;
+    if (s === 'zh_hant' || s === 'zh_hk' || s === 'zh_mo' || s === 'tw') return 'zh_tw';
+    if (s === 'zh_hans' || s === 'zh_sg' || s === 'zh' || s === 'cn') return 'zh_cn';
+    if (s === 'ko_kr' || s === 'kr') return 'ko';
+    if (s === 'ja_jp' || s === 'jp') return 'ja';
+    return null;
+  }
+
+  /** URL に有効な ?lang= がある場合、最優先で適用し localStorage にも保存する（同一 search 文字列につき1回適用）。 */
+  function applyUrlLangIfPresent() {
+    try {
+      const searchStr = (global.location && typeof global.location.search === 'string') ? global.location.search : '';
+      if (!searchStr || searchStr === lastHandledSearch) return null;
+      lastHandledSearch = searchStr;
+      const params = new URLSearchParams(searchStr);
+      const qLang = normalizeQueryLang(params.get('lang'));
+      if (qLang) {
+        try { global.localStorage.setItem(LANG_STORAGE_KEY, qLang); } catch (e) { /* ignore */ }
+        return qLang;
+      }
+    } catch (e) { /* URLSearchParams 不可環境は無視 */ }
+    return null;
+  }
+
+  /** localStorage 未保存の初回訪問時にブラウザ言語（navigator.language）から初期表示言語を判定する。 */
+  function detectBrowserLang() {
+    try {
+      const navObj = global.navigator;
+      if (!navObj) return DEFAULT_LANG;
+      const primary = (Array.isArray(navObj.languages) && navObj.languages.length > 0 && navObj.languages[0])
+        ? navObj.languages[0]
+        : navObj.language;
+      if (!primary) return DEFAULT_LANG;
+      const lc = String(primary).trim().toLowerCase().replace(/_/g, '-');
+      if (lc.startsWith('ko')) return 'ko';
+      if (
+        lc === 'zh-tw' || lc === 'zh-hk' || lc === 'zh-mo' || lc.startsWith('zh-hant') ||
+        lc.includes('-tw') || lc.includes('-hk') || lc.includes('-mo') || lc.includes('-hant')
+      ) {
+        return 'zh_tw';
+      }
+      if (lc.startsWith('zh')) return 'zh_cn';
+    } catch (e) { /* ignore */ }
+    return DEFAULT_LANG;
+  }
+
   function getLang() {
+    const fromUrl = applyUrlLangIfPresent();
+    if (fromUrl) return fromUrl;
     try {
       const saved = global.localStorage.getItem(LANG_STORAGE_KEY);
       if (isValidLang(saved)) return saved;
-    } catch (e) { /* localStorage 不可環境は初期値 */ }
-    return DEFAULT_LANG;
+    } catch (e) { /* localStorage 不可環境はブラウザ言語判定へ */ }
+    return detectBrowserLang();
   }
+
+  // スクリプト読込時点で URL ?lang= があれば即座に取り込んでおく
+  applyUrlLangIfPresent();
 
   /** 辞書項目（place/person/office/special）の表示名を返す。未翻訳は fallback、無ければ日本語キー。 */
   function localName(type, key, fallback) {

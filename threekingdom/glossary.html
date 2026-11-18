@@ -735,6 +735,7 @@
         <option value="vol31.html">蜀書一　劉二牧傳</option>
         <option value="vol36.html">蜀書六　關張馬黃趙傳</option>
         <option value="vol46.html">呉書一　孫破虜討逆傳</option>
+        <option value="vol54.html">呉書九　周瑜魯粛呂蒙傳</option>
       </select>
       <button class="slim-nav-btn" onclick="window.location.href='vol01.html'" title="次の公開巻（魏書一　武帝紀）へ移動">→</button>
     </div>
@@ -972,27 +973,111 @@
       <button class="cat-tab-btn special ${activeCategory === 'special' ? 'active' : ''}" onclick="setCategoryTab('special')">${escapeHtml(sLabel)}</button>
     `;
   }
+  const renderCatTabs = renderIndexControls;
+  window.renderCatTabs = renderCatTabs;
 
-  function matchesSearch(item, catType) {
-    if (!searchQuery) return true;
-    const hayArr = [
-      item.key, item.label, item.yomi, item.title || '', item.full_label || '', item.name_heading || ''
+  function stripParenHead(str) {
+    return String(str || '').replace(/[（(〔\[][\s\S]*$/, '').trim();
+  }
+
+  function extractCourtesyAndAliases(item, catType) {
+    const out = [];
+    const pushClean = s => {
+      const v = String(s || '').trim();
+      if (v && !out.includes(v)) out.push(v);
+    };
+    // 1. 日本語・中国語・韓国語の見出し文字列から「字（あざな）・幼名・諱」のみを抽出（他人物を含む事績文は除外）
+    const sources = [item.name_heading || '', item.title || '', item.full_label || ''];
+    const i18nData = window.THREEKINGDOM_I18N;
+    const secKey = { person: 'persons', place: 'places', office: 'offices', special: 'specials' }[catType];
+    const entry = i18nData && i18nData[secKey] && i18nData[secKey][item.key];
+    if (entry) {
+      ['zh_tw', 'zh_cn', 'ko'].forEach(l => {
+        if (entry[l] && entry[l].name) sources.push(entry[l].name);
+      });
+    }
+    sources.forEach(src => {
+      for (const m of String(src).matchAll(/(?:字は|字|小名は|小名|諱は|諱)([一-龥]{1,4})/g)) pushClean(m[1]);
+      for (const m of String(src).matchAll(/(?:자는|자|아명은|휘는)\s*([가-힣·]{1,8})/g)) {
+        m[1].split('·').forEach(pushClean);
+      }
+    });
+    // 2. 実際に全巻本文のタグ表面形として出現した2文字以上の別称・字（例：孟徳、雲長、公瑾、子敬）
+    const occList = (CORPUS.occurrences[catType] && CORPUS.occurrences[catType][item.key]) || [];
+    occList.forEach(o => {
+      (o.surfaces || []).forEach(sf => {
+        if (sf && sf.length >= 2) pushClean(sf);
+      });
+    });
+    return out;
+  }
+
+  /**
+   * 検索クエリに対する一致度スコアを返す（不一致は -1）。
+   * 長文解説（ai_desc / desc）や括弧内の他人物事績文は検索対象から除外し、
+   * 0: 見出し・よみがな完全一致 -> 1: 見出し・よみがな前方一致 -> 2: 字・別称完全/前方一致 -> 3: 部分一致 の順とする。
+   */
+  function scoreSearchMatch(item, catType) {
+    if (!searchQuery) return 0;
+    const tokens = searchQuery.split(/\s+/).filter(Boolean);
+    if (tokens.length === 0) return 0;
+    const primaryQ = tokens[0];
+
+    const primaryNames = [
+      String(item.key || '').split('_')[0],
+      stripParenHead(item.label),
+      String(item.yomi || '')
     ];
     if (window.ThreeKingdomI18n) {
-      hayArr.push(window.ThreeKingdomI18n.dispName(catType, item.key, item.label));
+      primaryNames.push(stripParenHead(window.ThreeKingdomI18n.dispName(catType, item.key, item.label)));
       const i18nData = window.THREEKINGDOM_I18N;
-      if (i18nData) {
-        const secKey = { person: 'persons', place: 'places', office: 'offices', special: 'specials' }[catType];
-        const entry = i18nData[secKey] && i18nData[secKey][item.key];
-        if (entry) {
-          ['zh_tw', 'zh_cn', 'ko'].forEach(l => {
-            if (entry[l] && entry[l].name) hayArr.push(entry[l].name);
-          });
-        }
+      const secKey = { person: 'persons', place: 'places', office: 'offices', special: 'specials' }[catType];
+      const entry = i18nData && i18nData[secKey] && i18nData[secKey][item.key];
+      if (entry) {
+        ['zh_tw', 'zh_cn', 'ko'].forEach(l => {
+          if (entry[l] && entry[l].name) primaryNames.push(stripParenHead(entry[l].name));
+        });
       }
     }
-    const hay = hayArr.join(' ').toLowerCase();
-    return hay.includes(searchQuery);
+    const normPrimary = primaryNames.map(s => String(s || '').trim().toLowerCase()).filter(Boolean);
+    const normAliases = extractCourtesyAndAliases(item, catType).map(s => s.toLowerCase());
+
+    // スペース区切りの2語目以降がある場合のみ、同姓同名識別や短い肩書き（role / dispName）での絞り込みを許可
+    if (tokens.length > 1) {
+      const rolePool = [
+        ...normPrimary,
+        ...normAliases,
+        String(item.role || '').toLowerCase(),
+        (window.ThreeKingdomI18n ? window.ThreeKingdomI18n.dispName(catType, item.key, item.label) : String(item.label || '')).toLowerCase()
+      ].join(' ');
+      if (!tokens.slice(1).every(tk => rolePool.includes(tk))) return -1;
+    }
+
+    if (normPrimary.some(n => n === primaryQ)) return 0;
+    if (normPrimary.some(n => n.startsWith(primaryQ))) return 1;
+    if (normAliases.some(a => a === primaryQ || a.startsWith(primaryQ))) return 2;
+    if (normPrimary.some(n => n.includes(primaryQ)) || normAliases.some(a => a.includes(primaryQ))) return 3;
+    return -1;
+  }
+
+  function matchesSearch(item, catType) {
+    return scoreSearchMatch(item, catType) >= 0;
+  }
+
+  function filterAndSortBySearch(list, catType) {
+    const scored = [];
+    list.forEach(it => {
+      const sc = scoreSearchMatch(it, catType);
+      if (sc >= 0) scored.push({ item: it, score: sc });
+    });
+    scored.sort((a, b) => {
+      if (a.score !== b.score) return a.score - b.score;
+      const ca = a.item.count || 0;
+      const cb = b.item.count || 0;
+      if (cb !== ca) return cb - ca;
+      return String(a.item.sort_key || '').localeCompare(String(b.item.sort_key || ''));
+    });
+    return scored.map(x => x.item);
   }
 
   function buildChipHtml(catType, item) {
@@ -1026,10 +1111,10 @@
       const oLabel = I ? I.t('tabOffice') : '👑 官職';
       const sLabel = I ? I.t('tabSpecial') : '🔖 用語';
       const sections = [
-        ['person', pLabel, CORPUS.catalog.person.filter(it => matchesSearch(it, 'person'))],
-        ['place', plLabel, CORPUS.catalog.place.filter(it => matchesSearch(it, 'place'))],
-        ['office', oLabel, CORPUS.catalog.office.filter(it => matchesSearch(it, 'office'))],
-        ['special', sLabel, CORPUS.catalog.special.filter(it => matchesSearch(it, 'special'))]
+        ['person', pLabel, filterAndSortBySearch(CORPUS.catalog.person, 'person')],
+        ['place', plLabel, filterAndSortBySearch(CORPUS.catalog.place, 'place')],
+        ['office', oLabel, filterAndSortBySearch(CORPUS.catalog.office, 'office')],
+        ['special', sLabel, filterAndSortBySearch(CORPUS.catalog.special, 'special')]
       ].filter(s => s[2].length > 0);
 
       if (sections.length === 0) {
@@ -1438,13 +1523,13 @@
         `;
       }
     } else if (type === 'office') {
-      headingText = item.title || item.label;
+      if (lang === 'ja') headingText = item.title || item.label;
       descText = item.ai_desc || '';
     } else if (type === 'place') {
-      headingText = item.full_label || item.label;
+      if (lang === 'ja') headingText = item.full_label || item.label;
       descText = item.note || `親エリア：${item.parent_area || item.province || '広域'}`;
     } else if (type === 'special') {
-      headingText = item.title || item.label;
+      if (lang === 'ja') headingText = item.title || item.label;
       descText = item.ai_desc || '';
     }
 

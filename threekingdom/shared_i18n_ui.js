@@ -86,14 +86,28 @@
     'vol17.html': { ja: '魏書十七　張樂于張徐傳', zh_tw: '魏書十七　張樂于張徐傳', zh_cn: '魏书十七　张乐于张徐传', ko: '위서17　장악우장서전' },
     'vol31.html': { ja: '蜀書一　劉二牧傳', zh_tw: '蜀書一　劉二牧傳', zh_cn: '蜀书一　刘二牧传', ko: '촉서1　유이목전' },
     'vol36.html': { ja: '蜀書六　關張馬黃趙傳', zh_tw: '蜀書六　關張馬黃趙傳', zh_cn: '蜀书六　关张马黄赵传', ko: '촉서6　관장마황조전' },
-    'vol46.html': { ja: '呉書一　孫破虜討逆傳', zh_tw: '吳書一　孫破虜討逆傳', zh_cn: '吴书一　孙破虏讨逆传', ko: '오서1　손파로토역전' }
+    'vol46.html': { ja: '呉書一　孫破虜討逆傳', zh_tw: '吳書一　孫破虜討逆傳', zh_cn: '吴书一　孙破虏讨逆传', ko: '오서1　손파로토역전' },
+    'vol54.html': { ja: '呉書九　周瑜魯粛呂蒙傳', zh_tw: '吳書九　周瑜魯肅呂蒙傳', zh_cn: '吴书九　周瑜鲁肃吕蒙传', ko: '오서9　주유노숙여몽전' }
   };
   const VOL_SHORT_LABELS = {
-    '魏書一 武帝紀':       { zh_tw: '魏書一 武帝紀', zh_cn: '魏书一 武帝纪', ko: '위서1 무제기' },
-    '魏書十七 五将軍伝':   { zh_tw: '魏書十七 五將軍傳', zh_cn: '魏书十七 五将军传', ko: '위서17 오장군전' },
-    '蜀書一 劉二牧伝':     { zh_tw: '蜀書一 劉二牧傳', zh_cn: '蜀书一 刘二牧传', ko: '촉서1 유이목전' },
-    '蜀書六 関張馬黄趙伝': { zh_tw: '蜀書六 關張馬黃趙傳', zh_cn: '蜀书六 关张马黄赵传', ko: '촉서6 관장마황조전' },
-    '呉書一 孫堅孫策伝':   { zh_tw: '吳書一 孫堅孫策傳', zh_cn: '吴书一 孙坚孙策传', ko: '오서1 손견손책전' }
+    '魏書一 武帝紀':         { zh_tw: '魏書一 武帝紀', zh_cn: '魏书一 武帝纪', ko: '위서1 무제기' },
+    '魏書十七 五将軍伝':     { zh_tw: '魏書十七 五將軍傳', zh_cn: '魏书十七 五将军传', ko: '위서17 오장군전' },
+    '蜀書一 劉二牧伝':       { zh_tw: '蜀書一 劉二牧傳', zh_cn: '蜀书一 刘二牧传', ko: '촉서1 유이목전' },
+    '蜀書六 関張馬黄趙伝':   { zh_tw: '蜀書六 關張馬黃趙傳', zh_cn: '蜀书六 关张马黄赵传', ko: '촉서6 관장마황조전' },
+    '呉書一 孫堅孫策伝':     { zh_tw: '吳書一 孫堅孫策傳', zh_cn: '吴书一 孙坚孙策传', ko: '오서1 손견손책전' },
+    '呉書九 周瑜魯粛呂蒙伝': { zh_tw: '吳書九 周瑜魯肅呂蒙傳', zh_cn: '吴书九 周瑜鲁肃吕蒙传', ko: '오서9 주유노숙여몽전' },
+    '魏書一　武帝紀':         { zh_tw: '魏書一　武帝紀', zh_cn: '魏书一　武帝纪', ko: '위서1　무제기' },
+    '魏書十七　張樂于張徐傳': { zh_tw: '魏書十七　張樂于張徐傳', zh_cn: '魏书十七　张乐于张徐传', ko: '위서17　장악우장서전' },
+    '蜀書一　劉二牧傳':       { zh_tw: '蜀書一　劉二牧傳', zh_cn: '蜀书一　刘二牧传', ko: '촉서1　유이목전' },
+    '蜀書六　關張馬黃趙傳':   { zh_tw: '蜀書六　關張馬黃趙傳', zh_cn: '蜀书六　关张马黄赵传', ko: '촉서6　관장마황조전' },
+    '呉書一　孫破虜討逆傳':   { zh_tw: '吳書一　孫破虜討逆傳', zh_cn: '吴书一　孙破虏讨逆传', ko: '오서1　손파로토역전' },
+    '呉書九　周瑜魯粛呂蒙傳': { zh_tw: '吳書九　周瑜魯肅呂蒙傳', zh_cn: '吴书九　周瑜鲁肃吕蒙传', ko: '오서9　주유노숙여몽전' },
+    '魏書一':   { zh_tw: '魏書一', zh_cn: '魏书一', ko: '위서1' },
+    '魏書十七': { zh_tw: '魏書十七', zh_cn: '魏书十七', ko: '위서17' },
+    '蜀書一':   { zh_tw: '蜀書一', zh_cn: '蜀书一', ko: '촉서1' },
+    '蜀書六':   { zh_tw: '蜀書六', zh_cn: '蜀书六', ko: '촉서6' },
+    '呉書一':   { zh_tw: '吳書一', zh_cn: '吴书一', ko: '오서1' },
+    '呉書九':   { zh_tw: '吳書九', zh_cn: '吴书九', ko: '오서9' }
   };
 
   function fill(template, params) {
@@ -131,12 +145,19 @@
     return '【' + (pick(DATA.categories, jaCategory) || jaCategory) + '】';
   }
 
-  /** 辞書解説文（ai_desc）。未翻訳は日本語の解説をそのまま返す。 */
+  /** 辞書解説文（ai_desc / 地名比定地）。未翻訳は日本語の解説をそのまま返す。 */
   function localDesc(type, key, fallback) {
+    const lang = I18N.getLang();
+    if (lang === 'ja') return fallback;
+    if (type === 'place') {
+      const pe = DATA.places && DATA.places[key] && DATA.places[key][lang];
+      if (pe && pe.desc) return pe.desc;
+      if (pe && pe.modern) return pe.modern;
+      return fallback;
+    }
     const tableKey = { person: 'persons', office: 'offices', special: 'specials' }[type];
     const e = tableKey && DATA[tableKey] && DATA[tableKey][key];
-    const lang = I18N.getLang();
-    return lang !== 'ja' && e && e[lang] && e[lang].desc ? e[lang].desc : fallback;
+    return e && e[lang] && e[lang].desc ? e[lang].desc : fallback;
   }
 
   /** 静的HTML（data-i18n / data-i18n-title / data-i18n-placeholder・巻選択の選択肢）を選択言語へ書き換える。 */
@@ -208,6 +229,12 @@
       zh_tw: '張承（河內・張範之弟／諫議大夫）',
       zh_cn: '张承（河内・张范之弟／谏议大夫）',
       ko: '장승（하내·장범의 아우／간의대부）'
+    },
+    '張承_呉': {
+      ja: '張承（呉・張昭の長男／濡須督）',
+      zh_tw: '張承（東吳・張昭長子／濡須督）',
+      zh_cn: '张承（东吴・张昭长子／濡须督）',
+      ko: '장승（동오·장소의 장남／유수독）'
     },
     '張汎': {
       ja: '張汎（張遼の兄）',

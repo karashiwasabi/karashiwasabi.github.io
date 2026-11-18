@@ -976,8 +976,7 @@
   let activeHighlightLayers = [];
   const toastActiveColByPlace = {};
   const SOURCE_TAB_DEFS = [
-    { col: 'fukeichi', label: '🏞️ 名勝Wiki' },
-    { col: 'wiki', label: '📷 個別Wiki' },
+    { col: 'wiki', label: '📷 WIKI写真' },
     { col: 'ukiyoe', label: '🎨 浮世絵' },
     { col: 'gmap', label: '📍 Googleマップ' }
   ];
@@ -1065,21 +1064,14 @@
 
   function getGlossaryAvailableSources(placeObj) {
     const sources = {};
-    if (placeObj.fukeichi_title && placeObj.fukeichi_image_path) {
-      const wp = placeObj.fukeichi_wiki_page || 'おくのほそ道の風景地';
-      sources.fukeichi = {
-        url: placeObj.fukeichi_image_path,
-        note: '',
-        linkUrl: `https://ja.wikipedia.org/wiki/${encodeURIComponent(wp)}`,
-        linkText: `📖 ${placeObj.fukeichi_title} ↗`
-      };
-    }
     if (placeObj.wiki_image_path) {
+      const wLinkTitle = placeObj.wiki_title || placeObj.meisho_wiki_page || '';
+      const wLinkLabel = placeObj.wiki_title || placeObj.meisho_title || '';
       sources.wiki = {
         url: placeObj.wiki_image_path,
-        note: '',
-        linkUrl: placeObj.wiki_title ? `https://ja.wikipedia.org/wiki/${encodeURIComponent(placeObj.wiki_title)}` : '',
-        linkText: placeObj.wiki_title ? `📖 ${placeObj.wiki_title} ↗` : ''
+        note: placeObj.meisho_badge || '',
+        linkUrl: wLinkTitle ? `https://ja.wikipedia.org/wiki/${encodeURIComponent(wLinkTitle)}` : '',
+        linkText: wLinkLabel ? `📖 ${wLinkLabel} ↗` : ''
       };
     }
     if (placeObj.ukiyoe_image_path) {

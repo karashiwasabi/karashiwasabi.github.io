@@ -463,5 +463,15 @@
     "place": "玉津島",
     "file_key": "Tamatsushima-shrine.jpg",
     "local_path": "images/wiki/Tamatsushima-shrine.jpg"
+  },
+  {
+    "place": "影沼",
+    "file_key": "鏡沼跡（福島県）.jpg",
+    "local_path": "images/wiki/wiki_kagenuma.jpg"
+  },
+  {
+    "place": "須磨",
+    "file_key": "神戸 須磨海岸, Kobe Suma coast (5106576375).jpg",
+    "local_path": "images/wiki/wiki_suma_coast.jpg"
   }
 ]
