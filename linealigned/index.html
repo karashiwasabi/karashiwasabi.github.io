@@ -701,7 +701,7 @@
   <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 0.75rem;">
     <div style="font-size: 1.05rem; font-weight: 800; color: #1f1f1f;">
       <span style="color: #1a73e8; font-weight: 900;">Line-aligned</span>
-      <span style="color: #5f6368; font-size: 0.78rem; margin-left: 6px;">ver.160 (Build 20261119_0007)</span>
+      <span style="color: #5f6368; font-size: 0.78rem; margin-left: 6px;">ver.161 (Build 20261119_0622)</span>
     </div>
     <div style="display: flex; align-items: center; gap: 6px;">
       <a href="https://wasabikarashi.com/" style="display: inline-flex; align-items: center; gap: 3px; background: #f1f5f9; border: 1px solid #dadce0; border-radius: 8px; padding: 5px 10px; font-size: 0.75rem; font-weight: 700; color: #3c4043; text-decoration: none; white-space: nowrap;">🏠 トップ</a>
@@ -929,7 +929,7 @@
       <div class="docs-selected-file-box" id="docxFileBox" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; min-width: 0; width: 100%; overflow: hidden;">
         <span id="docxSelectedFileName" style="white-space: normal; word-break: break-word; overflow-wrap: anywhere; max-width: 100%; min-width: 0; flex: 1 1 auto;">ファイル未選択（Googleドライブ・ローカル選択、または「✨ サンプルWordをセット」でお試しください）</span>
         <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
-          <button type="button" class="btn-change-file" id="uiBtnViewDocxSampleOrig" onclick="openSampleOriginalView()" style="display: none; border-color: #1a73e8; color: #1a73e8; background: #ffffff; font-weight: 700;">🔍 元原稿を見る</button>
+          <button type="button" class="btn-change-file" id="uiBtnViewDocxSampleOrig" onclick="openDocxSampleOriginalView()" style="display: none; border-color: #1a73e8; color: #1a73e8; background: #ffffff; font-weight: 700;">🔍 元原稿を見る</button>
           <button type="button" class="btn-change-file" id="uiBtnDownloadDocxSample" onclick="downloadSampleDocxFile()" style="display: none; border-color: #7c3aed; color: #6d28d9; background: #ffffff; font-weight: 700;">📥 .docxを取得</button>
           <button type="button" class="btn-change-file" id="uiBtnResetDocxFile" onclick="resetDocxFile()" style="display: none;">別のファイルを選ぶ</button>
         </div>
@@ -3199,6 +3199,11 @@ function openSampleOriginalView() {
   window.open(viewUrl, '_blank', 'noopener,noreferrer');
 }
 
+function openDocxSampleOriginalView() {
+  const viewUrl = STUDIO_CLOUD_RUN_URL.replace(/\/$/, '') + '/v3/sample/docx-view';
+  window.open(viewUrl, '_blank', 'noopener,noreferrer');
+}
+
 function downloadSampleDocxFile() {
   const docxUrl = STUDIO_CLOUD_RUN_URL.replace(/\/$/, '') + '/v3/sample/docx';
   window.open(docxUrl, '_blank', 'noopener,noreferrer');
@@ -4098,6 +4103,9 @@ async function loadSampleDocx() {
     }
   }
 
+  // DOCX プレビュー時の最大表示ページ数定数（複数ページのサンプルや教材も即時スクロール閲覧可能にする安全上限）
+  const DocxPreviewMaxPages = 4;
+
   async function renderDocxTypesetPdfPreview(bytes, paperMode) {
     const container = document.getElementById('docxPreviewContainer');
     const previewContent = document.getElementById('docxPreviewContent');
@@ -4116,8 +4124,7 @@ async function loadSampleDocx() {
 
       previewContent.innerHTML = '';
 
-      const isSpread = (paperMode === 'a4-spread' || paperMode === 'a5-spread');
-      const targetPages = isSpread ? Math.min(2, numPages) : Math.min(1, numPages);
+      const targetPages = Math.min(DocxPreviewMaxPages, numPages);
 
       const spreadContainer = document.createElement('div');
       spreadContainer.className = 'preview-spread-container';
@@ -4341,8 +4348,8 @@ async function loadSampleDocx() {
         const typeTotal = typesetDoc.getPageCount();
         const maxPages = Math.max(origTotal, typeTotal);
 
-        // プレビュー時は表示に必要な先頭1ページのみ合成（97ページあっても0.2秒で完了）
-        const pagesToProcess = isExportPdf ? maxPages : Math.min(1, maxPages);
+        // プレビュー時は表示に必要な先頭 DocxPreviewMaxPages ページのみ合成（巨大文書でも高速完了＆サンプル全頁閲覧対応）
+        const pagesToProcess = isExportPdf ? maxPages : Math.min(DocxPreviewMaxPages, maxPages);
         const totalVolumes = isExportPdf ? Math.ceil(pagesToProcess / ChunkSizePages) : 1;
 
         const pageWPt = PaperSizesMm['a3-goodnotes'].width * MmToPt;
