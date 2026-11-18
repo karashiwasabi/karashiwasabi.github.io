@@ -71,6 +71,130 @@
     return i18n ? i18n.localPlaceModern(key, fallback) : fallback;
   }
 
+  // 常設の自然地形（山脈・湖沼・大河）および地図UIラベルの4言語辞書
+  const NATURE_I18N_MAP = {
+    '⛰️ 大別山脈': { zh_tw: '⛰️ 大別山脈', zh_cn: '⛰️ 大别山脉', ko: '⛰️ 대별산맥' },
+    '⛰️ 大巴山脈': { zh_tw: '⛰️ 大巴山脈', zh_cn: '⛰️ 大巴山脉', ko: '⛰️ 대파산맥' },
+    '⛰️ 太行山脈': { zh_tw: '⛰️ 太行山脈', zh_cn: '⛰️ 太行山脉', ko: '⛰️ 태행산맥' },
+    '⛰️ 岷山山脈': { zh_tw: '⛰️ 岷山山脈', zh_cn: '⛰️ 岷山山脉', ko: '⛰️ 민산산맥' },
+    '⛰️ 嵩山': { zh_tw: '⛰️ 嵩山', zh_cn: '⛰️ 嵩山', ko: '⛰️ 숭산' },
+    '⛰️ 泰山': { zh_tw: '⛰️ 泰山', zh_cn: '⛰️ 泰山', ko: '⛰️ 태산' },
+    '⛰️ 秦嶺山脈': { zh_tw: '⛰️ 秦嶺山脈', zh_cn: '⛰️ 秦岭山脉', ko: '⛰️ 진령산맥' },
+    '⛰️ 荊山': { zh_tw: '⛰️ 荊山', zh_cn: '⛰️ 荆山', ko: '⛰️ 형산' },
+    '⛰️ 隴山': { zh_tw: '⛰️ 隴山', zh_cn: '⛰️ 陇山', ko: '⛰️ 농산' },
+    '会稽山脈': { zh_tw: '會稽山脈', zh_cn: '会稽山脉', ko: '회계산맥' },
+    '南嶺（五嶺）': { zh_tw: '南嶺（五嶺）', zh_cn: '南岭（五岭）', ko: '남령(오령)' },
+    '南嶺・五嶺': { zh_tw: '南嶺・五嶺', zh_cn: '南岭・五岭', ko: '남령·오령' },
+    '大別山脈': { zh_tw: '大別山脈', zh_cn: '大别山脉', ko: '대별산맥' },
+    '天目山脈': { zh_tw: '天目山脈', zh_cn: '天目山脉', ko: '천목산맥' },
+    '太湖（震沢）': { zh_tw: '太湖（震澤）', zh_cn: '太湖（震泽）', ko: '태호(진택)' },
+    '太行山脈': { zh_tw: '太行山脈', zh_cn: '太行山脉', ko: '태행산맥' },
+    '嵩 山': { zh_tw: '嵩 山', zh_cn: '嵩 山', ko: '숭 산' },
+    '嵩山・箕山': { zh_tw: '嵩山・箕山', zh_cn: '嵩山・箕山', ko: '숭산·기산' },
+    '彭蠡沢（鄱陽湖）': { zh_tw: '彭蠡澤（鄱陽湖）', zh_cn: '彭蠡泽（鄱阳湖）', ko: '팽례택(파양호)' },
+    '桐柏山': { zh_tw: '桐柏山', zh_cn: '桐柏山', ko: '동백산' },
+    '汴 水': { zh_tw: '汴 水', zh_cn: '汴 水', ko: '변 수' },
+    '沂 水': { zh_tw: '沂 水', zh_cn: '沂 水', ko: '기 수' },
+    '泗 水': { zh_tw: '泗 水', zh_cn: '泗 水', ko: '사 수' },
+    '泰 山': { zh_tw: '泰 山', zh_cn: '泰 山', ko: '태 산' },
+    '淮 水': { zh_tw: '淮 水', zh_cn: '淮 水', ko: '회 수' },
+    '淯 水': { zh_tw: '淯 水', zh_cn: '淯 水', ko: '육 수' },
+    '渭 水': { zh_tw: '渭 水', zh_cn: '渭 水', ko: '위 수' },
+    '漢 水': { zh_tw: '漢 水', zh_cn: '汉 水', ko: '한 수' },
+    '漳 水': { zh_tw: '漳 水', zh_cn: '漳 水', ko: '장 수' },
+    '秦嶺山脈': { zh_tw: '秦嶺山脈', zh_cn: '秦岭山脉', ko: '진령산맥' },
+    '長 江': { zh_tw: '長 江', zh_cn: '长 江', ko: '장 강' },
+    '雲夢沢・洞庭湖': { zh_tw: '雲夢澤・洞庭湖', zh_cn: '云梦泽・洞庭湖', ko: '운몽택·동정호' },
+    '黄 河': { zh_tw: '黃 河', zh_cn: '黄 河', ko: '황 하' },
+    '黄山・皖南山地': { zh_tw: '黃山・皖南山地', zh_cn: '黄山・皖南山地', ko: '황산·완남산지' },
+    '🌊 嘉陵江（墊江水）': { zh_tw: '🌊 嘉陵江（墊江水）', zh_cn: '🌊 嘉陵江（垫江水）', ko: '🌊 가릉강(전강수)' },
+    '🌊 墊江水（嘉陵江・涪江）': { zh_tw: '🌊 墊江水（嘉陵江・涪江）', zh_cn: '🌊 垫江水（嘉陵江・涪江）', ko: '🌊 전강수(가릉강·부강)' },
+    '🌊 渭水': { zh_tw: '🌊 渭水', zh_cn: '🌊 渭水', ko: '🌊 위수' },
+    '🌊 漢水': { zh_tw: '🌊 漢水', zh_cn: '🌊 汉水', ko: '🌊 한수' },
+    '🌊 漢水（沔水）': { zh_tw: '🌊 漢水（沔水）', zh_cn: '🌊 汉水（沔水）', ko: '🌊 한수(면수)' },
+    '🌊 長江（大江）': { zh_tw: '🌊 長江（大江）', zh_cn: '🌊 长江（大江）', ko: '🌊 장강(대강)' },
+    '🌊 黄河': { zh_tw: '🌊 黃河', zh_cn: '🌊 黄河', ko: '🌊 황하' },
+    '呼沲水（滹沱河）': { zh_tw: '呼沲水（滹沱河）', zh_cn: '呼沲水（滹沱河）', ko: '호타수(호타하)' },
+    '嘉陵江（墊江水・閬水）': { zh_tw: '嘉陵江（墊江水・閬水）', zh_cn: '嘉陵江（垫江水・阆水）', ko: '가릉강(전강수·낭수)' },
+    '墊江水（嘉陵江・涪江水系：江州〜涪）': { zh_tw: '墊江水（嘉陵江・涪江水系：江州～涪）', zh_cn: '垫江水（嘉陵江・涪江水系：江州～涪）', ko: '전강수(가릉강·부강 수계: 강주~부)' },
+    '平虜渠': { zh_tw: '平虜渠', zh_cn: '平虏渠', ko: '평로거' },
+    '易水': { zh_tw: '易水', zh_cn: '易水', ko: '역수' },
+    '汴水（鴻溝）': { zh_tw: '汴水（鴻溝）', zh_cn: '汴水（鸿沟）', ko: '변수(홍구)' },
+    '沂水（沂河）': { zh_tw: '沂水（沂河）', zh_cn: '沂水（沂河）', ko: '기수(기하)' },
+    '泉州渠': { zh_tw: '泉州渠', zh_cn: '泉州渠', ko: '천주거' },
+    '泒水（大清河水系）': { zh_tw: '泒水（大清河水系）', zh_cn: '泒水（大清河水系）', ko: '고수(대청하 수계)' },
+    '泗水': { zh_tw: '泗水', zh_cn: '泗水', ko: '사수' },
+    '洹水（安陽河）': { zh_tw: '洹水（安陽河）', zh_cn: '洹水（安阳河）', ko: '원수(안양하)' },
+    '浙江（銭塘江・富春江）': { zh_tw: '浙江（錢塘江・富春江）', zh_cn: '浙江（钱塘江・富春江）', ko: '절강(전당강·부춘강)' },
+    '淇水（淇河）': { zh_tw: '淇水（淇河）', zh_cn: '淇水（淇河）', ko: '기수(기하)' },
+    '淮水（淮河）': { zh_tw: '淮水（淮河）', zh_cn: '淮水（淮河）', ko: '회수(회하)' },
+    '淯水（白河）': { zh_tw: '淯水（白河）', zh_cn: '淯水（白河）', ko: '육수(백하)' },
+    '淯水（白河：宛〜襄陽で漢水に合流）': { zh_tw: '淯水（白河：自宛至襄陽匯入漢水）', zh_cn: '淯水（白河：自宛至襄阳汇入汉水）', ko: '육수(백하: 완~양양에서 한수에 합류)' },
+    '渦水（渦河）': { zh_tw: '渦水（渦河）', zh_cn: '涡水（涡河）', ko: '와수(와하)' },
+    '渭水': { zh_tw: '渭水', zh_cn: '渭水', ko: '위수' },
+    '渭水（渭河）': { zh_tw: '渭水（渭河）', zh_cn: '渭水（渭河）', ko: '위수(위하)' },
+    '滏水（滏陽河）': { zh_tw: '滏水（滏陽河）', zh_cn: '滏水（滏阳河）', ko: '부수(부양하)' },
+    '漢水': { zh_tw: '漢水', zh_cn: '汉水', ko: '한수' },
+    '漢水（沔水）': { zh_tw: '漢水（沔水）', zh_cn: '汉水（沔水）', ko: '한수(면수)' },
+    '漳水（漳河）': { zh_tw: '漳水（漳河）', zh_cn: '漳水（漳河）', ko: '장수(장하)' },
+    '潞河（鮑丘水・潮白河／北運河）': { zh_tw: '潞河（鮑丘水・潮白河／北運河）', zh_cn: '潞河（鲍丘水・潮白河／北运河）', ko: '노하(포구수·조백하/북운하)' },
+    '白溝': { zh_tw: '白溝', zh_cn: '白沟', ko: '백구' },
+    '睢陽渠（睢水）': { zh_tw: '睢陽渠（睢水）', zh_cn: '睢阳渠（睢水）', ko: '수양거(수수)' },
+    '肥水': { zh_tw: '肥水', zh_cn: '肥水', ko: '비수' },
+    '長江（大江）': { zh_tw: '長江（大江）', zh_cn: '长江（大江）', ko: '장강(대강)' },
+    '黄河': { zh_tw: '黃河', zh_cn: '黄河', ko: '황하' }
+  };
+
+  const LAYER_LABELS_I18N = {
+    ja: ['① 自然地形図（山脈と川のみ・道路なし）', '② 陰影白地図（山の凹凸のみ・詳細ズーム可）'],
+    zh_tw: ['① 自然地形圖（僅山脈與河川・無現代道路）', '② 陰影白地圖（山脈起伏・可細部縮放）'],
+    zh_cn: ['① 自然地形图（仅山脉与河流・无现代道路）', '② 阴影白地图（山脉起伏・可细部缩放）'],
+    ko: ['① 자연지형도 (산맥과 강만 표시·현대 도로 없음)', '② 음영 백지도 (산세 기복·상세 확대 가능)']
+  };
+
+  function currentLang() {
+    const i18n = global.ThreeKingdomI18n;
+    return (i18n && typeof i18n.getLang === 'function') ? i18n.getLang() : 'ja';
+  }
+
+  /** 全角・半角カッコ以降の長文説明を切り落とし、地図ピン・バナー用の短い地名だけを返す */
+  function stripParenDesc(nameStr) {
+    if (!nameStr) return '';
+    return String(nameStr).split(/[（(]/)[0].trim();
+  }
+
+  function localizePinShortName(key) {
+    return stripParenDesc(localizeName(key, key));
+  }
+
+  function localizeNatureLabel(rawLabel) {
+    const lang = currentLang();
+    if (lang === 'ja' || !rawLabel) return rawLabel;
+    const hit = NATURE_I18N_MAP[rawLabel];
+    return (hit && hit[lang]) ? hit[lang] : rawLabel;
+  }
+
+  function formatModernLocationBadge(modernText) {
+    if (!modernText) return '';
+    const lang = currentLang();
+    const clean = String(modernText).trim();
+    if (lang === 'ko') {
+      const body = /^현재/.test(clean) ? clean : `현재의 ${clean}`;
+      return ` <span style="font-size:0.8rem; color:#ddd;">(${escapeHtml(body)})</span>`;
+    }
+    if (lang === 'zh_tw') {
+      const body = /^(?:今|現)/.test(clean) ? clean : `現今${clean}`;
+      return ` <span style="font-size:0.8rem; color:#ddd;">（${escapeHtml(body)}）</span>`;
+    }
+    if (lang === 'zh_cn') {
+      const body = /^(?:今|现)/.test(clean) ? clean : `今${clean}`;
+      return ` <span style="font-size:0.8rem; color:#ddd;">（${escapeHtml(body)}）</span>`;
+    }
+    const bodyJa = /^現在/.test(clean) ? clean : `現在の${clean}`;
+    return ` <span style="font-size:0.8rem; color:#ddd;">（${escapeHtml(bodyJa)}）</span>`;
+  }
+
+
   function resolvePinFillColor(provinceName) {
     if (provinceName === '益州' || provinceName === '涼州') return '#2e7d32';
     if (provinceName === '荊州') return '#1565c0';
@@ -120,14 +244,16 @@
     );
     physicalLayer.addTo(map);
 
-    L.control.layers(
-      {
-        '① 自然地形図（山脈と川のみ・道路なし）': physicalLayer,
-        '② 陰影白地図（山の凹凸のみ・詳細ズーム可）': shadedReliefLayer
-      },
-      null,
-      { position: 'topright' }
-    ).addTo(map);
+    let layerControl = null;
+    function rebuildLayerControl() {
+      if (layerControl) map.removeControl(layerControl);
+      const pair = LAYER_LABELS_I18N[currentLang()] || LAYER_LABELS_I18N.ja;
+      const baseObj = {};
+      baseObj[pair[0]] = physicalLayer;
+      baseObj[pair[1]] = shadedReliefLayer;
+      layerControl = L.control.layers(baseObj, null, { position: 'topright' }).addTo(map);
+    }
+    rebuildLayerControl();
 
     // 地図上のトーストやフローティングボタンのクリックが地図へ伝播しないよう保護
     const protectedIds = Array.isArray(cfg.protectedControlIds)
@@ -145,42 +271,48 @@
     map.createPane('pinsTopPane');
     map.getPane('pinsTopPane').style.zIndex = String(PIN_MARKER_PANE_Z_INDEX);
 
-    // 2. 常時表示する自然地形（河川ライン・山脈名・大河名）
+    // 2. 常時表示する自然地形（河川ライン・山脈名・大河名：4言語動的切替対応）
     const natureGroup = L.layerGroup().addTo(map);
-    riverLines.forEach(river => {
-      const rLine = L.polyline(river.coords, {
-        color: '#1976d2',
-        weight: RIVER_BASE_WEIGHT_PX,
-        opacity: RIVER_BASE_OPACITY
-      }).addTo(natureGroup);
-      rLine.bindTooltip(river.name, { sticky: true });
-      if (typeof cfg.onRiverClick === 'function') {
-        rLine.on('click', () => cfg.onRiverClick(river.key));
-      }
-    });
+    function renderNatureLayers() {
+      natureGroup.clearLayers();
+      riverLines.forEach(river => {
+        const rLine = L.polyline(river.coords, {
+          color: '#1976d2',
+          weight: RIVER_BASE_WEIGHT_PX,
+          opacity: RIVER_BASE_OPACITY
+        }).addTo(natureGroup);
+        rLine.bindTooltip(localizeNatureLabel(river.name), { sticky: true });
+        if (typeof cfg.onRiverClick === 'function') {
+          rLine.on('click', () => cfg.onRiverClick(river.key));
+        }
+      });
 
-    naturalFeatures.forEach(feat => {
-      const icon = natureLabelMode === 'glossary'
-        ? L.divIcon({
-            className: '',
-            html: `<span class="nat-Geo-label ${feat.type === 'mountain' ? 'mountain' : ''}">${escapeHtml(feat.name)}</span>`,
-            iconSize: [NATURE_LABEL_WIDTH_PX, NATURE_LABEL_HEIGHT_PX],
-            iconAnchor: [NATURE_LABEL_WIDTH_PX / 2, NATURE_LABEL_HEIGHT_PX / 2]
-          })
-        : L.divIcon({
-            className: feat.type === 'mountain' ? 'nature-label-mountain' : 'nature-label-river',
-            html: feat.name,
-            iconSize: [NATURE_LABEL_WIDTH_PX, NATURE_LABEL_HEIGHT_PX],
-            iconAnchor: [NATURE_LABEL_WIDTH_PX / 2, NATURE_LABEL_HEIGHT_PX / 2]
-          });
-      L.marker([feat.lat, feat.lng], { icon: icon, interactive: false }).addTo(natureGroup);
-    });
+      naturalFeatures.forEach(feat => {
+        const dispName = localizeNatureLabel(feat.name);
+        const icon = natureLabelMode === 'glossary'
+          ? L.divIcon({
+              className: '',
+              html: `<span class="nat-Geo-label ${feat.type === 'mountain' ? 'mountain' : ''}">${escapeHtml(dispName)}</span>`,
+              iconSize: [NATURE_LABEL_WIDTH_PX, NATURE_LABEL_HEIGHT_PX],
+              iconAnchor: [NATURE_LABEL_WIDTH_PX / 2, NATURE_LABEL_HEIGHT_PX / 2]
+            })
+          : L.divIcon({
+              className: feat.type === 'mountain' ? 'nature-label-mountain' : 'nature-label-river',
+              html: escapeHtml(dispName),
+              iconSize: [NATURE_LABEL_WIDTH_PX, NATURE_LABEL_HEIGHT_PX],
+              iconAnchor: [NATURE_LABEL_WIDTH_PX / 2, NATURE_LABEL_HEIGHT_PX / 2]
+            });
+        L.marker([feat.lat, feat.lng], { icon: icon, interactive: false }).addTo(natureGroup);
+      });
+    }
+    renderNatureLayers();
 
     // 3. 動的レイヤー（段落ごとのエリア枠・地点ピン・クリック時の強調レイヤー）
     const baseAreaGroup = L.layerGroup().addTo(map);
     const pinMarkerGroup = L.layerGroup().addTo(map);
     let activeHighlightLayers = [];
     let currentDirectKeys = [];
+    let lastFocusedState = null;
 
     global.addEventListener('resize', () => {
       map.invalidateSize();
@@ -197,6 +329,7 @@
         el.classList.remove('selected-pin');
       });
       if (hideToast) {
+        lastFocusedState = null;
         const toastEl = document.getElementById(toastId);
         if (toastEl) toastEl.style.display = 'none';
       }
@@ -237,7 +370,7 @@
         }).addTo(pinMarkerGroup);
 
         marker.bindTooltip(
-          `<span class="custom-label" id="pin-label-${escapeHtml(place.key)}">${escapeHtml(localizeName(place.key))}</span>`,
+          `<span class="custom-label" id="pin-label-${escapeHtml(place.key)}">${escapeHtml(localizePinShortName(place.key))}</span>`,
           {
             permanent: true,
             interactive: true,
@@ -301,7 +434,7 @@
         const bannerMarker = L.marker([found.lat, found.lng], {
           icon: L.divIcon({
             className: '',
-            html: `<span class="area-banner-label">🗺️ ${escapeHtml(localizeName(found.key))}</span>`,
+            html: `<span class="area-banner-label">🗺️ ${escapeHtml(localizePinShortName(found.key))}</span>`,
             iconSize: [AREA_BANNER_WIDTH_PX, AREA_BANNER_HEIGHT_PX],
             iconAnchor: [AREA_BANNER_WIDTH_PX / 2, AREA_BANNER_HEIGHT_PX / 2]
           }),
@@ -351,7 +484,7 @@
           const parentBanner = L.marker([pLat, pLng], {
             icon: L.divIcon({
               className: '',
-              html: `<span class="parent-area-banner-label">${escapeHtml(localizeName(parentArea.key))}</span>`,
+              html: `<span class="parent-area-banner-label">${escapeHtml(localizePinShortName(parentArea.key))}</span>`,
               iconSize: [PARENT_BANNER_WIDTH_PX, PARENT_BANNER_HEIGHT_PX],
               iconAnchor: [PARENT_BANNER_WIDTH_PX / 2, PARENT_BANNER_HEIGHT_PX / 2]
             }),
@@ -383,11 +516,12 @@
         return true;
       }
 
-      const shortTitle = localizeName(found.key, getShortNameWithReading(found.label || found.key));
+      lastFocusedState = { placeKey: found.key, surface: clickedRawSurface };
+      const shortTitle = currentLang() === 'ja'
+        ? getShortNameWithReading(found.label || found.key)
+        : localizePinShortName(found.key);
       const modernText = localizeModern(found.key, found.modern);
-      const modernHtml = modernText
-        ? ` <span style="font-size:0.8rem; color:#ddd;">（現在の${escapeHtml(modernText)}）</span>`
-        : '';
+      const modernHtml = formatModernLocationBadge(modernText);
       const inlineActionHtml = typeof cfg.buildToastInlineActionHtml === 'function'
         ? cfg.buildToastInlineActionHtml(found, clickedRawSurface)
         : '';
@@ -400,7 +534,7 @@
           `<div>📍 <strong>${escapeHtml(shortTitle)}</strong>${modernHtml}</div>` +
           `<span style="display:inline-flex; align-items:center; gap:6px; margin-left:auto;">` +
             `${inlineActionHtml}` +
-            `<button onclick="document.getElementById('${escapeHtml(toastId)}').style.display='none'" style="background:transparent; border:none; color:#ccc; cursor:pointer; font-size:0.9rem; line-height:1; padding:0 2px;" title="閉じる">✕</button>` +
+            `<button onclick="document.getElementById('${escapeHtml(toastId)}').style.display='none'" style="background:transparent; border:none; color:#ccc; cursor:pointer; font-size:0.9rem; line-height:1; padding:0 2px;" title="Close">✕</button>` +
           `</span>` +
         `</div>` +
         `${bottomExtraHtml}`;
@@ -408,9 +542,38 @@
       return true;
     }
 
-    // 言語切替時：現在表示中のピン名を選択言語で再描画（中心移動・縮尺変更なし）
+    // 言語切替時：自然地形・レイヤー名・現在表示中のピン名・表示中トーストを選択言語で再描画
     if (global.ThreeKingdomI18n) {
-      global.ThreeKingdomI18n.onChange(() => renderPlaceKeys(currentDirectKeys, true));
+      global.ThreeKingdomI18n.onChange(() => {
+        rebuildLayerControl();
+        renderNatureLayers();
+        renderPlaceKeys(currentDirectKeys, true);
+        const toastEl = document.getElementById(toastId);
+        if (lastFocusedState && toastEl && toastEl.style.display !== 'none') {
+          const f = placeByKey.get(lastFocusedState.placeKey);
+          if (f) {
+            const st = currentLang() === 'ja'
+              ? getShortNameWithReading(f.label || f.key)
+              : localizePinShortName(f.key);
+            const mh = formatModernLocationBadge(localizeModern(f.key, f.modern));
+            const ia = typeof cfg.buildToastInlineActionHtml === 'function'
+              ? cfg.buildToastInlineActionHtml(f, lastFocusedState.surface)
+              : '';
+            const bx = typeof cfg.buildToastBottomHtml === 'function'
+              ? cfg.buildToastBottomHtml(f, lastFocusedState.surface)
+              : '';
+            toastEl.innerHTML =
+              `<div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">` +
+                `<div>📍 <strong>${escapeHtml(st)}</strong>${mh}</div>` +
+                `<span style="display:inline-flex; align-items:center; gap:6px; margin-left:auto;">` +
+                  `${ia}` +
+                  `<button onclick="document.getElementById('${escapeHtml(toastId)}').style.display='none'" style="background:transparent; border:none; color:#ccc; cursor:pointer; font-size:0.9rem; line-height:1; padding:0 2px;" title="Close">✕</button>` +
+                `</span>` +
+              `</div>` +
+              `${bx}`;
+          }
+        }
+      });
     }
 
     return {
