@@ -679,11 +679,14 @@
         自分のYouTube™に非公開で送る
       </button>
 
-      <div style="display: flex; gap: 10px; width: 100%;">
-        <button type="button" id="recordVideoBtn" class="secondary-btn" style="flex: 1;">
+      <div style="display: flex; gap: 8px; width: 100%;">
+        <button type="button" id="recordVideoBtn" class="secondary-btn" style="flex: 1.15; font-size: 14px; padding: 0 8px; white-space: nowrap;">
           💾 保存 (.mp4)
         </button>
-        <button type="button" id="shareNowBtn" class="secondary-btn" style="flex: 1;">
+        <button type="button" id="savePngBtn" class="secondary-btn" style="flex: 1.15; font-size: 14px; padding: 0 8px; white-space: nowrap;">
+          📷 画像 (.png)
+        </button>
+        <button type="button" id="shareNowBtn" class="secondary-btn" style="flex: 0.85; font-size: 14px; padding: 0 8px; white-space: nowrap;">
           📤 共有
         </button>
       </div>
@@ -784,7 +787,9 @@
   const VERTICAL_AUTHOR_FONT_SPACING_RATIO = 0.76;
   const VERTICAL_AUTHOR_BOTTOM_OFFSET_PX = 30;
 
-  // アニメーション時間定数（ミリ秒）
+  // アニメーション・静止画キャプチャ時間定数（ミリ秒）
+  const STATIC_CAPTURE_TAIL_OFFSET_MS = 100;
+  const OBJECT_URL_REVOKE_DELAY_MS = 10000;
   const INTRO_SILENCE_MS = 1400;
   const LINE_APPEAR_INTERVAL_MS = 2000;
   const FADE_DURATION_MS = 1000;
@@ -1129,6 +1134,7 @@
       uploadPrivateBtn: '自分のYouTube™に非公開で送る',
       uploadPublicBtn: '自分のYouTube™に公開で送る',
       downloadBtn: '💾 保存 (.mp4)',
+      downloadPngBtn: '📷 画像 (.png)',
       shareReadyBtn: '📤 共有',
       backBtn: '← 入力しなおす',
       linePrefix: '第',
@@ -1177,6 +1183,7 @@
       uploadPrivateBtn: 'Upload to My YouTube™ (Private)',
       uploadPublicBtn: 'Upload to My YouTube™ (Public)',
       downloadBtn: '💾 Save (.mp4)',
+      downloadPngBtn: '📷 Image (.png)',
       shareReadyBtn: '📤 Share',
       backBtn: '← Back to Edit',
       linePrefix: 'Line ',
@@ -1225,6 +1232,7 @@
       uploadPrivateBtn: '上傳至我的 YouTube™ (私人)',
       uploadPublicBtn: '上傳至我的 YouTube™ (公開)',
       downloadBtn: '💾 儲存 (.mp4)',
+      downloadPngBtn: '📷 圖片 (.png)',
       shareReadyBtn: '📤 分享',
       backBtn: '← 返回修改',
       linePrefix: '第 ',
@@ -1273,6 +1281,7 @@
       uploadPrivateBtn: '上传至我的 YouTube™ (私享)',
       uploadPublicBtn: '上传至我的 YouTube™ (公开)',
       downloadBtn: '💾 保存 (.mp4)',
+      downloadPngBtn: '📷 图片 (.png)',
       shareReadyBtn: '📤 分享',
       backBtn: '← 返回修改',
       linePrefix: '第 ',
@@ -1321,6 +1330,7 @@
       uploadPrivateBtn: '내 YouTube™에 비공개로 업로드',
       uploadPublicBtn: '내 YouTube™에 공개로 업로드',
       downloadBtn: '💾 저장 (.mp4)',
+      downloadPngBtn: '📷 이미지 (.png)',
       shareReadyBtn: '📤 공유',
       backBtn: '← 다시 입력하기',
       linePrefix: '제 ',
@@ -1369,6 +1379,7 @@
       uploadPrivateBtn: 'آپلود خصوصی در YouTube™ من',
       uploadPublicBtn: 'آپلود عمومی در YouTube™ من',
       downloadBtn: '💾 ذخیره (.mp4)',
+      downloadPngBtn: '📷 تصویر (.png)',
       shareReadyBtn: '📤 اشتراک‌گذاری',
       backBtn: '← بازگشت به ویرایش',
       linePrefix: 'مصرع ',
@@ -1449,6 +1460,7 @@
   const backBtn = document.getElementById('backBtn');
   const uploadBtn = document.getElementById('uploadBtn');
   const recordVideoBtn = document.getElementById('recordVideoBtn');
+  const savePngBtn = document.getElementById('savePngBtn');
   const shareNowBtn = document.getElementById('shareNowBtn');
   const progressBox = document.getElementById('progressBox');
   const progressText = document.getElementById('progressText');
@@ -1509,6 +1521,7 @@
     footerTermsLink.textContent = dict.termsLink;
     footerTrademarkText.textContent = dict.trademark;
     recordVideoBtn.textContent = dict.downloadBtn;
+    if (savePngBtn && dict.downloadPngBtn) savePngBtn.textContent = dict.downloadPngBtn;
     shareNowBtn.textContent = dict.shareReadyBtn;
     backBtn.textContent = dict.backBtn;
 
@@ -1605,6 +1618,7 @@
     if (previewStep.style.display === 'flex') {
       uploadBtn.disabled = true;
       recordVideoBtn.disabled = true;
+      savePngBtn.disabled = true;
       shareNowBtn.disabled = true;
       try {
         await ensureBgImageLoaded(getEffectiveConfig().bgPath);
@@ -1612,6 +1626,7 @@
       } finally {
         uploadBtn.disabled = false;
         recordVideoBtn.disabled = false;
+        savePngBtn.disabled = false;
         shareNowBtn.disabled = false;
         startCanvasAnimation();
       }
@@ -1785,6 +1800,7 @@
     // 「📤 共有」「💾 保存」「YouTube™送信」のすべてを1回目のタップで即座（0秒）に発動させる
     uploadBtn.disabled = true;
     recordVideoBtn.disabled = true;
+    savePngBtn.disabled = true;
     shareNowBtn.disabled = true;
     try {
       await ensureGenreFontsLoaded(config);
@@ -1793,6 +1809,7 @@
     } finally {
       uploadBtn.disabled = false;
       recordVideoBtn.disabled = false;
+      savePngBtn.disabled = false;
       shareNowBtn.disabled = false;
       startCanvasAnimation();
     }
@@ -2291,6 +2308,40 @@
     } finally {
       recordVideoBtn.disabled = false;
       shareNowBtn.disabled = false;
+    }
+  });
+
+  // 「📷 画像 (.png)」ボタン：全文字・雅号が表示完了した静止画フレーム（1080×1920）を即時PNG保存する
+  savePngBtn.addEventListener('click', async () => {
+    trackAnalyticsEvent('download_png');
+    savePngBtn.disabled = true;
+    const wasAnimating = Boolean(animationFrameId);
+    if (animationFrameId) {
+      cancelAnimationFrame(animationFrameId);
+      animationFrameId = null;
+    }
+    try {
+      const config = getEffectiveConfig();
+      await ensureGenreFontsLoaded(config);
+      await ensureBgImageLoaded(config.bgPath);
+      const fullVisibleElapsedMs = Math.max(0, getTotalCycleMs() - STATIC_CAPTURE_TAIL_OFFSET_MS);
+      drawFrame(fullVisibleElapsedMs);
+      const pngBlob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+      if (!pngBlob) throw new Error('PNG generation failed');
+      const fileName = `${currentGenreKey}_${Date.now()}.png`;
+      const url = URL.createObjectURL(pngBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.appendChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), OBJECT_URL_REVOKE_DELAY_MS);
+    } finally {
+      savePngBtn.disabled = false;
+      if (wasAnimating && previewStep.style.display === 'flex') {
+        animationFrameId = requestAnimationFrame(renderLoop);
+      }
     }
   });
 
