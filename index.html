@@ -322,6 +322,8 @@
     .theme-threekingdom .btn-primary { background: var(--accent-green); }
     .theme-utamakura .btn-primary { background: var(--accent-red); }
     .theme-hyakunin .btn-primary { background: var(--accent-purple); }
+    .theme-hyakunin .subpage-links li a { color: var(--accent-purple); }
+    .theme-hyakunin .subpage-links li a:hover { background: #faf5ff; border-color: var(--accent-purple); }
 
     .btn-primary:hover {
       opacity: 0.9;
@@ -440,6 +442,7 @@
         <a href="/tanka/" class="header-nav-btn nav-sv" id="nav-sv">🎬 Short Verse Studio</a>
         <a href="/threekingdom/" class="header-nav-btn nav-tk" id="nav-3k">🗺️ 地図と一緒によむ三国志</a>
         <a href="/utamakura/" class="header-nav-btn nav-ut" id="nav-uta">🗾 地図と一緒によむ歌枕</a>
+        <a href="/arthur/" class="header-nav-btn nav-hk" id="nav-ar">⚔️ 地図と一緒によむアーサー王物語</a>
       </nav>
       <div class="lang-bar" role="group" aria-label="Language">
         <button type="button" class="lang-btn active" data-lang="ja">日本語</button>
@@ -613,6 +616,40 @@
         </div>
       </article>
 
+      <!-- 5. 地図と一緒によむアーサー王物語 -->
+      <article id="section-arthur" class="project-card theme-hyakunin">
+        <div class="project-top-row">
+          <div class="project-header">
+            <h2 class="project-title"><a href="/arthur/" id="ar-title">地図と一緒によむアーサー王物語</a></h2>
+            <p class="project-subtitle" id="ar-sub">ハワード・パイル『アーサー王と騎士たちの物語』（1903年原典）英語原文・4言語現代語訳とブリテン史跡地図が連動</p>
+          </div>
+          <a href="/arthur/" class="btn-primary" id="ar-btn-top">アーサー王物語 を開く</a>
+        </div>
+        <div class="project-body">
+          <p id="ar-p1">ハワード・パイルの名著『The Story of King Arthur and His Knights』の英語原典と5言語（英語・日本語・繁体字・簡体字・韓国語）対訳を1段落ずつ読み進めながら、ティンタジェル・ロンドン・カンタベリー・カーレオンなどブリテン島の舞台を左側の地形図上で同時に辿れる騎士道文学リーダーです。</p>
+
+          <div class="subpage-box">
+            <div class="subpage-box-title" id="ar-vol-heading">現在公開中の章（クリックで直接開きます）</div>
+            <ul class="subpage-links">
+              <li><a href="/arthur/vol01.html"><span id="ar-v1-t">序章：ユーサー王とマーリン</span><span class="subpage-desc" id="ar-v1-d">ブリテン統一の予言と幼きアーサーの誕生・エクター卿への託児</span></a></li>
+              <li><a href="/arthur/vol02.html"><span id="ar-v2-t">第一部 第一章：石と鉄床の剣</span><span class="subpage-desc" id="ar-v2-d">ロンドンの馬上槍試合と、大聖堂前の金床から剣を引き抜く少年アーサー</span></a></li>
+              <li><a href="/arthur/vol03.html"><span id="ar-v3-t">第一部 第二章：明かされた王の血統</span><span class="subpage-desc" id="ar-v3-d">エクター卿の告白とマーリンによる王権・聖杯探索の予言</span></a></li>
+              <li><a href="/arthur/vol04.html"><span id="ar-v4-t">第一部 第三章：王権の確立</span><span class="subpage-desc" id="ar-v4-d">万人の前での抜剣の奇跡とブリテン王としての戴冠</span></a></li>
+              <li><a href="/arthur/vol05.html"><span id="ar-v5-t">第二部 第一章：黒騎士の挑戦</span><span class="subpage-desc" id="ar-v5-d">カーレオンの宮廷と、森の泉を守る黒騎士への旅立ち</span></a></li>
+              <li><a href="/arthur/vol06.html"><span id="ar-v6-t">第二部 第二章：黒騎士との死闘</span><span class="subpage-desc" id="ar-v6-d">折れた王剣とマーリンの救出、魔法の湖への導き</span></a></li>
+              <li><a href="/arthur/vol07.html"><span id="ar-v7-t">第二部 第三章：宝剣エクスカリバー</span><span class="subpage-desc" id="ar-v7-d">湖の乙女からのエクスカリバー授与と黒騎士ペリノアとの和解</span></a></li>
+              <li><a href="/arthur/vol08.html"><span id="ar-v8-t">第三部 第一章：王の変装</span><span class="subpage-desc" id="ar-v8-d">カミリアードの姫グィネヴィアとの出会いと庭師に変装したアーサー</span></a></li>
+              <li><a href="/arthur/vol09.html"><span id="ar-v9-t">第三部 第二章：ノーサンバー公との決闘</span><span class="subpage-desc" id="ar-v9-d">白き騎士として城下に進み出たアーサーの一騎打ち</span></a></li>
+              <li><a href="/arthur/vol10.html"><span id="ar-v10-t">第三部 第三章：四人の騎士との遭遇</span><span class="subpage-desc" id="ar-v10-d">森でのケイ・ガウェインら味方四騎士との馬上戦と再会</span></a></li>
+            </ul>
+          </div>
+
+          <div class="action-links">
+            <a href="/arthur/" class="btn-primary" id="ar-btn-open">アーサー王物語 を開く</a>
+          </div>
+        </div>
+      </article>
+
     </div>
 
     <!-- サイトの設計方針・解説コラム -->
@@ -689,6 +726,22 @@
         utF2: '<strong>名勝写真・浮世絵・木版歌がるた・英訳を収録:</strong> 歌枕ごとの国指定名勝写真・江戸期の風景浮世絵・現地マップや、江戸時代の木版『歌がるた』、現代語訳・英訳・出典解説を備えています。',
         utF3: '<strong>和歌・俳句の縦書き毛筆動画をワンクリック再生:</strong> 各首・各句の再生ボタンを押すと、情景に合わせた専用和紙背景の上で縦書き毛筆アニメーションを鑑賞できます。',
         utBtnOpen: '地図と一緒によむ歌枕 を開く',
+        navAr: '⚔️ アーサー王物語',
+        arTitle: '地図と一緒によむアーサー王物語',
+        arSub: 'ハワード・パイル『アーサー王と騎士たちの物語』（1903年原典）英語原文・4言語現代語訳とブリテン史跡地図が連動',
+        arP1: 'ハワード・パイルの名著『The Story of King Arthur and His Knights』の英語原典と5言語（英語・日本語・繁体字・簡体字・韓国語）対訳を1段落ずつ読み進めながら、ティンタジェル・ロンドン・カンタベリー・カーレオンなどブリテン島の舞台を左側の地形図上で同時に辿れる騎士道文学リーダーです。',
+        arVolHeading: '現在公開中の章（クリックで直接開きます）',
+        arV1T: '序章：ユーサー王とマーリン', arV1D: 'ブリテン統一の予言と幼きアーサーの誕生・エクター卿への託児',
+        arV2T: '第一部 第一章：石と鉄床の剣', arV2D: 'ロンドンの馬上槍試合と、大聖堂前の金床から剣を引き抜く少年アーサー',
+        arV3T: '第一部 第二章：明かされた王の血統', arV3D: 'エクター卿の告白とマーリンによる王権・聖杯探索の予言',
+        arV4T: '第一部 第三章：王権の確立', arV4D: '万人の前での抜剣の奇跡とブリテン王としての戴冠',
+        arV5T: '第二部 第一章：黒騎士の挑戦', arV5D: 'カーレオンの宮廷と、森の泉を守る黒騎士への旅立ち',
+        arV6T: '第二部 第二章：黒騎士との死闘', arV6D: '折れた王剣とマーリンの救出、魔法の湖への導き',
+        arV7T: '第二部 第三章：宝剣エクスカリバー', arV7D: '湖の乙女からのエクスカリバー授与と黒騎士ペリノアとの和解',
+        arV8T: '第三部 第一章：王の変装', arV8D: 'カミリアードの姫グィネヴィアとの出会いと庭師に変装したアーサー',
+        arV9T: '第三部 第二章：ノーサンバー公との決闘', arV9D: '白き騎士として城下に進み出たアーサーの一騎打ち',
+        arV10T: '第三部 第三章：四人の騎士との遭遇', arV10D: '森でのケイ・ガウェインら味方四騎士との馬上戦と再会',
+        arBtnOpen: 'アーサー王物語 を開く',
         edHeading: '当サイトの制作方針と特徴について',
         edH1: '1. 文字組版と読みやすさへのこだわり',
         edP1: 'デジタル画面上のテキストであっても、紙のノートや書籍のように「行間と文字の並びが整っていること」「縦書き・横書きそれぞれの美しさが保たれていること」を重視して開発しています。「Line-aligned」では実際のルーズリーフノートのミリ単位の罫線ピッチに文章を一致させる計算エンジンを搭載し、「Short Verse Studio」では句や歌の文字数に応じて全体のフォントサイズと字間を自動調整する縦書き描画エンジンを採用しています。',
@@ -753,6 +806,22 @@
         utF2: '<strong>Scenic Photos, Ukiyo-e, Woodblock Karuta & English Translations:</strong> View national scenic spot photographs, Edo-period Ukiyo-e prints, local maps, woodblock Karuta cards, and bilingual notes.',
         utF3: '<strong>One-Click Vertical Waka & Haiku Video Playback:</strong> Play vertical calligraphy animations set against custom seasonal Washi backgrounds.',
         utBtnOpen: 'Open Utamakura Map Reader',
+        navAr: '⚔️ King Arthur Map',
+        arTitle: 'Reading King Arthur with Maps (アーサー王物語)',
+        arSub: 'Howard Pyle’s The Story of King Arthur and His Knights (1903) in 5 languages linked with an interactive Britain map',
+        arP1: 'Read Howard Pyle’s classic Arthurian romance paragraph by paragraph in English alongside Japanese, Traditional/Simplified Chinese, and Korean translations, linked with an interactive map of Tintagel, London, Canterbury, Caerleon, and medieval Britain.',
+        arVolHeading: 'Available Chapters (Click to Open Directly)',
+        arV1T: 'Prologue: King Uther and Merlin', arV1D: 'Prophecy of Britain’s king and infant Arthur entrusted to Sir Ector',
+        arV2T: 'Part I Ch. I: The Sword in the Stone', arV2D: 'The Christmas tournament at London and young Arthur drawing the sword from the anvil',
+        arV3T: 'Part I Ch. II: The Royalty of Arthur Revealed', arV3D: 'Sir Ector’s testimony and Merlin’s prophecy of Arthur’s reign and the Holy Grail',
+        arV4T: 'Part I Ch. III: The Winning of Kinghood', arV4D: 'Arthur’s public trial at the anvil and coronation as King of Britain',
+        arV5T: 'Part II Ch. I: Quest of the Sable Knight', arV5D: 'Court at Caerleon and the perilous fountain guarded by the Sable Knight',
+        arV6T: 'Part II Ch. II: Battle with the Sable Knight', arV6D: 'Fierce combat in the forest, the shattered blade, and Merlin’s intervention',
+        arV7T: 'Part II Ch. III: Winning of Excalibur', arV7D: 'The Lady of the Lake bestows Excalibur and its enchanted sheath upon Arthur',
+        arV8T: 'Part III Ch. I: The King in Disguise', arV8D: 'Arthur journeys to Cameliard in disguise as a gardener’s boy beneath Lady Guinevere’s tower',
+        arV9T: 'Part III Ch. II: Duel with the Duke of North Umber', arV9D: 'Arthur rides forth as the White Champion before the walls of Cameliard',
+        arV10T: 'Part III Ch. III: Encounter with the Four Knights', arV10D: 'Jousting in the woodland against Sir Kay, Sir Gawaine, and his own companions',
+        arBtnOpen: 'Open King Arthur Map Reader',
         edHeading: 'Design Philosophy & Features',
         edH1: '1. Precision Digital Typesetting',
         edP1: 'We build web tools that bring print-grade baseline alignment and vertical/horizontal calligraphy to the browser. Line-aligned calculates millimeter-accurate ruled-line grids, while Short Verse Studio dynamically balances font sizing and character spacing across 9 poetic traditions.',
@@ -817,6 +886,22 @@
         utF2: '<strong>名胜照片、浮世绘、木版歌牌与出处详解：</strong> 收录国指定名胜实景、江户风景浮世绘、木版百人一首歌牌及敕撰集词书考证。',
         utF3: '<strong>和歌与俳句竖排毛笔动画一键播放：</strong> 点击播放按钮即可在专属四季和纸背景上欣赏竖排书法动画。',
         utBtnOpen: '打开《配图共读歌枕》',
+        navAr: '⚔️ 配图共读亚瑟王',
+        arTitle: '配图共读亚瑟王物语（不列颠史迹地图阅读器）',
+        arSub: '霍华德·派尔《亚瑟王与众骑士的故事》（1903英文原典）五语对照与不列颠历史地图实时联动',
+        arP1: '逐段对照阅读霍华德·派尔经典名著《The Story of King Arthur and His Knights》英文原典与简/繁/日/韩译文，点击文中地名即可在左侧地形图上定位廷塔杰尔、伦敦、坎特伯雷、卡利恩等传奇舞台。',
+        arVolHeading: '目前已公开章节（点击直接打开）',
+        arV1T: '序章：乌瑟王与梅林', arV1D: '不列颠王权预言与幼年亚瑟托付埃克特爵士抚养',
+        arV2T: '第一部 第一章：石中与铁砧之剑', arV2D: '伦敦比武大会与少年亚瑟从大教堂铁砧拔出宝剑',
+        arV3T: '第一部 第二章：王室血统的揭晓', arV3D: '父兄试剑始末与梅林揭示乌瑟王之子的身世预言',
+        arV4T: '第一部 第三章：王权的建立', arV4D: '众诸侯与万民见证拔剑奇迹，正式加冕不列颠之王',
+        arV5T: '第二部 第一章：黑骑士的挑战', arV5D: '卡利恩宫廷与前往森林魔泉迎战黑骑士的征途',
+        arV6T: '第二部 第二章：与黑骑士的死斗', arV6D: '佩剑折断的险境与梅林施法相救',
+        arV7T: '第二部 第三章：宝剑王者之剑', arV7D: '湖中仙女赐予王者之剑（Excalibur）与宝鞘，化敌为友',
+        arV8T: '第三部 第一章：国王的乔装', arV8D: '隐姓埋名前往卡梅利亚德，乔装园丁少年邂逅桂妮薇儿公主',
+        arV9T: '第三部 第二章：与诺森伯公爵的决斗', arV9D: '化身白甲骑士出战城下，一举击败诺森伯公爵',
+        arV10T: '第三部 第三章：与四骑士的遭遇', arV10D: '林中迎战凯爵士与高文等四名同伴的妙趣交锋',
+        arBtnOpen: '打开《亚瑟王物语》阅读器',
         edHeading: '网站设计理念与特色',
         edH1: '1. 专注于数字文字排版与阅读美感',
         edP1: '无论是活页横线笔记的毫米级行距对齐，还是汉诗、俳句、短歌的竖排字距均衡，我们致力于在浏览器中重现纸质书籍与书法的整洁美感。',
@@ -881,6 +966,22 @@
         utF2: '<strong>名勝照片、浮世繪、木版歌牌與出處詳解：</strong> 收錄國指定名勝實景、江戶風景浮世繪、木版百人一首歌牌及敕撰集詞書考證。',
         utF3: '<strong>和歌與俳句直書毛筆動畫一鍵播放：</strong> 點擊播放按鈕即可在專屬四季和紙背景上欣賞直書書法動畫。',
         utBtnOpen: '開啟《配圖共讀歌枕》',
+        navAr: '⚔️ 配圖共讀亞瑟王',
+        arTitle: '配圖共讀亞瑟王物語（不列顛史蹟地圖閱讀器）',
+        arSub: '霍華德·派爾《亞瑟王與眾騎士的故事》（1903英文原典）五語對照與不列顛歷史地圖即時連動',
+        arP1: '逐段對照閱讀霍華德·派爾經典名著《The Story of King Arthur and His Knights》英文原典與繁/簡/日/韓譯文，點擊文中地名即可在左側地形圖上定位廷塔傑爾、倫敦、坎特伯雷、卡利恩等傳奇舞台。',
+        arVolHeading: '目前已公開章節（點擊直接開啟）',
+        arV1T: '序章：烏瑟王與梅林', arV1D: '不列顛王權預言與幼年亞瑟託付埃克特爵士撫養',
+        arV2T: '第一部 第一章：石中與鐵砧之劍', arV2D: '倫敦比武大會與少年亞瑟從大教堂鐵砧拔出寶劍',
+        arV3T: '第一部 第二章：王室血統的揭曉', arV3D: '父兄試劍始末與梅林揭示烏瑟王之子的身世預言',
+        arV4T: '第一部 第三章：王權的建立', arV4D: '眾諸侯與萬民見證拔劍奇蹟，正式加冕不列顛之王',
+        arV5T: '第二部 第一章：黑騎士的挑戰', arV5D: '卡利恩宮廷與前往森林魔泉迎戰黑騎士的征途',
+        arV6T: '第二部 第二章：與黑騎士的死鬥', arV6D: '佩劍折斷的險境與梅林施法相救',
+        arV7T: '第二部 第三章：寶劍王者之劍', arV7D: '湖中仙女賜予王者之劍（Excalibur）與寶鞘，化敵為友',
+        arV8T: '第三部 第一章：國王的喬裝', arV8D: '隱姓埋名前往卡梅利亞德，喬裝園丁少年邂逅桂妮薇兒公主',
+        arV9T: '第三部 第二章：與諾森伯公爵的決鬥', arV9D: '化身白甲騎士出戰城下，一舉擊敗諾森伯公爵',
+        arV10T: '第三部 第三章：與四騎士的遭遇', arV10D: '林中迎戰凱爵士與高文等四名同伴的妙趣交鋒',
+        arBtnOpen: '開啟《亞瑟王物語》閱讀器',
         edHeading: '網站設計理念與特色',
         edH1: '1. 專注於數位文字排版與閱讀美感',
         edP1: '無論是活頁橫線筆記的毫米級行距對齊，還是漢詩、俳句、短歌的直書字距均衡，我們致力於在瀏覽器中重現紙本書籍與書法的整潔美感。',
@@ -945,6 +1046,22 @@
         utF2: '<strong>명승 사진·우키요에·목판 카루타·출전 해설:</strong> 국가 지정 명승 사진, 에도 시대 풍경 우키요에, 목판 백인일수 카루타 및 영역·고전 해설을 수록했습니다.',
         utF3: '<strong>와카·하이쿠 세로쓰기 붓글씨 영상 원클릭 재생:</strong> 각 작품의 재생 버튼을 누르면 전용 화지 배경 위에서 세로쓰기 애니메이션을 감상할 수 있습니다.',
         utBtnOpen: '지도와 함께 읽는 우타마쿠라 열기',
+        navAr: '⚔️ 아서왕 이야기',
+        arTitle: '지도와 함께 읽는 아서왕 이야기（브리튼 역사지도 리더）',
+        arSub: '하워드 파일 『아서왕과 기사들의 이야기』(1903 영문 원전) 5개 국어 대조 및 브리튼 지형도 연동',
+        arP1: '하워드 파일의 고전 명작 『The Story of King Arthur and His Knights』 영문 원전과 한국어·일본어·중국어 번역을 한 단락씩 대조하며, 틴타젤·런던·캔터베리·카얼리언 등 브리튼 섬의 무대를 왼쪽 지도에서 함께 확인하는 기사도 문학 리더입니다.',
+        arVolHeading: '현재 공개 중인 장 (클릭하여 바로 열기)',
+        arV1T: '프롤로그：우서 왕과 멀린', arV1D: '브리튼 통일의 예언과 어린 아서의 탄생·엑터 경에게의 위탁',
+        arV2T: '제1부 제1장：돌과 모루의 검', arV2D: '런던 마상창시합과 대성당 앞 모루에서 검을 뽑아낸 소년 아서',
+        arV3T: '제1부 제2장：밝혀진 왕의 혈통', arV3D: '엑터 경의 고백과 멀린의 왕권·성배 탐색 예언',
+        arV4T: '제1부 제3장：왕권의 확립', arV4D: '만인 앞에서 증명한 발검의 기적과 브리튼 왕 대관',
+        arV5T: '제2부 제1장：흑기사의 도전', arV5D: '카얼리언 궁정과 숲속의 샘을 지키는 흑기사를 향한 출발',
+        arV6T: '제2부 제2장：흑기사와의 사투', arV6D: '부러진 검의 위기와 멀린의 구출, 마법의 호수로의 인도',
+        arV7T: '제2부 제3장：보검 엑스칼리버', arV7D: '호수의 여인에게서 받은 엑스칼리버와 흑기사 펠리노어와의 화해',
+        arV8T: '제3부 제1장：왕의 변장', arV8D: '카밀리아드의 기네비어 공주와의 만남과 정원사 소년으로 변장한 아서',
+        arV9T: '제3부 제2장：노섬버 공작과의 결투', arV9D: '백기사로 성 아래에 나서서 노섬버 공작을 물리친 일기토',
+        arV10T: '제3부 제3장：네 기사와의 조우', arV10D: '숲속에서 케이 경·가웨인 등 아군 네 기사와 벌인 마상 대결과 재회',
+        arBtnOpen: '아서왕 이야기 리더 열기',
         edHeading: '사이트 제작 방침 및 특징',
         edH1: '1. 정밀한 디지털 조판과 가독성',
         edP1: '디지털 화면에서도 종이 공책이나 서적처럼 줄 간격과 글자 배열이 정돈된 조판을 추구합니다. Line-aligned는 실제 루즈리프 줄 간격에 맞춘 조판 엔진을, Short Verse Studio는 글자 수에 맞춰 폰트 크기와 자간을 자동 조절하는 엔진을 탑재하고 있습니다.',
@@ -967,6 +1084,7 @@
       document.getElementById('nav-sv').textContent = d.navSv;
       document.getElementById('nav-3k').textContent = d.nav3k;
       document.getElementById('nav-uta').textContent = d.navUta;
+      document.getElementById('nav-ar').textContent = d.navAr;
       document.getElementById('intro-title').textContent = d.introTitle;
       document.getElementById('intro-desc').textContent = d.introDesc;
 
@@ -1026,6 +1144,32 @@
       document.getElementById('ut-f3').innerHTML = d.utF3;
       document.getElementById('ut-btn-top').textContent = d.utBtnOpen;
       document.getElementById('ut-btn-open').textContent = d.utBtnOpen;
+      document.getElementById('ar-title').textContent = d.arTitle;
+      document.getElementById('ar-sub').textContent = d.arSub;
+      document.getElementById('ar-p1').textContent = d.arP1;
+      document.getElementById('ar-vol-heading').textContent = d.arVolHeading;
+      document.getElementById('ar-btn-top').textContent = d.arBtnOpen;
+      document.getElementById('ar-btn-open').textContent = d.arBtnOpen;
+      document.getElementById('ar-v1-t').textContent = d.arV1T;
+      document.getElementById('ar-v1-d').textContent = d.arV1D;
+      document.getElementById('ar-v2-t').textContent = d.arV2T;
+      document.getElementById('ar-v2-d').textContent = d.arV2D;
+      document.getElementById('ar-v3-t').textContent = d.arV3T;
+      document.getElementById('ar-v3-d').textContent = d.arV3D;
+      document.getElementById('ar-v4-t').textContent = d.arV4T;
+      document.getElementById('ar-v4-d').textContent = d.arV4D;
+      document.getElementById('ar-v5-t').textContent = d.arV5T;
+      document.getElementById('ar-v5-d').textContent = d.arV5D;
+      document.getElementById('ar-v6-t').textContent = d.arV6T;
+      document.getElementById('ar-v6-d').textContent = d.arV6D;
+      document.getElementById('ar-v7-t').textContent = d.arV7T;
+      document.getElementById('ar-v7-d').textContent = d.arV7D;
+      document.getElementById('ar-v8-t').textContent = d.arV8T;
+      document.getElementById('ar-v8-d').textContent = d.arV8D;
+      document.getElementById('ar-v9-t').textContent = d.arV9T;
+      document.getElementById('ar-v9-d').textContent = d.arV9D;
+      document.getElementById('ar-v10-t').textContent = d.arV10T;
+      document.getElementById('ar-v10-d').textContent = d.arV10D;
 
       document.getElementById('ed-heading').textContent = d.edHeading;
       document.getElementById('ed-h1').textContent = d.edH1;
