@@ -1,18 +1,13 @@
 [
   {
-    "place": "深川",
-    "file_key": "Fuji_seen_through_the_Mannen_bridge_at_Fukagawa.jpg",
-    "local_path": "images/wiki/Fuji_seen_through_the_Mannen_bridge_at_Fukagawa.jpg"
-  },
-  {
     "place": "白河関",
-    "file_key": "Shirakawa-no-Seki_monument.jpg",
-    "local_path": "images/wiki/Shirakawa-no-Seki_monument.jpg"
+    "file_key": "Shirakawa-no-seki_Jinja_Sando.jpg",
+    "local_path": "images/wiki/Shirakawa-no-seki_Jinja_Sando.jpg"
   },
   {
     "place": "松島",
-    "file_key": "Matsushima_miyagi_z.JPG",
-    "local_path": "images/wiki/Matsushima_miyagi_z.jpg"
+    "file_key": "Godaido_in_Matsushima_20181007.jpg",
+    "local_path": "images/wiki/Godaido_in_Matsushima_20181007.jpg"
   },
   {
     "place": "富士山",
@@ -20,19 +15,19 @@
     "local_path": "images/wiki/Mt.Fuji_from_Mierula.jpg"
   },
   {
-    "place": "草加",
-    "file_key": "草加松原1.jpg",
-    "local_path": "images/wiki/wiki_e477a1382c.jpg"
+    "place": "上野",
+    "file_key": "Ueno_Tsuki_no_Matsu_2012.JPG",
+    "local_path": "images/wiki/Ueno_Tsuki_no_Matsu_2012.jpg"
+  },
+  {
+    "place": "谷中",
+    "file_key": "Yanaka_Tenno-ji_temple_04.JPG",
+    "local_path": "images/wiki/Yanaka_Tenno-ji_temple_04.jpg"
   },
   {
     "place": "室の八島",
     "file_key": "Oomiwa-jinja_(tochigishi)_muronoyashima.JPG",
     "local_path": "images/wiki/Oomiwa-jinja__tochigishi__muronoyashima.jpg"
-  },
-  {
-    "place": "象潟",
-    "file_key": "Kisakata_byobu_(Kisakata_Historical_Museum).jpg",
-    "local_path": "images/wiki/Kisakata_byobu__Kisakata_Historical_Museum_.jpg"
   },
   {
     "place": "黒髪山",
@@ -43,16 +38,6 @@
     "place": "裏見の滝",
     "file_key": "Urami_taki_(Nikko).jpg",
     "local_path": "images/wiki/Urami_taki__Nikko_.jpg"
-  },
-  {
-    "place": "那須野",
-    "file_key": "20080525NasunoGaHara.jpg",
-    "local_path": "images/wiki/20080525NasunoGaHara.jpg"
-  },
-  {
-    "place": "那須の篠原",
-    "file_key": "Tamamoinari.jpg",
-    "local_path": "images/wiki/Tamamoinari.jpg"
   },
   {
     "place": "那須八幡宮",
@@ -75,19 +60,14 @@
     "local_path": "images/wiki/Mt._Bandaisan_0811.jpg"
   },
   {
-    "place": "安積山",
-    "file_key": "Asakayama_Park.jpg",
-    "local_path": "images/wiki/Asakayama_Park.jpg"
-  },
-  {
-    "place": "丸山",
-    "file_key": "Yakushidou_Iouji_(Fukushima).JPG",
-    "local_path": "images/wiki/Yakushidou_Iouji__Fukushima_.jpg"
-  },
-  {
     "place": "飯塚",
-    "file_key": "Iizaka_Onsen_26-Aug-2018.jpg",
-    "local_path": "images/wiki/Iizaka_Onsen_26-Aug-2018.jpg"
+    "file_key": "Iizakaonsen-Sabakoyu.JPG",
+    "local_path": "images/wiki/Iizakaonsen-Sabakoyu.jpg"
+  },
+  {
+    "place": "伊達の大木戸",
+    "file_key": "Atsukashiyama_ruins.jpg",
+    "local_path": "images/wiki/Atsukashiyama_ruins.jpg"
   },
   {
     "place": "二見",
@@ -110,24 +90,19 @@
     "local_path": "images/wiki/Yuno-toge_Pass.jpg"
   },
   {
-    "place": "かへるやま",
-    "file_key": "Kinome-touge.jpg",
-    "local_path": "images/wiki/Kinome-touge.jpg"
-  },
-  {
     "place": "敦賀",
     "file_key": "Kehi-matsubara_from_Mount_Tezutsu.jpg",
     "local_path": "images/wiki/Kehi-matsubara_from_Mount_Tezutsu.jpg"
   },
   {
+    "place": "吉崎",
+    "file_key": "Kashimanomori.jpg",
+    "local_path": "images/wiki/Kashimanomori.jpg"
+  },
+  {
     "place": "日光山",
     "file_key": "Nikko_Toshogu_Yomeimon_Gate_2024.jpg",
     "local_path": "images/wiki/Nikko_Toshogu_Yomeimon_Gate_2024.jpg"
-  },
-  {
-    "place": "三春",
-    "file_key": "Miharu_Miharu-Takizakura_Front_1.jpg",
-    "local_path": "images/wiki/Miharu_Miharu-Takizakura_Front_1.jpg"
   },
   {
     "place": "二本松",
@@ -150,24 +125,9 @@
     "local_path": "images/wiki/SendaiJoOtemonSumiYagura2003-11.jpg"
   },
   {
-    "place": "つつじが岡",
-    "file_key": "Ganbarō_Tohoku,_Tsutsujigaoka_no_sakura.jpg",
-    "local_path": "images/wiki/Ganbar__Tohoku__Tsutsujigaoka_no_sakura.jpg"
-  },
-  {
     "place": "塩竈",
     "file_key": "211030_Shiogama-jinja_Shiogama_Miyagi_pref_Japan02s3.jpg",
     "local_path": "images/wiki/211030_Shiogama-jinja_Shiogama_Miyagi_pref_Japan02s3.jpg"
-  },
-  {
-    "place": "壺の碑",
-    "file_key": "Tagajo-hi.JPG",
-    "local_path": "images/wiki/Tagajo-hi.jpg"
-  },
-  {
-    "place": "末の松山",
-    "file_key": "Tagajo_Sue-no-Matsuyama_02.JPG",
-    "local_path": "images/wiki/Tagajo_Sue-no-Matsuyama_02.jpg"
   },
   {
     "place": "瑞巌寺",
@@ -178,11 +138,6 @@
     "place": "平泉",
     "file_key": "230728_Motsuji_Hiraizumi_Iwate_pref_Japan37s3.jpg",
     "local_path": "images/wiki/230728_Motsuji_Hiraizumi_Iwate_pref_Japan37s3.jpg"
-  },
-  {
-    "place": "石巻",
-    "file_key": "Hiyoriyama_koen_isinomaki_city.JPG",
-    "local_path": "images/wiki/Hiyoriyama_koen_isinomaki_city.jpg"
   },
   {
     "place": "金華山",
@@ -196,8 +151,8 @@
   },
   {
     "place": "高館",
-    "file_key": "Natukusaya.basyou.JPG",
-    "local_path": "images/wiki/Natukusaya.basyou.jpg"
+    "file_key": "230728_Takadachi_Gikei-do_Hiraizumi_Iwate_pref_Japan12s3.jpg",
+    "local_path": "images/wiki/230728_Takadachi_Gikei-do_Hiraizumi_Iwate_pref_Japan12s3.jpg"
   },
   {
     "place": "北上川",
@@ -205,19 +160,19 @@
     "local_path": "images/wiki/230728_Takadachi_Gikei-do_Hiraizumi_Iwate_pref_Japan13s3.jpg"
   },
   {
-    "place": "岩手の里",
-    "file_key": "Iwadeyama190.JPG",
-    "local_path": "images/wiki/Iwadeyama190.jpg"
+    "place": "光堂",
+    "file_key": "230728_Chusonji_Hiraizumi_Iwate_pref_Japan01s3.jpg",
+    "local_path": "images/wiki/230728_Chusonji_Hiraizumi_Iwate_pref_Japan01s3.jpg"
+  },
+  {
+    "place": "雄島",
+    "file_key": "Togetsukyō_Bridge_in_Ojima_2008.jpg",
+    "local_path": "images/wiki/Togetsuky__Bridge_in_Ojima_2008.jpg"
   },
   {
     "place": "鳴子の湯",
     "file_key": "NarukoTakiNoYu.jpg",
     "local_path": "images/wiki/NarukoTakiNoYu.jpg"
-  },
-  {
-    "place": "山中温泉",
-    "file_key": "260606_Basho-do_Yamanaka_Onsen_Kaga_Ishikawa_pref_Japan01s3.jpg",
-    "local_path": "images/wiki/260606_Basho-do_Yamanaka_Onsen_Kaga_Ishikawa_pref_Japan01s3.jpg"
   },
   {
     "place": "山形",
@@ -226,8 +181,8 @@
   },
   {
     "place": "立石寺",
-    "file_key": "211029_Risshaku-ji_Yamagata_Yamagata_pref_Japan106s3.jpg",
-    "local_path": "images/wiki/211029_Risshaku-ji_Yamagata_Yamagata_pref_Japan106s3.jpg"
+    "file_key": "Risshakuji_Temple.jpg",
+    "local_path": "images/wiki/Risshakuji_Temple.jpg"
   },
   {
     "place": "最上川",
@@ -305,14 +260,19 @@
     "local_path": "images/wiki/Tateyama_Mountains_and_Onna-iwa_viewed_from_Amaharashi_Coast_20190309134344.jpg"
   },
   {
-    "place": "倶利伽羅が谷",
-    "file_key": "Battle_of_Kurikaradani_Kassen_Zu.jpg",
-    "local_path": "images/wiki/Battle_of_Kurikaradani_Kassen_Zu.jpg"
+    "place": "湯殿山",
+    "file_key": "Yudonosan_Torii_gate_2006-A.jpg",
+    "local_path": "images/wiki/Yudonosan_Torii_gate_2006-A.jpg"
   },
   {
-    "place": "小松",
-    "file_key": "DSC_2164~2.jpg",
-    "local_path": "images/wiki/DSC_2164_2.jpg"
+    "place": "東叡山",
+    "file_key": "Five-storied_Pagoda_-_Kan'ei-ji.jpg",
+    "local_path": "images/wiki/Five-storied_Pagoda_-_Kan_ei-ji.jpg"
+  },
+  {
+    "place": "吹浦",
+    "file_key": "16_rakan_4.jpg",
+    "local_path": "images/wiki/16_rakan_4.jpg"
   },
   {
     "place": "那谷寺",
@@ -333,11 +293,6 @@
     "place": "石山",
     "file_key": "Ishiyama_temple.jpg",
     "local_path": "images/wiki/Ishiyama_temple.jpg"
-  },
-  {
-    "place": "有明",
-    "file_key": "2025-08-15_Tsuzumi_Falls,Arima_有馬温泉・鼓滝_DSCF8727.jpg",
-    "local_path": "images/wiki/2025-08-15_Tsuzumi_Falls_Arima_________DSCF8727.jpg"
   },
   {
     "place": "長島",
@@ -370,19 +325,19 @@
     "local_path": "images/wiki/Old_Ogaki_Castle_in_1933.jpg"
   },
   {
+    "place": "大坂",
+    "file_key": "Osaka_Castle_and_Gokurakubashi_Bridge.jpg",
+    "local_path": "images/wiki/Osaka_Castle_and_Gokurakubashi_Bridge.jpg"
+  },
+  {
+    "place": "種の浜",
+    "file_key": "Mizu-shima_Island_(Fukui).jpg",
+    "local_path": "images/wiki/Mizu-shima_Island__Fukui_.jpg"
+  },
+  {
     "place": "飛鳥",
     "file_key": "Asuka_Nara_2009-5-23.jpg",
     "local_path": "images/wiki/Asuka_Nara_2009-5-23.jpg"
-  },
-  {
-    "place": "天の香具山",
-    "file_key": "Kaguyama-mt.jpg",
-    "local_path": "images/wiki/Kaguyama-mt.jpg"
-  },
-  {
-    "place": "田子の浦",
-    "file_key": "Shore_of_Tago_Bay,_Ejiri_at_Tokaido.jpg",
-    "local_path": "images/wiki/Shore_of_Tago_Bay__Ejiri_at_Tokaido.jpg"
   },
   {
     "place": "小倉山",
@@ -395,29 +350,29 @@
     "local_path": "images/wiki/wiki_69108dd966.jpg"
   },
   {
+    "place": "三笠山",
+    "file_key": "Mikasayama_201611b.jpg",
+    "local_path": "images/wiki/Mikasayama_201611b.jpg"
+  },
+  {
+    "place": "宇治山",
+    "file_key": "Asahi-yama_and_Daikichi-yama.jpg",
+    "local_path": "images/wiki/Asahi-yama_and_Daikichi-yama.jpg"
+  },
+  {
     "place": "小野",
     "file_key": "Zuishinin_Kyoto03s3s4592.jpg",
     "local_path": "images/wiki/Zuishinin_Kyoto03s3s4592.jpg"
   },
   {
     "place": "逢坂の関",
-    "file_key": "伊勢参宮名所図会、逢坂山.jpg",
-    "local_path": "images/wiki/wiki_dda4a83e12.jpg"
-  },
-  {
-    "place": "隠岐",
-    "file_key": "20090923隠岐諸島.jpg",
-    "local_path": "images/wiki/20090923____.jpg"
+    "file_key": "Seki-semimaru-jinja-shimosha3.jpg",
+    "local_path": "images/wiki/Seki-semimaru-jinja-shimosha3.jpg"
   },
   {
     "place": "筑波山",
     "file_key": "Mount_Tsukuba_seen_from_the_WSW_(2006).jpg",
     "local_path": "images/wiki/Mount_Tsukuba_seen_from_the_WSW__2006_.jpg"
-  },
-  {
-    "place": "いなばの山",
-    "file_key": "Ube-jinja,_haiden-1.jpg",
-    "local_path": "images/wiki/Ube-jinja__haiden-1.jpg"
   },
   {
     "place": "竜田川",
@@ -435,6 +390,11 @@
     "local_path": "images/wiki/Naniwa_Palace_Site.jpg"
   },
   {
+    "place": "熟田津",
+    "file_key": "Wakehama_Beach_20240519_(1).jpg",
+    "local_path": "images/wiki/Wakehama_Beach_20240519__1_.jpg"
+  },
+  {
     "place": "畝傍山",
     "file_key": "Unebi-yama.jpg",
     "local_path": "images/wiki/Unebi-yama.jpg"
@@ -446,8 +406,8 @@
   },
   {
     "place": "蒲生野",
-    "file_key": "Funaokayama1.jpg",
-    "local_path": "images/wiki/Funaokayama1.jpg"
+    "file_key": "240608_Aga-jinja_Higashiomi_Shiga_pref_Japan08s3.jpg",
+    "local_path": "images/wiki/240608_Aga-jinja_Higashiomi_Shiga_pref_Japan08s3.jpg"
   },
   {
     "place": "阿騎野",
@@ -465,13 +425,93 @@
     "local_path": "images/wiki/Tamatsushima-shrine.jpg"
   },
   {
-    "place": "影沼",
-    "file_key": "鏡沼跡（福島県）.jpg",
-    "local_path": "images/wiki/wiki_kagenuma.jpg"
+    "place": "石上",
+    "file_key": "Isonokami-jingu,_haiden-1.jpg",
+    "local_path": "images/wiki/Isonokami-jingu__haiden-1.jpg"
   },
   {
-    "place": "須磨",
-    "file_key": "神戸 須磨海岸, Kobe Suma coast (5106576375).jpg",
-    "local_path": "images/wiki/wiki_suma_coast.jpg"
+    "place": "手向山",
+    "file_key": "Tamukeyama-hachimangu_honden.jpg",
+    "local_path": "images/wiki/Tamukeyama-hachimangu_honden.jpg"
+  },
+  {
+    "place": "泉川",
+    "file_key": "Kizu-River_Kizugawa_Kyoto_pref_Japan01s3.jpg",
+    "local_path": "images/wiki/Kizu-River_Kizugawa_Kyoto_pref_Japan01s3.jpg"
+  },
+  {
+    "place": "三輪山",
+    "file_key": "Mount_Miwa.jpg",
+    "local_path": "images/wiki/Mount_Miwa.jpg"
+  },
+  {
+    "place": "志賀",
+    "file_key": "近江神宮・楼門.jpg",
+    "local_path": "images/wiki/wiki_7667c34bf6.jpg"
+  },
+  {
+    "place": "吉野",
+    "file_key": "Cherry_blossoms_at_Yoshinoyama_01.jpg",
+    "local_path": "images/wiki/Cherry_blossoms_at_Yoshinoyama_01.jpg"
+  },
+  {
+    "place": "初瀬",
+    "file_key": "Hasedera_Sakurai_Nara_pref16n4272.jpg",
+    "local_path": "images/wiki/Hasedera_Sakurai_Nara_pref16n4272.jpg"
+  },
+  {
+    "place": "河原院",
+    "file_key": "SyoseienBoukakaku.jpg",
+    "local_path": "images/wiki/SyoseienBoukakaku.jpg"
+  },
+  {
+    "place": "二上山",
+    "file_key": "Mount_Nijo,_zenkei.jpg",
+    "local_path": "images/wiki/Mount_Nijo__zenkei.jpg"
+  },
+  {
+    "place": "近江の海",
+    "file_key": "Mangetsu-ji,_Ukimidō_at_Sunset_01.jpg",
+    "local_path": "images/wiki/Mangetsu-ji__Ukimid__at_Sunset_01.jpg"
+  },
+  {
+    "place": "伊吹山",
+    "file_key": "Mount_Ibuki_from_Lake_Biwa.jpg",
+    "local_path": "images/wiki/Mount_Ibuki_from_Lake_Biwa.jpg"
+  },
+  {
+    "place": "大覚寺",
+    "file_key": "Osawaike_Daikakuji_Kyoto_001_JPN.jpg",
+    "local_path": "images/wiki/Osawaike_Daikakuji_Kyoto_001_JPN.jpg"
+  },
+  {
+    "place": "大江山",
+    "file_key": "Mt.Oe.jpg",
+    "local_path": "images/wiki/wiki_e5479bb3fb.jpg"
+  },
+  {
+    "place": "天橋立",
+    "file_key": "Amanohashidate_view_from_Mt_Moju02s3s4592.jpg",
+    "local_path": "images/wiki/Amanohashidate_view_from_Mt_Moju02s3s4592.jpg"
+  },
+  {
+    "place": "宇治",
+    "file_key": "Uji-Bridge.jpg",
+    "local_path": "images/wiki/Uji-Bridge.jpg"
+  },
+  {
+    "place": "大峰山",
+    "file_key": "Mount_Sanjo_in_the_rainy_season.jpg",
+    "local_path": "images/wiki/Mount_Sanjo_in_the_rainy_season.jpg"
+  },
+  {
+    "place": "三室山",
+    "file_key": "Tatsuta_River,_Ikaruga,_Nara02.JPG",
+    "local_path": "images/wiki/Tatsuta_River__Ikaruga__Nara02.jpg"
+  },
+  {
+    "place": "ならの小川",
+    "file_key": "Kamo-wakeikazuchi-jinja09n4272.jpg",
+    "local_path": "images/wiki/Kamo-wakeikazuchi-jinja09n4272.jpg"
   }
 ]

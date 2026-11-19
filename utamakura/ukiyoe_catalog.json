@@ -7,7 +7,7 @@
     "title": "深川万年橋",
     "caption": "歌川広重『名所江戸百景 深川万年橋』",
     "province": "武蔵国",
-    "file_key": "100_views_edo_004.jpg",
+    "file_key": "100_views_edo_051.jpg",
     "places": [
       "深川"
     ],
@@ -15,8 +15,8 @@
       "おくのほそ道"
     ],
     "commons_query": "名所江戸百景 深川万年橋",
-    "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/100_views_edo_004.jpg?width=800",
-    "thumb_url": "https://commons.wikimedia.org/wiki/Special:FilePath/100_views_edo_004.jpg?width=450",
+    "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/100_views_edo_051.jpg?width=800",
+    "thumb_url": "https://commons.wikimedia.org/wiki/Special:FilePath/100_views_edo_051.jpg?width=450",
     "local_image": "images/ukiyoe/edo_fukagawa_mannenbashi.jpg"
   },
   {
@@ -59,26 +59,6 @@
     "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/100_views_edo_011.jpg?width=800",
     "thumb_url": "https://commons.wikimedia.org/wiki/Special:FilePath/100_views_edo_011.jpg?width=450",
     "local_image": "images/ukiyoe/edo_ueno_kiyomizudo.jpg"
-  },
-  {
-    "id": "edo_nippori_yanaka",
-    "category": "浮世絵（名所江戸百景）",
-    "artist": "歌川広重",
-    "series": "名所江戸百景",
-    "title": "日暮里寺院の林泉",
-    "caption": "歌川広重『名所江戸百景 日暮里寺院の林泉』",
-    "province": "武蔵国",
-    "file_key": "100_views_edo_014.jpg",
-    "places": [
-      "谷中"
-    ],
-    "works": [
-      "おくのほそ道"
-    ],
-    "commons_query": "名所江戸百景 日暮里寺院の林泉",
-    "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/100_views_edo_014.jpg?width=800",
-    "thumb_url": "https://commons.wikimedia.org/wiki/Special:FilePath/100_views_edo_014.jpg?width=450",
-    "local_image": "images/ukiyoe/edo_nippori_yanaka.jpg"
   },
   {
     "id": "edo_senju_ohashi",
@@ -297,9 +277,7 @@
     "province": "越前国",
     "file_key": "The Famous Scenes of the Sixty States 31 Echizen.jpg",
     "places": [
-      "気比の松原",
-      "敦賀",
-      "気比の明神"
+      "敦賀"
     ],
     "works": [
       "おくのほそ道"
@@ -308,6 +286,26 @@
     "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/The%20Famous%20Scenes%20of%20the%20Sixty%20States%2031%20Echizen.jpg?width=800",
     "thumb_url": "https://commons.wikimedia.org/wiki/Special:FilePath/The%20Famous%20Scenes%20of%20the%20Sixty%20States%2031%20Echizen.jpg?width=450",
     "local_image": "images/ukiyoe/r60_echizen_tsuruga.jpg"
+  },
+  {
+    "id": "r60_tango_amanohashidate",
+    "category": "浮世絵（六十余州名所図会）",
+    "artist": "歌川広重",
+    "series": "六十余州名所図会",
+    "title": "丹後 天の橋立",
+    "caption": "歌川広重『六十余州名所図会 丹後 天の橋立』",
+    "province": "丹後国",
+    "file_key": "Tango Province, Ama no Hashidate (5765349381).jpg",
+    "places": [
+      "天橋立"
+    ],
+    "works": [
+      "小倉百人一首"
+    ],
+    "commons_query": "六十余州名所図会 丹後 天の橋立",
+    "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Tango%20Province%2C%20Ama%20no%20Hashidate%20%285765349381%29.jpg?width=800",
+    "thumb_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Tango%20Province%2C%20Ama%20no%20Hashidate%20%285765349381%29.jpg?width=450",
+    "local_image": "images/ukiyoe/r60_tango_amanohashidate.jpg"
   },
   {
     "id": "r60_kii_wakanoura",
@@ -351,6 +349,27 @@
     "local_image": "images/ukiyoe/r60_oki_takuhi.jpg"
   },
   {
+    "id": "r60_awaji_goshikihama",
+    "category": "浮世絵（六十余州名所図会）",
+    "artist": "歌川広重",
+    "series": "六十余州名所図会",
+    "title": "淡路 五色浜",
+    "caption": "歌川広重『六十余州名所図会 淡路 五色浜』",
+    "province": "淡路国",
+    "file_key": "The Famous Scenes of the Sixty States 54 Awaji.jpg",
+    "places": [
+      "淡路島"
+    ],
+    "works": [
+      "小倉百人一首",
+      "万葉集"
+    ],
+    "commons_query": "六十余州名所図会 淡路 五色浜",
+    "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/The%20Famous%20Scenes%20of%20the%20Sixty%20States%2054%20Awaji.jpg?width=800",
+    "thumb_url": "https://commons.wikimedia.org/wiki/Special:FilePath/The%20Famous%20Scenes%20of%20the%20Sixty%20States%2054%20Awaji.jpg?width=450",
+    "local_image": "images/ukiyoe/r60_awaji_goshikihama.jpg"
+  },
+  {
     "id": "hokusai_fuji_gaifu",
     "category": "浮世絵（富嶽三十六景）",
     "artist": "葛飾北斎",
@@ -380,7 +399,7 @@
     "title": "東海道江尻田子の浦略図",
     "caption": "葛飾北斎『富嶽三十六景 東海道江尻田子の浦略図』",
     "province": "駿河国",
-    "file_key": "Ejiri in Suruga Province.jpg",
+    "file_key": "Shore_of_Tago_Bay,_Ejiri_at_Tokaido.jpg",
     "places": [
       "田子の浦"
     ],
@@ -389,8 +408,9 @@
       "万葉集"
     ],
     "commons_query": "富嶽三十六景 東海道江尻田子の浦略図",
-    "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Ejiri%20in%20Suruga%20Province.jpg?width=800",
-    "thumb_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Ejiri%20in%20Suruga%20Province.jpg?width=450"
+    "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Shore_of_Tago_Bay%2C_Ejiri_at_Tokaido.jpg?width=800",
+    "thumb_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Shore_of_Tago_Bay%2C_Ejiri_at_Tokaido.jpg?width=450",
+    "local_image": "images/ukiyoe/hokusai_fuji_tagonoura.jpg"
   },
   {
     "id": "hokusai_taki_kurokami",
@@ -434,43 +454,185 @@
     "local_image": "images/ukiyoe/tokaido_osakayama.jpg"
   },
   {
-    "id": "hiroshige2_oshu_soma",
+    "id": "r60_izumi_takashinohama",
+    "category": "浮世絵（六十余州名所図会）",
+    "artist": "歌川広重",
+    "series": "六十余州名所図会",
+    "title": "和泉 高師の浜",
+    "caption": "歌川広重『六十余州名所図会 和泉 高師の浜』",
+    "province": "和泉国",
+    "file_key": "Izumi Province, Takashi Beach (5765346463).jpg",
+    "places": [
+      "高師の浜"
+    ],
+    "works": [
+      "小倉百人一首"
+    ],
+    "commons_query": "六十余州名所図会 和泉 高師の浜",
+    "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Izumi%20Province%2C%20Takashi%20Beach%20%285765346463%29.jpg?width=800",
+    "thumb_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Izumi%20Province%2C%20Takashi%20Beach%20%285765346463%29.jpg?width=450",
+    "local_image": "images/ukiyoe/r60_izumi_takashinohama.jpg"
+  },
+  {
+    "id": "hiroshige2_yamato_yoshinoyama",
     "category": "浮世絵（諸国名所百景）",
     "artist": "二代歌川広重",
     "series": "諸国名所百景",
-    "title": "奥州相馬妙見祭馬追の図",
-    "caption": "二代歌川広重『諸国名所百景 奥州相馬妙見祭馬追の図』",
-    "province": "陸奥国",
-    "file_key": "NDL-DC 1307518 010 1309802 OshuSoma crd.jpg",
+    "title": "和州吉野山",
+    "caption": "二代歌川広重『諸国名所百景 和州吉野山』",
+    "province": "大和国",
+    "file_key": "Hiroshige II, Yamato Yoshinoyama.jpg",
     "places": [
-      "相馬"
+      "吉野"
     ],
     "works": [
-      "おくのほそ道"
+      "小倉百人一首",
+      "万葉集"
     ],
-    "commons_query": "諸国名所百景 奥州相馬妙見祭馬追の図",
-    "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/NDL-DC%201307518%20010%201309802%20OshuSoma%20crd.jpg?width=800",
-    "thumb_url": "https://commons.wikimedia.org/wiki/Special:FilePath/NDL-DC%201307518%20010%201309802%20OshuSoma%20crd.jpg?width=450",
-    "local_image": "images/ukiyoe/hiroshige3_oshu_soma.jpg"
+    "commons_query": "諸国名所百景 和州吉野山",
+    "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Hiroshige%20II%2C%20Yamato%20Yoshinoyama.jpg?width=800",
+    "thumb_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Hiroshige%20II%2C%20Yamato%20Yoshinoyama.jpg?width=450",
+    "local_image": "images/ukiyoe/hiroshige2_yamato_yoshinoyama.jpg"
   },
   {
-    "id": "rijksmuseum_genji_suma_36b",
-    "category": "浮世絵（名所風景錦絵）",
-    "artist": "歌川広重",
-    "series": "風流源氏須磨",
-    "title": "風流源氏須磨（須磨浦風景）",
-    "caption": "歌川広重『風流源氏須磨（須磨浦風景）』",
-    "province": "摂津国",
-    "file_key": "De elegante prins Genji te Suma-Rijksmuseum RP-P-OB-JAP-36B.jpeg",
+    "id": "hiroshige2_yamato_hasedera",
+    "category": "浮世絵（諸国名所百景）",
+    "artist": "二代歌川広重",
+    "series": "諸国名所百景",
+    "title": "和州長谷寺",
+    "caption": "二代歌川広重『諸国名所百景 和州長谷寺』",
+    "province": "大和国",
+    "file_key": "Hiroshige II, Yamato Hasedera.jpg",
     "places": [
-      "須磨"
+      "初瀬"
+    ],
+    "works": [
+      "小倉百人一首"
+    ],
+    "commons_query": "諸国名所百景 和州長谷寺",
+    "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Hiroshige%20II%2C%20Yamato%20Hasedera.jpg?width=800",
+    "thumb_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Hiroshige%20II%2C%20Yamato%20Hasedera.jpg?width=450",
+    "local_image": "images/ukiyoe/hiroshige2_yamato_hasedera.jpg"
+  },
+  {
+    "id": "hokusai_hyakunin_amanokaguyama",
+    "category": "浮世絵（百人一首うばがゑとき）",
+    "artist": "葛飾北斎",
+    "series": "百人一首うばがゑとき",
+    "title": "持統天皇（天の香具山）",
+    "caption": "葛飾北斎『百人一首うばがゑとき 持統天皇（天の香具山）』",
+    "province": "大和国",
+    "file_key": "百人一首 うはかゑとき 持統天皇-Poem by Jitō Tenno (Empress Jitō), from the series One Hundred Poems Explained by the Nurse (Hyakunin isshu uba ga etoki) MET DP140961.jpg",
+    "places": [
+      "天の香具山"
+    ],
+    "works": [
+      "小倉百人一首",
+      "万葉集"
+    ],
+    "commons_query": "百人一首うばがゑとき 持統天皇（天の香具山）",
+    "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/%E7%99%BE%E4%BA%BA%E4%B8%80%E9%A6%96%20%E3%81%86%E3%81%AF%E3%81%8B%E3%82%91%E3%81%A8%E3%81%8D%20%E6%8C%81%E7%B5%B1%E5%A4%A9%E7%9A%87-Poem%20by%20Jit%C5%8D%20Tenno%20%28Empress%20Jit%C5%8D%29%2C%20from%20the%20series%20One%20Hundred%20Poems%20Explained%20by%20the%20Nurse%20%28Hyakunin%20isshu%20uba%20ga%20etoki%29%20MET%20DP140961.jpg?width=800",
+    "thumb_url": "https://commons.wikimedia.org/wiki/Special:FilePath/%E7%99%BE%E4%BA%BA%E4%B8%80%E9%A6%96%20%E3%81%86%E3%81%AF%E3%81%8B%E3%82%91%E3%81%A8%E3%81%8D%20%E6%8C%81%E7%B5%B1%E5%A4%A9%E7%9A%87-Poem%20by%20Jit%C5%8D%20Tenno%20%28Empress%20Jit%C5%8D%29%2C%20from%20the%20series%20One%20Hundred%20Poems%20Explained%20by%20the%20Nurse%20%28Hyakunin%20isshu%20uba%20ga%20etoki%29%20MET%20DP140961.jpg?width=450",
+    "local_image": "images/ukiyoe/hokusai_hyakunin_amanokaguyama.jpg"
+  },
+  {
+    "id": "hokusai_hyakunin_naniwa",
+    "category": "浮世絵（百人一首うばがゑとき）",
+    "artist": "葛飾北斎",
+    "series": "百人一首うばがゑとき",
+    "title": "元良親王（難波澪標）",
+    "caption": "葛飾北斎『百人一首うばがゑとき 元良親王（難波）』",
+    "province": "摂津国",
+    "file_key": "百人一首 乳母かえ説 元良親王-Poem by Motoyoshi Shinnō, from the series One Hundred Poems Explained by the Nurse (Hyakunin isshu uba ga etoki) MET DP140966.jpg",
+    "places": [
+      "難波"
+    ],
+    "works": [
+      "小倉百人一首"
+    ],
+    "commons_query": "百人一首うばがゑとき 元良親王（難波澪標）",
+    "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/%E7%99%BE%E4%BA%BA%E4%B8%80%E9%A6%96%20%E4%B9%B3%E6%AF%8D%E3%81%8B%E3%81%88%E8%AA%AC%20%E5%85%83%E8%89%AF%E8%A6%AA%E7%8E%8B-Poem%20by%20Motoyoshi%20Shinn%C5%8D%2C%20from%20the%20series%20One%20Hundred%20Poems%20Explained%20by%20the%20Nurse%20%28Hyakunin%20isshu%20uba%20ga%20etoki%29%20MET%20DP140966.jpg?width=800",
+    "thumb_url": "https://commons.wikimedia.org/wiki/Special:FilePath/%E7%99%BE%E4%BA%BA%E4%B8%80%E9%A6%96%20%E4%B9%B3%E6%AF%8D%E3%81%8B%E3%81%88%E8%AA%AC%20%E5%85%83%E8%89%AF%E8%A6%AA%E7%8E%8B-Poem%20by%20Motoyoshi%20Shinn%C5%8D%2C%20from%20the%20series%20One%20Hundred%20Poems%20Explained%20by%20the%20Nurse%20%28Hyakunin%20isshu%20uba%20ga%20etoki%29%20MET%20DP140966.jpg?width=450",
+    "local_image": "images/ukiyoe/hokusai_hyakunin_naniwa.jpg"
+  },
+  {
+    "id": "hiroshige_fuji36_futamigaura",
+    "category": "浮世絵（冨士三十六景）",
+    "artist": "歌川広重",
+    "series": "冨士三十六景",
+    "title": "伊勢二見か浦",
+    "caption": "歌川広重『冨士三十六景 伊勢二見か浦』",
+    "province": "伊勢国",
+    "file_key": "Hiroshige, Futamigaura in Ise Province, 1858.jpg",
+    "places": [
+      "二見"
     ],
     "works": [
       "おくのほそ道"
     ],
-    "commons_query": "風流源氏須磨 風流源氏須磨（須磨浦風景）",
-    "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/De%20elegante%20prins%20Genji%20te%20Suma-Rijksmuseum%20RP-P-OB-JAP-36B.jpeg?width=800",
-    "thumb_url": "https://commons.wikimedia.org/wiki/Special:FilePath/De%20elegante%20prins%20Genji%20te%20Suma-Rijksmuseum%20RP-P-OB-JAP-36B.jpeg?width=450",
-    "local_image": "images/ukiyoe/suma_genji_landscape_36b.jpg"
+    "commons_query": "冨士三十六景 伊勢二見か浦",
+    "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Hiroshige%2C%20Futamigaura%20in%20Ise%20Province%2C%201858.jpg?width=800",
+    "thumb_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Hiroshige%2C%20Futamigaura%20in%20Ise%20Province%2C%201858.jpg?width=450",
+    "local_image": "images/ukiyoe/hiroshige_fuji36_futamigaura.jpg"
+  },
+  {
+    "id": "hiroshige_hitachi_tsukuba",
+    "category": "浮世絵（名所風景錦絵）",
+    "artist": "歌川広重",
+    "series": "本朝名所",
+    "title": "常陸筑波山",
+    "caption": "歌川広重『常陸筑波山』",
+    "province": "常陸国",
+    "file_key": "Hiroshige Tsukuba.jpg",
+    "places": [
+      "筑波山"
+    ],
+    "works": [
+      "小倉百人一首"
+    ],
+    "commons_query": "本朝名所 常陸筑波山",
+    "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Hiroshige%20Tsukuba.jpg?width=800",
+    "thumb_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Hiroshige%20Tsukuba.jpg?width=450",
+    "local_image": "images/ukiyoe/hiroshige_hitachi_tsukuba.jpg"
+  },
+  {
+    "id": "hokusai_shiogama_matsushima",
+    "category": "浮世絵（名所鳥瞰図）",
+    "artist": "葛飾北斎",
+    "series": "諸国名所鳥瞰図",
+    "title": "奥州塩竈松島之略図",
+    "caption": "葛飾北斎『奥州塩竈松島之略図』",
+    "province": "陸奥国",
+    "file_key": "Panoramic view of Shiogama and Matsushima, Mutsu Province (14802990295).jpg",
+    "places": [
+      "塩竈"
+    ],
+    "works": [
+      "おくのほそ道"
+    ],
+    "commons_query": "諸国名所鳥瞰図 奥州塩竈松島之略図",
+    "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Panoramic%20view%20of%20Shiogama%20and%20Matsushima%2C%20Mutsu%20Province%20%2814802990295%29.jpg?width=800",
+    "thumb_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Panoramic%20view%20of%20Shiogama%20and%20Matsushima%2C%20Mutsu%20Province%20%2814802990295%29.jpg?width=450",
+    "local_image": "images/ukiyoe/hokusai_shiogama_matsushima.jpg"
+  },
+  {
+    "id": "meishozue_osakayama",
+    "category": "江戸期『名所図会』",
+    "artist": "蔀関月画（秋里籬島編）",
+    "series": "伊勢参宮名所図会",
+    "title": "逢坂山",
+    "caption": "『伊勢参宮名所図会』逢坂山（三条右大臣和歌画賛）",
+    "province": "近江国・山城国",
+    "file_key": "伊勢参宮名所図会、逢坂山.jpg",
+    "places": [
+      "逢坂山"
+    ],
+    "works": [
+      "小倉百人一首"
+    ],
+    "commons_query": "伊勢参宮名所図会 逢坂山",
+    "image_url": "https://commons.wikimedia.org/wiki/Special:FilePath/%E4%BC%8A%E5%8B%A2%E5%8F%82%E5%AE%AE%E5%90%8D%E6%89%80%E5%9B%B3%E4%BC%9A%E3%80%81%E9%80%A2%E5%9D%82%E5%B1%B1.jpg?width=800",
+    "thumb_url": "https://commons.wikimedia.org/wiki/Special:FilePath/%E4%BC%8A%E5%8B%A2%E5%8F%82%E5%AE%AE%E5%90%8D%E6%89%80%E5%9B%B3%E4%BC%9A%E3%80%81%E9%80%A2%E5%9D%82%E5%B1%B1.jpg?width=450",
+    "local_image": "images/ukiyoe/meishozue_osakayama.jpg"
   }
 ]
