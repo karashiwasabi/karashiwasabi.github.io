@@ -701,7 +701,7 @@
   <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 0.75rem;">
     <div style="font-size: 1.05rem; font-weight: 800; color: #1f1f1f;">
       <span style="color: #1a73e8; font-weight: 900;">Line-aligned</span>
-      <span style="color: #5f6368; font-size: 0.78rem; margin-left: 6px;">ver.161 (Build 20261119_0622)</span>
+      <span style="color: #5f6368; font-size: 0.78rem; margin-left: 6px;">ver.162 (Build 20261120_1718)</span>
     </div>
     <div style="display: flex; align-items: center; gap: 6px;">
       <a href="https://wasabikarashi.com/" style="display: inline-flex; align-items: center; gap: 3px; background: #f1f5f9; border: 1px solid #dadce0; border-radius: 8px; padding: 5px 10px; font-size: 0.75rem; font-weight: 700; color: #3c4043; text-decoration: none; white-space: nowrap;">🏠 トップ</a>
@@ -717,16 +717,26 @@
     ブックマークしてタブレットやスマホでもご利用いただけます
   </div>
 
-  <!-- モード切り替え（DOCS / PDF / DOCX） -->
-  <div class="mode-switch-group">
+  <!-- ① 原稿の種類切り替え（DOCS / DOCX / PDF） -->
+  <div class="mode-switch-group" style="margin-bottom: 0.5rem;">
     <button class="mode-btn active" id="btnModeDocs" onclick="switchMainMode('docs')">
       <span>📄 DOCS</span>
+    </button>
+    <button class="mode-btn" id="btnModeDocx" onclick="switchMainMode('docx')">
+      <span>📝 DOCX</span>
     </button>
     <button class="mode-btn" id="btnModePdf" onclick="switchMainMode('pdf')">
       <span>📑 PDF</span>
     </button>
-    <button class="mode-btn" id="btnModeDocx" onclick="switchMainMode('docx')">
-      <span>📝 DOCX</span>
+  </div>
+
+  <!-- ② 組版方向切り替え（横書き / 縦書き ※PDF選択時は自動非表示） -->
+  <div class="mode-switch-group" id="directionSwitchGroup">
+    <button type="button" class="mode-btn active" id="btnDirHorizontal" onclick="switchWritingDirection('horizontal')">
+      <span id="uiTextDirHorizontal">↔️ 横書き</span>
+    </button>
+    <button type="button" class="mode-btn" id="btnDirVertical" onclick="switchWritingDirection('vertical')">
+      <span id="uiTextDirVertical">↕️ 縦書き</span>
     </button>
   </div>
 
@@ -4661,6 +4671,969 @@ async function loadSampleDocx() {
       showStatus('❌ Word組版エラー: ' + errMsg, 'error');
     }
   }
+
+
+  // ==============================================================================
+  // 統合UI（①横書き/縦書き ➔ ②DOCS/DOCX/PDF ➔ ③用紙・見開き ➔ ④罫線種類・幅6/7/8mm ➔ ⑤プレビュー撤廃 ➔ ⑥iPad EXEC直結）
+  // ==============================================================================
+  let currentWritingDirection = 'horizontal'; // 'horizontal' | 'vertical'
+  const TATEGAKI_CLOUD_RUN_URL = 'https://line-tategaki-dev-435629186234.asia-northeast1.run.app';
+
+  const PAPER_OPTIONS_BY_DIR = {
+    horizontal: [
+      { value: 'a3-compare',   label: 'A3 デモ見開き（左：原本 ＋ 右：組版）' },
+      { value: 'a3-goodnotes', label: 'A3 横見開き（左：組版 ＋ 右：ノート）' },
+      { value: 'a4-spread',    label: 'A4 見開き（裏：組版 ＋ 表：ノート）' },
+      { value: 'a4-single',    label: 'A4（本文のみ）' },
+      { value: 'a5-spread',    label: 'A5 見開き（裏：組版 ＋ 表：ノート）' },
+      { value: 'a5-single',    label: 'A5（本文のみ）' }
+    ],
+    vertical: [
+      { value: 'v-a3-compare',   label: 'A3 デモ見開き（左：横書き原本 ＋ 右：縦書き組版）' },
+      { value: 'v-a3-goodnotes', label: 'A3 見開きノート（上：縦書き組版 ＋ 下：ノート）' },
+      { value: 'v-a4-spread',    label: 'A4 見開きノート（上［裏］：縦書き組版 ＋ 下［表］：ノート）' },
+      { value: 'v-a4-single',    label: 'A4（縦書き本文のみ）' }
+    ]
+  };
+
+  function getRuleKindOptions(dir) {
+    const isVert = (dir === 'vertical');
+    return [
+      { value: 'ruled', label: isVert ? '縦罫線' : '横罫線' },
+      { value: 'grid',  label: '方眼' },
+      { value: 'blank', label: '無地' }
+    ];
+  }
+
+  const RULE_PITCH_OPTIONS = [
+    { value: '60', label: '6.0 mm', mm: 6.0 },
+    { value: '70', label: '7.0 mm', mm: 7.0 },
+    { value: '80', label: '8.0 mm', mm: 8.0 }
+  ];
+
+  function syncCombinedGridSelect(prefix) {
+    const kindSel = document.getElementById(prefix + 'RuleKindSelect');
+    const pitchSel = document.getElementById(prefix + 'RulePitchSelect');
+    const legacySel = document.getElementById(prefix + 'GridTypeSelect');
+    if (!kindSel || !pitchSel || !legacySel) return;
+
+    const kind = kindSel.value;
+    const pitchCode = pitchSel.value;
+    pitchSel.disabled = false;
+
+    const combinedVal = (kind === 'blank') ? 'blank' : (kind + '-' + pitchCode);
+    let found = false;
+    for (let i = 0; i < legacySel.options.length; i++) {
+      if (legacySel.options[i].value === combinedVal) {
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      const opt = document.createElement('option');
+      opt.value = combinedVal;
+      opt.textContent = combinedVal;
+      legacySel.appendChild(opt);
+    }
+    legacySel.value = combinedVal;
+  }
+
+  function injectSplitRuleControls(prefix, onChangeFnName) {
+    const legacySel = document.getElementById(prefix + 'GridTypeSelect');
+    if (!legacySel || document.getElementById(prefix + 'RuleKindSelect')) return;
+
+    const settingItem = legacySel.closest('.setting-item');
+    if (!settingItem) return;
+
+    const labelEl = settingItem.querySelector('.setting-label');
+    if (labelEl) {
+      labelEl.textContent = '② 罫線の種類・幅';
+    }
+
+    legacySel.style.display = 'none';
+
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'display: grid; grid-template-columns: 1fr 1fr; gap: 8px;';
+
+    const kindSel = document.createElement('select');
+    kindSel.id = prefix + 'RuleKindSelect';
+    getRuleKindOptions(currentWritingDirection).forEach(o => {
+      const opt = document.createElement('option');
+      opt.value = o.value;
+      opt.textContent = o.label;
+      if (o.value === 'grid') opt.selected = true;
+      kindSel.appendChild(opt);
+    });
+
+    const pitchSel = document.createElement('select');
+    pitchSel.id = prefix + 'RulePitchSelect';
+    RULE_PITCH_OPTIONS.forEach(o => {
+      const opt = document.createElement('option');
+      opt.value = o.value;
+      opt.textContent = o.label;
+      if (o.value === '70') opt.selected = true;
+      pitchSel.appendChild(opt);
+    });
+
+    const onChanged = () => {
+      syncCombinedGridSelect(prefix);
+      if (typeof window[onChangeFnName] === 'function') {
+        window[onChangeFnName]();
+      }
+    };
+    kindSel.addEventListener('change', onChanged);
+    pitchSel.addEventListener('change', onChanged);
+
+    wrap.appendChild(kindSel);
+    wrap.appendChild(pitchSel);
+    settingItem.appendChild(wrap);
+    syncCombinedGridSelect(prefix);
+  }
+
+  function rebuildPaperAndRuleOptionsForDirection(dir) {
+    const paperList = PAPER_OPTIONS_BY_DIR[dir] || PAPER_OPTIONS_BY_DIR.horizontal;
+    ['docs', 'docx'].forEach(prefix => {
+      const paperSel = document.getElementById(prefix + 'PaperProfileSelect');
+      if (paperSel) {
+        paperSel.innerHTML = '';
+        paperList.forEach((item, idx) => {
+          const opt = document.createElement('option');
+          opt.value = item.value;
+          opt.textContent = item.label;
+          if (idx === 0) opt.selected = true;
+          paperSel.appendChild(opt);
+        });
+      }
+
+      const kindSel = document.getElementById(prefix + 'RuleKindSelect');
+      if (kindSel) {
+        const prevVal = kindSel.value || 'ruled';
+        kindSel.innerHTML = '';
+        getRuleKindOptions(dir).forEach(item => {
+          const opt = document.createElement('option');
+          opt.value = item.value;
+          opt.textContent = item.label;
+          if (item.value === prevVal) opt.selected = true;
+          kindSel.appendChild(opt);
+        });
+      }
+      syncCombinedGridSelect(prefix);
+    });
+  }
+
+  window.switchWritingDirection = function(dir) {
+    if (isDocsBusy || isDocxBusy) return;
+    currentWritingDirection = (dir === 'vertical') ? 'vertical' : 'horizontal';
+    const isVert = (currentWritingDirection === 'vertical');
+
+    const btnH = document.getElementById('btnDirHorizontal');
+    const btnV = document.getElementById('btnDirVertical');
+    if (btnH) btnH.classList.toggle('active', !isVert);
+    if (btnV) btnV.classList.toggle('active', isVert);
+
+    // 縦書き時は PDF タブを非表示にし、もし PDF タブが開いていれば DOCS タブへ戻す
+    const btnPdf = document.getElementById('btnModePdf');
+    if (btnPdf) {
+      btnPdf.style.display = isVert ? 'none' : '';
+      if (isVert && btnPdf.classList.contains('active')) {
+        switchMainMode('docs');
+      }
+    }
+
+    rebuildPaperAndRuleOptionsForDirection(currentWritingDirection);
+  };
+
+  function hideAllPreviewElements() {
+    ['btnDocsPreview', 'docsPreviewContainer', 'btnDocxPreview', 'docxPreviewContainer'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+  }
+
+  // iPad Safari ITP 対策: Web直アクセス時に隠し iframe がブロックされた場合は未インストール誤判定を出さず直接 GAS_EXEC_URL へ接続する
+  function redirectToGasExecDirectly() {
+    showStatus('⏳ Google ドライブ連携環境（GAS EXEC）へ接続しています...', 'info');
+    if (window.top) {
+      window.top.location.href = GAS_EXEC_URL;
+    } else {
+      window.location.href = GAS_EXEC_URL;
+    }
+  }
+
+  const _baseOpenDocsPicker = openDocsPicker;
+  openDocsPicker = async function() {
+    if (!isGasEnvironment() && (!gasBridgeReadyConfig || !gasBridgeReadyConfig.token)) {
+      redirectToGasExecDirectly();
+      return;
+    }
+    return _baseOpenDocsPicker();
+  };
+
+  const _baseOpenDocxDrivePicker = openDocxDrivePicker;
+  openDocxDrivePicker = async function() {
+    if (!isGasEnvironment() && (!gasBridgeReadyConfig || !gasBridgeReadyConfig.token)) {
+      redirectToGasExecDirectly();
+      return;
+    }
+    return _baseOpenDocxDrivePicker();
+  };
+
+  const _baseOpenDrivePicker = openDrivePicker;
+  openDrivePicker = async function() {
+    if (!isGasEnvironment() && (!gasBridgeReadyConfig || !gasBridgeReadyConfig.token)) {
+      redirectToGasExecDirectly();
+      return;
+    }
+    return _baseOpenDrivePicker();
+  };
+
+  window.addEventListener('DOMContentLoaded', () => {
+    hideAllPreviewElements();
+    injectSplitRuleControls('docs', 'onDocsSettingChanged');
+    injectSplitRuleControls('docx', 'onDocxSettingChanged');
+    rebuildPaperAndRuleOptionsForDirection(currentWritingDirection);
+  });
+
+
+  // ==============================================================================
+  // ステップ2: 縦書き4モード組版・見開き合成 & 6/7/8mm 罫線ピッチ完全対応
+  // ==============================================================================
+  const VerticalPortraitWidthMm = 210.0;
+  const VerticalPortraitHeightMm = 297.0;
+  const VerticalLandscapeWidthMm = 297.0;
+  const VerticalLandscapeHeightMm = 210.0;
+  const VerticalA3TallWidthMm = 297.0;
+  const VerticalA3TallHeightMm = 420.0;
+  const VerticalA3TallSplitYMm = 210.0;
+  const VerticalMarginTopMm = 20.0;
+  const VerticalMarginBottomMm = 15.0;
+  const VerticalGutterRightMm = 20.0;
+  const VerticalOuterLeftMm = 15.0;
+  const DefaultRuleStrokePt = 0.5;
+
+  function readSplitRuleParams(prefix, isVertical) {
+    const kindSel = document.getElementById(prefix + 'RuleKindSelect');
+    const pitchSel = document.getElementById(prefix + 'RulePitchSelect');
+    const kind = kindSel ? kindSel.value : 'grid';
+    const pitchCode = pitchSel ? pitchSel.value : '70';
+    let pitchMm = 7.0;
+    if (pitchCode === '60') pitchMm = 6.0;
+    else if (pitchCode === '80') pitchMm = 8.0;
+
+    let drawH = false;
+    let drawV = false;
+    if (kind === 'grid') {
+      drawH = true;
+      drawV = true;
+    } else if (kind === 'ruled') {
+      if (isVertical) {
+        drawH = false;
+        drawV = true;
+      } else {
+        drawH = true;
+        drawV = false;
+      }
+    }
+    return { kind, pitchMm, drawH, drawV };
+  }
+
+  async function composeVerticalOutputPdf(typesetBytes, origBytesOrNull, paperMode, pitchMm, drawH, drawV, lineColorHex, baseName) {
+    const centerGuideColor = PDFLib.rgb(0.90, 0.92, 0.94);
+
+    // 1. A4（縦書き本文のみ）
+    if (paperMode === 'v-a4-single') {
+      return {
+        bytes: typesetBytes,
+        fileName: baseName + '_縦書き_A4本文のみ.pdf'
+      };
+    }
+
+    // 2. A3 デモ見開き（左：横書き原本 ＋ 右：縦書き組版）
+    if (paperMode === 'v-a3-compare') {
+      const origDoc = await PDFLib.PDFDocument.load(origBytesOrNull, { ignoreEncryption: true });
+      const typesetDoc = await PDFLib.PDFDocument.load(typesetBytes, { ignoreEncryption: true });
+      const origTotal = origDoc.getPageCount();
+      const typeTotal = typesetDoc.getPageCount();
+      const maxPages = Math.max(origTotal, typeTotal);
+
+      const outDoc = await PDFLib.PDFDocument.create();
+      const pageWPt = PaperSizesMm['a3-goodnotes'].width * MmToPt;
+      const pageHPt = PaperSizesMm['a3-goodnotes'].height * MmToPt;
+      const splitPt = PaperSizesMm['a3-goodnotes'].splitX * MmToPt;
+
+      for (let i = 0; i < maxPages; i++) {
+        const a3Page = outDoc.addPage([pageWPt, pageHPt]);
+        a3Page.drawLine({
+          start: { x: splitPt, y: 0 },
+          end: { x: splitPt, y: pageHPt },
+          thickness: DefaultRuleStrokePt,
+          color: centerGuideColor,
+          dashArray: [4, 4]
+        });
+
+        if (i < origTotal) {
+          const [origEmbedded] = await outDoc.embedPages([origDoc.getPage(i)]);
+          const fitScale = Math.min(splitPt / origEmbedded.width, pageHPt / origEmbedded.height);
+          const drawW = origEmbedded.width * fitScale;
+          const drawHPage = origEmbedded.height * fitScale;
+          a3Page.drawPage(origEmbedded, {
+            x: (splitPt - drawW) / 2.0,
+            y: (pageHPt - drawHPage) / 2.0,
+            width: drawW,
+            height: drawHPage
+          });
+        }
+
+        if (i < typeTotal) {
+          const [typeEmbedded] = await outDoc.embedPages([typesetDoc.getPage(i)]);
+          const rightW = pageWPt - splitPt;
+          const fitScale = Math.min(rightW / typeEmbedded.width, pageHPt / typeEmbedded.height);
+          const drawW = typeEmbedded.width * fitScale;
+          const drawHPage = typeEmbedded.height * fitScale;
+          a3Page.drawPage(typeEmbedded, {
+            x: splitPt + (rightW - drawW) / 2.0,
+            y: (pageHPt - drawHPage) / 2.0,
+            width: drawW,
+            height: drawHPage
+          });
+        }
+      }
+
+      return {
+        bytes: await outDoc.save(),
+        fileName: baseName + '_縦書き_A3デモ見開き_左原本_右縦書き.pdf'
+      };
+    }
+
+    // 3. A3 見開きノート（上：縦書き組版 ＋ 下：ノート）※90度回転・A4横置き上下合体（幅297mm × 高さ420mm）
+    if (paperMode === 'v-a3-goodnotes') {
+      const typesetDoc = await PDFLib.PDFDocument.load(typesetBytes, { ignoreEncryption: true });
+      const totalSrcPages = typesetDoc.getPageCount();
+      const outDoc = await PDFLib.PDFDocument.create();
+
+      const pageWPt = VerticalA3TallWidthMm * MmToPt;
+      const pageHPt = VerticalA3TallHeightMm * MmToPt;
+      const splitYPt = VerticalA3TallSplitYMm * MmToPt;
+      const noteLeftPt = VerticalOuterLeftMm * MmToPt;
+      const noteRightPt = (VerticalA3TallWidthMm - VerticalGutterRightMm) * MmToPt;
+      const noteBottomPt = VerticalMarginBottomMm * MmToPt;
+      const noteTopPt = (VerticalA3TallSplitYMm - VerticalMarginTopMm) * MmToPt;
+
+      for (let i = 0; i < totalSrcPages; i++) {
+        const a3TallPage = outDoc.addPage([pageWPt, pageHPt]);
+
+        // 中央水平折り目ガイド (y = 210mm)
+        a3TallPage.drawLine({
+          start: { x: 0, y: splitYPt },
+          end: { x: pageWPt, y: splitYPt },
+          thickness: DefaultRuleStrokePt,
+          color: centerGuideColor,
+          dashArray: [4, 4]
+        });
+
+        // 上半分 (y: 210mm〜420mm): A4横置きの縦書き組版ページを等倍配置
+        const [sp] = await outDoc.embedPages([typesetDoc.getPage(i)]);
+        a3TallPage.drawPage(sp, {
+          x: 0,
+          y: splitYPt,
+          width: pageWPt,
+          height: pageHPt - splitYPt
+        });
+
+        // 下半分 (y: 0〜210mm): 国語ノート面（縦罫線 / 方眼 / 無地）を描画
+        drawCustomNoteLines(
+          a3TallPage,
+          noteLeftPt,
+          noteRightPt,
+          noteBottomPt,
+          noteTopPt,
+          pitchMm,
+          drawH,
+          drawV,
+          lineColorHex
+        );
+      }
+
+      return {
+        bytes: await outDoc.save(),
+        fileName: baseName + '_縦書き_A3見開きノート_上組版_下ノート.pdf'
+      };
+    }
+
+    // 4. A4 見開きノート（上［裏］：縦書き組版 ＋ 下［表］：ノート）※90度回転・A4横置き表裏交互
+    if (paperMode === 'v-a4-spread') {
+      const typesetDoc = await PDFLib.PDFDocument.load(typesetBytes, { ignoreEncryption: true });
+      const totalSrcPages = typesetDoc.getPageCount();
+      const outDoc = await PDFLib.PDFDocument.create();
+
+      const pWPt = VerticalLandscapeWidthMm * MmToPt;
+      const pHPt = VerticalLandscapeHeightMm * MmToPt;
+      const noteLeftPt = VerticalOuterLeftMm * MmToPt;
+      const noteRightPt = (VerticalLandscapeWidthMm - VerticalGutterRightMm) * MmToPt;
+      const noteBottomPt = VerticalMarginBottomMm * MmToPt;
+      const noteTopPt = (VerticalLandscapeHeightMm - VerticalMarginTopMm) * MmToPt;
+
+      // P.1: 表紙裏ノート面
+      const p1 = outDoc.addPage([pWPt, pHPt]);
+      drawCustomNoteLines(p1, noteLeftPt, noteRightPt, noteBottomPt, noteTopPt, pitchMm, drawH, drawV, lineColorHex);
+
+      for (let i = 0; i < totalSrcPages; i++) {
+        const [sp] = await outDoc.embedPages([typesetDoc.getPage(i)]);
+        const dp = outDoc.addPage([pWPt, pHPt]);
+        dp.drawPage(sp, { x: 0, y: 0, width: pWPt, height: pHPt });
+
+        const np = outDoc.addPage([pWPt, pHPt]);
+        drawCustomNoteLines(np, noteLeftPt, noteRightPt, noteBottomPt, noteTopPt, pitchMm, drawH, drawV, lineColorHex);
+      }
+
+      return {
+        bytes: await outDoc.save(),
+        fileName: baseName + '_縦書き_A4見開きノート_上組版_下ノート.pdf'
+      };
+    }
+
+    return {
+      bytes: typesetBytes,
+      fileName: baseName + '_縦書き.pdf'
+    };
+  }
+
+  // DOCS 出力の統合ラッパー（横書き時は既存エンジン・縦書き時は line-tategaki-dev へ完全分離ルーティング）
+  const _horizontalExecuteDocsLayout = executeDocsLayout;
+  executeDocsLayout = async function(isExportPdf) {
+    if (isDocsBusy) return;
+    if (!selectedDocsId) {
+      showStatus('先に [Googleドライブから選択 (Docs)] または [✨ サンプルをセット] でドキュメントを選択してください。', 'error');
+      return;
+    }
+
+    // 横書き時で grid-80 または無地(6.0/7.0/8.0mm)が選ばれた場合も syncCombinedGridSelect 済みの値を反映
+    if (currentWritingDirection !== 'vertical') {
+      syncCombinedGridSelect('docs');
+      return _horizontalExecuteDocsLayout(true);
+    }
+
+    // 縦書きモード実行
+    setDocsButtonsBusy(true, 'export');
+    const docsJobId = createRenderJobId();
+    startDocsWorkingProgress('今：縦書き組版エンジンへ送信中...', docsJobId);
+
+    const paperMode = document.getElementById('docsPaperProfileSelect').value;
+    const lineColorHex = (document.getElementById('docsLineColorPicker') ? document.getElementById('docsLineColorPicker').value : '#D0D0D0') || '#D0D0D0';
+    const { pitchMm, drawH, drawV } = readSplitRuleParams('docs', true);
+
+    const isLandscapeNote = (paperMode === 'v-a3-goodnotes' || paperMode === 'v-a4-spread');
+    const paperWidthMm = isLandscapeNote ? VerticalLandscapeWidthMm : VerticalPortraitWidthMm;
+    const paperHeightMm = isLandscapeNote ? VerticalLandscapeHeightMm : VerticalPortraitHeightMm;
+
+    const v3Config = {
+      paperWidthMm: paperWidthMm,
+      paperHeightMm: paperHeightMm,
+      gutterMarginMm: VerticalGutterRightMm,
+      outerMarginMm: VerticalOuterLeftMm,
+      marginTopMm: VerticalMarginTopMm,
+      marginBottomMm: VerticalMarginBottomMm,
+      linePitchMm: pitchMm,
+      ruledLineWidthPt: (drawH || drawV) ? DefaultRuleStrokePt : 0.0,
+      ruledLineColorHex: (drawH || drawV) ? lineColorHex : '#FFFFFF',
+      orientation: isLandscapeNote ? 'landscape' : 'portrait'
+    };
+
+    const baseName = selectedDocsName.replace(/\.[^/.]+$/, '');
+
+    try {
+      showStatus('🚀 縦書き組版エンジンで高精度PDFを生成中...', 'info');
+      let typesetBytes = null;
+
+      if (selectedDocsId === SAMPLE_MULTILINGUAL_DOCS_ID) {
+        const sampleUrl = TATEGAKI_CLOUD_RUN_URL.replace(/\/$/, '') + '/v3/sample/docs-render-pdf';
+        const sampleResp = await fetch(sampleUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ jobId: docsJobId, config: v3Config })
+        });
+        if (!sampleResp.ok) {
+          throw new Error('縦書きサンプル組版エラー (HTTP ' + sampleResp.status + ')');
+        }
+        typesetBytes = new Uint8Array(await sampleResp.arrayBuffer());
+      } else {
+        const res = await callGasRpc('renderTategakiDocsV3PdfBase64', {
+          jobId: docsJobId,
+          fileId: selectedDocsId,
+          config: v3Config
+        });
+        if (!res || !res.success) {
+          throw new Error((res && res.error) ? res.error : '縦書きPDF生成に失敗しました');
+        }
+        typesetBytes = base64ToBytes(res.base64);
+      }
+
+      let origBytes = null;
+      if (paperMode === 'v-a3-compare') {
+        showStatus('📑 横書き原本PDFを取得中...', 'info');
+        if (selectedDocsId === SAMPLE_MULTILINGUAL_DOCS_ID) {
+          const origUrl = TATEGAKI_CLOUD_RUN_URL.replace(/\/$/, '') + '/v3/sample/docs-original-pdf';
+          const origResp = await fetch(origUrl, { method: 'GET' });
+          if (!origResp.ok) {
+            throw new Error('サンプル原本PDF取得エラー (HTTP ' + origResp.status + ')');
+          }
+          origBytes = new Uint8Array(await origResp.arrayBuffer());
+        } else {
+          const origRes = await callGasRpc('getDocsOriginalPdfBase64', { fileId: selectedDocsId });
+          if (!origRes || !origRes.success) {
+            throw new Error((origRes && origRes.error) ? origRes.error : '原本PDFの取得に失敗しました');
+          }
+          origBytes = base64ToBytes(origRes.base64);
+        }
+      }
+
+      showStatus('📑 縦書きPDFを仕上げ中...', 'info');
+      const composed = await composeVerticalOutputPdf(
+        typesetBytes,
+        origBytes,
+        paperMode,
+        pitchMm,
+        drawH,
+        drawV,
+        lineColorHex,
+        baseName
+      );
+      handleDocsPdfOutput(composed.bytes, true, composed.fileName, paperMode);
+    } catch (err) {
+      console.error('縦書き executeDocsLayout エラー:', err);
+      stopDocsWorkingProgress(false);
+      setDocsButtonsBusy(false);
+      showStatus('❌ 縦書き組版エラー: ' + err.message, 'error');
+    }
+  };
+
+  // DOCX 出力の統合ラッパー（横書き時は既存エンジン・縦書き時は line-tategaki-dev へ完全分離ルーティング）
+  const _horizontalExecuteDocxLayout = executeDocxLayout;
+  executeDocxLayout = async function(isExportPdf) {
+    if (isDocxBusy) return;
+    if (!selectedDocxFileId && !selectedDocxBase64) {
+      showStatus('先に Word (.docx) ファイルを Googleドライブ・ローカル選択、または [✨ サンプルWordをセット] で選択してください。', 'error');
+      return;
+    }
+
+    if (currentWritingDirection !== 'vertical') {
+      syncCombinedGridSelect('docx');
+      return _horizontalExecuteDocxLayout(true);
+    }
+
+    setDocxButtonsBusy(true, 'export');
+    const docxJobId = createRenderJobId();
+    startDocsWorkingProgress('今：Word (.docx) データを縦書き組版サーバーへ送信中...', docxJobId);
+
+    const paperMode = document.getElementById('docxPaperProfileSelect').value;
+    const lineColorHex = (document.getElementById('docxLineColorPicker') ? document.getElementById('docxLineColorPicker').value : '#D0D0D0') || '#D0D0D0';
+    const { pitchMm, drawH, drawV } = readSplitRuleParams('docx', true);
+
+    const isLandscapeNote = (paperMode === 'v-a3-goodnotes' || paperMode === 'v-a4-spread');
+    const paperWidthMm = isLandscapeNote ? VerticalLandscapeWidthMm : VerticalPortraitWidthMm;
+    const paperHeightMm = isLandscapeNote ? VerticalLandscapeHeightMm : VerticalPortraitHeightMm;
+
+    const docxConfig = {
+      paperWidthMm: paperWidthMm,
+      paperHeightMm: paperHeightMm,
+      gutterMarginMm: VerticalGutterRightMm,
+      outerMarginMm: VerticalOuterLeftMm,
+      marginTopMm: VerticalMarginTopMm,
+      marginBottomMm: VerticalMarginBottomMm,
+      linePitchMm: pitchMm,
+      ruledLineWidthPt: (drawH || drawV) ? DefaultRuleStrokePt : 0.0,
+      ruledLineColorHex: (drawH || drawV) ? lineColorHex : '#FFFFFF',
+      orientation: isLandscapeNote ? 'landscape' : 'portrait'
+    };
+
+    const baseName = selectedDocxName.replace(/\.[^/.]+$/, '');
+
+    try {
+      showStatus('🚀 縦書きWord組版エンジンで高精度PDFを生成中...', 'info');
+      let typesetBytes = null;
+
+      if (selectedDocxBase64 && !selectedDocxFileId) {
+        const directUrl = TATEGAKI_CLOUD_RUN_URL.replace(/\/$/, '') + '/v3/render-docx-pdf';
+        const directResp = await fetch(directUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            jobId: docxJobId,
+            docxBase64: selectedDocxBase64,
+            config: docxConfig
+          })
+        });
+        if (!directResp.ok) {
+          throw new Error('縦書きWord組版エラー (HTTP ' + directResp.status + ')');
+        }
+        typesetBytes = new Uint8Array(await directResp.arrayBuffer());
+      } else {
+        const res = await callGasRpc('renderTategakiDocxV3PdfBase64', {
+          jobId: docxJobId,
+          fileId: selectedDocxFileId,
+          docxBase64: selectedDocxBase64,
+          config: docxConfig
+        });
+        if (!res || !res.success) {
+          throw new Error((res && res.error) ? res.error : '縦書きWord PDF生成に失敗しました');
+        }
+        typesetBytes = base64ToBytes(res.base64);
+      }
+
+      let origBytes = null;
+      if (paperMode === 'v-a3-compare') {
+        showStatus('📑 Word (.docx) の横書き原本PDFを取得中...', 'info');
+        const origJobId = createRenderJobId();
+        if (selectedDocxBase64 && !selectedDocxFileId) {
+          const directOrigUrl = TATEGAKI_CLOUD_RUN_URL.replace(/\/$/, '') + '/v3/render-docx-original-pdf';
+          const directOrigResp = await fetch(directOrigUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ jobId: origJobId, docxBase64: selectedDocxBase64 })
+          });
+          if (!directOrigResp.ok) {
+            throw new Error('Word原本PDF取得エラー (HTTP ' + directOrigResp.status + ')');
+          }
+          origBytes = new Uint8Array(await directOrigResp.arrayBuffer());
+        } else {
+          const origRes = await callGasRpc('getDocxOriginalPdfBase64', {
+            jobId: origJobId,
+            fileId: selectedDocxFileId,
+            docxBase64: selectedDocxBase64
+          });
+          if (!origRes || !origRes.success) {
+            throw new Error((origRes && origRes.error) ? origRes.error : 'Word原本PDFの取得に失敗しました');
+          }
+          origBytes = base64ToBytes(origRes.base64);
+        }
+      }
+
+      showStatus('📑 縦書きWord PDFを仕上げ中...', 'info');
+      const composed = await composeVerticalOutputPdf(
+        typesetBytes,
+        origBytes,
+        paperMode,
+        pitchMm,
+        drawH,
+        drawV,
+        lineColorHex,
+        baseName
+      );
+      handleDocxPdfOutput(composed.bytes, true, composed.fileName, paperMode);
+    } catch (err) {
+      console.error('縦書き executeDocxLayout エラー:', err);
+      stopDocsWorkingProgress(false);
+      setDocxButtonsBusy(false);
+      showStatus('❌ 縦書きWord組版エラー: ' + err.message, 'error');
+    }
+  };
+
+
+  // ==============================================================================
+  // ステップ2.5:
+  // 1. 縦書き時のサンプル(.docx / 元原稿表示 / ダウンロード)を縦書き見本帳サーバーへ直結（方向切替時も自動再読込）
+  // 2. 「上：縦書き組版 ＋ 下：ノート」の上下の縦罫線位置（右余白20mm起点）をミクロン単位で完全一致
+  // 3. 縦書き実行時の進捗バー通信先修正 ＆ A3デモ見開きの左原本・右組版並列取得による高速化
+  // ==============================================================================
+  let isCurrentDocxSampleLoaded = false;
+
+  // 縦書きノート面専用・上段の縦書き組版列と100%一直線に揃う罫線描画関数
+  function drawVerticalAlignedNoteLines(page, outerLeftPt, gutterRightPt, bottomY, topY, pitchMm, drawH, drawV, colorHex) {
+    if (!drawH && !drawV) return;
+
+    const pitchPt = pitchMm * MmToPt;
+    const gridColor = hexToRgbPdfLib(colorHex || '#D0D0D0');
+    const availW = gutterRightPt - outerLeftPt;
+    const totalSlots = Math.floor(availW / pitchPt);
+    const usedW = totalSlots * pitchPt;
+    // 上段の縦書き組版と同じく、右端（gutterRightPt）を起点に左へ totalSlots 列分を配置（端数は左余白へ逃がす）
+    const bodyRightX = gutterRightPt;
+    const bodyLeftX = bodyRightX - usedW;
+
+    const availH = topY - bottomY;
+    const hSlots = Math.floor(availH / pitchPt);
+    const usedH = hSlots * pitchPt;
+    const startY = topY - usedH;
+    const endY = topY;
+
+    if (drawV) {
+      for (let i = 0; i <= totalSlots; i++) {
+        const x = bodyRightX - (i * pitchPt);
+        page.drawLine({
+          start: { x: x, y: (drawH ? startY : bottomY) },
+          end: { x: x, y: endY },
+          thickness: 0.4,
+          color: gridColor
+        });
+      }
+    }
+
+    if (drawH) {
+      for (let s = 0; s <= hSlots; s++) {
+        const y = endY - (s * pitchPt);
+        page.drawLine({
+          start: { x: bodyLeftX, y: y },
+          end: { x: bodyRightX, y: y },
+          thickness: 0.4,
+          color: gridColor
+        });
+      }
+    }
+  }
+
+  // composeVerticalOutputPdf のノート面描画を上段組版直結版へ差し替え
+  const _prevComposeVerticalOutputPdf = composeVerticalOutputPdf;
+  composeVerticalOutputPdf = async function(typesetBytes, origBytesOrNull, paperMode, pitchMm, drawH, drawV, lineColorHex, baseName) {
+    const centerGuideColor = PDFLib.rgb(0.90, 0.92, 0.94);
+
+    if (paperMode === 'v-a3-goodnotes') {
+      const typesetDoc = await PDFLib.PDFDocument.load(typesetBytes, { ignoreEncryption: true });
+      const totalSrcPages = typesetDoc.getPageCount();
+      const outDoc = await PDFLib.PDFDocument.create();
+
+      const pageWPt = VerticalA3TallWidthMm * MmToPt;
+      const pageHPt = VerticalA3TallHeightMm * MmToPt;
+      const splitYPt = VerticalA3TallSplitYMm * MmToPt;
+      const noteLeftPt = VerticalOuterLeftMm * MmToPt;
+      const noteRightPt = (VerticalA3TallWidthMm - VerticalGutterRightMm) * MmToPt;
+      const noteBottomPt = VerticalMarginBottomMm * MmToPt;
+      const noteTopPt = (VerticalA3TallSplitYMm - VerticalMarginTopMm) * MmToPt;
+
+      for (let i = 0; i < totalSrcPages; i++) {
+        const a3TallPage = outDoc.addPage([pageWPt, pageHPt]);
+        a3TallPage.drawLine({
+          start: { x: 0, y: splitYPt },
+          end: { x: pageWPt, y: splitYPt },
+          thickness: DefaultRuleStrokePt,
+          color: centerGuideColor,
+          dashArray: [4, 4]
+        });
+
+        const [sp] = await outDoc.embedPages([typesetDoc.getPage(i)]);
+        a3TallPage.drawPage(sp, {
+          x: 0,
+          y: splitYPt,
+          width: pageWPt,
+          height: pageHPt - splitYPt
+        });
+
+        drawVerticalAlignedNoteLines(
+          a3TallPage,
+          noteLeftPt,
+          noteRightPt,
+          noteBottomPt,
+          noteTopPt,
+          pitchMm,
+          drawH,
+          drawV,
+          lineColorHex
+        );
+      }
+
+      return {
+        bytes: await outDoc.save(),
+        fileName: baseName + '_縦書き_A3見開きノート_上組版_下ノート.pdf'
+      };
+    }
+
+    if (paperMode === 'v-a4-spread') {
+      const typesetDoc = await PDFLib.PDFDocument.load(typesetBytes, { ignoreEncryption: true });
+      const totalSrcPages = typesetDoc.getPageCount();
+      const outDoc = await PDFLib.PDFDocument.create();
+
+      const pWPt = VerticalLandscapeWidthMm * MmToPt;
+      const pHPt = VerticalLandscapeHeightMm * MmToPt;
+      const noteLeftPt = VerticalOuterLeftMm * MmToPt;
+      const noteRightPt = (VerticalLandscapeWidthMm - VerticalGutterRightMm) * MmToPt;
+      const noteBottomPt = VerticalMarginBottomMm * MmToPt;
+      const noteTopPt = (VerticalLandscapeHeightMm - VerticalMarginTopMm) * MmToPt;
+
+      const p1 = outDoc.addPage([pWPt, pHPt]);
+      drawVerticalAlignedNoteLines(p1, noteLeftPt, noteRightPt, noteBottomPt, noteTopPt, pitchMm, drawH, drawV, lineColorHex);
+
+      for (let i = 0; i < totalSrcPages; i++) {
+        const [sp] = await outDoc.embedPages([typesetDoc.getPage(i)]);
+        const dp = outDoc.addPage([pWPt, pHPt]);
+        dp.drawPage(sp, { x: 0, y: 0, width: pWPt, height: pHPt });
+
+        const np = outDoc.addPage([pWPt, pHPt]);
+        drawVerticalAlignedNoteLines(np, noteLeftPt, noteRightPt, noteBottomPt, noteTopPt, pitchMm, drawH, drawV, lineColorHex);
+      }
+
+      return {
+        bytes: await outDoc.save(),
+        fileName: baseName + '_縦書き_A4見開きノート_上組版_下ノート.pdf'
+      };
+    }
+
+    return _prevComposeVerticalOutputPdf(typesetBytes, origBytesOrNull, paperMode, pitchMm, drawH, drawV, lineColorHex, baseName);
+  };
+
+  // 進捗ポーリング先を横書き／縦書きのアクティブエンジンに動的切り替え
+  startDocsWorkingProgress = function(statusText, jobId) {
+    if (docsProgressTimer) { clearInterval(docsProgressTimer); docsProgressTimer = null; }
+    let curPct = DocsProgressInitialPercent;
+    let curPhase = statusText || '稼働中...';
+    const startTimeMs = Date.now();
+    const targetBaseUrl = (currentWritingDirection === 'vertical') ? TATEGAKI_CLOUD_RUN_URL : STUDIO_CLOUD_RUN_URL;
+    if (progressContainer) progressContainer.style.display = 'block';
+    if (progressBar) progressBar.style.width = curPct + '%';
+    if (progressPercent) progressPercent.textContent = curPct + '%';
+    if (progressStatus) progressStatus.textContent = curPhase;
+    docsProgressTimer = setInterval(async () => {
+      const elapsedSec = Math.floor((Date.now() - startTimeMs) / MillisecondsPerSecond);
+      if (jobId) {
+        try {
+          const pollUrl = targetBaseUrl.replace(/\/$/, '') + '/v3/job-progress?jobId=' + encodeURIComponent(jobId);
+          const resp = await fetch(pollUrl, { method: 'GET', cache: 'no-store' });
+          if (resp.ok) {
+            const st = await resp.json();
+            if (st && typeof st.percent === 'number' && st.percent >= curPct) curPct = st.percent;
+            if (st && st.phase) curPhase = st.phase;
+          }
+        } catch (_e) {}
+      } else if (curPct < DocsProgressMaxSimulatedPercent) {
+        const step = curPct < 45 ? 5 : (curPct < 70 ? 2 : 1);
+        curPct = Math.min(DocsProgressMaxSimulatedPercent, curPct + step);
+      }
+      if (progressBar) progressBar.style.width = curPct + '%';
+      if (progressPercent) progressPercent.textContent = curPct + '%';
+      if (progressStatus) progressStatus.textContent = curPhase + ' (' + elapsedSec + '秒経過)';
+    }, DocsProgressPollIntervalMs);
+  };
+
+  // サンプル Word (.docx) 読み込み・元原稿表示・ダウンロードを横書き／縦書きそれぞれの見本帳サーバーに連動
+  openSampleOriginalView = function() {
+    const baseUrl = (currentWritingDirection === 'vertical') ? TATEGAKI_CLOUD_RUN_URL : STUDIO_CLOUD_RUN_URL;
+    window.open(baseUrl.replace(/\/$/, '') + '/v3/sample/view', '_blank', 'noopener,noreferrer');
+  };
+
+  openDocxSampleOriginalView = function() {
+    const baseUrl = (currentWritingDirection === 'vertical') ? TATEGAKI_CLOUD_RUN_URL : STUDIO_CLOUD_RUN_URL;
+    window.open(baseUrl.replace(/\/$/, '') + '/v3/sample/docx-view', '_blank', 'noopener,noreferrer');
+  };
+
+  downloadSampleDocxFile = function() {
+    const baseUrl = (currentWritingDirection === 'vertical') ? TATEGAKI_CLOUD_RUN_URL : STUDIO_CLOUD_RUN_URL;
+    window.open(baseUrl.replace(/\/$/, '') + '/v3/sample/docx', '_blank', 'noopener,noreferrer');
+  };
+
+  loadSampleDocx = async function() {
+    if (isDocxBusy) return;
+    closeDocxPreview();
+    const isVert = (currentWritingDirection === 'vertical');
+    const baseUrl = isVert ? TATEGAKI_CLOUD_RUN_URL : STUDIO_CLOUD_RUN_URL;
+    const sampleTitle = isVert ? 'Sample_Vertical_Golden.docx' : (SAMPLE_MULTILINGUAL_TITLE + '.docx');
+    const sampleDesc = isVert
+      ? '（縦書き組版・禁則・三段組み完全見本帳 / ドライブ保存なし）'
+      : '（日・英・中・台・韓・ドライブ保存なし）';
+
+    setDocxButtonsBusy(true, 'loading_docx');
+    startDocsWorkingProgress('サンプル Word (.docx) を読み込み中...');
+    showStatus('⏳ サンプル Word (.docx) を読み込み中...', 'info');
+
+    try {
+      const docxUrl = baseUrl.replace(/\/$/, '') + '/v3/sample/docx';
+      const resp = await fetch(docxUrl, { method: 'GET' });
+      if (!resp.ok) {
+        throw new Error('HTTP ' + resp.status);
+      }
+      const buf = await resp.arrayBuffer();
+      validateDocxBufferFormat(buf, sampleTitle);
+      selectedDocxBase64 = arrayBufferToBase64(buf);
+      selectedDocxFileId = null;
+      selectedDocxName = sampleTitle;
+      isCurrentDocxSampleLoaded = true;
+
+      const fileNameEl = document.getElementById('docxSelectedFileName');
+      if (fileNameEl) {
+        fileNameEl.textContent = '✨ ' + sampleTitle + ' (' + (buf.byteLength / 1024).toFixed(1) + ' KB / ' + sampleDesc + ')';
+        fileNameEl.style.color = '#137333';
+      }
+      const btnReset = document.getElementById('uiBtnResetDocxFile');
+      if (btnReset) btnReset.style.display = 'inline-block';
+      const btnViewOrig = document.getElementById('uiBtnViewDocxSampleOrig');
+      if (btnViewOrig) btnViewOrig.style.display = 'inline-block';
+      const btnDlDocx = document.getElementById('uiBtnDownloadDocxSample');
+      if (btnDlDocx) btnDlDocx.style.display = 'inline-block';
+
+      stopDocsWorkingProgress(true, 'サンプル Word (.docx) セット完了');
+      showStatus('✨ ' + (isVert ? '縦書き完全見本帳 Word (.docx)' : '5言語混在サンプル Word (.docx)') + ' をセットしました！「🖨️ PDF出力 / 印刷」をお試しいただけます。', 'success');
+    } catch (err) {
+      stopDocsWorkingProgress(false);
+      showStatus('サンプル Word (.docx) 読み込みエラー: ' + err.message, 'error');
+    } finally {
+      setDocxButtonsBusy(false);
+    }
+  };
+
+  const _prevResetDocxFile = resetDocxFile;
+  resetDocxFile = function() {
+    isCurrentDocxSampleLoaded = false;
+    _prevResetDocxFile();
+  };
+
+  const _prevLoadLocalDocxFile = loadLocalDocxFile;
+  loadLocalDocxFile = async function(file) {
+    isCurrentDocxSampleLoaded = false;
+    return _prevLoadLocalDocxFile(file);
+  };
+
+  // 横書き ⇔ 縦書き を切り替えた際、サンプル .docx がセットされている状態なら自動的にその方向のサンプル .docx に切り替える
+  const _prevSwitchWritingDirection = window.switchWritingDirection;
+  window.switchWritingDirection = function(dir) {
+    const prevDir = currentWritingDirection;
+    _prevSwitchWritingDirection(dir);
+    if (prevDir !== currentWritingDirection && isCurrentDocxSampleLoaded && !isDocxBusy) {
+      loadSampleDocx();
+    }
+  };
+
+
+  // ==============================================================================
+  // ステップ3:
+  // 1. 1段目＝[DOCS | DOCX | PDF]（常時表示）、2段目＝[横書き | 縦書き]（PDF選択時は自動非表示）
+  // 2. iPad Safari 100%確実対策: 非GAS環境（wasabikarashi.com/linealigned/）でのドライブ連携や
+  //    Marketplace誘導モーダル発火時はすべて例外なく GAS_EXEC_URL へ直接遷移させる
+  // ==============================================================================
+  redirectToGasExecDirectly = function() {
+    showStatus('⏳ Google ドライブ連携環境（GAS EXEC）へ接続しています...', 'info');
+    try {
+      if (window.top && window.top !== window) {
+        window.top.location.href = GAS_EXEC_URL;
+        return;
+      }
+    } catch (_eTop) {}
+    window.location.href = GAS_EXEC_URL;
+  };
+
+  showMarketplaceInstallModal = function() {
+    redirectToGasExecDirectly();
+  };
+
+  const _baseSwitchMainMode = switchMainMode;
+  switchMainMode = function(mode) {
+    if (isDocsBusy || isDocxBusy) return;
+    _baseSwitchMainMode(mode);
+    const dirGroup = document.getElementById('directionSwitchGroup');
+    if (dirGroup) {
+      dirGroup.style.display = (mode === 'pdf') ? 'none' : 'flex';
+    }
+    const btnPdf = document.getElementById('btnModePdf');
+    if (btnPdf) {
+      btnPdf.style.display = '';
+    }
+  };
+
+  const _step3SwitchWritingDirection = window.switchWritingDirection;
+  window.switchWritingDirection = function(dir) {
+    _step3SwitchWritingDirection(dir);
+    // 1段目の PDF タブ自体は常時表示し、PDF タブを押した時に2段目の横書き/縦書きを隠す
+    const btnPdf = document.getElementById('btnModePdf');
+    if (btnPdf) {
+      btnPdf.style.display = '';
+    }
+  };
 
 
   </script>
