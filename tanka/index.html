@@ -39,6 +39,10 @@
       --input-font-size-px: 19px;
       --label-font-size-px: 14px;
       --btn-height-px: 54px;
+      --media-grid-columns: 2;
+      --media-grid-gap-px: 8px;
+      --media-btn-padding-x-px: 8px;
+      --disabled-btn-opacity: 0.55;
     }
 
     * {
@@ -370,6 +374,24 @@
       border-radius: 8px;
       cursor: pointer;
     }
+    .secondary-btn:disabled {
+      opacity: var(--disabled-btn-opacity);
+      cursor: not-allowed;
+    }
+
+    /* 動画・静止画の保存／共有 2列×2段グリッド（完全対称レイアウト） */
+    .media-action-grid {
+      display: grid;
+      grid-template-columns: repeat(var(--media-grid-columns), 1fr);
+      gap: var(--media-grid-gap-px);
+      width: 100%;
+    }
+    .media-action-grid .secondary-btn {
+      font-size: var(--label-font-size-px);
+      font-weight: 700;
+      padding: 0 var(--media-btn-padding-x-px);
+      white-space: nowrap;
+    }
 
     .badge-private {
       display: inline-flex;
@@ -597,7 +619,7 @@
         <ol class="guide-list">
           <li><strong>ジャンルを選び、言葉を書く：</strong>俳句・短歌をはじめ世界の8つの短詩から選び、各行と雅号（作者名）を入力します。</li>
           <li><strong>季節や世界の情景・背景を選ぶ：</strong>日本の四季（「🌸 春・桜」「🌿 夏・新緑」「🍁 秋・紅葉」「❄️ 冬・雪椿」「💧 雨・紫陽花」「🌌 星月夜」）に加え、「🕌 ペルシャ宮殿」「🌙 アラビアン夜」「🏔️ 松と翡翠」「🏮 紅梅と香炉」「🏺 高麗青磁」「🪶 羽ペンと封蝋」「☕ 珈琲と万年筆」「🌊 海辺・夕凪」など全16種類の背景から選べます（動画プレビュー画面でもリアルタイムに切り替えられます）。</li>
-          <li><strong>保存・SNS共有・YouTube™投稿：</strong>「動画を確認する ➔」を押すと約2秒でMP4動画が完成します。「💾 保存 (.mp4)」で端末に保存したり、「📤 共有」でX（旧Twitter）・Instagram・LINEへ1タップで投稿したり、ご自身のYouTube™チャンネルへ直接送ることができます。</li>
+          <li><strong>保存・SNS共有・YouTube™投稿：</strong>「動画を確認する ➔」を押すと約2秒で動画と静止画が完成します。「🎬 動画で保存」「🖼️ 静止画で保存」で端末に保存したり、「📤 動画で共有」「📤 静止画で共有」でX（旧Twitter）・Instagram・LINEへ1タップで投稿したり、ご自身のYouTube™チャンネルへ直接送ることができます。</li>
         </ol>
 
         <h2 style="margin-top: 14px;">💡 自由律や現代短歌・一行詩を作るコツ</h2>
@@ -628,7 +650,7 @@
         <ol class="guide-list">
           <li><strong>Choose a Genre & Write Your Verse:</strong> Select from 8 world short poetry traditions and enter your lines and pen name.</li>
           <li><strong>Pick a Seasonal or World Background:</strong> Choose from 16 backgrounds including Japanese seasons ("🌸 Spring Sakura", "🍁 Autumn Maple"), world traditions ("🕌 Persian Palace", "🌙 Arabian Night", "🏔️ Pine & Jade", "🏺 Korean Celadon", "🪶 Quill & Seal"), and modern moods ("☕ Cafe & Pen", "🌊 Ocean Shore") — switchable live on the preview screen.</li>
-          <li><strong>Save, Share, or Upload to YouTube™:</strong> Click "Preview Video ➔" to generate a crisp MP4 video in ~2 seconds. Save it locally (".mp4"), share in 1 tap to X / Instagram / LINE, or upload directly to your YouTube™ channel.</li>
+          <li><strong>Save, Share, or Upload to YouTube™:</strong> Click "Preview Video ➔" to generate your video and still image in ~2 seconds. Save or share in 1 tap as either a video ("🎬 Save Video" / "📤 Share Video") or a still image ("🖼️ Save Image" / "📤 Share Image") to X / Instagram / LINE, or upload directly to your YouTube™ channel.</li>
         </ol>
 
         <h2 style="margin-top: 14px;">💡 Tips for Free-Form & Single-Line Poems</h2>
@@ -679,15 +701,18 @@
         自分のYouTube™に非公開で送る
       </button>
 
-      <div style="display: flex; gap: 8px; width: 100%;">
-        <button type="button" id="recordVideoBtn" class="secondary-btn" style="flex: 1.15; font-size: 14px; padding: 0 8px; white-space: nowrap;">
-          💾 保存 (.mp4)
+      <div class="media-action-grid">
+        <button type="button" id="recordVideoBtn" class="secondary-btn">
+          🎬 動画で保存
         </button>
-        <button type="button" id="savePngBtn" class="secondary-btn" style="flex: 1.15; font-size: 14px; padding: 0 8px; white-space: nowrap;">
-          📷 画像 (.png)
+        <button type="button" id="shareNowBtn" class="secondary-btn">
+          📤 動画で共有
         </button>
-        <button type="button" id="shareNowBtn" class="secondary-btn" style="flex: 0.85; font-size: 14px; padding: 0 8px; white-space: nowrap;">
-          📤 共有
+        <button type="button" id="savePngBtn" class="secondary-btn">
+          🖼️ 静止画で保存
+        </button>
+        <button type="button" id="sharePngBtn" class="secondary-btn">
+          📤 静止画で共有
         </button>
       </div>
 
@@ -1133,9 +1158,10 @@
       badgePublic: '🌐 YouTube™ Public (公開) ⇄',
       uploadPrivateBtn: '自分のYouTube™に非公開で送る',
       uploadPublicBtn: '自分のYouTube™に公開で送る',
-      downloadBtn: '💾 保存 (.mp4)',
-      downloadPngBtn: '📷 画像 (.png)',
-      shareReadyBtn: '📤 共有',
+      downloadBtn: '🎬 動画で保存',
+      shareReadyBtn: '📤 動画で共有',
+      downloadPngBtn: '🖼️ 静止画で保存',
+      sharePngBtn: '📤 静止画で共有',
       backBtn: '← 入力しなおす',
       linePrefix: '第',
       lineSuffix: '行',
@@ -1182,9 +1208,10 @@
       badgePublic: '🌐 YouTube™ Public ⇄ (Tap to switch)',
       uploadPrivateBtn: 'Upload to My YouTube™ (Private)',
       uploadPublicBtn: 'Upload to My YouTube™ (Public)',
-      downloadBtn: '💾 Save (.mp4)',
-      downloadPngBtn: '📷 Image (.png)',
-      shareReadyBtn: '📤 Share',
+      downloadBtn: '🎬 Save Video',
+      shareReadyBtn: '📤 Share Video',
+      downloadPngBtn: '🖼️ Save Image',
+      sharePngBtn: '📤 Share Image',
       backBtn: '← Back to Edit',
       linePrefix: 'Line ',
       lineSuffix: '',
@@ -1231,9 +1258,10 @@
       badgePublic: '🌐 YouTube™ 公開 (Public) ⇄',
       uploadPrivateBtn: '上傳至我的 YouTube™ (私人)',
       uploadPublicBtn: '上傳至我的 YouTube™ (公開)',
-      downloadBtn: '💾 儲存 (.mp4)',
-      downloadPngBtn: '📷 圖片 (.png)',
-      shareReadyBtn: '📤 分享',
+      downloadBtn: '🎬 儲存影片',
+      shareReadyBtn: '📤 分享影片',
+      downloadPngBtn: '🖼️ 儲存靜態圖',
+      sharePngBtn: '📤 分享靜態圖',
       backBtn: '← 返回修改',
       linePrefix: '第 ',
       lineSuffix: ' 行',
@@ -1280,9 +1308,10 @@
       badgePublic: '🌐 YouTube™ 公开 (Public) ⇄',
       uploadPrivateBtn: '上传至我的 YouTube™ (私享)',
       uploadPublicBtn: '上传至我的 YouTube™ (公开)',
-      downloadBtn: '💾 保存 (.mp4)',
-      downloadPngBtn: '📷 图片 (.png)',
-      shareReadyBtn: '📤 分享',
+      downloadBtn: '🎬 保存视频',
+      shareReadyBtn: '📤 分享视频',
+      downloadPngBtn: '🖼️ 保存静态图',
+      sharePngBtn: '📤 分享静态图',
       backBtn: '← 返回修改',
       linePrefix: '第 ',
       lineSuffix: ' 行',
@@ -1329,9 +1358,10 @@
       badgePublic: '🌐 YouTube™ 공개 (Public) ⇄',
       uploadPrivateBtn: '내 YouTube™에 비공개로 업로드',
       uploadPublicBtn: '내 YouTube™에 공개로 업로드',
-      downloadBtn: '💾 저장 (.mp4)',
-      downloadPngBtn: '📷 이미지 (.png)',
-      shareReadyBtn: '📤 공유',
+      downloadBtn: '🎬 동영상으로 저장',
+      shareReadyBtn: '📤 동영상으로 공유',
+      downloadPngBtn: '🖼️ 이미지로 저장',
+      sharePngBtn: '📤 이미지로 공유',
       backBtn: '← 다시 입력하기',
       linePrefix: '제 ',
       lineSuffix: '행',
@@ -1378,9 +1408,10 @@
       badgePublic: '🌐 YouTube™ عمومی (Public) ⇄',
       uploadPrivateBtn: 'آپلود خصوصی در YouTube™ من',
       uploadPublicBtn: 'آپلود عمومی در YouTube™ من',
-      downloadBtn: '💾 ذخیره (.mp4)',
-      downloadPngBtn: '📷 تصویر (.png)',
-      shareReadyBtn: '📤 اشتراک‌گذاری',
+      downloadBtn: '🎬 ذخیره ویدیو',
+      shareReadyBtn: '📤 اشتراک ویدیو',
+      downloadPngBtn: '🖼️ ذخیره تصویر',
+      sharePngBtn: '📤 اشتراک تصویر',
       backBtn: '← بازگشت به ویرایش',
       linePrefix: 'مصرع ',
       lineSuffix: '',
@@ -1462,6 +1493,7 @@
   const recordVideoBtn = document.getElementById('recordVideoBtn');
   const savePngBtn = document.getElementById('savePngBtn');
   const shareNowBtn = document.getElementById('shareNowBtn');
+  const sharePngBtn = document.getElementById('sharePngBtn');
   const progressBox = document.getElementById('progressBox');
   const progressText = document.getElementById('progressText');
   const successBox = document.getElementById('successBox');
@@ -1523,6 +1555,7 @@
     recordVideoBtn.textContent = dict.downloadBtn;
     if (savePngBtn && dict.downloadPngBtn) savePngBtn.textContent = dict.downloadPngBtn;
     shareNowBtn.textContent = dict.shareReadyBtn;
+    if (sharePngBtn && dict.sharePngBtn) sharePngBtn.textContent = dict.sharePngBtn;
     backBtn.textContent = dict.backBtn;
 
     const introCatchText = document.getElementById('introCatchText');
@@ -1613,21 +1646,17 @@
       btn.classList.toggle('active', btn.dataset.bgTheme === themeKey);
     });
     latestGeneratedMp4File = null;
+    latestGeneratedPngFile = null;
 
-    // ステップ2（プレビュー画面）表示中に背景を切り替えた場合は即座に再描画＆MP4を再生成する
+    // ステップ2（プレビュー画面）表示中に背景を切り替えた場合は即座に再描画＆MP4・PNGを再生成する
     if (previewStep.style.display === 'flex') {
-      uploadBtn.disabled = true;
-      recordVideoBtn.disabled = true;
-      savePngBtn.disabled = true;
-      shareNowBtn.disabled = true;
+      setMediaButtonsDisabled(true);
       try {
         await ensureBgImageLoaded(getEffectiveConfig().bgPath);
         await ensureMp4FileReady();
+        await ensurePngFileReady();
       } finally {
-        uploadBtn.disabled = false;
-        recordVideoBtn.disabled = false;
-        savePngBtn.disabled = false;
-        shareNowBtn.disabled = false;
+        setMediaButtonsDisabled(false);
         startCanvasAnimation();
       }
     }
@@ -1790,27 +1819,23 @@
       ? authorInput.value.trim()
       : (authorInput.value.trim() || config.defaultAuthor);
     latestGeneratedMp4File = null;
+    latestGeneratedPngFile = null;
 
     inputStep.style.display = 'none';
     previewStep.style.display = 'flex';
     successBox.style.display = 'none';
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    // プレビュー画面を開いた時点でMP4ファイルを事前生成しておくことで、
-    // 「📤 共有」「💾 保存」「YouTube™送信」のすべてを1回目のタップで即座（0秒）に発動させる
-    uploadBtn.disabled = true;
-    recordVideoBtn.disabled = true;
-    savePngBtn.disabled = true;
-    shareNowBtn.disabled = true;
+    // プレビュー画面を開いた時点でMP4・PNGの両ファイルを事前生成しておくことで、
+    // 「動画で保存／共有」「静止画で保存／共有」「YouTube™送信」のすべてを1回目のタップで即座（0秒）に発動させる
+    setMediaButtonsDisabled(true);
     try {
       await ensureGenreFontsLoaded(config);
       await ensureBgImageLoaded(getEffectiveConfig().bgPath);
       await ensureMp4FileReady();
+      await ensurePngFileReady();
     } finally {
-      uploadBtn.disabled = false;
-      recordVideoBtn.disabled = false;
-      savePngBtn.disabled = false;
-      shareNowBtn.disabled = false;
+      setMediaButtonsDisabled(false);
       startCanvasAnimation();
     }
   });
@@ -2273,8 +2298,28 @@
     }
   }
 
-  // 生成済みMP4ファイルを保持し、「💾 保存」ボタンと「📤 共有」ボタンを独立して高速に動作させる
+  // 生成済みMP4・PNGファイルを保持し、保存ボタンと共有ボタン（Transient Activation必須）を1タップ0秒で動作させる
   let latestGeneratedMp4File = null;
+  let latestGeneratedPngFile = null;
+
+  function setMediaButtonsDisabled(disabled) {
+    uploadBtn.disabled = disabled;
+    recordVideoBtn.disabled = disabled;
+    shareNowBtn.disabled = disabled;
+    savePngBtn.disabled = disabled;
+    if (sharePngBtn) sharePngBtn.disabled = disabled;
+  }
+
+  function triggerFileDownload(file) {
+    const url = URL.createObjectURL(file);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = file.name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), OBJECT_URL_REVOKE_DELAY_MS);
+  }
 
   async function ensureMp4FileReady() {
     if (latestGeneratedMp4File) {
@@ -2290,31 +2335,11 @@
     return latestGeneratedMp4File;
   }
 
-  // 「💾 保存 (.mp4)」ボタン：端末へのダウンロード保存のみを行う（共有メニューと衝突しない）
-  recordVideoBtn.addEventListener('click', async () => {
-    trackAnalyticsEvent('download_mp4');
-    recordVideoBtn.disabled = true;
-    shareNowBtn.disabled = true;
-    try {
-      const file = await ensureMp4FileReady();
-      const url = URL.createObjectURL(file);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = file.name;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(url), 10000);
-    } finally {
-      recordVideoBtn.disabled = false;
-      shareNowBtn.disabled = false;
+  // 全文字・雅号が表示完了した静止画フレーム（1080×1920）からPNG Fileを生成してキャッシュする
+  async function ensurePngFileReady() {
+    if (latestGeneratedPngFile) {
+      return latestGeneratedPngFile;
     }
-  });
-
-  // 「📷 画像 (.png)」ボタン：全文字・雅号が表示完了した静止画フレーム（1080×1920）を即時PNG保存する
-  savePngBtn.addEventListener('click', async () => {
-    trackAnalyticsEvent('download_png');
-    savePngBtn.disabled = true;
     const wasAnimating = Boolean(animationFrameId);
     if (animationFrameId) {
       cancelAnimationFrame(animationFrameId);
@@ -2329,19 +2354,40 @@
       const pngBlob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
       if (!pngBlob) throw new Error('PNG generation failed');
       const fileName = `${currentGenreKey}_${Date.now()}.png`;
-      const url = URL.createObjectURL(pngBlob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = fileName;
-      document.body.appendChild(a);
-      a.click();
-      document.body.appendChild(a);
-      setTimeout(() => URL.revokeObjectURL(url), OBJECT_URL_REVOKE_DELAY_MS);
+      latestGeneratedPngFile = new File([pngBlob], fileName, { type: 'image/png' });
+      return latestGeneratedPngFile;
     } finally {
-      savePngBtn.disabled = false;
       if (wasAnimating && previewStep.style.display === 'flex') {
         animationFrameId = requestAnimationFrame(renderLoop);
       }
+    }
+  }
+
+  // 「🎬 動画で保存」ボタン：MP4動画を端末へダウンロード保存する
+  recordVideoBtn.addEventListener('click', async () => {
+    trackAnalyticsEvent('download_mp4');
+    recordVideoBtn.disabled = true;
+    shareNowBtn.disabled = true;
+    try {
+      const file = latestGeneratedMp4File || await ensureMp4FileReady();
+      triggerFileDownload(file);
+    } finally {
+      recordVideoBtn.disabled = false;
+      shareNowBtn.disabled = false;
+    }
+  });
+
+  // 「🖼️ 静止画で保存」ボタン：完成静止画（PNG）を端末へダウンロード保存する
+  savePngBtn.addEventListener('click', async () => {
+    trackAnalyticsEvent('download_png');
+    savePngBtn.disabled = true;
+    if (sharePngBtn) sharePngBtn.disabled = true;
+    try {
+      const file = latestGeneratedPngFile || await ensurePngFileReady();
+      triggerFileDownload(file);
+    } finally {
+      savePngBtn.disabled = false;
+      if (sharePngBtn) sharePngBtn.disabled = false;
     }
   });
 
@@ -2383,39 +2429,58 @@
     return bgTags ? `${genreTags} ${bgTags}` : genreTags;
   }
 
-  // 「📤 共有」ボタン：ダウンロードは行わず、OS標準の共有メニュー（X / Instagram / LINE 等）のみを1タップ目で即座に開く
-  shareNowBtn.addEventListener('click', async () => {
-    trackAnalyticsEvent('share_video');
-    // プレビュー表示時に latestGeneratedMp4File が事前生成されているため、
-    // ブラウザのユーザー操作有効期限（Transient Activation）を消費しないよう await なしで即座に navigator.share を呼ぶ
-    const file = latestGeneratedMp4File || await ensureMp4FileReady();
+  // 動画ファイルまたは静止画ファイルをOS標準の共有メニュー（X / Instagram / LINE 等）へ1タップで渡す共通関数
+  async function shareMediaFile(file) {
     const hashtags = getAutoHashtagsString();
     const authorPart = currentAuthor ? ` — ${currentAuthor}` : '';
     const shareText = `${currentLines.join(' ')}${authorPart}\n${hashtags}\nhttps://wasabikarashi.com/tanka/`;
+    if (typeof navigator !== 'undefined' && navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({
+        files: [file],
+        title: 'Short Verse Studio',
+        text: shareText
+      });
+    } else if (typeof navigator !== 'undefined' && navigator.share) {
+      await navigator.share({
+        title: 'Short Verse Studio',
+        text: shareText,
+        url: window.location.href
+      });
+    } else {
+      const tweetText = encodeURIComponent(shareText);
+      window.open(`https://twitter.com/intent/tweet?text=${tweetText}`, '_blank', 'noopener');
+    }
+  }
+
+  // 「📤 動画で共有」ボタン：事前生成済みMP4を await なしで即座に共有メニューへ渡す
+  shareNowBtn.addEventListener('click', async () => {
+    trackAnalyticsEvent('share_video');
+    const file = latestGeneratedMp4File || await ensureMp4FileReady();
     recordVideoBtn.disabled = true;
     shareNowBtn.disabled = true;
     try {
-      if (typeof navigator !== 'undefined' && navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-        await navigator.share({
-          files: [file],
-          title: 'Short Verse Studio',
-          text: shareText
-        });
-      } else if (typeof navigator !== 'undefined' && navigator.share) {
-        await navigator.share({
-          title: 'Short Verse Studio',
-          text: shareText,
-          url: window.location.href
-        });
-      } else {
-        const tweetText = encodeURIComponent(shareText);
-        window.open(`https://twitter.com/intent/tweet?text=${tweetText}`, '_blank', 'noopener');
-      }
+      await shareMediaFile(file);
     } catch (err) {
       // 共有メニューのキャンセル時は何もしない
     } finally {
       recordVideoBtn.disabled = false;
       shareNowBtn.disabled = false;
+    }
+  });
+
+  // 「📤 静止画で共有」ボタン：事前生成済みPNGを await なしで即座に共有メニューへ渡す
+  sharePngBtn.addEventListener('click', async () => {
+    trackAnalyticsEvent('share_png');
+    const file = latestGeneratedPngFile || await ensurePngFileReady();
+    savePngBtn.disabled = true;
+    sharePngBtn.disabled = true;
+    try {
+      await shareMediaFile(file);
+    } catch (err) {
+      // 共有メニューのキャンセル時は何もしない
+    } finally {
+      savePngBtn.disabled = false;
+      sharePngBtn.disabled = false;
     }
   });
 
