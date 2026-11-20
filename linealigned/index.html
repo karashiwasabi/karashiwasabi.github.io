@@ -701,10 +701,10 @@
   <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 0.75rem;">
     <div style="font-size: 1.05rem; font-weight: 800; color: #1f1f1f;">
       <span style="color: #1a73e8; font-weight: 900;">Line-aligned</span>
-      <span style="color: #5f6368; font-size: 0.78rem; margin-left: 6px;">ver.162 (Build 20261120_1718)</span>
+      <span style="color: #5f6368; font-size: 0.78rem; margin-left: 6px;">ver.162 (Build 20261120_1745)</span>
     </div>
     <div style="display: flex; align-items: center; gap: 6px;">
-      <a href="https://wasabikarashi.com/" style="display: inline-flex; align-items: center; gap: 3px; background: #f1f5f9; border: 1px solid #dadce0; border-radius: 8px; padding: 5px 10px; font-size: 0.75rem; font-weight: 700; color: #3c4043; text-decoration: none; white-space: nowrap;">🏠 トップ</a>
+      <a href="https://wasabikarashi.com/" id="uiLinkTop" style="display: inline-flex; align-items: center; gap: 3px; background: #f1f5f9; border: 1px solid #dadce0; border-radius: 8px; padding: 5px 10px; font-size: 0.75rem; font-weight: 700; color: #3c4043; text-decoration: none; white-space: nowrap;">🏠 トップ</a>
       <div style="display: inline-flex; background: #f1f5f9; border: 1px solid #dadce0; border-radius: 8px; padding: 2px; gap: 2px;">
         <button type="button" class="lang-btn active" id="btnLangJa" onclick="switchLanguage('ja')" style="background: #1a73e8; color: #fff; border: none; border-radius: 6px; padding: 4px 9px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">日</button>
         <button type="button" class="lang-btn" id="btnLangEn" onclick="switchLanguage('en')" style="background: transparent; color: #5f6368; border: none; border-radius: 6px; padding: 4px 9px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">En</button>
@@ -4679,29 +4679,125 @@ async function loadSampleDocx() {
   let currentWritingDirection = 'horizontal'; // 'horizontal' | 'vertical'
   const TATEGAKI_CLOUD_RUN_URL = 'https://line-tategaki-dev-435629186234.asia-northeast1.run.app';
 
-  const PAPER_OPTIONS_BY_DIR = {
-    horizontal: [
-      { value: 'a3-compare',   label: 'A3 デモ見開き（左：原本 ＋ 右：組版）' },
-      { value: 'a3-goodnotes', label: 'A3 横見開き（左：組版 ＋ 右：ノート）' },
-      { value: 'a4-spread',    label: 'A4 見開き（裏：組版 ＋ 表：ノート）' },
-      { value: 'a4-single',    label: 'A4（本文のみ）' },
-      { value: 'a5-spread',    label: 'A5 見開き（裏：組版 ＋ 表：ノート）' },
-      { value: 'a5-single',    label: 'A5（本文のみ）' }
-    ],
-    vertical: [
-      { value: 'v-a3-compare',   label: 'A3 デモ見開き（左：横書き原本 ＋ 右：縦書き組版）' },
-      { value: 'v-a3-goodnotes', label: 'A3 見開きノート（上：縦書き組版 ＋ 下：ノート）' },
-      { value: 'v-a4-spread',    label: 'A4 見開きノート（上［裏］：縦書き組版 ＋ 下［表］：ノート）' },
-      { value: 'v-a4-single',    label: 'A4（縦書き本文のみ）' }
-    ]
+  const UNIFIED_UI_I18N = {
+    ja: {
+      linkTop: '🏠 トップ',
+      dirHorizontal: '↔️ 横書き',
+      dirVertical: '↕️ 縦書き',
+      labelPaper: '① 用紙・印刷形式',
+      labelRuleKindPitch: '② 罫線の種類・幅',
+      ruleKindHorizontal: '横罫線',
+      ruleKindVertical: '縦罫線',
+      ruleKindGrid: '方眼',
+      ruleKindBlank: '無地',
+      paperHorizontal: [
+        { value: 'a3-compare',   label: 'A3 デモ見開き（左：原本 ＋ 右：組版）' },
+        { value: 'a3-goodnotes', label: 'A3 横見開き（左：組版 ＋ 右：ノート）' },
+        { value: 'a4-spread',    label: 'A4 見開き（裏：組版 ＋ 表：ノート）' },
+        { value: 'a4-single',    label: 'A4（本文のみ）' },
+        { value: 'a5-spread',    label: 'A5 見開き（裏：組版 ＋ 表：ノート）' },
+        { value: 'a5-single',    label: 'A5（本文のみ）' }
+      ],
+      paperVertical: [
+        { value: 'v-a3-compare',   label: 'A3 デモ見開き（左：横書き原本 ＋ 右：縦書き組版）' },
+        { value: 'v-a3-goodnotes', label: 'A3 見開きノート（上：縦書き組版 ＋ 下：ノート）' },
+        { value: 'v-a4-spread',    label: 'A4 見開きノート（上［裏］：縦書き組版 ＋ 下［表］：ノート）' },
+        { value: 'v-a4-single',    label: 'A4（縦書き本文のみ）' }
+      ]
+    },
+    en: {
+      linkTop: '🏠 Home',
+      dirHorizontal: '↔️ Horizontal',
+      dirVertical: '↕️ Vertical',
+      labelPaper: '① Paper & Print Format',
+      labelRuleKindPitch: '② Line Style & Spacing',
+      ruleKindHorizontal: 'Ruled (Horizontal)',
+      ruleKindVertical: 'Ruled (Vertical)',
+      ruleKindGrid: 'Grid',
+      ruleKindBlank: 'Blank',
+      paperHorizontal: [
+        { value: 'a3-compare',   label: 'A3 Demo Spread (Left: Original + Right: Typeset)' },
+        { value: 'a3-goodnotes', label: 'A3 Spread (Left: Typeset + Right: Notes)' },
+        { value: 'a4-spread',    label: 'A4 Spread (Back: Typeset + Front: Notes)' },
+        { value: 'a4-single',    label: 'A4 (Body Only)' },
+        { value: 'a5-spread',    label: 'A5 Spread (Back: Typeset + Front: Notes)' },
+        { value: 'a5-single',    label: 'A5 (Body Only)' }
+      ],
+      paperVertical: [
+        { value: 'v-a3-compare',   label: 'A3 Demo Spread (Left: Horiz. Original + Right: Vertical)' },
+        { value: 'v-a3-goodnotes', label: 'A3 Spread Notes (Top: Vertical + Bottom: Notes)' },
+        { value: 'v-a4-spread',    label: 'A4 Spread Notes (Top/Back: Vertical + Bottom/Front: Notes)' },
+        { value: 'v-a4-single',    label: 'A4 (Vertical Body Only)' }
+      ]
+    },
+    'zh-TW': {
+      linkTop: '🏠 首頁',
+      dirHorizontal: '↔️ 橫書',
+      dirVertical: '↕️ 直書',
+      labelPaper: '① 紙張與列印格式',
+      labelRuleKindPitch: '② 格線種類與間距',
+      ruleKindHorizontal: '橫線',
+      ruleKindVertical: '直線',
+      ruleKindGrid: '方格',
+      ruleKindBlank: '無格線',
+      paperHorizontal: [
+        { value: 'a3-compare',   label: 'A3 示範跨頁（左：原稿 ＋ 右：排版）' },
+        { value: 'a3-goodnotes', label: 'A3 橫向跨頁（左：排版 ＋ 右：筆記）' },
+        { value: 'a4-spread',    label: 'A4 跨頁筆記（背面：排版 ＋ 正面：筆記）' },
+        { value: 'a4-single',    label: 'A4（僅內文）' },
+        { value: 'a5-spread',    label: 'A5 跨頁筆記（背面：排版 ＋ 正面：筆記）' },
+        { value: 'a5-single',    label: 'A5（僅內文）' }
+      ],
+      paperVertical: [
+        { value: 'v-a3-compare',   label: 'A3 示範跨頁（左：橫書原稿 ＋ 右：直書排版）' },
+        { value: 'v-a3-goodnotes', label: 'A3 跨頁筆記（上：直書排版 ＋ 下：筆記）' },
+        { value: 'v-a4-spread',    label: 'A4 跨頁筆記（上［背］：直書排版 ＋ 下［正］：筆記）' },
+        { value: 'v-a4-single',    label: 'A4（僅直書內文）' }
+      ]
+    },
+    ko: {
+      linkTop: '🏠 홈',
+      dirHorizontal: '↔️ 가로쓰기',
+      dirVertical: '↕️ 세로쓰기',
+      labelPaper: '① 용지 및 인쇄 형식',
+      labelRuleKindPitch: '② 줄눈 종류 및 간격',
+      ruleKindHorizontal: '가로 줄눈',
+      ruleKindVertical: '세로 줄눈',
+      ruleKindGrid: '방안',
+      ruleKindBlank: '무지',
+      paperHorizontal: [
+        { value: 'a3-compare',   label: 'A3 데모 펼침면 (왼쪽: 원본 + 오른쪽: 조판)' },
+        { value: 'a3-goodnotes', label: 'A3 가로 펼침면 (왼쪽: 조판 + 오른쪽: 노트)' },
+        { value: 'a4-spread',    label: 'A4 펼침 노트 (뒷면: 조판 + 앞면: 노트)' },
+        { value: 'a4-single',    label: 'A4 (본문만)' },
+        { value: 'a5-spread',    label: 'A5 펼침 노트 (뒷면: 조판 + 앞면: 노트)' },
+        { value: 'a5-single',    label: 'A5 (본문만)' }
+      ],
+      paperVertical: [
+        { value: 'v-a3-compare',   label: 'A3 데모 펼침면 (왼쪽: 가로 원본 + 오른쪽: 세로 조판)' },
+        { value: 'v-a3-goodnotes', label: 'A3 펼침 노트 (위: 세로 조판 + 아래: 노트)' },
+        { value: 'v-a4-spread',    label: 'A4 펼침 노트 (위[뒷면]: 세로 조판 + 아래[앞면]: 노트)' },
+        { value: 'v-a4-single',    label: 'A4 (세로 본문만)' }
+      ]
+    }
   };
 
-  function getRuleKindOptions(dir) {
+  function getUnifiedUiText(lang) {
+    return UNIFIED_UI_I18N[lang || currentLanguage] || UNIFIED_UI_I18N.ja;
+  }
+
+  function getPaperOptionsByDir(dir, lang) {
+    const ut = getUnifiedUiText(lang);
+    return (dir === 'vertical') ? ut.paperVertical : ut.paperHorizontal;
+  }
+
+  function getRuleKindOptions(dir, lang) {
+    const ut = getUnifiedUiText(lang);
     const isVert = (dir === 'vertical');
     return [
-      { value: 'ruled', label: isVert ? '縦罫線' : '横罫線' },
-      { value: 'grid',  label: '方眼' },
-      { value: 'blank', label: '無地' }
+      { value: 'ruled', label: isVert ? ut.ruleKindVertical : ut.ruleKindHorizontal },
+      { value: 'grid',  label: ut.ruleKindGrid },
+      { value: 'blank', label: ut.ruleKindBlank }
     ];
   }
 
@@ -4747,7 +4843,7 @@ async function loadSampleDocx() {
 
     const labelEl = settingItem.querySelector('.setting-label');
     if (labelEl) {
-      labelEl.textContent = '② 罫線の種類・幅';
+      labelEl.textContent = getUnifiedUiText(currentLanguage).labelRuleKindPitch;
     }
 
     legacySel.style.display = 'none';
@@ -4757,7 +4853,7 @@ async function loadSampleDocx() {
 
     const kindSel = document.createElement('select');
     kindSel.id = prefix + 'RuleKindSelect';
-    getRuleKindOptions(currentWritingDirection).forEach(o => {
+    getRuleKindOptions(currentWritingDirection, currentLanguage).forEach(o => {
       const opt = document.createElement('option');
       opt.value = o.value;
       opt.textContent = o.label;
@@ -4790,26 +4886,36 @@ async function loadSampleDocx() {
     syncCombinedGridSelect(prefix);
   }
 
-  function rebuildPaperAndRuleOptionsForDirection(dir) {
-    const paperList = PAPER_OPTIONS_BY_DIR[dir] || PAPER_OPTIONS_BY_DIR.horizontal;
+  function rebuildPaperAndRuleOptionsForDirection(dir, preservePaperValue) {
+    const paperList = getPaperOptionsByDir(dir, currentLanguage);
     ['docs', 'docx'].forEach(prefix => {
       const paperSel = document.getElementById(prefix + 'PaperProfileSelect');
       if (paperSel) {
+        const prevPaperVal = preservePaperValue ? paperSel.value : '';
         paperSel.innerHTML = '';
+        let matched = false;
         paperList.forEach((item, idx) => {
           const opt = document.createElement('option');
           opt.value = item.value;
           opt.textContent = item.label;
-          if (idx === 0) opt.selected = true;
+          if (preservePaperValue && item.value === prevPaperVal) {
+            opt.selected = true;
+            matched = true;
+          } else if (!preservePaperValue && idx === 0) {
+            opt.selected = true;
+          }
           paperSel.appendChild(opt);
         });
+        if (preservePaperValue && !matched && paperSel.options.length > 0) {
+          paperSel.options[0].selected = true;
+        }
       }
 
       const kindSel = document.getElementById(prefix + 'RuleKindSelect');
       if (kindSel) {
-        const prevVal = kindSel.value || 'ruled';
+        const prevVal = kindSel.value || 'grid';
         kindSel.innerHTML = '';
-        getRuleKindOptions(dir).forEach(item => {
+        getRuleKindOptions(dir, currentLanguage).forEach(item => {
           const opt = document.createElement('option');
           opt.value = item.value;
           opt.textContent = item.label;
@@ -4820,6 +4926,29 @@ async function loadSampleDocx() {
       syncCombinedGridSelect(prefix);
     });
   }
+
+  function applyUnifiedUiI18n(lang) {
+    const ut = getUnifiedUiText(lang);
+    const setElText = (id, txt) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = txt;
+    };
+    setElText('uiLinkTop', ut.linkTop);
+    setElText('uiTextDirHorizontal', ut.dirHorizontal);
+    setElText('uiTextDirVertical', ut.dirVertical);
+    setElText('uiLabelPaperProfile', ut.labelPaper);
+    setElText('uiLabelDocxPaperProfile', ut.labelPaper);
+    setElText('uiLabelGridType', ut.labelRuleKindPitch);
+    setElText('uiLabelDocxGridType', ut.labelRuleKindPitch);
+    rebuildPaperAndRuleOptionsForDirection(currentWritingDirection, true);
+  }
+
+  const _baseSwitchLanguageForUnifiedUi = switchLanguage;
+  switchLanguage = function(lang) {
+    _baseSwitchLanguageForUnifiedUi(lang);
+    applyUnifiedUiI18n(currentLanguage);
+  };
+  window.switchLanguage = switchLanguage;
 
   window.switchWritingDirection = function(dir) {
     if (isDocsBusy || isDocxBusy) return;
@@ -4840,7 +4969,7 @@ async function loadSampleDocx() {
       }
     }
 
-    rebuildPaperAndRuleOptionsForDirection(currentWritingDirection);
+    rebuildPaperAndRuleOptionsForDirection(currentWritingDirection, false);
   };
 
   function hideAllPreviewElements() {
@@ -4891,7 +5020,7 @@ async function loadSampleDocx() {
     hideAllPreviewElements();
     injectSplitRuleControls('docs', 'onDocsSettingChanged');
     injectSplitRuleControls('docx', 'onDocxSettingChanged');
-    rebuildPaperAndRuleOptionsForDirection(currentWritingDirection);
+    applyUnifiedUiI18n(currentLanguage);
   });
 
 
@@ -5632,6 +5761,177 @@ async function loadSampleDocx() {
     const btnPdf = document.getElementById('btnModePdf');
     if (btnPdf) {
       btnPdf.style.display = '';
+    }
+  };
+
+
+  // ==============================================================================
+  // ステップ3.5: GAS urlFetchWhitelist 回避
+  // 縦書き DOCS（Googleドライブ選択文書）組版時は、GASからはホワイトリスト済みの Docs API 生JSON＋HTMLのみを取得し、
+  // ブラウザの fetch() から直接 TATEGAKI_CLOUD_RUN_URL (/v3/render-pdf) へ送信する
+  // ==============================================================================
+  const _origExecBrowserDirectRpc = executeBrowserDirectDocsRpc;
+  executeBrowserDirectDocsRpc = async function(method, params, token) {
+    if (method === 'getDocsRawPayloadForBrowser') {
+      const fileId = params && params.fileId;
+      const docRes = await fetch('https://docs.googleapis.com/v1/documents/' + encodeURIComponent(fileId), {
+        headers: { Authorization: 'Bearer ' + token }
+      });
+      if (!docRes.ok) {
+        throw new Error('Google Docs API 取得エラー (HTTP ' + docRes.status + ')');
+      }
+      const docData = await docRes.json();
+      if (docData.inlineObjects) {
+        const objIds = Object.keys(docData.inlineObjects);
+        for (let i = 0; i < objIds.length; i++) {
+          try {
+            const emb = docData.inlineObjects[objIds[i]].inlineObjectProperties.embeddedObject;
+            if (emb && emb.imageProperties && emb.imageProperties.contentUri && !emb.imageProperties.contentUri.startsWith('data:')) {
+              const imgResp = await fetch(emb.imageProperties.contentUri);
+              if (imgResp.ok) {
+                const imgBuf = await imgResp.arrayBuffer();
+                const mime = imgResp.headers.get('content-type') || 'image/png';
+                emb.imageProperties.contentUri = 'data:' + mime + ';base64,' + arrayBufferToBase64(imgBuf);
+              }
+            }
+          } catch (_eImg) {}
+        }
+      }
+      let htmlData = '';
+      try {
+        const htmlRes = await fetch('https://www.googleapis.com/drive/v3/files/' + encodeURIComponent(fileId) + '/export?mimeType=text/html', {
+          headers: { Authorization: 'Bearer ' + token }
+        });
+        if (htmlRes.ok) {
+          htmlData = await htmlRes.text();
+        }
+      } catch (_eHtml) {}
+      return {
+        success: true,
+        documentJson: JSON.stringify(docData),
+        htmlData: htmlData
+      };
+    }
+    return _origExecBrowserDirectRpc(method, params, token);
+  };
+
+  executeDocsLayout = async function(isExportPdf) {
+    if (isDocsBusy) return;
+    if (!selectedDocsId) {
+      showStatus('先に [Googleドライブから選択 (Docs)] または [✨ サンプルをセット] でドキュメントを選択してください。', 'error');
+      return;
+    }
+
+    if (currentWritingDirection !== 'vertical') {
+      syncCombinedGridSelect('docs');
+      return _horizontalExecuteDocsLayout(true);
+    }
+
+    setDocsButtonsBusy(true, 'export');
+    const docsJobId = createRenderJobId();
+    startDocsWorkingProgress('今：縦書き組版エンジンへ送信中...', docsJobId);
+
+    const paperMode = document.getElementById('docsPaperProfileSelect').value;
+    const lineColorHex = (document.getElementById('docsLineColorPicker') ? document.getElementById('docsLineColorPicker').value : '#D0D0D0') || '#D0D0D0';
+    const { pitchMm, drawH, drawV } = readSplitRuleParams('docs', true);
+
+    const isLandscapeNote = (paperMode === 'v-a3-goodnotes' || paperMode === 'v-a4-spread');
+    const paperWidthMm = isLandscapeNote ? VerticalLandscapeWidthMm : VerticalPortraitWidthMm;
+    const paperHeightMm = isLandscapeNote ? VerticalLandscapeHeightMm : VerticalPortraitHeightMm;
+
+    const v3Config = {
+      paperWidthMm: paperWidthMm,
+      paperHeightMm: paperHeightMm,
+      gutterMarginMm: VerticalGutterRightMm,
+      outerMarginMm: VerticalOuterLeftMm,
+      marginTopMm: VerticalMarginTopMm,
+      marginBottomMm: VerticalMarginBottomMm,
+      linePitchMm: pitchMm,
+      ruledLineWidthPt: (drawH || drawV) ? DefaultRuleStrokePt : 0.0,
+      ruledLineColorHex: (drawH || drawV) ? lineColorHex : '#FFFFFF',
+      orientation: isLandscapeNote ? 'landscape' : 'portrait'
+    };
+
+    const baseName = selectedDocsName.replace(/\.[^/.]+$/, '');
+
+    try {
+      showStatus('🚀 縦書き組版エンジンで高精度PDFを生成中...', 'info');
+      let typesetBytes = null;
+
+      if (selectedDocsId === SAMPLE_MULTILINGUAL_DOCS_ID) {
+        const sampleUrl = TATEGAKI_CLOUD_RUN_URL.replace(/\/$/, '') + '/v3/sample/docs-render-pdf';
+        const sampleResp = await fetch(sampleUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ jobId: docsJobId, config: v3Config })
+        });
+        if (!sampleResp.ok) {
+          throw new Error('縦書きサンプル組版エラー (HTTP ' + sampleResp.status + ')');
+        }
+        typesetBytes = new Uint8Array(await sampleResp.arrayBuffer());
+      } else {
+        // GAS側からはホワイトリスト済みの Google Docs API 生JSON + HTML エクスポートのみを取得し、
+        // 縦書き Cloud Run へはブラウザから直接 POST する（appsscript.json ホワイトリストエラーを100%回避）
+        const rawPayload = await callGasRpc('getDocsRawPayloadForBrowser', {
+          fileId: selectedDocsId
+        });
+        if (!rawPayload || !rawPayload.success || !rawPayload.documentJson) {
+          throw new Error((rawPayload && rawPayload.error) ? rawPayload.error : 'Googleドキュメントのデータ取得に失敗しました');
+        }
+        const renderUrl = TATEGAKI_CLOUD_RUN_URL.replace(/\/$/, '') + '/v3/render-pdf';
+        const renderResp = await fetch(renderUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            jobId: docsJobId,
+            documentJson: rawPayload.documentJson,
+            htmlData: rawPayload.htmlData || '',
+            config: v3Config
+          })
+        });
+        if (!renderResp.ok) {
+          const errTxt = await renderResp.text();
+          throw new Error('縦書きクラウド組版エラー (HTTP ' + renderResp.status + '): ' + errTxt.substring(0, 300));
+        }
+        typesetBytes = new Uint8Array(await renderResp.arrayBuffer());
+      }
+
+      let origBytes = null;
+      if (paperMode === 'v-a3-compare') {
+        showStatus('📑 横書き原本PDFを取得中...', 'info');
+        if (selectedDocsId === SAMPLE_MULTILINGUAL_DOCS_ID) {
+          const origUrl = TATEGAKI_CLOUD_RUN_URL.replace(/\/$/, '') + '/v3/sample/docs-original-pdf';
+          const origResp = await fetch(origUrl, { method: 'GET' });
+          if (!origResp.ok) {
+            throw new Error('サンプル原本PDF取得エラー (HTTP ' + origResp.status + ')');
+          }
+          origBytes = new Uint8Array(await origResp.arrayBuffer());
+        } else {
+          const origRes = await callGasRpc('getDocsOriginalPdfBase64', { fileId: selectedDocsId });
+          if (!origRes || !origRes.success) {
+            throw new Error((origRes && origRes.error) ? origRes.error : '原本PDFの取得に失敗しました');
+          }
+          origBytes = base64ToBytes(origRes.base64);
+        }
+      }
+
+      showStatus('📑 縦書きPDFを仕上げ中...', 'info');
+      const composed = await composeVerticalOutputPdf(
+        typesetBytes,
+        origBytes,
+        paperMode,
+        pitchMm,
+        drawH,
+        drawV,
+        lineColorHex,
+        baseName
+      );
+      handleDocsPdfOutput(composed.bytes, true, composed.fileName, paperMode);
+    } catch (err) {
+      console.error('縦書き executeDocsLayout エラー:', err);
+      stopDocsWorkingProgress(false);
+      setDocsButtonsBusy(false);
+      showStatus('❌ 縦書き組版エラー: ' + err.message, 'error');
     }
   };
 
