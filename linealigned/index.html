@@ -8264,6 +8264,87 @@ async function loadSampleDocx() {
   });
 
 
+  // ==============================================================================
+  // 方向切替の isDocxBusy ロック衝突修正 ＆ 5サンプル出力方向の確実同期パッチ (ver.163e)
+  // （縦書きサンプル実行後に「サンプル（横書き→横書き）」を選んだ際、isDocxBusy 中の
+  //   switchWritingDirection が早期 return して縦書きのまま残る不具合を根治）
+  // ==============================================================================
+  function forceSetWritingDirectionImmediate(dir) {
+    const savedDocsBusy = isDocsBusy;
+    const savedDocxBusy = isDocxBusy;
+    isDocsBusy = false;
+    isDocxBusy = false;
+    try {
+      window.switchWritingDirection(dir === 'vertical' ? 'vertical' : 'horizontal');
+    } finally {
+      isDocsBusy = savedDocsBusy;
+      isDocxBusy = savedDocxBusy;
+    }
+  }
+
+  // サンプル読み込み後に isDocxBusy 解除済み状態で確実に方向・用紙プルダウンを同期
+  const _prevLoadDocxHorizToHoriz = window.loadSampleDocxHorizToHoriz;
+  window.loadSampleDocxHorizToHoriz = async function() {
+    await _prevLoadDocxHorizToHoriz();
+    forceSetWritingDirectionImmediate('horizontal');
+    syncDirectionBarPlacementAndVisibility();
+  };
+  window.loadSampleDocxHorizontal = window.loadSampleDocxHorizToHoriz;
+  window.loadSampleDocx = window.loadSampleDocxHorizToHoriz;
+  loadSampleDocx = window.loadSampleDocxHorizToHoriz;
+
+  const _prevLoadDocxHorizToVert = window.loadSampleDocxHorizToVert;
+  window.loadSampleDocxHorizToVert = async function() {
+    await _prevLoadDocxHorizToVert();
+    forceSetWritingDirectionImmediate('vertical');
+    syncDirectionBarPlacementAndVisibility();
+  };
+
+  const _prevLoadDocxVertToVert = window.loadSampleDocxVertToVert;
+  window.loadSampleDocxVertToVert = async function() {
+    await _prevLoadDocxVertToVert();
+    forceSetWritingDirectionImmediate('vertical');
+    syncDirectionBarPlacementAndVisibility();
+  };
+  window.loadSampleDocxVertical = window.loadSampleDocxVertToVert;
+
+  const _prevLoadDocsH = window.loadSampleDocsHorizontal;
+  window.loadSampleDocsHorizontal = function() {
+    _prevLoadDocsH();
+    forceSetWritingDirectionImmediate('horizontal');
+    syncDirectionBarPlacementAndVisibility();
+  };
+  window.loadSampleDocs = window.loadSampleDocsHorizontal;
+  loadSampleDocs = window.loadSampleDocsHorizontal;
+
+  const _prevLoadDocsV = window.loadSampleDocsVertical;
+  window.loadSampleDocsVertical = function() {
+    _prevLoadDocsV();
+    forceSetWritingDirectionImmediate('vertical');
+    syncDirectionBarPlacementAndVisibility();
+  };
+
+  // ローカル・Googleドライブでユーザー自身の .docx が読み込まれた際も確実に方向を反映
+  const _prevApplyAutoDirUserDocx = applyAutoDirectionAfterUserDocxLoaded;
+  applyAutoDirectionAfterUserDocxLoaded = async function() {
+    await _prevApplyAutoDirUserDocx();
+    forceSetWritingDirectionImmediate(isCurrentDocxNativeVertical ? 'vertical' : 'horizontal');
+    syncDirectionBarPlacementAndVisibility();
+  };
+
+  // DOCX 出力実行直前の最終安全ガード（h2h サンプル時は必ず横書き第1ラインへルーティング）
+  const _prevExecuteDocxBeforeGuard = executeDocxLayout;
+  executeDocxLayout = async function(isExportPdf) {
+    if (currentLoadedDocxSampleKind === 'h2h' && currentWritingDirection !== 'horizontal') {
+      forceSetWritingDirectionImmediate('horizontal');
+    } else if ((currentLoadedDocxSampleKind === 'h2v' || currentLoadedDocxSampleKind === 'v2v') && currentWritingDirection !== 'vertical') {
+      forceSetWritingDirectionImmediate('vertical');
+    }
+    return _prevExecuteDocxBeforeGuard(isExportPdf);
+  };
+  window.executeDocxLayout = executeDocxLayout;
+
+
   </script>
 
 </body>
