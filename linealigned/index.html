@@ -687,6 +687,31 @@
       display: none !important;
     }
 
+    /* ==========================================================
+       5サンプル構成（DOCS 2ボタン / DOCX 3ボタン）レイアウト定義
+       ========================================================== */
+    .button-group-triple {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .button-group-triple .btn-select {
+      padding: 11px 6px;
+      font-size: 0.82rem;
+      line-height: 1.25;
+      text-align: center;
+    }
+    @media (max-width: 600px) {
+      .button-group-triple {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .button-group-triple .btn-select {
+        font-size: 0.9rem;
+        padding: 12px 14px;
+      }
+    }
+
 
   </style>
   <!-- Google tag (gtag.js) for Line-aligned Studio -->
@@ -971,12 +996,15 @@
           <span id="uiTextDocxLocalSelect">ファイルを選択</span>
         </button>
       </div>
-      <div class="button-group" style="margin-bottom: 8px;">
-        <button type="button" class="btn-select btn-sample-green" id="btnDocxSampleSelect" onclick="loadSampleDocxHorizontal()">
-          <span id="uiTextDocxSampleHoriz">サンプル（横書き）</span>
+      <div class="button-group-triple">
+        <button type="button" class="btn-select btn-sample-green" id="btnDocxSampleH2HSelect" onclick="loadSampleDocxHorizToHoriz()">
+          <span id="uiTextDocxSampleH2H">サンプル（横書き→横書き）</span>
         </button>
-        <button type="button" class="btn-select btn-sample-green" id="btnDocxSampleVertSelect" onclick="loadSampleDocxVertical()">
-          <span id="uiTextDocxSampleVert">サンプル（縦書き）</span>
+        <button type="button" class="btn-select btn-sample-green" id="btnDocxSampleH2VSelect" onclick="loadSampleDocxHorizToVert()">
+          <span id="uiTextDocxSampleH2V">サンプル（横書き→縦書き）</span>
+        </button>
+        <button type="button" class="btn-select btn-sample-green" id="btnDocxSampleV2VSelect" onclick="loadSampleDocxVertToVert()">
+          <span id="uiTextDocxSampleV2V">サンプル（縦書き→縦書き）</span>
         </button>
       </div>
       <input type="file" id="docxFileInput" class="file-input" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
@@ -7986,6 +8014,253 @@ async function loadSampleDocx() {
 
   window.addEventListener('DOMContentLoaded', () => {
     syncDocsDualSampleLabels(currentLanguage);
+  });
+
+
+  // ==============================================================================
+  // 全5サンプル明示構成パッチ (ver.163d):
+  //   - Google ドキュメント (DOCS):
+  //       1. サンプル（横書き→横書き） -> 第1ライン (STUDIO_CLOUD_RUN_URL)
+  //       2. サンプル（横書き→縦書き） -> 第2ライン (TATEGAKI_CLOUD_RUN_URL)
+  //   - Word 等 (.docx):
+  //       3. サンプル（横書き→横書き） -> 第1ライン (STUDIO_CLOUD_RUN_URL / 横書き .docx)
+  //       4. サンプル（横書き→縦書き） -> 第2ライン (TATEGAKI_CLOUD_RUN_URL / 横書き .docx)
+  //       5. サンプル（縦書き→縦書き） -> 第3ライン (TATETATE_CLOUD_RUN_URL / 縦書き .docx)
+  // ==============================================================================
+  const FIVE_SAMPLES_I18N = {
+    ja: {
+      h2h: 'サンプル（横書き→横書き）',
+      h2v: 'サンプル（横書き→縦書き）',
+      v2v: 'サンプル（縦書き→縦書き）',
+      docxH2H: 'サンプル（横書き→横書き）.docx',
+      docxH2V: 'サンプル（横書き→縦書き）.docx',
+      docxV2V: 'サンプル（縦書き→縦書き）.docx'
+    },
+    en: {
+      h2h: 'Sample (Horiz → Horiz)',
+      h2v: 'Sample (Horiz → Vert)',
+      v2v: 'Sample (Vert → Vert)',
+      docxH2H: 'Sample (Horiz → Horiz).docx',
+      docxH2V: 'Sample (Horiz → Vert).docx',
+      docxV2V: 'Sample (Vert → Vert).docx'
+    },
+    'zh-TW': {
+      h2h: '範例（橫書→橫書）',
+      h2v: '範例（橫書→直書）',
+      v2v: '範例（直書→直書）',
+      docxH2H: '範例（橫書→橫書）.docx',
+      docxH2V: '範例（橫書→直書）.docx',
+      docxV2V: '範例（直書→直書）.docx'
+    },
+    ko: {
+      h2h: '샘플 (가로→가로)',
+      h2v: '샘플 (가로→세로)',
+      v2v: '샘플 (세로→세로)',
+      docxH2H: '샘플 (가로→가로).docx',
+      docxH2V: '샘플 (가로→세로).docx',
+      docxV2V: '샘플 (세로→세로).docx'
+    }
+  };
+
+  // DOCS 側の既存辞書も同一表記へ同期
+  Object.keys(FIVE_SAMPLES_I18N).forEach(langKey => {
+    const src = FIVE_SAMPLES_I18N[langKey];
+    DOCS_DUAL_SAMPLE_I18N[langKey] = {
+      btnHoriz: src.h2h,
+      btnVert: src.h2v,
+      nameHoriz: src.h2h,
+      nameVert: src.h2v
+    };
+  });
+
+  function getFiveSamplesText(lang) {
+    return FIVE_SAMPLES_I18N[lang || currentLanguage] || FIVE_SAMPLES_I18N.ja;
+  }
+
+  function syncFiveSamplesLabels(lang) {
+    const ft = getFiveSamplesText(lang);
+    const setEl = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = val;
+    };
+
+    // DOCS 2ボタン
+    setEl('uiTextDocsSampleHoriz', ft.h2h);
+    setEl('uiTextDocsSampleVert', ft.h2v);
+
+    // DOCX 3ボタン
+    setEl('uiTextDocxSampleH2H', ft.h2h);
+    setEl('uiTextDocxSampleH2V', ft.h2v);
+    setEl('uiTextDocxSampleV2V', ft.v2v);
+
+    // 選択中ファイル名の追従
+    if (currentLoadedDocsSampleKind === 'horizontal') {
+      setEl('docsSelectedFileName', ft.h2h);
+    } else if (currentLoadedDocsSampleKind === 'vertical') {
+      setEl('docsSelectedFileName', ft.h2v);
+    }
+
+    if (currentLoadedDocxSampleKind === 'h2h') {
+      setEl('docxSelectedFileName', ft.docxH2H);
+    } else if (currentLoadedDocxSampleKind === 'h2v') {
+      setEl('docxSelectedFileName', ft.docxH2V);
+    } else if (currentLoadedDocxSampleKind === 'v2v') {
+      setEl('docxSelectedFileName', ft.docxV2V);
+    }
+  }
+
+  const _prevSwitchLangBeforeFive = window.switchLanguage;
+  window.switchLanguage = function(lang) {
+    _prevSwitchLangBeforeFive(lang);
+    syncFiveSamplesLabels(currentLanguage);
+  };
+  switchLanguage = window.switchLanguage;
+
+  // DOCS 「サンプルを見る」は #1 (横→横: 第1ライン) と #2 (横→縦: 第2ライン) を確実に振り分け
+  window.openSampleOriginalView = function() {
+    const baseUrl = (currentLoadedDocsSampleKind === 'vertical') ? TATEGAKI_CLOUD_RUN_URL : STUDIO_CLOUD_RUN_URL;
+    window.open(baseUrl.replace(/\/$/, '') + '/v3/sample/view', '_blank', 'noopener,noreferrer');
+  };
+  openSampleOriginalView = window.openSampleOriginalView;
+
+  // DOCX 3サンプル読み込み共通処理 (#3: 横→横, #4: 横→縦, #5: 縦→縦)
+  async function loadDocxFiveSampleByRoute(routeKind) {
+    if (isDocxBusy) return;
+    closeDocxPreview();
+
+    const ft = getFiveSamplesText(currentLanguage);
+    const ct = getCleanStudioText(currentLanguage);
+
+    let sampleServerUrl = STUDIO_CLOUD_RUN_URL;
+    let targetDir = 'horizontal';
+    let isNativeVert = false;
+    let displayTitle = ft.docxH2H;
+    let downloadFileName = 'Sample_Horiz_to_Horiz.docx';
+
+    if (routeKind === 'h2v') {
+      sampleServerUrl = TATEGAKI_CLOUD_RUN_URL;
+      targetDir = 'vertical';
+      isNativeVert = false;
+      displayTitle = ft.docxH2V;
+      downloadFileName = 'Sample_Horiz_to_Vert.docx';
+    } else if (routeKind === 'v2v') {
+      sampleServerUrl = TATETATE_CLOUD_RUN_URL;
+      targetDir = 'vertical';
+      isNativeVert = true;
+      displayTitle = ft.docxV2V;
+      downloadFileName = 'Sample_Vert_to_Vert.docx';
+    }
+
+    setDocxButtonsBusy(true, 'loading_docx');
+    activeVerticalPollBaseUrl = (targetDir === 'vertical') ? sampleServerUrl : '';
+    startDocsWorkingProgress('サンプルを読み込み中...');
+
+    try {
+      const docxUrl = sampleServerUrl.replace(/\/$/, '') + '/v3/sample/docx';
+      const resp = await fetch(docxUrl, { method: 'GET' });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      const buf = await resp.arrayBuffer();
+      validateDocxBufferFormat(buf, downloadFileName);
+
+      selectedDocxBase64 = arrayBufferToBase64(buf);
+      selectedDocxFileId = null;
+      selectedDocxName = downloadFileName;
+      isCurrentDocxSampleLoaded = false;
+      currentLoadedDocxSampleKind = routeKind;
+      isCurrentDocxNativeVertical = isNativeVert;
+
+      window.switchWritingDirection(targetDir);
+
+      const fileNameEl = document.getElementById('docxSelectedFileName');
+      if (fileNameEl) {
+        fileNameEl.textContent = displayTitle;
+        fileNameEl.style.color = '#137333';
+      }
+      const btnReset = document.getElementById('uiBtnResetDocxFile');
+      if (btnReset) btnReset.style.display = 'inline-block';
+      const btnViewOrig = document.getElementById('uiBtnViewDocxSampleOrig');
+      if (btnViewOrig) btnViewOrig.style.display = 'none';
+      const btnDlSample = document.getElementById('uiBtnDownloadDocxSample');
+      if (btnDlSample) {
+        btnDlSample.textContent = ct.btnGetSample;
+        btnDlSample.style.display = 'inline-block';
+      }
+
+      syncDirectionBarPlacementAndVisibility();
+      stopDocsWorkingProgress(true, '読み込み完了');
+      setDocxButtonsBusy(false);
+      showStatus('サンプルをセットしました。', 'success');
+    } catch (err) {
+      stopDocsWorkingProgress(false);
+      setDocxButtonsBusy(false);
+      showStatus('サンプル読み込みエラー: ' + err.message, 'error');
+    } finally {
+      activeVerticalPollBaseUrl = '';
+    }
+  }
+
+  window.loadSampleDocxHorizToHoriz = function() {
+    return loadDocxFiveSampleByRoute('h2h');
+  };
+  window.loadSampleDocxHorizToVert = function() {
+    return loadDocxFiveSampleByRoute('h2v');
+  };
+  window.loadSampleDocxVertToVert = function() {
+    return loadDocxFiveSampleByRoute('v2v');
+  };
+  window.loadSampleDocxHorizontal = window.loadSampleDocxHorizToHoriz;
+  window.loadSampleDocxVertical = window.loadSampleDocxVertToVert;
+  window.loadSampleDocx = window.loadSampleDocxHorizToHoriz;
+  loadSampleDocx = window.loadSampleDocxHorizToHoriz;
+
+  // 「サンプルを取得」は選択中のサンプル種別 (#3 / #4 / #5) に合わせた明確なファイル名で即時ダウンロード
+  window.downloadSampleDocxFile = function() {
+    if (selectedDocxBase64 && currentLoadedDocxSampleKind) {
+      const rawBytes = base64ToBytes(selectedDocxBase64);
+      const blob = new Blob([rawBytes], {
+        type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      });
+      const dlUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = dlUrl;
+      a.download = selectedDocxName || 'Sample.docx';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(dlUrl);
+      return;
+    }
+    let fallbackServer = STUDIO_CLOUD_RUN_URL;
+    if (currentLoadedDocxSampleKind === 'h2v') fallbackServer = TATEGAKI_CLOUD_RUN_URL;
+    else if (currentLoadedDocxSampleKind === 'v2v') fallbackServer = TATETATE_CLOUD_RUN_URL;
+    window.open(fallbackServer.replace(/\/$/, '') + '/v3/sample/docx', '_blank', 'noopener,noreferrer');
+  };
+  downloadSampleDocxFile = window.downloadSampleDocxFile;
+
+  // 稼働中は DOCX 3サンプルボタン・DOCS 2サンプルボタンも二重押し防止ロック
+  const _prevSetDocxBusyFive = setDocxButtonsBusy;
+  setDocxButtonsBusy = function(busy, activeAction) {
+    _prevSetDocxBusyFive(busy, activeAction);
+    ['btnDocxSampleH2HSelect', 'btnDocxSampleH2VSelect', 'btnDocxSampleV2VSelect'].forEach(id => {
+      const b = document.getElementById(id);
+      if (b) b.disabled = !!busy;
+    });
+  };
+  window.setDocxButtonsBusy = setDocxButtonsBusy;
+
+  const _prevSetDocsBusyFive = setDocsButtonsBusy;
+  setDocsButtonsBusy = function(busy, activeAction) {
+    _prevSetDocsBusyFive(busy, activeAction);
+    ['btnDocsSampleSelect', 'btnDocsSampleVertSelect'].forEach(id => {
+      const b = document.getElementById(id);
+      if (b) b.disabled = !!busy;
+    });
+  };
+  window.setDocsButtonsBusy = setDocsButtonsBusy;
+
+  window.addEventListener('DOMContentLoaded', () => {
+    syncFiveSamplesLabels(currentLanguage);
+    syncDirectionBarPlacementAndVisibility();
   });
 
 
