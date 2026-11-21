@@ -653,6 +653,41 @@
     .preview-doc-content img { max-width: 100%; height: auto; }
 
 
+    /* ==========================================================
+       統合UIクリーンアップ: 2列方向ボタン（赤色アクティブ）＆元原稿ボタン非表示
+       ========================================================== */
+    .direction-switch-group {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      margin-top: 0.25rem;
+      margin-bottom: 1rem;
+    }
+    .direction-switch-group .mode-btn.active {
+      background: linear-gradient(135deg, #dc2626, #b91c1c);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.32);
+    }
+    .mode-switch-group .mode-btn {
+      font-size: 0.92rem;
+      padding: 11px 8px;
+      text-align: center;
+      line-height: 1.25;
+    }
+    .btn-sample-green {
+      background: linear-gradient(135deg, #00c853, #1e8e3e);
+      color: #ffffff;
+      border: none;
+      box-shadow: 0 4px 12px rgba(52, 168, 83, 0.28);
+    }
+    .btn-sample-green:hover {
+      background: linear-gradient(135deg, #00b248, #187bcd);
+      background: linear-gradient(135deg, #00b248, #167933);
+      box-shadow: 0 6px 16px rgba(52, 168, 83, 0.36);
+    }
+    #uiBtnViewDocxSampleOrig {
+      display: none !important;
+    }
+
+
   </style>
   <!-- Google tag (gtag.js) for Line-aligned Studio -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-310XSTTWSM"></script>
@@ -674,13 +709,11 @@
       'cookie_update': false
     });
 
-    // Explicit page_view event
     gtag('event', 'page_view', {
       'page_title': studioPageTitle,
       'page_location': studioPageLocation
     });
 
-    // Custom helper to track events safely
     function trackStudioEvent(eventName, params) {
       try {
         if (typeof gtag === 'function') {
@@ -698,14 +731,14 @@
 <body>
 
 <div class="card">
-  <!-- ヘッダー行: 左側＝プレーンテキスト情報 / 右側＝言語切替 [ 日 | 英 | 繁 | 韓 ] -->
+  <!-- ヘッダー行: 左側＝プレーンテキスト情報 / 右側＝言語切替 [ 日 | En | 繁 | 韓 ] -->
   <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 0.75rem;">
     <div style="font-size: 1.05rem; font-weight: 800; color: #1f1f1f;">
       <span style="color: #1a73e8; font-weight: 900;">Line-aligned</span>
-      <span style="color: #5f6368; font-size: 0.78rem; margin-left: 6px;">ver.162 (Build 20261120_1800)</span>
+      <span style="color: #5f6368; font-size: 0.78rem; margin-left: 6px;">ver.163 (Build 20261121_1050)</span>
     </div>
     <div style="display: flex; align-items: center; gap: 6px;">
-      <a href="https://wasabikarashi.com/" id="uiLinkTop" style="display: inline-flex; align-items: center; gap: 3px; background: #f1f5f9; border: 1px solid #dadce0; border-radius: 8px; padding: 5px 10px; font-size: 0.75rem; font-weight: 700; color: #3c4043; text-decoration: none; white-space: nowrap;">🏠 トップ</a>
+      <a href="https://wasabikarashi.com/" id="uiLinkTop" style="display: inline-flex; align-items: center; gap: 3px; background: #f1f5f9; border: 1px solid #dadce0; border-radius: 8px; padding: 5px 10px; font-size: 0.75rem; font-weight: 700; color: #3c4043; text-decoration: none; white-space: nowrap;">トップ</a>
       <div style="display: inline-flex; background: #f1f5f9; border: 1px solid #dadce0; border-radius: 8px; padding: 2px; gap: 2px;">
         <button type="button" class="lang-btn active" id="btnLangJa" onclick="switchLanguage('ja')" style="background: #1a73e8; color: #fff; border: none; border-radius: 6px; padding: 4px 9px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">日</button>
         <button type="button" class="lang-btn" id="btnLangEn" onclick="switchLanguage('en')" style="background: transparent; color: #5f6368; border: none; border-radius: 6px; padding: 4px 9px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">En</button>
@@ -718,81 +751,86 @@
     ブックマークしてタブレットやスマホでもご利用いただけます
   </div>
 
-  <!-- ① 原稿の種類切り替え（DOCS / DOCX / PDF） -->
-  <div class="mode-switch-group" style="margin-bottom: 0.5rem;">
+  <!-- 原稿の種類切り替え（Google ドキュメント / Word 等 (.docx) / PDF） -->
+  <div class="mode-switch-group" style="margin-bottom: 1.15rem;">
     <button class="mode-btn active" id="btnModeDocs" onclick="switchMainMode('docs')">
-      <span>📄 DOCS</span>
+      <span id="uiTabDocs">Google ドキュメント</span>
     </button>
     <button class="mode-btn" id="btnModeDocx" onclick="switchMainMode('docx')">
-      <span>📝 DOCX</span>
+      <span id="uiTabDocx">Word 等 (.docx)</span>
     </button>
     <button class="mode-btn" id="btnModePdf" onclick="switchMainMode('pdf')">
-      <span>📑 PDF</span>
-    </button>
-  </div>
-
-  <!-- ② 組版方向切り替え（横書き / 縦書き ※PDF選択時は自動非表示） -->
-  <div class="mode-switch-group" id="directionSwitchGroup">
-    <button type="button" class="mode-btn active" id="btnDirHorizontal" onclick="switchWritingDirection('horizontal')">
-      <span id="uiTextDirHorizontal">↔️ 横書き</span>
-    </button>
-    <button type="button" class="mode-btn" id="btnDirVertical" onclick="switchWritingDirection('vertical')">
-      <span id="uiTextDirVertical">↕️ 縦書き</span>
+      <span id="uiTabPdf">PDF</span>
     </button>
   </div>
 
   <!-- ========================================== -->
-  <!-- DOCSメニュー（動線紐付け版）               -->
+  <!-- Google ドキュメント メニュー               -->
   <!-- ========================================== -->
   <div id="docsMenuContainer" class="docs-menu-container" style="display: block;">
-    <div style="margin-bottom: 1.25rem;">
+    <div style="margin-bottom: 0.75rem;">
       <div class="setting-label" id="uiLabelDocsInput">入力ファイル</div>
+      <button class="btn-select" id="btnDocsDriveSelect" onclick="openDocsPicker()" style="width: 100%; margin-bottom: 8px;">
+        <span id="uiTextDocsDriveSelect">Googleドライブから選択</span>
+      </button>
       <div class="button-group" style="margin-bottom: 8px;">
-        <button class="btn-select" id="btnDocsDriveSelect" onclick="openDocsPicker()">
-          <span id="uiTextDocsDriveSelect">📁 Googleドライブから選択 (Docs)</span>
+        <button type="button" class="btn-select btn-sample-green" id="btnDocsSampleSelect" onclick="loadSampleDocsHorizontal()">
+          <span id="uiTextDocsSampleHoriz">サンプル（横書き）</span>
         </button>
-        <button class="btn-select" id="btnDocsSampleSelect" onclick="loadSampleDocs()" style="background: linear-gradient(135deg, #00c853, #1e8e3e); color: #ffffff; border: none; box-shadow: 0 4px 12px rgba(52, 168, 83, 0.3);">
-          <span id="uiTextDocsSampleSelect">✨ サンプルをセット（日・英・中・台・韓）</span>
+        <button type="button" class="btn-select btn-sample-green" id="btnDocsSampleVertSelect" onclick="loadSampleDocsVertical()">
+          <span id="uiTextDocsSampleVert">サンプル（縦書き）</span>
         </button>
       </div>
       <div class="docs-selected-file-box" id="docsFileBox" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; min-width: 0; width: 100%; overflow: hidden;">
-        <span id="docsSelectedFileName" style="white-space: normal; word-break: break-word; overflow-wrap: anywhere; max-width: 100%; min-width: 0; flex: 1 1 auto;">ファイル未選択（Googleドライブから選択、または「✨ サンプルをセット」でお試しください）</span>
+        <span id="docsSelectedFileName" style="white-space: normal; word-break: break-word; overflow-wrap: anywhere; max-width: 100%; min-width: 0; flex: 1 1 auto;">ファイル未選択</span>
         <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
-          <button type="button" class="btn-change-file" id="uiBtnViewDocsSampleOrig" onclick="openSampleOriginalView()" style="display: none; border-color: #1a73e8; color: #1a73e8; background: #ffffff; font-weight: 700;">🔍 元原稿を見る</button>
-          <button type="button" class="btn-change-file" id="uiBtnResetDocsFile" onclick="resetDocsFile()" style="display: none;">別のドキュメントを選ぶ</button>
+          <button type="button" class="btn-change-file" id="uiBtnViewDocsSampleOrig" onclick="openSampleOriginalView()" style="display: none; border-color: #1a73e8; color: #1a73e8; background: #ffffff; font-weight: 700;">サンプルを見る</button>
+          <button type="button" class="btn-change-file" id="uiBtnResetDocsFile" onclick="resetDocsFile()" style="display: none;">別のファイルを選ぶ</button>
         </div>
       </div>
     </div>
 
-    <!-- 用紙サイズ・罫線設定グリッド（3枠直結仕様） -->
+    <!-- ファイル選択の下：出力の向き（横書き / 縦書き・赤色アクティブ） -->
+    <div id="docsDirectionSlot">
+      <div class="mode-switch-group direction-switch-group" id="directionSwitchGroup">
+        <button type="button" class="mode-btn active" id="btnDirHorizontal" onclick="switchWritingDirection('horizontal')">
+          <span id="uiTextDirHorizontal">横書き</span>
+        </button>
+        <button type="button" class="mode-btn" id="btnDirVertical" onclick="switchWritingDirection('vertical')">
+          <span id="uiTextDirVertical">縦書き</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 用紙サイズ・罫線設定グリッド -->
     <div class="settings-grid" style="margin-bottom: 0.75rem;">
       <div class="setting-item">
         <div class="setting-label" id="uiLabelPaperProfile">① 用紙・印刷形式</div>
         <select id="docsPaperProfileSelect" onchange="onDocsSettingChanged()">
-          <option value="a3-compare" selected>A3 デモ見開き（左原本 ＋ 右組版）</option>
-          <option value="a3-goodnotes">A3 横見開き（左組版 ＋ 右ノート）</option>
-          <option value="a4-spread">A4 見開き（裏組版 ＋ 表ノート）</option>
-          <option value="a4-single">A4 両面組版</option>
-          <option value="a5-spread">A5 見開き（裏組版 ＋ 表ノート）</option>
-          <option value="a5-single">A5 両面組版</option>
+          <option value="a3-compare" selected>A3 デモ見開き（左：原本 ＋ 右：組版）</option>
+          <option value="a3-goodnotes">A3 横見開き（左：組版 ＋ 右：ノート）</option>
+          <option value="a4-spread">A4 見開き（裏：組版 ＋ 表：ノート）</option>
+          <option value="a4-single">A4（本文のみ）</option>
+          <option value="a5-spread">A5 見開き（裏：組版 ＋ 表：ノート）</option>
+          <option value="a5-single">A5（本文のみ）</option>
         </select>
       </div>
 
       <div class="setting-item">
-        <div class="setting-label" id="uiLabelGridType">② 行間・罫線の種類</div>
+        <div class="setting-label" id="uiLabelGridType">② 罫線の種類・幅</div>
         <select id="docsGridTypeSelect" onchange="onDocsSettingChanged()">
-          <option value="grid-70" selected>7.0mm 方眼（標準・ゆったり）</option>
-          <option value="grid-60">6.0mm 方眼（細罫）</option>
-          <option value="ruled-70">7.0mm 横罫線（標準）</option>
-          <option value="ruled-60">6.0mm 横罫線（細罫）</option>
-          <option value="ruled-75">7.5mm 横罫線（広め）</option>
-          <option value="ruled-80">8.0mm 横罫線（特大）</option>
-          <option value="blank">無地（罫線なし）</option>
+          <option value="grid-70" selected>7.0mm 方眼</option>
+          <option value="grid-60">6.0mm 方眼</option>
+          <option value="grid-80">8.0mm 方眼</option>
+          <option value="ruled-70">7.0mm 横罫線</option>
+          <option value="ruled-60">6.0mm 横罫線</option>
+          <option value="ruled-80">8.0mm 横罫線</option>
+          <option value="blank">無地</option>
         </select>
       </div>
     </div>
 
-    <!-- ③ 罫線カラー選択 -->
+    <!-- 罫線カラー選択 -->
     <div class="setting-item" style="margin-bottom: 1.25rem;">
       <div class="setting-label" id="uiLabelLineColor" style="display: flex; justify-content: space-between; align-items: center;">
         <span id="uiTextLineColor">罫線カラー</span>
@@ -810,18 +848,17 @@
       </div>
     </div>
 
-    <button class="btn-rerun" id="btnDocsPreview" onclick="executeDocsLayout(false)" disabled>
-      <span id="uiTextBtnPreview">👁️ プレビュー</span>
+    <button class="btn-rerun" id="btnDocsPreview" onclick="executeDocsLayout(false)" disabled style="display: none;">
+      <span id="uiTextBtnPreview">プレビュー</span>
     </button>
     <button class="btn-export-pdf" id="btnDocsExportPdf" onclick="executeDocsLayout(true)" disabled>
-      <span id="uiTextBtnExport">🖨️ PDF出力 / 印刷</span>
+      <span id="uiTextBtnExport">PDF出力 / 印刷</span>
     </button>
 
-    <!-- プレビュー枠（プレビューボタンを押した時に現れ、印刷を押すと消える） -->
     <div id="docsPreviewContainer" class="docs-preview-container" style="display: none;">
       <div class="docs-preview-header">
-        <span id="uiTitlePreview">👁️ 組版プレビュー</span>
-        <button type="button" class="btn-close-preview" id="uiBtnClosePreview" onclick="closeDocsPreview()">✕ 閉じる</button>
+        <span id="uiTitlePreview">組版プレビュー</span>
+        <button type="button" class="btn-close-preview" id="uiBtnClosePreview" onclick="closeDocsPreview()">閉じる</button>
       </div>
       <div class="docs-preview-frame-wrap" id="docsPreviewWrap">
         <div id="docsPreviewContent" style="display: flex; justify-content: flex-start; min-width: 100%;"></div>
@@ -830,32 +867,31 @@
   </div>
 
   <!-- ========================================== -->
-  <!-- PDFメニュー（既存の完璧な処理・完全保護）  -->
+  <!-- PDF メニュー                               -->
   <!-- ========================================== -->
   <div id="pdfMenuContainer" style="display: none;">
-  <!-- 1. ファイル選択セクション -->
   <div id="selectionSection">
-    <div class="button-group">
+    <div class="setting-label" id="uiLabelPdfInput">入力ファイル</div>
+    <div class="button-group" style="margin-bottom: 8px;">
       <button class="btn-select" id="btnDriveSelect" onclick="openDrivePicker()">
-        <span id="uiTextDriveSelect">[Googleドライブから選択]</span>
+        <span id="uiTextDriveSelect">Googleドライブから選択</span>
       </button>
       <button class="btn-select btn-secondary" onclick="document.getElementById('fileInput').click()">
-        <span id="uiTextLocalPdfSelect">[ローカルPDFを選択]</span>
+        <span id="uiTextLocalPdfSelect">ファイルを選択</span>
       </button>
     </div>
-    <button type="button" class="btn-select" id="btnPdfSampleSelect" onclick="loadSamplePdf()" style="width: 100%; margin-bottom: 0.75rem; background: linear-gradient(135deg, #00c853, #1e8e3e); color: #ffffff; border: none; box-shadow: 0 4px 12px rgba(52, 168, 83, 0.3);">
-      <span id="uiTextPdfSampleSelect">✨ サンプルPDFをセット（日・英・中・台・韓 / ドライブ保存なし）</span>
+    <button type="button" class="btn-select btn-sample-green" id="btnPdfSampleSelect" onclick="loadSamplePdf()" style="width: 100%; margin-bottom: 0.75rem;">
+      <span id="uiTextPdfSampleSelect">サンプル</span>
     </button>
 
     <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
-      <div class="drop-zone-icon">📑</div>
-      <div id="uiDropTitle" style="font-weight: 700; font-size: 0.95rem; margin-bottom: 0.25rem;">PDFファイルをここにドロップ / タップして選択</div>
-      <div id="uiDropSub" style="font-size: 0.8rem; color: var(--text-muted);">スマホのファイルや、100MB超の教科書も安全処理</div>
+      <div id="uiDropTitle" style="font-weight: 700; font-size: 0.95rem;">PDFファイルをここにドロップ / タップして選択</div>
+      <div id="uiDropSub" style="display: none;"></div>
       <input type="file" id="fileInput" class="file-input" accept="application/pdf">
     </div>
   </div>
 
-  <!-- 2. ファイル読み込み後のオプションカード（全機能網羅） -->
+  <!-- PDF 読み込み後の設定カード -->
   <div class="file-loaded-view" id="fileLoadedView">
     <div class="file-info-box">
       <div>
@@ -865,24 +901,26 @@
       <button class="btn-change-file" id="uiBtnChangeFile" onclick="resetFile()">別のファイルを選ぶ</button>
     </div>
 
-    <!-- 用紙サイズ・罫線設定グリッド（旧HTMLの全設定を復元） -->
+    <!-- PDF 用紙・罫線設定（DOCS / Word と同じく 6.0 / 7.0 / 8.0 mm 統一） -->
     <div class="settings-grid">
       <div class="setting-item">
-        <div class="setting-label" id="uiLabelPdfPaper">用紙サイズ</div>
+        <div class="setting-label" id="uiLabelPdfPaper">① 用紙・印刷形式</div>
         <select id="paperProfileSelect">
-          <option value="a3-goodnotes" selected>A3 左原本＋右ノート</option>
-          <option value="a4-spread">A4 裏原本＋表ノート</option>
+          <option value="a3-goodnotes" selected>A3 横見開き（左：原本 ＋ 右：ノート）</option>
+          <option value="a4-spread">A4 見開き（裏：原本 ＋ 表：ノート）</option>
         </select>
       </div>
 
       <div class="setting-item">
-        <div class="setting-label" id="uiLabelPdfGrid">ノート面（右面）の罫線</div>
+        <div class="setting-label" id="uiLabelPdfGrid">② 罫線の種類・幅</div>
         <select id="gridTypeSelect">
-          <option value="grid-70" selected>7.0mm 方眼（標準・ゆったり）</option>
-          <option value="grid-60">6.0mm 方眼（細かめ）</option>
-          <option value="ruled-75">A罫 7.5mm 横罫線のみ</option>
-          <option value="ruled-60">B罫 6.0mm 横罫線のみ</option>
-          <option value="blank">無地（白紙ノート面）</option>
+          <option value="grid-70" selected>7.0mm 方眼</option>
+          <option value="grid-60">6.0mm 方眼</option>
+          <option value="grid-80">8.0mm 方眼</option>
+          <option value="ruled-70">7.0mm 横罫線</option>
+          <option value="ruled-60">6.0mm 横罫線</option>
+          <option value="ruled-80">8.0mm 横罫線</option>
+          <option value="blank">無地</option>
         </select>
       </div>
     </div>
@@ -891,9 +929,9 @@
     <div class="option-card selected" id="optCardRange" onclick="selectOption('range')">
       <div class="option-header">
         <input type="radio" name="outputMode" id="radioRange" value="range" checked>
-        <span id="uiTitleOptRange">[推奨] ページ範囲を指定して出力</span>
+        <span id="uiTitleOptRange">ページ範囲を指定して出力</span>
       </div>
-      <div class="option-desc" id="uiDescOptRange">今日勉強する講義や章の範囲だけを、わずか数秒でサッと1冊にまとめてダウンロードします。</div>
+      <div class="option-desc" id="uiDescOptRange">必要なページ範囲だけを1冊にまとめて出力します。</div>
       <div class="range-input-row" onclick="event.stopPropagation()">
         <span id="uiLabelStartPage">開始:</span>
         <input type="number" id="startPage" min="1" value="1">
@@ -908,74 +946,82 @@
     <div class="option-card" id="optCardAll" onclick="selectOption('all')">
       <div class="option-header">
         <input type="radio" name="outputMode" id="radioAll" value="all">
-        <span id="uiTitleOptAll">[一括] 全部を均等に分冊して出力（30ページずつ）</span>
+        <span id="uiTitleOptAll">全ページを30ページごとに分冊出力</span>
       </div>
-      <div class="option-desc" id="splitDescText">教科書全体を、メモリがパンクしないよう安全に30ページごとの分冊として自動一括保存します。</div>
+      <div class="option-desc" id="splitDescText">ページ数の多いPDFを30ページずつの分冊として保存します。</div>
     </div>
 
     <button class="action-btn" id="generateBtn" onclick="startGeneration()">
-      見開きノートPDFを生成する
+      PDF出力 / 印刷
     </button>
   </div>
   </div> <!-- /#pdfMenuContainer -->
 
   <!-- ========================================== -->
-  <!-- DOCXメニュー（独立エンジン・動線完全分離版） -->
+  <!-- Word 等 (.docx) メニュー                   -->
   <!-- ========================================== -->
   <div id="docxMenuContainer" class="docs-menu-container" style="display: none;">
-    <div style="margin-bottom: 1.25rem;">
-      <div class="setting-label" id="uiLabelDocxInput">入力ファイル (Microsoft Word .docx)</div>
+    <div style="margin-bottom: 0.75rem;">
+      <div class="setting-label" id="uiLabelDocxInput">入力ファイル</div>
       <div class="button-group" style="margin-bottom: 8px;">
         <button class="btn-select" id="btnDocxDriveSelect" onclick="openDocxDrivePicker()">
-          <span id="uiTextDocxDriveSelect">📁 Googleドライブから選択 (.docx)</span>
+          <span id="uiTextDocxDriveSelect">Googleドライブから選択</span>
         </button>
         <button class="btn-select btn-secondary" id="btnDocxLocalSelect" onclick="document.getElementById('docxFileInput').click()">
-          <span id="uiTextDocxLocalSelect">💻 ローカルWord (.docx) を選択</span>
+          <span id="uiTextDocxLocalSelect">ファイルを選択</span>
         </button>
       </div>
-      <button type="button" class="btn-select" id="btnDocxSampleSelect" onclick="loadSampleDocx()" style="width: 100%; margin-bottom: 8px; background: linear-gradient(135deg, #00c853, #1e8e3e); color: #ffffff; border: none; box-shadow: 0 4px 12px rgba(52, 168, 83, 0.3);">
-        <span id="uiTextDocxSampleSelect">✨ サンプルWord (.docx) をセット（日・英・中・台・韓 / ドライブ保存なし）</span>
-      </button>
+      <div class="button-group" style="margin-bottom: 8px;">
+        <button type="button" class="btn-select btn-sample-green" id="btnDocxSampleSelect" onclick="loadSampleDocxHorizontal()">
+          <span id="uiTextDocxSampleHoriz">サンプル（横書き）</span>
+        </button>
+        <button type="button" class="btn-select btn-sample-green" id="btnDocxSampleVertSelect" onclick="loadSampleDocxVertical()">
+          <span id="uiTextDocxSampleVert">サンプル（縦書き）</span>
+        </button>
+      </div>
       <input type="file" id="docxFileInput" class="file-input" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
       <div class="docs-selected-file-box" id="docxFileBox" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; min-width: 0; width: 100%; overflow: hidden;">
-        <span id="docxSelectedFileName" style="white-space: normal; word-break: break-word; overflow-wrap: anywhere; max-width: 100%; min-width: 0; flex: 1 1 auto;">ファイル未選択（Googleドライブ・ローカル選択、または「✨ サンプルWordをセット」でお試しください）</span>
+        <span id="docxSelectedFileName" style="white-space: normal; word-break: break-word; overflow-wrap: anywhere; max-width: 100%; min-width: 0; flex: 1 1 auto;">ファイル未選択</span>
         <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
-          <button type="button" class="btn-change-file" id="uiBtnViewDocxSampleOrig" onclick="openDocxSampleOriginalView()" style="display: none; border-color: #1a73e8; color: #1a73e8; background: #ffffff; font-weight: 700;">🔍 元原稿を見る</button>
-          <button type="button" class="btn-change-file" id="uiBtnDownloadDocxSample" onclick="downloadSampleDocxFile()" style="display: none; border-color: #7c3aed; color: #6d28d9; background: #ffffff; font-weight: 700;">📥 .docxを取得</button>
+          <button type="button" class="btn-change-file" id="uiBtnViewDocxSampleOrig" onclick="openDocxSampleOriginalView()" style="display: none !important;">元原稿を見る</button>
+          <button type="button" class="btn-change-file" id="uiBtnDownloadDocxSample" onclick="downloadSampleDocxFile()" style="display: none; border-color: #7c3aed; color: #6d28d9; background: #ffffff; font-weight: 700;">サンプルを取得</button>
           <button type="button" class="btn-change-file" id="uiBtnResetDocxFile" onclick="resetDocxFile()" style="display: none;">別のファイルを選ぶ</button>
         </div>
       </div>
     </div>
 
-    <!-- 用紙サイズ・罫線設定グリッド（DOCSと完全統一の3枠直結仕様） -->
+    <!-- ファイル選択の下：出力の向きスロット（縦書き .docx 選択時は自動で隠れて縦書き確定） -->
+    <div id="docxDirectionSlot"></div>
+
+    <!-- 用紙サイズ・罫線設定グリッド -->
     <div class="settings-grid" style="margin-bottom: 0.75rem;">
       <div class="setting-item">
         <div class="setting-label" id="uiLabelDocxPaperProfile">① 用紙・印刷形式</div>
         <select id="docxPaperProfileSelect" onchange="onDocxSettingChanged()">
-          <option value="a3-compare" selected>A3 デモ見開き（左原本 ＋ 右組版）</option>
-          <option value="a3-goodnotes">A3 横見開き（左組版 ＋ 右ノート）</option>
-          <option value="a4-spread">A4 見開き（裏組版 ＋ 表ノート）</option>
-          <option value="a4-single">A4 両面組版</option>
-          <option value="a5-spread">A5 見開き（裏組版 ＋ 表ノート）</option>
-          <option value="a5-single">A5 両面組版</option>
+          <option value="a3-compare" selected>A3 デモ見開き（左：原本 ＋ 右：組版）</option>
+          <option value="a3-goodnotes">A3 横見開き（左：組版 ＋ 右：ノート）</option>
+          <option value="a4-spread">A4 見開き（裏：組版 ＋ 表：ノート）</option>
+          <option value="a4-single">A4（本文のみ）</option>
+          <option value="a5-spread">A5 見開き（裏：組版 ＋ 表：ノート）</option>
+          <option value="a5-single">A5（本文のみ）</option>
         </select>
       </div>
 
       <div class="setting-item">
-        <div class="setting-label" id="uiLabelDocxGridType">② 行間・罫線の種類</div>
+        <div class="setting-label" id="uiLabelDocxGridType">② 罫線の種類・幅</div>
         <select id="docxGridTypeSelect" onchange="onDocxSettingChanged()">
-          <option value="grid-70" selected>7.0mm 方眼（標準・ゆったり）</option>
-          <option value="grid-60">6.0mm 方眼（細罫）</option>
-          <option value="ruled-70">7.0mm 横罫線（標準）</option>
-          <option value="ruled-60">6.0mm 横罫線（細罫）</option>
-          <option value="ruled-75">7.5mm 横罫線（広め）</option>
-          <option value="ruled-80">8.0mm 横罫線（特大）</option>
-          <option value="blank">無地（罫線なし）</option>
+          <option value="grid-70" selected>7.0mm 方眼</option>
+          <option value="grid-60">6.0mm 方眼</option>
+          <option value="grid-80">8.0mm 方眼</option>
+          <option value="ruled-70">7.0mm 横罫線</option>
+          <option value="ruled-60">6.0mm 横罫線</option>
+          <option value="ruled-80">8.0mm 横罫線</option>
+          <option value="blank">無地</option>
         </select>
       </div>
     </div>
 
-    <!-- ③ 罫線カラー選択 -->
+    <!-- 罫線カラー選択 -->
     <div class="setting-item" style="margin-bottom: 1.25rem;">
       <div class="setting-label" id="uiLabelDocxLineColor" style="display: flex; justify-content: space-between; align-items: center;">
         <span id="uiTextDocxLineColor">罫線カラー</span>
@@ -993,18 +1039,17 @@
       </div>
     </div>
 
-    <button class="btn-rerun" id="btnDocxPreview" onclick="executeDocxLayout(false)" disabled>
-      <span id="uiTextBtnDocxPreview">👁️ プレビュー</span>
+    <button class="btn-rerun" id="btnDocxPreview" onclick="executeDocxLayout(false)" disabled style="display: none;">
+      <span id="uiTextBtnDocxPreview">プレビュー</span>
     </button>
     <button class="btn-export-pdf" id="btnDocxExportPdf" onclick="executeDocxLayout(true)" disabled>
-      <span id="uiTextBtnDocxExport">🖨️ PDF出力 / 印刷</span>
+      <span id="uiTextBtnDocxExport">PDF出力 / 印刷</span>
     </button>
 
-    <!-- DOCX専用プレビュー枠 -->
     <div id="docxPreviewContainer" class="docs-preview-container" style="display: none;">
       <div class="docs-preview-header">
-        <span id="uiTitleDocxPreview">👁️ Word (.docx) 組版プレビュー</span>
-        <button type="button" class="btn-close-preview" id="uiBtnCloseDocxPreview" onclick="closeDocxPreview()">✕ 閉じる</button>
+        <span id="uiTitleDocxPreview">Word (.docx) 組版プレビュー</span>
+        <button type="button" class="btn-close-preview" id="uiBtnCloseDocxPreview" onclick="closeDocxPreview()">閉じる</button>
       </div>
       <div class="docs-preview-frame-wrap" id="docxPreviewWrap">
         <div id="docxPreviewContent" style="display: flex; justify-content: flex-start; min-width: 100%;"></div>
@@ -6164,6 +6209,1784 @@ async function loadSampleDocx() {
   openDocsPicker = wrapPickerWithWebGisAuth(_baseOpenDocsPicker, () => isDocsBusy);
   openDocxDrivePicker = wrapPickerWithWebGisAuth(_baseOpenDocxDrivePicker, () => isDocxBusy);
   openDrivePicker = wrapPickerWithWebGisAuth(_baseOpenDrivePicker, null);
+
+  // ==============================================================================
+  // 第3ライン合流: Word (.docx) の書字方向を自動判別し、
+  //   - 横書き .docx ➔ 第2ライン (TATEGAKI_CLOUD_RUN_URL: 横→縦)
+  //   - 縦書き .docx (<w:textDirection w:val="tbRl"/>) ➔ 第3ライン (TATETATE_CLOUD_RUN_URL: 縦→縦)
+  // へ UI 変更なしで自動振り分けルーティング
+  // ==============================================================================
+  const TATETATE_CLOUD_RUN_URL = 'https://line-tatetate-435629186234.asia-northeast1.run.app';
+
+  // PKZIP フォーマット規格定数 (APPNOTE §4.3.7 / §4.3.12 / §4.3.16)
+  const ZipEocdSignature = 0x06054b50;
+  const ZipCentralFileHeaderSig = 0x02014b50;
+  const ZipLocalFileHeaderSig = 0x04034b50;
+  const ZipEocdMinLengthBytes = 22;
+  const ZipMaxCommentLengthBytes = 65535;
+  const ZipEocdCdSizeOffset = 12;
+  const ZipEocdCdOffsetOffset = 16;
+  const ZipCdfhMethodOffset = 10;
+  const ZipCdfhCompSizeOffset = 20;
+  const ZipCdfhNameLenOffset = 28;
+  const ZipCdfhExtraLenOffset = 30;
+  const ZipCdfhCommentLenOffset = 32;
+  const ZipCdfhLocalHdrOffOffset = 42;
+  const ZipCdfhFixedHeaderBytes = 46;
+  const ZipLfhNameLenOffset = 26;
+  const ZipLfhExtraLenOffset = 28;
+  const ZipLfhFixedHeaderBytes = 30;
+  const ZipCompressionStored = 0;
+  const ZipCompressionDeflated = 8;
+
+  let activeVerticalPollBaseUrl = '';
+
+  async function extractDocxMainDocumentXml(rawBytes) {
+    if (!rawBytes || rawBytes.byteLength < ZipEocdMinLengthBytes) return '';
+    const view = new DataView(rawBytes.buffer, rawBytes.byteOffset, rawBytes.byteLength);
+    const minSearchPos = Math.max(0, rawBytes.byteLength - ZipEocdMinLengthBytes - ZipMaxCommentLengthBytes);
+    let eocdPos = -1;
+    for (let pos = rawBytes.byteLength - ZipEocdMinLengthBytes; pos >= minSearchPos; pos--) {
+      if (view.getUint32(pos, true) === ZipEocdSignature) {
+        eocdPos = pos;
+        break;
+      }
+    }
+    if (eocdPos < 0) return '';
+
+    const cdSize = view.getUint32(eocdPos + ZipEocdCdSizeOffset, true);
+    const cdOffset = view.getUint32(eocdPos + ZipEocdCdOffsetOffset, true);
+    const cdEnd = Math.min(rawBytes.byteLength, cdOffset + cdSize);
+    const nameDecoder = new TextDecoder('utf-8');
+
+    let cur = cdOffset;
+    while (cur + ZipCdfhFixedHeaderBytes <= cdEnd) {
+      if (view.getUint32(cur, true) !== ZipCentralFileHeaderSig) break;
+      const method = view.getUint16(cur + ZipCdfhMethodOffset, true);
+      const compSize = view.getUint32(cur + ZipCdfhCompSizeOffset, true);
+      const nameLen = view.getUint16(cur + ZipCdfhNameLenOffset, true);
+      const extraLen = view.getUint16(cur + ZipCdfhExtraLenOffset, true);
+      const commentLen = view.getUint16(cur + ZipCdfhCommentLenOffset, true);
+      const localHdrOffset = view.getUint32(cur + ZipCdfhLocalHdrOffOffset, true);
+      const entryName = nameDecoder.decode(rawBytes.subarray(cur + ZipCdfhFixedHeaderBytes, cur + ZipCdfhFixedHeaderBytes + nameLen));
+
+      if (entryName.replace(/\\/g, '/') === 'word/document.xml') {
+        if (localHdrOffset + ZipLfhFixedHeaderBytes > rawBytes.byteLength) return '';
+        if (view.getUint32(localHdrOffset, true) !== ZipLocalFileHeaderSig) return '';
+        const lfhNameLen = view.getUint16(localHdrOffset + ZipLfhNameLenOffset, true);
+        const lfhExtraLen = view.getUint16(localHdrOffset + ZipLfhExtraLenOffset, true);
+        const dataStart = localHdrOffset + ZipLfhFixedHeaderBytes + lfhNameLen + lfhExtraLen;
+        if (dataStart + compSize > rawBytes.byteLength) return '';
+        const compSlice = rawBytes.subarray(dataStart, dataStart + compSize);
+
+        if (method === ZipCompressionStored) {
+          return nameDecoder.decode(compSlice);
+        }
+        if (method === ZipCompressionDeflated && typeof DecompressionStream !== 'undefined') {
+          const ds = new DecompressionStream('deflate-raw');
+          const writer = ds.writable.getWriter();
+          writer.write(compSlice).catch(() => {});
+          writer.close().catch(() => {});
+          const decompBuf = await new Response(ds.readable).arrayBuffer();
+          return nameDecoder.decode(new Uint8Array(decompBuf));
+        }
+        return '';
+      }
+      cur += ZipCdfhFixedHeaderBytes + nameLen + extraLen + commentLen;
+    }
+    return '';
+  }
+
+  async function detectNativeVerticalDocxFromBase64(b64) {
+    try {
+      if (!b64) return false;
+      const cleanB64 = b64.includes(',') ? b64.split(',')[1] : b64;
+      const bytes = base64ToBytes(cleanB64);
+      const xmlText = await extractDocxMainDocumentXml(bytes);
+      if (!xmlText) return false;
+      return /<w:textDirection\b[^>]*\bw:val\s*=\s*["'](?:tbRl|tbRlV|tb-rl|vert)["']/i.test(xmlText);
+    } catch (_e) {
+      return false;
+    }
+  }
+
+  const _prevExecBrowserDirectForDocx = executeBrowserDirectDocsRpc;
+  executeBrowserDirectDocsRpc = async function(method, params, token) {
+    if (method === 'getDriveDocxBase64ForBrowser') {
+      const fileId = params && params.fileId;
+      const resp = await fetch('https://www.googleapis.com/drive/v3/files/' + encodeURIComponent(fileId) + '?alt=media', {
+        headers: { Authorization: 'Bearer ' + token }
+      });
+      if (!resp.ok) {
+        throw new Error('Googleドライブ .docx 取得エラー (HTTP ' + resp.status + ')');
+      }
+      const buf = await resp.arrayBuffer();
+      return {
+        success: true,
+        docxBase64: arrayBufferToBase64(buf)
+      };
+    }
+    return _prevExecBrowserDirectForDocx(method, params, token);
+  };
+
+  // 進捗バーポーリング先を現在実行中の縦書きエンジン (line-tategaki または line-tatetate) へ自動追従
+  const _prevStartDocsWorkingProgress = startDocsWorkingProgress;
+  startDocsWorkingProgress = function(statusText, jobId) {
+    if (currentWritingDirection === 'vertical' && activeVerticalPollBaseUrl) {
+      if (docsProgressTimer) { clearInterval(docsProgressTimer); docsProgressTimer = null; }
+      let curPct = DocsProgressInitialPercent;
+      let curPhase = statusText || '稼働中...';
+      const startTimeMs = Date.now();
+      const targetBaseUrl = activeVerticalPollBaseUrl;
+      if (progressContainer) progressContainer.style.display = 'block';
+      if (progressBar) progressBar.style.width = curPct + '%';
+      if (progressPercent) progressPercent.textContent = curPct + '%';
+      if (progressStatus) progressStatus.textContent = curPhase;
+      docsProgressTimer = setInterval(async () => {
+        const elapsedSec = Math.floor((Date.now() - startTimeMs) / MillisecondsPerSecond);
+        if (jobId) {
+          try {
+            const pollUrl = targetBaseUrl.replace(/\/$/, '') + '/v3/job-progress?jobId=' + encodeURIComponent(jobId);
+            const resp = await fetch(pollUrl, { method: 'GET', cache: 'no-store' });
+            if (resp.ok) {
+              const st = await resp.json();
+              if (st && typeof st.percent === 'number' && st.percent >= curPct) curPct = st.percent;
+              if (st && st.phase) curPhase = st.phase;
+            }
+          } catch (_e) {}
+        }
+        if (progressBar) progressBar.style.width = curPct + '%';
+        if (progressPercent) progressPercent.textContent = curPct + '%';
+        if (progressStatus) progressStatus.textContent = curPhase + ' (' + elapsedSec + '秒経過)';
+      }, DocsProgressPollIntervalMs);
+      return;
+    }
+    return _prevStartDocsWorkingProgress(statusText, jobId);
+  };
+
+  // 縦書きモード時の標準サンプル Word (.docx) は第3ライン (Wordネイティブ縦書き見本) を取得
+  openDocxSampleOriginalView = function() {
+    const baseUrl = (currentWritingDirection === 'vertical') ? TATETATE_CLOUD_RUN_URL : STUDIO_CLOUD_RUN_URL;
+    window.open(baseUrl.replace(/\/$/, '') + '/v3/sample/docx-view', '_blank', 'noopener,noreferrer');
+  };
+
+  downloadSampleDocxFile = function() {
+    const baseUrl = (currentWritingDirection === 'vertical') ? TATETATE_CLOUD_RUN_URL : STUDIO_CLOUD_RUN_URL;
+    window.open(baseUrl.replace(/\/$/, '') + '/v3/sample/docx', '_blank', 'noopener,noreferrer');
+  };
+
+  const _prevLoadSampleDocx = loadSampleDocx;
+  loadSampleDocx = async function() {
+    if (currentWritingDirection !== 'vertical') {
+      return _prevLoadSampleDocx();
+    }
+    if (isDocxBusy) return;
+    closeDocxPreview();
+    const baseUrl = TATETATE_CLOUD_RUN_URL;
+    const sampleTitle = 'Sample_Vertical_Native.docx';
+    const sampleDesc = '（縦書きWord原本・縦中横・禁則・三段組み見本 / ドライブ保存なし）';
+
+    setDocxButtonsBusy(true, 'loading_docx');
+    activeVerticalPollBaseUrl = baseUrl;
+    startDocsWorkingProgress('縦書きサンプル Word (.docx) を読み込み中...');
+    showStatus('⏳ 縦書きサンプル Word (.docx) を読み込み中...', 'info');
+
+    try {
+      const docxUrl = baseUrl.replace(/\/$/, '') + '/v3/sample/docx';
+      const resp = await fetch(docxUrl, { method: 'GET' });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      const buf = await resp.arrayBuffer();
+      validateDocxBufferFormat(buf, sampleTitle);
+      selectedDocxBase64 = arrayBufferToBase64(buf);
+      selectedDocxFileId = null;
+      selectedDocxName = sampleTitle;
+      isCurrentDocxSampleLoaded = true;
+
+      const fileNameEl = document.getElementById('docxSelectedFileName');
+      if (fileNameEl) {
+        fileNameEl.textContent = '✨ ' + sampleTitle + ' (' + (buf.byteLength / 1024).toFixed(1) + ' KB / ' + sampleDesc + ')';
+        fileNameEl.style.color = '#137333';
+      }
+      const btnReset = document.getElementById('uiBtnResetDocxFile');
+      if (btnReset) btnReset.style.display = 'inline-block';
+      const btnViewOrig = document.getElementById('uiBtnViewDocxSampleOrig');
+      if (btnViewOrig) btnViewOrig.style.display = 'inline-block';
+      const btnDlSample = document.getElementById('uiBtnDownloadDocxSample');
+      if (btnDlSample) btnDlSample.style.display = 'inline-block';
+
+      stopDocsWorkingProgress(true, 'サンプル読み込み完了');
+      setDocxButtonsBusy(false);
+      showStatus('✨ 縦書きサンプル Word (.docx) をセットしました！「🖨️ PDF出力 / 印刷」をお試しください。', 'success');
+    } catch (err) {
+      stopDocsWorkingProgress(false);
+      setDocxButtonsBusy(false);
+      showStatus('❌ サンプル読み込みエラー: ' + err.message, 'error');
+    } finally {
+      activeVerticalPollBaseUrl = '';
+    }
+  };
+
+  // DOCX 出力ラッパー: 縦書き選択時は .docx 内部の書字方向を自動判別し 第2ライン / 第3ライン へ振り分け
+  executeDocxLayout = async function(isExportPdf) {
+    if (isDocxBusy) return;
+    if (!selectedDocxFileId && !selectedDocxBase64) {
+      showStatus('先に Word (.docx) ファイルを Googleドライブ・ローカル選択、または [✨ サンプルWordをセット] で選択してください。', 'error');
+      return;
+    }
+
+    if (currentWritingDirection !== 'vertical') {
+      syncCombinedGridSelect('docx');
+      return _horizontalExecuteDocxLayout(true);
+    }
+
+    setDocxButtonsBusy(true, 'export');
+    const docxJobId = createRenderJobId();
+
+    const paperMode = document.getElementById('docxPaperProfileSelect').value;
+    const lineColorHex = (document.getElementById('docxLineColorPicker') ? document.getElementById('docxLineColorPicker').value : '#D0D0D0') || '#D0D0D0';
+    const { pitchMm, drawH, drawV } = readSplitRuleParams('docx', true);
+
+    const isLandscapeNote = (paperMode === 'v-a3-goodnotes' || paperMode === 'v-a4-spread');
+    const paperWidthMm = isLandscapeNote ? VerticalLandscapeWidthMm : VerticalPortraitWidthMm;
+    const paperHeightMm = isLandscapeNote ? VerticalLandscapeHeightMm : VerticalPortraitHeightMm;
+    const hasRuledLine = !!(drawH || drawV);
+
+    const docxConfig = {
+      paperWidthMm: paperWidthMm,
+      paperHeightMm: paperHeightMm,
+      gutterMarginMm: VerticalGutterRightMm,
+      outerMarginMm: VerticalOuterLeftMm,
+      marginTopMm: VerticalMarginTopMm,
+      marginBottomMm: VerticalMarginBottomMm,
+      linePitchMm: pitchMm,
+      ruledLineWidthPt: hasRuledLine ? DefaultRuleStrokePt : 0.0,
+      ruledLineColorHex: hasRuledLine ? lineColorHex : '#FFFFFF',
+      orientation: isLandscapeNote ? 'landscape' : 'portrait',
+      noRuledLines: !hasRuledLine
+    };
+
+    const baseName = selectedDocxName.replace(/\.[^/.]+$/, '');
+
+    try {
+      let effectiveDocxB64 = selectedDocxBase64;
+      if (!effectiveDocxB64 && selectedDocxFileId) {
+        startDocsWorkingProgress('今：Googleドライブから Word (.docx) を取得中...');
+        const dlRes = await callGasRpc('getDriveDocxBase64ForBrowser', { fileId: selectedDocxFileId });
+        if (!dlRes || !dlRes.success || !dlRes.docxBase64) {
+          throw new Error((dlRes && dlRes.error) ? dlRes.error : 'Googleドライブからの .docx 取得に失敗しました');
+        }
+        effectiveDocxB64 = dlRes.docxBase64;
+      }
+
+      const isNativeVerticalDocx = await detectNativeVerticalDocxFromBase64(effectiveDocxB64);
+      const targetEngineBaseUrl = isNativeVerticalDocx ? TATETATE_CLOUD_RUN_URL : TATEGAKI_CLOUD_RUN_URL;
+      activeVerticalPollBaseUrl = targetEngineBaseUrl;
+
+      const routeLabel = isNativeVerticalDocx ? '縦書きWord組版エンジン（縦→縦）' : '縦書き変換エンジン（横→縦）';
+      startDocsWorkingProgress('今：' + routeLabel + 'へ送信中...', docxJobId);
+      showStatus('🚀 ' + routeLabel + 'で高精度PDFを生成中...', 'info');
+
+      const directUrl = targetEngineBaseUrl.replace(/\/$/, '') + '/v3/render-docx-pdf';
+      const directResp = await fetch(directUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          jobId: docxJobId,
+          docxBase64: effectiveDocxB64,
+          config: docxConfig
+        })
+      });
+      if (!directResp.ok) {
+        const errText = await directResp.text();
+        throw new Error('縦書きWord組版エラー (HTTP ' + directResp.status + '): ' + errText.substring(0, 200));
+      }
+      const typesetBytes = new Uint8Array(await directResp.arrayBuffer());
+
+      let origBytes = null;
+      if (paperMode === 'v-a3-compare') {
+        showStatus(isNativeVerticalDocx ? '📑 Word (.docx) の縦書き原本PDFを取得中...' : '📑 Word (.docx) の横書き原本PDFを取得中...', 'info');
+        const origJobId = createRenderJobId();
+        const directOrigUrl = targetEngineBaseUrl.replace(/\/$/, '') + '/v3/render-docx-original-pdf';
+        const directOrigResp = await fetch(directOrigUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ jobId: origJobId, docxBase64: effectiveDocxB64 })
+        });
+        if (!directOrigResp.ok) {
+          throw new Error('Word原本PDF取得エラー (HTTP ' + directOrigResp.status + ')');
+        }
+        origBytes = new Uint8Array(await directOrigResp.arrayBuffer());
+      }
+
+      showStatus('📑 縦書きWord PDFを仕上げ中...', 'info');
+      const composed = await composeVerticalOutputPdf(
+        typesetBytes,
+        origBytes,
+        paperMode,
+        pitchMm,
+        drawH,
+        drawV,
+        lineColorHex,
+        baseName
+      );
+      handleDocxPdfOutput(composed.bytes, true, composed.fileName, paperMode);
+    } catch (err) {
+      console.error('縦書き executeDocxLayout エラー:', err);
+      stopDocsWorkingProgress(false);
+      setDocxButtonsBusy(false);
+      showStatus('❌ 縦書きWord組版エラー: ' + err.message, 'error');
+    } finally {
+      activeVerticalPollBaseUrl = '';
+    }
+  };
+
+
+  // ==============================================================================
+  // UI全面クリーンアップ統合モジュール (ver.163):
+  // 1. タブ名アプリベース化 (Google ドキュメント / Word 等 (.docx) / PDF)・全絵文字撤去
+  // 2. ファイル選択 ➔ 赤色方向切替ボタンの自然な順序化
+  // 3. 縦書き .docx 選択時の即時自動縦書きセット＆方向ボタン省略
+  // 4. Word サンプル（横書き / 縦書き）2ボタン化・元原稿を見る廃止・サンプルを取得整理
+  // 5. PDF 罫線も 6.0 / 7.0 / 8.0 mm（横罫線 / 方眼 / 無地）へ完全統一
+  // ==============================================================================
+  const PdfA3SheetWidthMm = 420.0;
+  const PdfA3SheetHeightMm = 297.0;
+  const PdfA3SplitXMm = 210.0;
+  const PdfA3MarginSideMm = 21.0;
+  const PdfA3MarginTopBottomMm = 22.5;
+  const PdfA4WidthMm = 210.0;
+  const PdfA4HeightMm = 297.0;
+  const PdfA5WidthMm = 148.0;
+  const PdfA5HeightMm = 210.0;
+  const PdfSpreadGutterMm = 18.0;
+  const PdfSpreadOuterMm = 12.0;
+  const PdfSpreadTopBottomMm = 15.0;
+  const PdfNoteLineThicknessPt = 0.4;
+  const PdfGuideLineThicknessPt = 0.5;
+  const PdfDownloadPauseMs = 150;
+
+  let activeMainModeName = 'docs';
+  let isCurrentDocxNativeVertical = false;
+  let currentLoadedDocxSampleKind = ''; // '' | 'horizontal' | 'vertical'
+
+  const CLEAN_STUDIO_I18N = {
+    ja: {
+      linkTop: 'トップ',
+      tabDocs: 'Google ドキュメント',
+      tabDocx: 'Word 等 (.docx)',
+      tabPdf: 'PDF',
+      dirHorizontal: '横書き',
+      dirVertical: '縦書き',
+      inputLabel: '入力ファイル',
+      driveSelect: 'Googleドライブから選択',
+      localSelect: 'ファイルを選択',
+      sampleSingle: 'サンプル',
+      sampleHoriz: 'サンプル（横書き）',
+      sampleVert: 'サンプル（縦書き）',
+      noFile: 'ファイル未選択',
+      btnViewSample: 'サンプルを見る',
+      btnGetSample: 'サンプルを取得',
+      btnChangeFile: '別のファイルを選ぶ',
+      btnExportPdf: 'PDF出力 / 印刷',
+      sampleDocsName: 'サンプル（Google ドキュメント）',
+      sampleDocxHorizName: 'サンプル（横書き）.docx',
+      sampleDocxVertName: 'サンプル（縦書き）.docx',
+      samplePdfName: 'サンプル.pdf',
+      dropTitle: 'PDFファイルをここにドロップ / タップして選択',
+      pdfPaperA3: 'A3 横見開き（左：原本 ＋ 右：ノート）',
+      pdfPaperA4: 'A4 見開き（裏：原本 ＋ 表：ノート）',
+      optRangeTitle: 'ページ範囲を指定して出力',
+      optRangeDesc: '必要なページ範囲だけを1冊にまとめて出力します。',
+      optAllTitle: '全ページを30ページごとに分冊出力',
+      optAllDesc: 'ページ数の多いPDFを30ページずつの分冊として保存します。',
+      compareSpreadLabel: 'A3 デモ見開き（左：原本 ＋ 右：組版）'
+    },
+    en: {
+      linkTop: 'Home',
+      tabDocs: 'Google Docs',
+      tabDocx: 'Word etc. (.docx)',
+      tabPdf: 'PDF',
+      dirHorizontal: 'Horizontal',
+      dirVertical: 'Vertical',
+      inputLabel: 'Input File',
+      driveSelect: 'Select from Google Drive',
+      localSelect: 'Choose File',
+      sampleSingle: 'Sample',
+      sampleHoriz: 'Sample (Horizontal)',
+      sampleVert: 'Sample (Vertical)',
+      noFile: 'No file selected',
+      btnViewSample: 'View Sample',
+      btnGetSample: 'Get Sample',
+      btnChangeFile: 'Choose another file',
+      btnExportPdf: 'Export PDF / Print',
+      sampleDocsName: 'Sample (Google Docs)',
+      sampleDocxHorizName: 'Sample (Horizontal).docx',
+      sampleDocxVertName: 'Sample (Vertical).docx',
+      samplePdfName: 'Sample.pdf',
+      dropTitle: 'Drop PDF file here or tap to select',
+      pdfPaperA3: 'A3 Spread (Left: Original + Right: Notes)',
+      pdfPaperA4: 'A4 Spread (Back: Original + Front: Notes)',
+      optRangeTitle: 'Export specified page range',
+      optRangeDesc: 'Export only the selected page range into a single PDF.',
+      optAllTitle: 'Export all pages in 30-page volumes',
+      optAllDesc: 'Save large PDFs safely in 30-page volumes.',
+      compareSpreadLabel: 'A3 Demo Spread (Left: Original + Right: Typeset)'
+    },
+    'zh-TW': {
+      linkTop: '首頁',
+      tabDocs: 'Google 文件',
+      tabDocx: 'Word 等 (.docx)',
+      tabPdf: 'PDF',
+      dirHorizontal: '橫書',
+      dirVertical: '直書',
+      inputLabel: '輸入檔案',
+      driveSelect: '從 Google 雲端硬碟選取',
+      localSelect: '選取檔案',
+      sampleSingle: '範例',
+      sampleHoriz: '範例（橫書）',
+      sampleVert: '範例（直書）',
+      noFile: '尚未選取檔案',
+      btnViewSample: '查看範例',
+      btnGetSample: '取得範例',
+      btnChangeFile: '選擇其他檔案',
+      btnExportPdf: '匯出 PDF / 列印',
+      sampleDocsName: '範例（Google 文件）',
+      sampleDocxHorizName: '範例（橫書）.docx',
+      sampleDocxVertName: '範例（直書）.docx',
+      samplePdfName: '範例.pdf',
+      dropTitle: '將 PDF 拖放至此或點選選取',
+      pdfPaperA3: 'A3 橫向跨頁（左：原稿 ＋ 右：筆記）',
+      pdfPaperA4: 'A4 跨頁筆記（背面：原稿 ＋ 正面：筆記）',
+      optRangeTitle: '指定頁數範圍匯出',
+      optRangeDesc: '將所需的頁數範圍整理成一冊匯出。',
+      optAllTitle: '每 30 頁分冊匯出全部頁面',
+      optAllDesc: '將頁數較多的 PDF 依每 30 頁分冊儲存。',
+      compareSpreadLabel: 'A3 示範跨頁（左：原稿 ＋ 右：排版）'
+    },
+    ko: {
+      linkTop: '홈',
+      tabDocs: 'Google 문서',
+      tabDocx: 'Word 등 (.docx)',
+      tabPdf: 'PDF',
+      dirHorizontal: '가로쓰기',
+      dirVertical: '세로쓰기',
+      inputLabel: '입력 파일',
+      driveSelect: 'Google 드라이브에서 선택',
+      localSelect: '파일 선택',
+      sampleSingle: '샘플',
+      sampleHoriz: '샘플 (가로쓰기)',
+      sampleVert: '샘플 (세로쓰기)',
+      noFile: '파일 미선택',
+      btnViewSample: '샘플 보기',
+      btnGetSample: '샘플 받기',
+      btnChangeFile: '다른 파일 선택',
+      btnExportPdf: 'PDF 내보내기 / 인쇄',
+      sampleDocsName: '샘플 (Google 문서)',
+      sampleDocxHorizName: '샘플 (가로쓰기).docx',
+      sampleDocxVertName: '샘플 (세로쓰기).docx',
+      samplePdfName: '샘플.pdf',
+      dropTitle: 'PDF 파일을 드롭하거나 탭하여 선택',
+      pdfPaperA3: 'A3 가로 펼침면 (왼쪽: 원본 + 오른쪽: 노트)',
+      pdfPaperA4: 'A4 펼침 노트 (뒷면: 원본 + 앞면: 노트)',
+      optRangeTitle: '페이지 범위 지정 내보내기',
+      optRangeDesc: '필요한 페이지 범위만 한 권으로 내보냅니다.',
+      optAllTitle: '전체 페이지를 30페이지씩 분책 내보내기',
+      optAllDesc: '페이지가 많은 PDF를 30페이지 단위로 저장합니다.',
+      compareSpreadLabel: 'A3 데모 펼침면 (왼쪽: 원본 + 오른쪽: 조판)'
+    }
+  };
+
+  // UNIFIED_UI_I18N 側の絵文字と「横書き原本」決め打ち表記をクリーン版へ同期
+  Object.keys(CLEAN_STUDIO_I18N).forEach(langKey => {
+    const src = CLEAN_STUDIO_I18N[langKey];
+    const target = UNIFIED_UI_I18N[langKey];
+    if (!target) return;
+    target.linkTop = src.linkTop;
+    target.dirHorizontal = src.dirHorizontal;
+    target.dirVertical = src.dirVertical;
+    if (Array.isArray(target.paperVertical) && target.paperVertical.length > 0) {
+      target.paperVertical[0].label = src.compareSpreadLabel;
+    }
+  });
+
+  function getCleanStudioText(lang) {
+    return CLEAN_STUDIO_I18N[lang || currentLanguage] || CLEAN_STUDIO_I18N.ja;
+  }
+
+  // ステータスメッセージから装飾絵文字や冗長表現を除去
+  const _rawShowStatusFn = showStatus;
+  showStatus = function(msg, type) {
+    let cleaned = String(msg || '')
+      .replace(/[🏠📄📝📑✨🔍📥🖨️👁️🚀⏳🎯❌↔️↕️]/gu, '')
+      .replace(/横書き原本PDF/g, '原本PDF')
+      .replace(/縦書き原本PDF/g, '原本PDF')
+      .replace(/^\s+/, '');
+    return _rawShowStatusFn(cleaned, type);
+  };
+
+  // ドキュメント選択ラベルから絵文字プレフィックス (📄 / 📝 / ✨) を除去する監視ヘルパー
+  function stripLeadingEmojiFromLabel(elId) {
+    const el = document.getElementById(elId);
+    if (!el || !el.textContent) return;
+    const stripped = el.textContent.replace(/^[\s📄📝✨📑]+/u, '');
+    if (stripped !== el.textContent) {
+      el.textContent = stripped;
+    }
+  }
+
+  // 方向切替バーをアクティブタブのファイル選択直下スロットへ移動し、縦書き .docx 時は自動非表示にする
+  function syncDirectionBarPlacementAndVisibility() {
+    const dirGroup = document.getElementById('directionSwitchGroup');
+    if (!dirGroup) return;
+
+    if (activeMainModeName === 'docs') {
+      const docsSlot = document.getElementById('docsDirectionSlot');
+      if (docsSlot && dirGroup.parentElement !== docsSlot) {
+        docsSlot.appendChild(dirGroup);
+      }
+      dirGroup.style.display = 'grid';
+      return;
+    }
+
+    if (activeMainModeName === 'docx') {
+      const docxSlot = document.getElementById('docxDirectionSlot');
+      if (docxSlot && dirGroup.parentElement !== docxSlot) {
+        docxSlot.appendChild(dirGroup);
+      }
+      // 縦書き .docx が選ばれている時は「縦書き」一択のためボタンを出さず縦書き設定を維持
+      dirGroup.style.display = isCurrentDocxNativeVertical ? 'none' : 'grid';
+      return;
+    }
+
+    dirGroup.style.display = 'none';
+  }
+
+  // PDF タブにも DOCS / Word と同一の「種類（横罫線 / 方眼 / 無地）× 幅（6.0 / 7.0 / 8.0 mm）」2分割UIを注入
+  function syncPdfCombinedGridSelect() {
+    const kindSel = document.getElementById('pdfRuleKindSelect');
+    const pitchSel = document.getElementById('pdfRulePitchSelect');
+    const legacySel = document.getElementById('gridTypeSelect');
+    if (!kindSel || !pitchSel || !legacySel) return;
+
+    const kind = kindSel.value;
+    const pitchCode = pitchSel.value;
+    pitchSel.disabled = (kind === 'blank');
+
+    const combinedVal = (kind === 'blank') ? 'blank' : (kind + '-' + pitchCode);
+    let found = false;
+    for (let i = 0; i < legacySel.options.length; i++) {
+      if (legacySel.options[i].value === combinedVal) {
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      const opt = document.createElement('option');
+      opt.value = combinedVal;
+      opt.textContent = combinedVal;
+      legacySel.appendChild(opt);
+    }
+    legacySel.value = combinedVal;
+  }
+
+  function injectPdfSplitRuleControls() {
+    const legacySel = document.getElementById('gridTypeSelect');
+    if (!legacySel || document.getElementById('pdfRuleKindSelect')) return;
+
+    const settingItem = legacySel.closest('.setting-item');
+    if (!settingItem) return;
+
+    legacySel.style.display = 'none';
+
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'display: grid; grid-template-columns: 1fr 1fr; gap: 8px;';
+
+    const kindSel = document.createElement('select');
+    kindSel.id = 'pdfRuleKindSelect';
+    getRuleKindOptions('horizontal', currentLanguage).forEach(o => {
+      const opt = document.createElement('option');
+      opt.value = o.value;
+      opt.textContent = o.label;
+      if (o.value === 'grid') opt.selected = true;
+      kindSel.appendChild(opt);
+    });
+
+    const pitchSel = document.createElement('select');
+    pitchSel.id = 'pdfRulePitchSelect';
+    RULE_PITCH_OPTIONS.forEach(o => {
+      const opt = document.createElement('option');
+      opt.value = o.value;
+      opt.textContent = o.label;
+      if (o.value === '70') opt.selected = true;
+      pitchSel.appendChild(opt);
+    });
+
+    kindSel.addEventListener('change', syncPdfCombinedGridSelect);
+    pitchSel.addEventListener('change', syncPdfCombinedGridSelect);
+
+    wrap.appendChild(kindSel);
+    wrap.appendChild(pitchSel);
+    settingItem.appendChild(wrap);
+    syncPdfCombinedGridSelect();
+  }
+
+  function applyCleanStudioLabels(lang) {
+    const ct = getCleanStudioText(lang);
+    const ut = getUnifiedUiText(lang);
+    const setTxt = (id, val) => {
+      const el = document.getElementById(id);
+      if (el && val !== undefined) el.textContent = val;
+    };
+
+    setTxt('uiLinkTop', ct.linkTop);
+    setTxt('uiTabDocs', ct.tabDocs);
+    setTxt('uiTabDocx', ct.tabDocx);
+    setTxt('uiTabPdf', ct.tabPdf);
+    setTxt('uiTextDirHorizontal', ct.dirHorizontal);
+    setTxt('uiTextDirVertical', ct.dirVertical);
+
+    setTxt('uiLabelDocsInput', ct.inputLabel);
+    setTxt('uiLabelDocxInput', ct.inputLabel);
+    setTxt('uiLabelPdfInput', ct.inputLabel);
+
+    setTxt('uiTextDocsDriveSelect', ct.driveSelect);
+    setTxt('uiTextDocxDriveSelect', ct.driveSelect);
+    setTxt('uiTextDriveSelect', ct.driveSelect);
+
+    setTxt('uiTextDocxLocalSelect', ct.localSelect);
+    setTxt('uiTextLocalPdfSelect', ct.localSelect);
+
+    setTxt('uiTextDocsSampleSelect', ct.sampleSingle);
+    setTxt('uiTextPdfSampleSelect', ct.sampleSingle);
+    setTxt('uiTextDocxSampleHoriz', ct.sampleHoriz);
+    setTxt('uiTextDocxSampleVert', ct.sampleVert);
+
+    setTxt('uiBtnViewDocsSampleOrig', ct.btnViewSample);
+    setTxt('uiBtnDownloadDocxSample', ct.btnGetSample);
+    setTxt('uiBtnResetDocsFile', ct.btnChangeFile);
+    setTxt('uiBtnResetDocxFile', ct.btnChangeFile);
+    setTxt('uiBtnChangeFile', ct.btnChangeFile);
+
+    setTxt('uiTextBtnExport', ct.btnExportPdf);
+    setTxt('uiTextBtnDocxExport', ct.btnExportPdf);
+    setTxt('generateBtn', ct.btnExportPdf);
+
+    setTxt('uiDropTitle', ct.dropTitle);
+    const dropSub = document.getElementById('uiDropSub');
+    if (dropSub) dropSub.style.display = 'none';
+
+    setTxt('uiLabelPdfPaper', ut.labelPaper);
+    setTxt('uiLabelPdfGrid', ut.labelRuleKindPitch);
+    setTxt('uiTitleOptRange', ct.optRangeTitle);
+    setTxt('uiDescOptRange', ct.optRangeDesc);
+    setTxt('uiTitleOptAll', ct.optAllTitle);
+    setTxt('splitDescText', ct.optAllDesc);
+
+    const pdfPaperSel = document.getElementById('paperProfileSelect');
+    if (pdfPaperSel && pdfPaperSel.options.length >= 2) {
+      pdfPaperSel.options[0].textContent = ct.pdfPaperA3;
+      pdfPaperSel.options[1].textContent = ct.pdfPaperA4;
+    }
+
+    const pdfKindSel = document.getElementById('pdfRuleKindSelect');
+    if (pdfKindSel) {
+      const prevKind = pdfKindSel.value || 'grid';
+      pdfKindSel.innerHTML = '';
+      getRuleKindOptions('horizontal', lang).forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = item.value;
+        opt.textContent = item.label;
+        if (item.value === prevKind) opt.selected = true;
+        pdfKindSel.appendChild(opt);
+      });
+      syncPdfCombinedGridSelect();
+    }
+
+    if (!selectedDocsId) {
+      setTxt('docsSelectedFileName', ct.noFile);
+    } else if (selectedDocsId === SAMPLE_MULTILINGUAL_DOCS_ID) {
+      setTxt('docsSelectedFileName', ct.sampleDocsName);
+    }
+
+    if (!selectedDocxFileId && !selectedDocxBase64) {
+      setTxt('docxSelectedFileName', ct.noFile);
+    } else if (currentLoadedDocxSampleKind === 'horizontal') {
+      setTxt('docxSelectedFileName', ct.sampleDocxHorizName);
+    } else if (currentLoadedDocxSampleKind === 'vertical') {
+      setTxt('docxSelectedFileName', ct.sampleDocxVertName);
+    }
+
+    if (I18N_TEXTS[lang || currentLanguage]) {
+      I18N_TEXTS[lang || currentLanguage].docsNoFile = ct.noFile;
+      I18N_TEXTS[lang || currentLanguage].docxNoFile = ct.noFile;
+    }
+
+    const viewOrigDocxBtn = document.getElementById('uiBtnViewDocxSampleOrig');
+    if (viewOrigDocxBtn) viewOrigDocxBtn.style.display = 'none';
+  }
+
+  const _prevSwitchLangBeforeClean = switchLanguage;
+  switchLanguage = function(lang) {
+    _prevSwitchLangBeforeClean(lang);
+    applyCleanStudioLabels(currentLanguage);
+  };
+  window.switchLanguage = switchLanguage;
+
+  // タブ切り替え時に方向ボタンを該当スロットへ移動し、適切に表示/非表示を更新
+  const _prevSwitchMainModeBeforeClean = switchMainMode;
+  switchMainMode = function(mode) {
+    if (isDocsBusy || isDocxBusy) return;
+    activeMainModeName = mode;
+    _prevSwitchMainModeBeforeClean(mode);
+
+    // DOCS タブへ戻った際、もし前に縦書き .docx で方向バーが隠れていた場合は表示を復帰
+    syncDirectionBarPlacementAndVisibility();
+  };
+  window.switchMainMode = switchMainMode;
+
+  // 方向切替時に勝手に別サンプルを再読込しないよう isCurrentDocxSampleLoaded 連動を解除
+  const _cleanBaseSwitchDirection = window.switchWritingDirection;
+  window.switchWritingDirection = function(dir) {
+    isCurrentDocxSampleLoaded = false;
+    _cleanBaseSwitchDirection(dir);
+    syncDirectionBarPlacementAndVisibility();
+  };
+
+  // Google ドキュメントのサンプル読み込み（クリーン表示）
+  window.loadSampleDocs = function() {
+    if (isDocsBusy) return;
+    closeDocsPreview();
+    const ct = getCleanStudioText(currentLanguage);
+    selectedDocsId = SAMPLE_MULTILINGUAL_DOCS_ID;
+    selectedDocsName = SAMPLE_MULTILINGUAL_TITLE;
+
+    const fileNameEl = document.getElementById('docsSelectedFileName');
+    if (fileNameEl) {
+      fileNameEl.textContent = ct.sampleDocsName;
+      fileNameEl.style.color = '#137333';
+    }
+    const btnReset = document.getElementById('uiBtnResetDocsFile');
+    if (btnReset) btnReset.style.display = 'inline-block';
+    const btnViewOrig = document.getElementById('uiBtnViewDocsSampleOrig');
+    if (btnViewOrig) {
+      btnViewOrig.textContent = ct.btnViewSample;
+      btnViewOrig.style.display = 'inline-block';
+    }
+    setDocsButtonsBusy(false);
+    showStatus('サンプルをセットしました。', 'success');
+  };
+  loadSampleDocs = window.loadSampleDocs;
+
+  // Google ドキュメント「サンプルを見る」は常に実際の Google ドキュメント見本を開く
+  window.openSampleOriginalView = function() {
+    window.open(STUDIO_CLOUD_RUN_URL.replace(/\/$/, '') + '/v3/sample/view', '_blank', 'noopener,noreferrer');
+  };
+  openSampleOriginalView = window.openSampleOriginalView;
+
+  // Word 等 (.docx) のサンプル読み込み（横書き / 縦書き 明示2ボタン）
+  async function loadDocxSampleByKind(kind) {
+    if (isDocxBusy) return;
+    closeDocxPreview();
+    const isVertSample = (kind === 'vertical');
+    const ct = getCleanStudioText(currentLanguage);
+    const baseUrl = isVertSample ? TATETATE_CLOUD_RUN_URL : STUDIO_CLOUD_RUN_URL;
+    const displayTitle = isVertSample ? ct.sampleDocxVertName : ct.sampleDocxHorizName;
+    const internalName = isVertSample ? 'Sample_Vertical.docx' : 'Sample_Horizontal.docx';
+
+    setDocxButtonsBusy(true, 'loading_docx');
+    activeVerticalPollBaseUrl = isVertSample ? TATETATE_CLOUD_RUN_URL : '';
+    startDocsWorkingProgress('サンプルを読み込み中...');
+
+    try {
+      const docxUrl = baseUrl.replace(/\/$/, '') + '/v3/sample/docx';
+      const resp = await fetch(docxUrl, { method: 'GET' });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      const buf = await resp.arrayBuffer();
+      validateDocxBufferFormat(buf, internalName);
+
+      selectedDocxBase64 = arrayBufferToBase64(buf);
+      selectedDocxFileId = null;
+      selectedDocxName = internalName;
+      isCurrentDocxSampleLoaded = false;
+      currentLoadedDocxSampleKind = kind;
+      isCurrentDocxNativeVertical = isVertSample;
+
+      // 縦書きサンプルは自動で縦書きにセットして方向ボタンを隠す／横書きサンプルは横書き初期セットで方向ボタンを表示
+      window.switchWritingDirection(isVertSample ? 'vertical' : 'horizontal');
+
+      const fileNameEl = document.getElementById('docxSelectedFileName');
+      if (fileNameEl) {
+        fileNameEl.textContent = displayTitle;
+        fileNameEl.style.color = '#137333';
+      }
+      const btnReset = document.getElementById('uiBtnResetDocxFile');
+      if (btnReset) btnReset.style.display = 'inline-block';
+      const btnViewOrig = document.getElementById('uiBtnViewDocxSampleOrig');
+      if (btnViewOrig) btnViewOrig.style.display = 'none';
+      const btnDlSample = document.getElementById('uiBtnDownloadDocxSample');
+      if (btnDlSample) {
+        btnDlSample.textContent = ct.btnGetSample;
+        btnDlSample.style.display = 'inline-block';
+      }
+
+      syncDirectionBarPlacementAndVisibility();
+      stopDocsWorkingProgress(true, '読み込み完了');
+      setDocxButtonsBusy(false);
+      showStatus('サンプルをセットしました。', 'success');
+    } catch (err) {
+      stopDocsWorkingProgress(false);
+      setDocxButtonsBusy(false);
+      showStatus('サンプル読み込みエラー: ' + err.message, 'error');
+    } finally {
+      activeVerticalPollBaseUrl = '';
+    }
+  }
+
+  window.loadSampleDocxHorizontal = function() {
+    return loadDocxSampleByKind('horizontal');
+  };
+  window.loadSampleDocxVertical = function() {
+    return loadDocxSampleByKind('vertical');
+  };
+  window.loadSampleDocx = window.loadSampleDocxHorizontal;
+  loadSampleDocx = window.loadSampleDocxHorizontal;
+
+  // 「サンプルを取得」は現在セット中のサンプル種別（横書き or 縦書き）の .docx をダウンロード
+  window.downloadSampleDocxFile = function() {
+    const baseUrl = (currentLoadedDocxSampleKind === 'vertical') ? TATETATE_CLOUD_RUN_URL : STUDIO_CLOUD_RUN_URL;
+    window.open(baseUrl.replace(/\/$/, '') + '/v3/sample/docx', '_blank', 'noopener,noreferrer');
+  };
+  downloadSampleDocxFile = window.downloadSampleDocxFile;
+
+  // ローカル .docx 選択後および Google ドライブ .docx 選択後に自動で縦書き原稿判定を行い UI を切り替える
+  async function applyAutoDirectionAfterUserDocxLoaded() {
+    currentLoadedDocxSampleKind = '';
+    stripLeadingEmojiFromLabel('docxSelectedFileName');
+    const btnViewOrig = document.getElementById('uiBtnViewDocxSampleOrig');
+    if (btnViewOrig) btnViewOrig.style.display = 'none';
+
+    if (!selectedDocxBase64) {
+      isCurrentDocxNativeVertical = false;
+      syncDirectionBarPlacementAndVisibility();
+      return;
+    }
+    const isVert = await detectNativeVerticalDocxFromBase64(selectedDocxBase64);
+    isCurrentDocxNativeVertical = isVert;
+    if (isVert) {
+      window.switchWritingDirection('vertical');
+      showStatus('縦書きの Word 原稿を認識しました。そのまま「PDF出力 / 印刷」を押してください。', 'success');
+    } else {
+      window.switchWritingDirection('horizontal');
+    }
+    syncDirectionBarPlacementAndVisibility();
+  }
+
+  const _prevCleanLoadLocalDocx = loadLocalDocxFile;
+  loadLocalDocxFile = async function(file) {
+    await _prevCleanLoadLocalDocx(file);
+    await applyAutoDirectionAfterUserDocxLoaded();
+  };
+
+  // Google ドライブ Picker で .docx や Docs が選択された際にもラベル絵文字除去＆自動縦書き判定を適用
+  const docxNameElForObserver = document.getElementById('docxSelectedFileName');
+  if (docxNameElForObserver && typeof MutationObserver !== 'undefined') {
+    let handlingDocxMutation = false;
+    const obsDocx = new MutationObserver(() => {
+      if (handlingDocxMutation) return;
+      handlingDocxMutation = true;
+      stripLeadingEmojiFromLabel('docxSelectedFileName');
+      if (selectedDocxBase64 && !currentLoadedDocxSampleKind && !isDocxBusy) {
+        applyAutoDirectionAfterUserDocxLoaded().finally(() => {
+          handlingDocxMutation = false;
+        });
+      } else {
+        handlingDocxMutation = false;
+      }
+    });
+    obsDocx.observe(docxNameElForObserver, { childList: true, characterData: true, subtree: true });
+  }
+
+  const docsNameElForObserver = document.getElementById('docsSelectedFileName');
+  if (docsNameElForObserver && typeof MutationObserver !== 'undefined') {
+    const obsDocs = new MutationObserver(() => {
+      stripLeadingEmojiFromLabel('docsSelectedFileName');
+    });
+    obsDocs.observe(docsNameElForObserver, { childList: true, characterData: true, subtree: true });
+  }
+
+  const _prevCleanResetDocx = resetDocxFile;
+  resetDocxFile = function() {
+    currentLoadedDocxSampleKind = '';
+    isCurrentDocxNativeVertical = false;
+    _prevCleanResetDocx();
+    const ct = getCleanStudioText(currentLanguage);
+    const fnEl = document.getElementById('docxSelectedFileName');
+    if (fnEl) fnEl.textContent = ct.noFile;
+    window.switchWritingDirection('horizontal');
+    syncDirectionBarPlacementAndVisibility();
+  };
+  window.resetDocxFile = resetDocxFile;
+
+  const _prevCleanResetDocs = resetDocsFile;
+  resetDocsFile = function() {
+    _prevCleanResetDocs();
+    const ct = getCleanStudioText(currentLanguage);
+    const fnEl = document.getElementById('docsSelectedFileName');
+    if (fnEl) fnEl.textContent = ct.noFile;
+  };
+  window.resetDocsFile = resetDocsFile;
+
+  // PDF サンプル読み込み（クリーン表示）
+  window.loadSamplePdf = async function() {
+    const ct = getCleanStudioText(currentLanguage);
+    showStatus('サンプルPDFを読み込み中...', 'info');
+    try {
+      const pdfUrl = STUDIO_CLOUD_RUN_URL.replace(/\/$/, '') + '/v3/sample/pdf';
+      const resp = await fetch(pdfUrl, { method: 'GET' });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      const buf = await resp.arrayBuffer();
+      await initPdfDoc(ct.samplePdfName, new Uint8Array(buf));
+      showStatus('サンプルをセットしました。', 'success');
+    } catch (err) {
+      showStatus('サンプルPDFの読み込みに失敗しました: ' + err.message, 'error');
+    }
+  };
+  loadSamplePdf = window.loadSamplePdf;
+
+  // PDF 見開き生成（6.0 / 7.0 / 8.0 mm × 横罫線 / 方眼 / 無地 に完全対応）
+  window.startGeneration = async function() {
+    if (!loadedFileBytes || !loadedSrcDoc) return;
+    syncPdfCombinedGridSelect();
+
+    const paperMode = document.getElementById('paperProfileSelect').value;
+    const { pitchMm, drawH, drawV } = readSplitRuleParams('pdf', false);
+    const mode = document.querySelector('input[name="outputMode"]:checked').value;
+
+    let targetStart = 1;
+    let targetEnd = totalDocPages;
+    if (mode === 'range') {
+      targetStart = parseInt(document.getElementById('startPage').value, 10) || 1;
+      targetEnd = parseInt(document.getElementById('endPage').value, 10) || totalDocPages;
+      targetStart = Math.max(1, Math.min(targetStart, totalDocPages));
+      targetEnd = Math.max(targetStart, Math.min(targetEnd, totalDocPages));
+    }
+
+    const pagesToProcess = targetEnd - targetStart + 1;
+    const totalVolumes = Math.ceil(pagesToProcess / ChunkSizePages);
+
+    fileLoadedView.style.display = 'none';
+    progressContainer.style.display = 'block';
+
+    const gridColor = PDFLib.rgb(0.82, 0.85, 0.88);
+    const centerGuideColor = PDFLib.rgb(0.90, 0.92, 0.94);
+    const baseName = loadedFileName.replace(/\.pdf$/i, '');
+    const pitchPt = pitchMm * MmToPt;
+
+    function drawPdfNoteLines(page, leftX, rightX, bottomY, topY) {
+      if (!drawH && !drawV) return;
+      const h = topY - bottomY;
+      const slots = Math.floor(h / pitchPt);
+      const usedH = slots * pitchPt;
+      const startY = bottomY + (h - usedH) / 2.0;
+
+      if (drawH) {
+        for (let s = 0; s <= slots; s++) {
+          const y = startY + (s * pitchPt);
+          page.drawLine({
+            start: { x: leftX, y: y },
+            end: { x: rightX, y: y },
+            thickness: PdfNoteLineThicknessPt,
+            color: gridColor
+          });
+        }
+      }
+      if (drawV) {
+        const w = rightX - leftX;
+        const cols = Math.floor(w / pitchPt);
+        const usedW = cols * pitchPt;
+        const startX = leftX + (w - usedW) / 2.0;
+        const endY = startY + usedH;
+        for (let c = 0; c <= cols; c++) {
+          const x = startX + (c * pitchPt);
+          page.drawLine({
+            start: { x: x, y: startY },
+            end: { x: x, y: endY },
+            thickness: PdfNoteLineThicknessPt,
+            color: gridColor
+          });
+        }
+      }
+    }
+
+    showStatus('P.' + targetStart + ' 〜 P.' + targetEnd + '（計 ' + pagesToProcess + ' ページ）の生成を開始します...', 'info');
+
+    try {
+      for (let vol = 0; vol < totalVolumes; vol++) {
+        const volStart = targetStart - 1 + (vol * ChunkSizePages);
+        const volEnd = Math.min(volStart + ChunkSizePages, targetEnd);
+        const volNum = vol + 1;
+        let outDoc = await PDFLib.PDFDocument.create();
+
+        if (paperMode === 'a3-goodnotes') {
+          const pageWPt = PdfA3SheetWidthMm * MmToPt;
+          const pageHPt = PdfA3SheetHeightMm * MmToPt;
+          const splitPt = PdfA3SplitXMm * MmToPt;
+          const marginSidePt = PdfA3MarginSideMm * MmToPt;
+          const marginTopPt = PdfA3MarginTopBottomMm * MmToPt;
+          const marginBottomPt = PdfA3MarginTopBottomMm * MmToPt;
+
+          for (let i = volStart; i < volEnd; i++) {
+            const a3Page = outDoc.addPage([pageWPt, pageHPt]);
+            a3Page.drawLine({
+              start: { x: splitPt, y: 0 },
+              end: { x: splitPt, y: pageHPt },
+              thickness: PdfGuideLineThicknessPt,
+              color: centerGuideColor,
+              dashArray: [4, 4]
+            });
+
+            const srcPage = loadedSrcDoc.getPage(i);
+            const hasContents = srcPage && srcPage.node && typeof srcPage.node.Contents === 'function' && !!srcPage.node.Contents();
+            if (hasContents) {
+              try {
+                const [sp] = await outDoc.embedPages([srcPage]);
+                const scale = Math.min(splitPt / sp.width, pageHPt / sp.height, 1.0);
+                const drawW = sp.width * scale;
+                const drawHPage = sp.height * scale;
+                a3Page.drawPage(sp, {
+                  x: (splitPt - drawW) / 2.0,
+                  y: (pageHPt - drawHPage) / 2.0,
+                  width: drawW,
+                  height: drawHPage
+                });
+              } catch (_eEmbed) {}
+            }
+
+            drawPdfNoteLines(a3Page, splitPt + marginSidePt, pageWPt - marginSidePt, marginBottomPt, pageHPt - marginTopPt);
+
+            const processed = (i - (targetStart - 1)) + 1;
+            const percent = Math.round((processed / pagesToProcess) * 100);
+            progressBar.style.width = percent + '%';
+            progressPercent.textContent = percent + '%';
+            progressStatus.textContent = 'P.' + (i + 1) + ' (' + processed + '/' + pagesToProcess + ')';
+            if (processed % BatchPageCount === 0) await new Promise(r => setTimeout(r, 0));
+          }
+        } else {
+          const isA4 = (paperMode === 'a4-spread');
+          const pWPt = (isA4 ? PdfA4WidthMm : PdfA5WidthMm) * MmToPt;
+          const pHPt = (isA4 ? PdfA4HeightMm : PdfA5HeightMm) * MmToPt;
+          const gutterPt = PdfSpreadGutterMm * MmToPt;
+          const outerPt = PdfSpreadOuterMm * MmToPt;
+          const topPt = PdfSpreadTopBottomMm * MmToPt;
+          const btmPt = PdfSpreadTopBottomMm * MmToPt;
+
+          const p1 = outDoc.addPage([pWPt, pHPt]);
+          drawPdfNoteLines(p1, gutterPt, pWPt - outerPt, btmPt, pHPt - topPt);
+
+          for (let i = volStart; i < volEnd; i++) {
+            const srcPage = loadedSrcDoc.getPage(i);
+            const hasContents = srcPage && srcPage.node && typeof srcPage.node.Contents === 'function' && !!srcPage.node.Contents();
+            const dp = outDoc.addPage([pWPt, pHPt]);
+            if (hasContents) {
+              try {
+                const [sp] = await outDoc.embedPages([srcPage]);
+                const fitScale = Math.min(1.0, (pWPt - outerPt * 2) / sp.width, (pHPt - topPt * 2) / sp.height);
+                const drawW = sp.width * fitScale;
+                const drawHPage = sp.height * fitScale;
+                dp.drawPage(sp, {
+                  x: (pWPt - drawW) / 2.0,
+                  y: (pHPt - drawHPage) / 2.0,
+                  width: drawW,
+                  height: drawHPage
+                });
+              } catch (_eEmbed2) {}
+            }
+
+            const np = outDoc.addPage([pWPt, pHPt]);
+            drawPdfNoteLines(np, gutterPt, pWPt - outerPt, btmPt, pHPt - topPt);
+
+            const processed = (i - (targetStart - 1)) + 1;
+            const percent = Math.round((processed / pagesToProcess) * 100);
+            progressBar.style.width = percent + '%';
+            progressPercent.textContent = percent + '%';
+            progressStatus.textContent = 'P.' + (i + 1) + ' (' + processed + '/' + pagesToProcess + ')';
+            if (processed % BatchPageCount === 0) await new Promise(r => setTimeout(r, 0));
+          }
+        }
+
+        progressStatus.textContent = 'PDF保存中...';
+        const outPdfBytes = await outDoc.save();
+        const blob = new Blob([outPdfBytes], { type: 'application/pdf' });
+        const downloadUrl = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const fileSuffix = (mode === 'range' && totalVolumes === 1)
+          ? '_P' + targetStart + '-' + targetEnd
+          : '_Part' + volNum + '_P' + (volStart + 1) + '-' + volEnd;
+        a.href = downloadUrl;
+        a.download = baseName + fileSuffix + '.pdf';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(downloadUrl);
+
+        outDoc = null;
+        await new Promise(r => setTimeout(r, PdfDownloadPauseMs));
+      }
+
+      showStatus('完了しました（P.' + targetStart + ' 〜 P.' + targetEnd + '）。', 'success');
+      progressStatus.textContent = '完了';
+      fileLoadedView.style.display = 'block';
+    } catch (err) {
+      console.error(err);
+      showStatus('エラーが発生しました: ' + err.message, 'error');
+      progressStatus.textContent = '失敗';
+      fileLoadedView.style.display = 'block';
+    }
+  };
+  startGeneration = window.startGeneration;
+
+  window.addEventListener('DOMContentLoaded', () => {
+    injectPdfSplitRuleControls();
+    applyCleanStudioLabels(currentLanguage);
+    syncDirectionBarPlacementAndVisibility();
+  });
+
+
+  // ==============================================================================
+  // Google ドキュメント (DOCS) タブ: 「サンプル（横用）」「サンプル（縦用）」2ボタン連動対応
+  // 選んだサンプルに応じて赤い方向ボタンを自動切替し、逆方向へ切り替えた際も文書がすり替わらないよう処理
+  // ==============================================================================
+  const SAMPLE_VERTICAL_DOCS_ID = '__SAMPLE_VERTICAL_DOCS__';
+  const DocsHorizA4WidthMm = 210.0;
+  const DocsHorizA4HeightMm = 297.0;
+  const DocsHorizA5WidthMm = 148.0;
+  const DocsHorizA5HeightMm = 210.0;
+  const DocsHorizA4GutterMm = 20.0;
+  const DocsHorizA4OuterMm = 15.0;
+  const DocsHorizA4TopMm = 20.0;
+  const DocsHorizA4BottomMm = 15.0;
+  const DocsHorizA5GutterMm = 15.0;
+  const DocsHorizA5OuterMm = 10.0;
+  const DocsHorizA5TopMm = 15.0;
+  const DocsHorizA5BottomMm = 12.0;
+
+  let currentLoadedDocsSampleKind = ''; // '' | 'horizontal' | 'vertical'
+
+  const DOCS_DUAL_SAMPLE_I18N = {
+    ja: {
+      btnHoriz: 'サンプル（横用）',
+      btnVert: 'サンプル（縦用）',
+      nameHoriz: 'サンプル（横用）',
+      nameVert: 'サンプル（縦用）'
+    },
+    en: {
+      btnHoriz: 'Sample (For Horizontal)',
+      btnVert: 'Sample (For Vertical)',
+      nameHoriz: 'Sample (For Horizontal)',
+      nameVert: 'Sample (For Vertical)'
+    },
+    'zh-TW': {
+      btnHoriz: '範例（橫書用）',
+      btnVert: '範例（直書用）',
+      nameHoriz: '範例（橫書用）',
+      nameVert: '範例（直書用）'
+    },
+    ko: {
+      btnHoriz: '샘플 (가로용)',
+      btnVert: '샘플 (세로용)',
+      nameHoriz: '샘플 (가로용)',
+      nameVert: '샘플 (세로용)'
+    }
+  };
+
+  function getDocsDualSampleText(lang) {
+    return DOCS_DUAL_SAMPLE_I18N[lang || currentLanguage] || DOCS_DUAL_SAMPLE_I18N.ja;
+  }
+
+  function syncDocsDualSampleLabels(lang) {
+    const dt = getDocsDualSampleText(lang);
+    const elH = document.getElementById('uiTextDocsSampleHoriz');
+    const elV = document.getElementById('uiTextDocsSampleVert');
+    if (elH) elH.textContent = dt.btnHoriz;
+    if (elV) elV.textContent = dt.btnVert;
+
+    const fnEl = document.getElementById('docsSelectedFileName');
+    if (fnEl) {
+      if (currentLoadedDocsSampleKind === 'horizontal') {
+        fnEl.textContent = dt.nameHoriz;
+      } else if (currentLoadedDocsSampleKind === 'vertical') {
+        fnEl.textContent = dt.nameVert;
+      }
+    }
+  }
+
+  const _prevSwitchLangForDocsDual = window.switchLanguage;
+  window.switchLanguage = function(lang) {
+    _prevSwitchLangForDocsDual(lang);
+    syncDocsDualSampleLabels(currentLanguage);
+  };
+  switchLanguage = window.switchLanguage;
+
+  function loadDocsSampleByKind(kind) {
+    if (isDocsBusy) return;
+    closeDocsPreview();
+    const isVertSample = (kind === 'vertical');
+    const dt = getDocsDualSampleText(currentLanguage);
+    const ct = getCleanStudioText(currentLanguage);
+
+    currentLoadedDocsSampleKind = kind;
+    selectedDocsId = isVertSample ? SAMPLE_VERTICAL_DOCS_ID : SAMPLE_MULTILINGUAL_DOCS_ID;
+    selectedDocsName = isVertSample ? 'Sample_Vertical_Docs' : SAMPLE_MULTILINGUAL_TITLE;
+
+    // 選んだサンプルに合わせて赤い方向ボタンを自動切替（DOCSは横・縦どちらへも手動変更可能）
+    window.switchWritingDirection(isVertSample ? 'vertical' : 'horizontal');
+
+    const fileNameEl = document.getElementById('docsSelectedFileName');
+    if (fileNameEl) {
+      fileNameEl.textContent = isVertSample ? dt.nameVert : dt.nameHoriz;
+      fileNameEl.style.color = '#137333';
+    }
+    const btnReset = document.getElementById('uiBtnResetDocsFile');
+    if (btnReset) btnReset.style.display = 'inline-block';
+    const btnViewOrig = document.getElementById('uiBtnViewDocsSampleOrig');
+    if (btnViewOrig) {
+      btnViewOrig.textContent = ct.btnViewSample;
+      btnViewOrig.style.display = 'inline-block';
+    }
+    setDocsButtonsBusy(false);
+    showStatus('サンプルをセットしました。', 'success');
+  }
+
+  window.loadSampleDocsHorizontal = function() {
+    loadDocsSampleByKind('horizontal');
+  };
+  window.loadSampleDocsVertical = function() {
+    loadDocsSampleByKind('vertical');
+  };
+  window.loadSampleDocs = window.loadSampleDocsHorizontal;
+  loadSampleDocs = window.loadSampleDocsHorizontal;
+
+  // 「サンプルを見る」は現在セットされているサンプル（横用 or 縦用）の元 Google ドキュメントを開く
+  window.openSampleOriginalView = function() {
+    const baseUrl = (currentLoadedDocsSampleKind === 'vertical') ? TATEGAKI_CLOUD_RUN_URL : STUDIO_CLOUD_RUN_URL;
+    window.open(baseUrl.replace(/\/$/, '') + '/v3/sample/view', '_blank', 'noopener,noreferrer');
+  };
+  openSampleOriginalView = window.openSampleOriginalView;
+
+  const _prevResetDocsDual = window.resetDocsFile;
+  window.resetDocsFile = function() {
+    currentLoadedDocsSampleKind = '';
+    _prevResetDocsDual();
+  };
+  resetDocsFile = window.resetDocsFile;
+
+  // ドライブ Picker でユーザー自身の Docs が選ばれた際はサンプル種別フラグをクリア
+  const _prevOpenDocsPickerDual = openDocsPicker;
+  openDocsPicker = function() {
+    currentLoadedDocsSampleKind = '';
+    return _prevOpenDocsPickerDual();
+  };
+  window.openDocsPicker = openDocsPicker;
+
+  // DOCS 出力ラッパー: 横用サンプル・縦用サンプルともに横書き／縦書きのどちらを選んでも文書がすり替わらず出力
+  const _prevExecuteDocsLayoutDual = executeDocsLayout;
+  executeDocsLayout = async function(isExportPdf) {
+    if (isDocsBusy) return;
+    if (!selectedDocsId) {
+      showStatus('先にファイルを選択してください。', 'error');
+      return;
+    }
+
+    const isHorizSample = (selectedDocsId === SAMPLE_MULTILINGUAL_DOCS_ID);
+    const isVertSample = (selectedDocsId === SAMPLE_VERTICAL_DOCS_ID);
+
+    // 1. 通常ファイル、または「横用サンプル×横書き」「縦用サンプル×縦書き」の王道ペア
+    if (!isHorizSample && !isVertSample) {
+      return _prevExecuteDocsLayoutDual(isExportPdf);
+    }
+    if (isHorizSample && currentWritingDirection !== 'vertical') {
+      return _prevExecuteDocsLayoutDual(isExportPdf);
+    }
+
+    // 2. 縦用サンプル × 縦書き（第2ライン TATEGAKI_CLOUD_RUN_URL のサンプルエンドポイント直結）
+    if (isVertSample && currentWritingDirection === 'vertical') {
+      setDocsButtonsBusy(true, 'export');
+      const docsJobId = createRenderJobId();
+      activeVerticalPollBaseUrl = TATEGAKI_CLOUD_RUN_URL;
+      startDocsWorkingProgress('今：縦書き組版エンジンへ送信中...', docsJobId);
+
+      const paperMode = document.getElementById('docsPaperProfileSelect').value;
+      const lineColorHex = (document.getElementById('docsLineColorPicker') ? document.getElementById('docsLineColorPicker').value : '#D0D0D0') || '#D0D0D0';
+      const { pitchMm, drawH, drawV } = readSplitRuleParams('docs', true);
+      const isLandscapeNote = (paperMode === 'v-a3-goodnotes' || paperMode === 'v-a4-spread');
+      const v3Config = {
+        paperWidthMm: isLandscapeNote ? VerticalLandscapeWidthMm : VerticalPortraitWidthMm,
+        paperHeightMm: isLandscapeNote ? VerticalLandscapeHeightMm : VerticalPortraitHeightMm,
+        gutterMarginMm: VerticalGutterRightMm,
+        outerMarginMm: VerticalOuterLeftMm,
+        marginTopMm: VerticalMarginTopMm,
+        marginBottomMm: VerticalMarginBottomMm,
+        linePitchMm: pitchMm,
+        ruledLineWidthPt: (drawH || drawV) ? DefaultRuleStrokePt : 0.0,
+        ruledLineColorHex: (drawH || drawV) ? lineColorHex : '#FFFFFF',
+        orientation: isLandscapeNote ? 'landscape' : 'portrait'
+      };
+
+      try {
+        showStatus('縦書き組版エンジンでPDFを生成中...', 'info');
+        const sampleUrl = TATEGAKI_CLOUD_RUN_URL.replace(/\/$/, '') + '/v3/sample/docs-render-pdf';
+        const sampleResp = await fetch(sampleUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ jobId: docsJobId, config: v3Config })
+        });
+        if (!sampleResp.ok) throw new Error('HTTP ' + sampleResp.status);
+        const typesetBytes = new Uint8Array(await sampleResp.arrayBuffer());
+
+        let origBytes = null;
+        if (paperMode === 'v-a3-compare') {
+          showStatus('原本PDFを取得中...', 'info');
+          const origUrl = TATEGAKI_CLOUD_RUN_URL.replace(/\/$/, '') + '/v3/sample/docs-original-pdf';
+          const origResp = await fetch(origUrl, { method: 'GET' });
+          if (!origResp.ok) throw new Error('HTTP ' + origResp.status);
+          origBytes = new Uint8Array(await origResp.arrayBuffer());
+        }
+
+        const composed = await composeVerticalOutputPdf(typesetBytes, origBytes, paperMode, pitchMm, drawH, drawV, lineColorHex, selectedDocsName);
+        handleDocsPdfOutput(composed.bytes, true, composed.fileName, paperMode);
+      } catch (err) {
+        stopDocsWorkingProgress(false);
+        setDocsButtonsBusy(false);
+        showStatus('組版エラー: ' + err.message, 'error');
+      } finally {
+        activeVerticalPollBaseUrl = '';
+      }
+      return;
+    }
+
+    // 3. クロス指定（横用サンプルを縦書きで出力 ／ 縦用サンプルを横書きで出力）も同一原稿のまま組版
+    setDocsButtonsBusy(true, 'export');
+    const crossJobId = createRenderJobId();
+    const srcSampleServer = isHorizSample ? STUDIO_CLOUD_RUN_URL : TATEGAKI_CLOUD_RUN_URL;
+    const isVertOut = (currentWritingDirection === 'vertical');
+    const targetRenderServer = isVertOut ? TATEGAKI_CLOUD_RUN_URL : STUDIO_CLOUD_RUN_URL;
+    activeVerticalPollBaseUrl = isVertOut ? TATEGAKI_CLOUD_RUN_URL : '';
+    startDocsWorkingProgress('今：組版エンジンへ送信中...', crossJobId);
+
+    try {
+      const sampleDocxResp = await fetch(srcSampleServer.replace(/\/$/, '') + '/v3/sample/docx', { method: 'GET' });
+      if (!sampleDocxResp.ok) throw new Error('サンプル取得エラー (HTTP ' + sampleDocxResp.status + ')');
+      const sampleB64 = arrayBufferToBase64(await sampleDocxResp.arrayBuffer());
+
+      const paperMode = document.getElementById('docsPaperProfileSelect').value;
+      const lineColorHex = (document.getElementById('docsLineColorPicker') ? document.getElementById('docsLineColorPicker').value : '#D0D0D0') || '#D0D0D0';
+      const { pitchMm, drawH, drawV } = readSplitRuleParams('docs', isVertOut);
+
+      if (isVertOut) {
+        const isLandscapeNote = (paperMode === 'v-a3-goodnotes' || paperMode === 'v-a4-spread');
+        const cfg = {
+          paperWidthMm: isLandscapeNote ? VerticalLandscapeWidthMm : VerticalPortraitWidthMm,
+          paperHeightMm: isLandscapeNote ? VerticalLandscapeHeightMm : VerticalPortraitHeightMm,
+          gutterMarginMm: VerticalGutterRightMm,
+          outerMarginMm: VerticalOuterLeftMm,
+          marginTopMm: VerticalMarginTopMm,
+          marginBottomMm: VerticalMarginBottomMm,
+          linePitchMm: pitchMm,
+          ruledLineWidthPt: (drawH || drawV) ? DefaultRuleStrokePt : 0.0,
+          ruledLineColorHex: (drawH || drawV) ? lineColorHex : '#FFFFFF',
+          orientation: isLandscapeNote ? 'landscape' : 'portrait'
+        };
+        const rResp = await fetch(targetRenderServer.replace(/\/$/, '') + '/v3/render-docx-pdf', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ jobId: crossJobId, docxBase64: sampleB64, config: cfg })
+        });
+        if (!rResp.ok) throw new Error('HTTP ' + rResp.status);
+        const typesetBytes = new Uint8Array(await rResp.arrayBuffer());
+
+        let origBytes = null;
+        if (paperMode === 'v-a3-compare') {
+          const oResp = await fetch(srcSampleServer.replace(/\/$/, '') + '/v3/sample/docs-original-pdf', { method: 'GET' });
+          if (!oResp.ok) throw new Error('HTTP ' + oResp.status);
+          origBytes = new Uint8Array(await oResp.arrayBuffer());
+        }
+        const composed = await composeVerticalOutputPdf(typesetBytes, origBytes, paperMode, pitchMm, drawH, drawV, lineColorHex, selectedDocsName);
+        handleDocsPdfOutput(composed.bytes, true, composed.fileName, paperMode);
+      } else {
+        const isA5 = paperMode.startsWith('a5');
+        const cfg = {
+          paperWidthMm: isA5 ? DocsHorizA5WidthMm : DocsHorizA4WidthMm,
+          paperHeightMm: isA5 ? DocsHorizA5HeightMm : DocsHorizA4HeightMm,
+          gutterMarginMm: isA5 ? DocsHorizA5GutterMm : DocsHorizA4GutterMm,
+          outerMarginMm: isA5 ? DocsHorizA5OuterMm : DocsHorizA4OuterMm,
+          marginTopMm: isA5 ? DocsHorizA5TopMm : DocsHorizA4TopMm,
+          marginBottomMm: isA5 ? DocsHorizA5BottomMm : DocsHorizA4BottomMm,
+          linePitchMm: pitchMm,
+          ruledLineWidthPt: (drawH || drawV) ? DefaultRuleStrokePt : 0.0,
+          ruledLineColorHex: (drawH || drawV) ? lineColorHex : '#FFFFFF'
+        };
+        const rResp = await fetch(STUDIO_CLOUD_RUN_URL.replace(/\/$/, '') + '/v3/render-docx-pdf', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ jobId: crossJobId, docxBase64: sampleB64, config: cfg })
+        });
+        if (!rResp.ok) throw new Error('HTTP ' + rResp.status);
+        const typesetBytes = new Uint8Array(await rResp.arrayBuffer());
+
+        if (paperMode === 'a3-compare') {
+          const oResp = await fetch(srcSampleServer.replace(/\/$/, '') + '/v3/sample/docs-original-pdf', { method: 'GET' });
+          if (!oResp.ok) throw new Error('HTTP ' + oResp.status);
+          const origBytes = new Uint8Array(await oResp.arrayBuffer());
+          const origDoc = await PDFLib.PDFDocument.load(origBytes, { ignoreEncryption: true });
+          const typesetDoc = await PDFLib.PDFDocument.load(typesetBytes, { ignoreEncryption: true });
+          const maxPages = Math.max(origDoc.getPageCount(), typesetDoc.getPageCount());
+          const outDoc = await PDFLib.PDFDocument.create();
+          const pageWPt = PaperSizesMm['a3-goodnotes'].width * MmToPt;
+          const pageHPt = PaperSizesMm['a3-goodnotes'].height * MmToPt;
+          const splitPt = PaperSizesMm['a3-goodnotes'].splitX * MmToPt;
+          const guideColor = PDFLib.rgb(0.90, 0.92, 0.94);
+          for (let i = 0; i < maxPages; i++) {
+            const p = outDoc.addPage([pageWPt, pageHPt]);
+            p.drawLine({ start: { x: splitPt, y: 0 }, end: { x: splitPt, y: pageHPt }, thickness: PdfGuideLineThicknessPt, color: guideColor, dashArray: [4, 4] });
+            if (i < origDoc.getPageCount()) {
+              const [oe] = await outDoc.embedPages([origDoc.getPage(i)]);
+              const sc = Math.min(splitPt / oe.width, pageHPt / oe.height);
+              p.drawPage(oe, { x: (splitPt - oe.width * sc) / 2.0, y: (pageHPt - oe.height * sc) / 2.0, width: oe.width * sc, height: oe.height * sc });
+            }
+            if (i < typesetDoc.getPageCount()) {
+              const [te] = await outDoc.embedPages([typesetDoc.getPage(i)]);
+              const rw = pageWPt - splitPt;
+              const sc = Math.min(rw / te.width, pageHPt / te.height);
+              p.drawPage(te, { x: splitPt + (rw - te.width * sc) / 2.0, y: (pageHPt - te.height * sc) / 2.0, width: te.width * sc, height: te.height * sc });
+            }
+          }
+          handleDocsPdfOutput(await outDoc.save(), true, selectedDocsName + '_A3デモ見開き.pdf', paperMode);
+          return;
+        }
+        handleDocsPdfOutput(typesetBytes, true, selectedDocsName + '.pdf', paperMode);
+      }
+    } catch (err) {
+      stopDocsWorkingProgress(false);
+      setDocsButtonsBusy(false);
+      showStatus('組版エラー: ' + err.message, 'error');
+    } finally {
+      activeVerticalPollBaseUrl = '';
+    }
+  };
+  window.executeDocsLayout = executeDocsLayout;
+
+  window.addEventListener('DOMContentLoaded', () => {
+    syncDocsDualSampleLabels(currentLanguage);
+  });
+
+
+  // ==============================================================================
+  // UI 整合パッチ (ver.163b):
+  // 1. I18N_TEXTS 本体の絵文字・"(Docs)"・"[...]" を上書き根絶（setDocsButtonsBusy 後の復活防止）
+  // 2. サンプル選択時およびファイル未選択時は二重選択にならないよう方向バーを非表示化
+  //    （自分の横書き Docs / 横書き .docx を選んだ時のみ赤色の「横書き | 縦書き」を表示）
+  // ==============================================================================
+  Object.keys(CLEAN_STUDIO_I18N).forEach(langKey => {
+    const ct = CLEAN_STUDIO_I18N[langKey];
+    const legacy = I18N_TEXTS[langKey];
+    if (!legacy) return;
+    legacy.docsDriveSelect = ct.driveSelect;
+    legacy.docxDriveSelect = ct.driveSelect;
+    legacy.docxLocalSelect = ct.localSelect;
+    legacy.pdfDriveSelect = ct.driveSelect;
+    legacy.pdfLocalSelect = ct.localSelect;
+    legacy.btnExport = ct.btnExportPdf;
+    legacy.btnGenerate = ct.btnExportPdf;
+    legacy.docsInput = ct.inputLabel;
+    legacy.docxInput = ct.inputLabel;
+    legacy.docsNoFile = ct.noFile;
+    legacy.docxNoFile = ct.noFile;
+  });
+
+  function stripEmojiFromButtonSpan(spanId) {
+    const el = document.getElementById(spanId);
+    if (!el || !el.textContent) return;
+    const cleaned = el.textContent
+      .replace(/[🏠📄📝📑✨🔍📥🖨️👁️🚀⏳🎯❌↔️↕️📁💻]/gu, '')
+      .replace(/\s*\(Docs\)\s*/g, '')
+      .replace(/\s*\(\.docx\)\s*/g, '')
+      .trim();
+    if (cleaned !== el.textContent) {
+      el.textContent = cleaned;
+    }
+  }
+
+  const _prevSetDocsBusyClean = setDocsButtonsBusy;
+  setDocsButtonsBusy = function(busy, activeAction) {
+    _prevSetDocsBusyClean(busy, activeAction);
+    stripEmojiFromButtonSpan('uiTextDocsDriveSelect');
+    stripEmojiFromButtonSpan('uiTextBtnExport');
+    stripEmojiFromButtonSpan('uiTextBtnPreview');
+  };
+  window.setDocsButtonsBusy = setDocsButtonsBusy;
+
+  const _prevSetDocxBusyClean = setDocxButtonsBusy;
+  setDocxButtonsBusy = function(busy, activeAction) {
+    _prevSetDocxBusyClean(busy, activeAction);
+    stripEmojiFromButtonSpan('uiTextDocxDriveSelect');
+    stripEmojiFromButtonSpan('uiTextDocxLocalSelect');
+    stripEmojiFromButtonSpan('uiTextBtnDocxExport');
+    stripEmojiFromButtonSpan('uiTextBtnDocxPreview');
+  };
+  window.setDocxButtonsBusy = setDocxButtonsBusy;
+
+  // 方向バー表示条件の厳密化:
+  // - ファイル未選択時: 非表示（まずファイルを選ぶ）
+  // - サンプル（横用 / 縦用 / 横書き / 縦書き）選択時: すでに横・縦を選んで押しているため非表示
+  // - 自分の縦書き .docx 選択時: 縦一択のため非表示
+  // - 自分の Google ドキュメント、または自分の横書き .docx 選択時のみ: 赤色の「横書き | 縦書き」を表示
+  syncDirectionBarPlacementAndVisibility = function() {
+    const dirGroup = document.getElementById('directionSwitchGroup');
+    if (!dirGroup) return;
+
+    if (activeMainModeName === 'docs') {
+      const docsSlot = document.getElementById('docsDirectionSlot');
+      if (docsSlot && dirGroup.parentElement !== docsSlot) {
+        docsSlot.appendChild(dirGroup);
+      }
+      const hasUserDocs = !!selectedDocsId &&
+        selectedDocsId !== SAMPLE_MULTILINGUAL_DOCS_ID &&
+        selectedDocsId !== SAMPLE_VERTICAL_DOCS_ID &&
+        !currentLoadedDocsSampleKind;
+      dirGroup.style.display = hasUserDocs ? 'grid' : 'none';
+      return;
+    }
+
+    if (activeMainModeName === 'docx') {
+      const docxSlot = document.getElementById('docxDirectionSlot');
+      if (docxSlot && dirGroup.parentElement !== docxSlot) {
+        docxSlot.appendChild(dirGroup);
+      }
+      const hasUserHorizDocx = !!(selectedDocxFileId || selectedDocxBase64) &&
+        !currentLoadedDocxSampleKind &&
+        !isCurrentDocxNativeVertical;
+      dirGroup.style.display = hasUserHorizDocx ? 'grid' : 'none';
+      return;
+    }
+
+    dirGroup.style.display = 'none';
+  };
+
+  // ドライブ Picker でユーザー自身の Google ドキュメントが選ばれた瞬間に方向バーを表示する監視
+  const docsNameElForDirObs = document.getElementById('docsSelectedFileName');
+  if (docsNameElForDirObs && typeof MutationObserver !== 'undefined') {
+    const obsDocsDir = new MutationObserver(() => {
+      syncDirectionBarPlacementAndVisibility();
+    });
+    obsDocsDir.observe(docsNameElForDirObs, { childList: true, characterData: true, subtree: true });
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    stripEmojiFromButtonSpan('uiTextDocsDriveSelect');
+    stripEmojiFromButtonSpan('uiTextDocxDriveSelect');
+    stripEmojiFromButtonSpan('uiTextDocxLocalSelect');
+    stripEmojiFromButtonSpan('uiTextBtnExport');
+    stripEmojiFromButtonSpan('uiTextBtnDocxExport');
+    syncDirectionBarPlacementAndVisibility();
+  });
+
+
+  // ==============================================================================
+  // PDF ファイルサイズ肥大化根治 ＆ サンプル表記「サンプル（横書き）/ サンプル（縦書き）」統一パッチ (ver.163c)
+  // 1. pdf-lib の embedPages をループ外で全ページ一括実行し、フォント辞書の重複コピー（10MB肥大化）を解消
+  // 2. Google ドキュメント・Word の両タブのサンプル表記を完全に同一の「サンプル（横書き）」「サンプル（縦書き）」へ統一
+  // ==============================================================================
+  DOCS_DUAL_SAMPLE_I18N.ja = {
+    btnHoriz: 'サンプル（横書き）',
+    btnVert: 'サンプル（縦書き）',
+    nameHoriz: 'サンプル（横書き）',
+    nameVert: 'サンプル（縦書き）'
+  };
+  DOCS_DUAL_SAMPLE_I18N.en = {
+    btnHoriz: 'Sample (Horizontal)',
+    btnVert: 'Sample (Vertical)',
+    nameHoriz: 'Sample (Horizontal)',
+    nameVert: 'Sample (Vertical)'
+  };
+  DOCS_DUAL_SAMPLE_I18N['zh-TW'] = {
+    btnHoriz: '範例（橫書）',
+    btnVert: '範例（直書）',
+    nameHoriz: '範例（橫書）',
+    nameVert: '範例（直書）'
+  };
+  DOCS_DUAL_SAMPLE_I18N.ko = {
+    btnHoriz: '샘플 (가로쓰기)',
+    btnVert: '샘플 (세로쓰기)',
+    nameHoriz: '샘플 (가로쓰기)',
+    nameVert: '샘플 (세로쓰기)'
+  };
+
+  // 全縦書き出力モードで embedPages を一括1回実行し、オブジェクトストリーム圧縮付きで保存
+  composeVerticalOutputPdf = async function(typesetBytes, origBytesOrNull, paperMode, pitchMm, drawH, drawV, lineColorHex, baseName) {
+    const centerGuideColor = PDFLib.rgb(0.90, 0.92, 0.94);
+
+    if (paperMode === 'v-a4-single') {
+      return {
+        bytes: typesetBytes,
+        fileName: baseName + '_縦書き_A4本文のみ.pdf'
+      };
+    }
+
+    if (paperMode === 'v-a3-compare') {
+      const origDoc = await PDFLib.PDFDocument.load(origBytesOrNull, { ignoreEncryption: true });
+      const typesetDoc = await PDFLib.PDFDocument.load(typesetBytes, { ignoreEncryption: true });
+      const origPages = origDoc.getPages();
+      const typePages = typesetDoc.getPages();
+      const origTotal = origPages.length;
+      const typeTotal = typePages.length;
+      const maxPages = Math.max(origTotal, typeTotal);
+
+      const outDoc = await PDFLib.PDFDocument.create();
+      // ループ外で全ページを一括 embedPages することでフォントリソースを1セットに共有（重複肥大化防止）
+      const embeddedOrigPages = origTotal > 0 ? await outDoc.embedPages(origPages) : [];
+      const embeddedTypePages = typeTotal > 0 ? await outDoc.embedPages(typePages) : [];
+
+      const pageWPt = PaperSizesMm['a3-goodnotes'].width * MmToPt;
+      const pageHPt = PaperSizesMm['a3-goodnotes'].height * MmToPt;
+      const splitPt = PaperSizesMm['a3-goodnotes'].splitX * MmToPt;
+      const rightW = pageWPt - splitPt;
+
+      for (let i = 0; i < maxPages; i++) {
+        const a3Page = outDoc.addPage([pageWPt, pageHPt]);
+        a3Page.drawLine({
+          start: { x: splitPt, y: 0 },
+          end: { x: splitPt, y: pageHPt },
+          thickness: DefaultRuleStrokePt,
+          color: centerGuideColor,
+          dashArray: [4, 4]
+        });
+
+        if (i < embeddedOrigPages.length) {
+          const origEmb = embeddedOrigPages[i];
+          const fitScale = Math.min(splitPt / origEmb.width, pageHPt / origEmb.height);
+          const drawW = origEmb.width * fitScale;
+          const drawHPage = origEmb.height * fitScale;
+          a3Page.drawPage(origEmb, {
+            x: (splitPt - drawW) / 2.0,
+            y: (pageHPt - drawHPage) / 2.0,
+            width: drawW,
+            height: drawHPage
+          });
+        }
+
+        if (i < embeddedTypePages.length) {
+          const typeEmb = embeddedTypePages[i];
+          const fitScale = Math.min(rightW / typeEmb.width, pageHPt / typeEmb.height);
+          const drawW = typeEmb.width * fitScale;
+          const drawHPage = typeEmb.height * fitScale;
+          a3Page.drawPage(typeEmb, {
+            x: splitPt + (rightW - drawW) / 2.0,
+            y: (pageHPt - drawHPage) / 2.0,
+            width: drawW,
+            height: drawHPage
+          });
+        }
+      }
+
+      return {
+        bytes: await outDoc.save({ useObjectStreams: true }),
+        fileName: baseName + '_縦書き_A3デモ見開き.pdf'
+      };
+    }
+
+    if (paperMode === 'v-a3-goodnotes') {
+      const typesetDoc = await PDFLib.PDFDocument.load(typesetBytes, { ignoreEncryption: true });
+      const typePages = typesetDoc.getPages();
+      const totalSrcPages = typePages.length;
+      const outDoc = await PDFLib.PDFDocument.create();
+      const embeddedTypePages = totalSrcPages > 0 ? await outDoc.embedPages(typePages) : [];
+
+      const pageWPt = VerticalA3TallWidthMm * MmToPt;
+      const pageHPt = VerticalA3TallHeightMm * MmToPt;
+      const splitYPt = VerticalA3TallSplitYMm * MmToPt;
+      const noteLeftPt = VerticalOuterLeftMm * MmToPt;
+      const noteRightPt = (VerticalA3TallWidthMm - VerticalGutterRightMm) * MmToPt;
+      const noteBottomPt = VerticalMarginBottomMm * MmToPt;
+      const noteTopPt = (VerticalA3TallSplitYMm - VerticalMarginTopMm) * MmToPt;
+
+      for (let i = 0; i < totalSrcPages; i++) {
+        const a3TallPage = outDoc.addPage([pageWPt, pageHPt]);
+        a3TallPage.drawLine({
+          start: { x: 0, y: splitYPt },
+          end: { x: pageWPt, y: splitYPt },
+          thickness: DefaultRuleStrokePt,
+          color: centerGuideColor,
+          dashArray: [4, 4]
+        });
+
+        const sp = embeddedTypePages[i];
+        a3TallPage.drawPage(sp, {
+          x: 0,
+          y: splitYPt,
+          width: pageWPt,
+          height: pageHPt - splitYPt
+        });
+
+        drawVerticalAlignedNoteLines(
+          a3TallPage,
+          noteLeftPt,
+          noteRightPt,
+          noteBottomPt,
+          noteTopPt,
+          pitchMm,
+          drawH,
+          drawV,
+          lineColorHex
+        );
+      }
+
+      return {
+        bytes: await outDoc.save({ useObjectStreams: true }),
+        fileName: baseName + '_縦書き_A3見開きノート_上組版_下ノート.pdf'
+      };
+    }
+
+    if (paperMode === 'v-a4-spread') {
+      const typesetDoc = await PDFLib.PDFDocument.load(typesetBytes, { ignoreEncryption: true });
+      const typePages = typesetDoc.getPages();
+      const totalSrcPages = typePages.length;
+      const outDoc = await PDFLib.PDFDocument.create();
+      const embeddedTypePages = totalSrcPages > 0 ? await outDoc.embedPages(typePages) : [];
+
+      const pWPt = VerticalLandscapeWidthMm * MmToPt;
+      const pHPt = VerticalLandscapeHeightMm * MmToPt;
+      const noteLeftPt = VerticalOuterLeftMm * MmToPt;
+      const noteRightPt = (VerticalLandscapeWidthMm - VerticalGutterRightMm) * MmToPt;
+      const noteBottomPt = VerticalMarginBottomMm * MmToPt;
+      const noteTopPt = (VerticalLandscapeHeightMm - VerticalMarginTopMm) * MmToPt;
+
+      const p1 = outDoc.addPage([pWPt, pHPt]);
+      drawVerticalAlignedNoteLines(p1, noteLeftPt, noteRightPt, noteBottomPt, noteTopPt, pitchMm, drawH, drawV, lineColorHex);
+
+      for (let i = 0; i < totalSrcPages; i++) {
+        const sp = embeddedTypePages[i];
+        const dp = outDoc.addPage([pWPt, pHPt]);
+        dp.drawPage(sp, { x: 0, y: 0, width: pWPt, height: pHPt });
+
+        const np = outDoc.addPage([pWPt, pHPt]);
+        drawVerticalAlignedNoteLines(np, noteLeftPt, noteRightPt, noteBottomPt, noteTopPt, pitchMm, drawH, drawV, lineColorHex);
+      }
+
+      return {
+        bytes: await outDoc.save({ useObjectStreams: true }),
+        fileName: baseName + '_縦書き_A4見開きノート_上組版_下ノート.pdf'
+      };
+    }
+
+    return {
+      bytes: typesetBytes,
+      fileName: baseName + '_縦書き.pdf'
+    };
+  };
+
+  window.addEventListener('DOMContentLoaded', () => {
+    syncDocsDualSampleLabels(currentLanguage);
+  });
 
 
   </script>
