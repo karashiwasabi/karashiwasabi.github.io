@@ -760,7 +760,7 @@
   <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 0.75rem;">
     <div style="font-size: 1.05rem; font-weight: 800; color: #1f1f1f;">
       <span style="color: #1a73e8; font-weight: 900;">Line-aligned</span>
-      <span style="color: #5f6368; font-size: 0.78rem; margin-left: 6px;">ver.164 (Build 20261121_1454)</span>
+      <span style="color: #5f6368; font-size: 0.78rem; margin-left: 6px;">ver.164 (Build 20261121_2042)</span>
     </div>
     <div style="display: flex; align-items: center; gap: 6px;">
       <a href="https://wasabikarashi.com/" id="uiLinkTop" style="display: inline-flex; align-items: center; gap: 3px; background: #f1f5f9; border: 1px solid #dadce0; border-radius: 8px; padding: 5px 10px; font-size: 0.75rem; font-weight: 700; color: #3c4043; text-decoration: none; white-space: nowrap;">トップ</a>
@@ -1026,8 +1026,7 @@
       <div class="setting-item">
         <div class="setting-label" id="uiLabelDocxPaperProfile">① 用紙・印刷形式</div>
         <select id="docxPaperProfileSelect" onchange="onDocxSettingChanged()">
-          <option value="a3-compare" selected>A3 デモ見開き（左：原本 ＋ 右：組版）</option>
-          <option value="a3-goodnotes">A3 横見開き（左：組版 ＋ 右：ノート）</option>
+          <option value="a3-goodnotes" selected>A3 横見開き（左：組版 ＋ 右：ノート）</option>
           <option value="a4-spread">A4 見開き（裏：組版 ＋ 表：ノート）</option>
           <option value="a4-single">A4（本文のみ）</option>
           <option value="a5-spread">A5 見開き（裏：組版 ＋ 表：ノート）</option>
@@ -2055,10 +2054,15 @@
       throw new Error('NOT_INSTALLED');
     }
 
-    // 内側ブリッジフレームが生きていればGAS側で実行し、サードパーティCookie制限でトークンのみ保持している場合はブラウザ直接実行にフォールバック
+    // Web直アクセスで GIS アクセストークンを保持している場合は GAS ブリッジを通さずブラウザ直接実行（UrlFetchApp 権限エラー完全回避）
+    if (webGisAccessToken && cfg.token === webGisAccessToken) {
+      return await executeBrowserDirectDocsRpc(method, params, cfg.token);
+    }
+
+    // 内側ブリッジフレームが生きていればGAS側で実行し、失敗または権限エラー時はブラウザ直接実行にフォールバック
     if (gasBridgeTargetWindow && !gasBridgeTargetWindow.closed) {
       try {
-        return await new Promise((resolve, reject) => {
+        const bridgeRes = await new Promise((resolve, reject) => {
           const reqId = 'rpc_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9);
           const timer = setTimeout(() => {
             delete gasBridgeRpcMap[reqId];
@@ -2073,6 +2077,10 @@
             params: params
           }, '*');
         });
+        if (bridgeRes && bridgeRes.success === false) {
+          return await executeBrowserDirectDocsRpc(method, params, cfg.token);
+        }
+        return bridgeRes;
       } catch (_bridgeErr) {
         return await executeBrowserDirectDocsRpc(method, params, cfg.token);
       }
@@ -4965,10 +4973,13 @@ async function loadSampleDocx() {
     ['docs', 'docx'].forEach(prefix => {
       const paperSel = document.getElementById(prefix + 'PaperProfileSelect');
       if (paperSel) {
+        const effectivePaperList = (prefix === 'docx')
+          ? paperList.filter(item => item.value !== 'a3-compare' && item.value !== 'v-a3-compare')
+          : paperList;
         const prevPaperVal = preservePaperValue ? paperSel.value : '';
         paperSel.innerHTML = '';
         let matched = false;
-        paperList.forEach((item, idx) => {
+        effectivePaperList.forEach((item, idx) => {
           const opt = document.createElement('option');
           opt.value = item.value;
           opt.textContent = item.label;
@@ -6012,231 +6023,69 @@ async function loadSampleDocx() {
 
 
   // ==============================================================================
-  // ステップ4: Web直アクセス (wasabikarashi.com/linealigned/) の GIS ポップアップ直連携
-  // script.google.com への強制ページ移動を完全廃止し、画面を離れずスムーズにドライブ連携する
+  // ステップ4: 公開Web版 (wasabikarashi.com/linealigned/) の未インストール時挙動（A案確定仕様）
+  // Word・PDF・全サンプルはインストール不要でそのまま利用可能とし、
+  // 未インストール状態で「Googleドライブから選択」を押した際は Picker や外部遷移を行わず
+  // 即座に Marketplace 無料インストール案内モーダルを表示する。
   // ==============================================================================
-  const WEB_OAUTH_CLIENT_ID = '435629186234-nteu5fau85ndaeb8kq42fbcpgsguqd0b.apps.googleusercontent.com';
-  const WEB_CLOUD_PROJECT_NUMBER = '435629186234';
-  const WEB_OAUTH_SCOPES = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/documents';
-  const GIS_TOKEN_EXPIRY_BUFFER_MS = 60000;
-  const GIS_DEFAULT_EXPIRES_SEC = 3500;
-  const GIS_SCRIPT_WAIT_TIMEOUT_MS = 8000;
-  const GIS_SCRIPT_POLL_INTERVAL_MS = 100;
-
-  let webGisTokenClient = null;
   let webGisAccessToken = null;
-  let webGisTokenExpiresAtMs = 0;
-  let webGisPendingCallbacks = null;
-  let webPickerDeveloperKey = '';
-  let webPickerKeyPromise = null;
-
-  // 非公開バックエンド(Cloud Run環境変数)から制限付き Picker API キーを実行時取得（公開リポジトリへキーを一切置かない）
-  function fetchWebPickerDeveloperKey() {
-    if (webPickerDeveloperKey) {
-      return Promise.resolve(webPickerDeveloperKey);
-    }
-    if (webPickerKeyPromise) {
-      return webPickerKeyPromise;
-    }
-    const endpoint = TATEGAKI_CLOUD_RUN_URL.replace(/\/$/, '') + '/v3/picker-config';
-    webPickerKeyPromise = fetch(endpoint, { method: 'GET', cache: 'no-store' })
-      .then((res) => {
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        return res.json();
-      })
-      .then((data) => {
-        const key = (data && typeof data.developerKey === 'string') ? data.developerKey.trim() : '';
-        if (key) {
-          webPickerDeveloperKey = key;
-          if (gasBridgeReadyConfig && !gasBridgeReadyConfig.developerKey) {
-            gasBridgeReadyConfig.developerKey = key;
-          }
-        }
-        return webPickerDeveloperKey;
-      })
-      .catch(() => '')
-      .finally(() => {
-        webPickerKeyPromise = null;
-      });
-    return webPickerKeyPromise;
-  }
-
-  function getActiveWebOAuthConfig() {
-    if (webGisAccessToken && Date.now() < (webGisTokenExpiresAtMs - GIS_TOKEN_EXPIRY_BUFFER_MS)) {
-      return {
-        token: webGisAccessToken,
-        developerKey: webPickerDeveloperKey,
-        appId: WEB_CLOUD_PROJECT_NUMBER
-      };
-    }
-    if (gasBridgeReadyConfig && gasBridgeReadyConfig.token) {
-      return gasBridgeReadyConfig;
-    }
-    return null;
-  }
-
-  function initWebGisTokenClient() {
-    if (webGisTokenClient) return webGisTokenClient;
-    if (typeof google === 'undefined' || !google.accounts || !google.accounts.oauth2) {
-      return null;
-    }
-    webGisTokenClient = google.accounts.oauth2.initTokenClient({
-      client_id: WEB_OAUTH_CLIENT_ID,
-      scope: WEB_OAUTH_SCOPES,
-      callback: (resp) => {
-        const pending = webGisPendingCallbacks;
-        webGisPendingCallbacks = null;
-        if (!resp || resp.error || !resp.access_token) {
-          if (pending && pending.reject) {
-            pending.reject(new Error((resp && resp.error) ? resp.error : 'Google認証がキャンセルされました'));
-          }
-          return;
-        }
-        webGisAccessToken = resp.access_token;
-        const expiresInSec = Number(resp.expires_in) || GIS_DEFAULT_EXPIRES_SEC;
-        webGisTokenExpiresAtMs = Date.now() + (expiresInSec * MillisecondsPerSecond);
-        const cfg = {
-          token: webGisAccessToken,
-          developerKey: webPickerDeveloperKey,
-          appId: WEB_CLOUD_PROJECT_NUMBER
-        };
-        gasBridgeReadyConfig = cfg;
-        gasBridgeCheckCompleted = true;
-        if (pending && pending.resolve) {
-          pending.resolve(cfg);
-        }
-      },
-      error_callback: (err) => {
-        const pending = webGisPendingCallbacks;
-        webGisPendingCallbacks = null;
-        const errType = (err && err.type) ? err.type : 'popup_closed';
-        if (pending && pending.reject) {
-          pending.reject(new Error(errType));
-        }
-      }
-    });
-    return webGisTokenClient;
-  }
-
-  function waitForGisLibraryLoaded(timeoutMs) {
-    return new Promise((resolve) => {
-      if (initWebGisTokenClient()) {
-        resolve(true);
-        return;
-      }
-      const deadline = Date.now() + (timeoutMs || GIS_SCRIPT_WAIT_TIMEOUT_MS);
-      const timer = setInterval(() => {
-        if (initWebGisTokenClient()) {
-          clearInterval(timer);
-          resolve(true);
-        } else if (Date.now() >= deadline) {
-          clearInterval(timer);
-          resolve(false);
-        }
-      }, GIS_SCRIPT_POLL_INTERVAL_MS);
-    });
-  }
-
-  // ページ読み込み時に GIS クライアントと Picker 設定を事前準備（クリック時の同期ポップアップ起動で Safari のブロックを回避）
-  window.addEventListener('DOMContentLoaded', () => {
-    if (!isGasEnvironment()) {
-      waitForGisLibraryLoaded(GIS_SCRIPT_WAIT_TIMEOUT_MS).catch(() => {});
-      fetchWebPickerDeveloperKey().catch(() => {});
-    }
-  });
-
-  function requestWebGisAuthConfigSyncFirst() {
-    const existing = getActiveWebOAuthConfig();
-    if (existing && existing.token) {
-      gasBridgeReadyConfig = existing;
-      gasBridgeCheckCompleted = true;
-      return Promise.resolve(existing);
-    }
-
-    const client = initWebGisTokenClient();
-    if (client) {
-      return new Promise((resolve, reject) => {
-        webGisPendingCallbacks = { resolve, reject };
-        try {
-          client.requestAccessToken({ prompt: '' });
-        } catch (errReq) {
-          webGisPendingCallbacks = null;
-          reject(errReq);
-        }
-      });
-    }
-
-    // 万が一クリック直後にまだ GIS スクリプト読み込み中だった場合のフォールバック
-    return waitForGisLibraryLoaded(GIS_SCRIPT_WAIT_TIMEOUT_MS).then((ready) => {
-      const delayedClient = ready ? initWebGisTokenClient() : null;
-      if (!delayedClient) {
-        throw new Error('Google認証ライブラリの読み込みに失敗しました。ページを再読み込みしてお試しください。');
-      }
-      return new Promise((resolve, reject) => {
-        webGisPendingCallbacks = { resolve, reject };
-        delayedClient.requestAccessToken({ prompt: '' });
-      });
-    });
-  }
-
-  // 強制リダイレクトを完全廃止
-  redirectToGasExecDirectly = function() {
-    showStatus('Google アカウント認証を行ってください。', 'info');
-  };
 
   showMarketplaceInstallModal = function() {
-    // Web版は GIS ポップアップ直連携で完結するため、強制遷移・モーダル誘導は行わない
-  };
-
-  const _prevEnsureGasAuthConfigForGis = ensureGasAuthConfig;
-  ensureGasAuthConfig = function() {
-    if (isGasEnvironment()) {
-      return _prevEnsureGasAuthConfigForGis();
-    }
-    const activeCfg = getActiveWebOAuthConfig();
-    if (activeCfg && activeCfg.token) {
-      gasBridgeReadyConfig = activeCfg;
-      return Promise.resolve(activeCfg);
-    }
-    return Promise.resolve(null);
-  };
-
-  function wrapPickerWithWebGisAuth(basePickerFn, isBusyCheckFn) {
-    return function() {
-      if (isBusyCheckFn && isBusyCheckFn()) return;
-      if (isGasEnvironment()) {
-        return basePickerFn();
+    let modal = document.getElementById('marketplaceInstallModal');
+    const i18nModal = {
+      ja: {
+        title: '📄 Google ドキュメント連携にはインストールが必要です',
+        desc: 'Google ドライブ内のドキュメントを選択・組版するには、Google Workspace Marketplace からアドオン（無料）をインストールしてください。<br><span style="color:#5f6368;font-size:0.82rem;">※「サンプル」や、PDF・ローカルWord (.docx) の組版はインストール不要でそのままお使いいただけます。</span>',
+        btnInstall: '🚀 Google Workspace Marketplace を開く',
+        btnClose: '閉じる'
+      },
+      en: {
+        title: '📄 Add-on Installation Required for Google Drive',
+        desc: 'To select and typeset documents from your Google Drive, please install the free add-on from Google Workspace Marketplace.<br><span style="color:#5f6368;font-size:0.82rem;">* Sample files, PDFs, and local Word (.docx) files work immediately without installation.</span>',
+        btnInstall: '🚀 Open Google Workspace Marketplace',
+        btnClose: 'Close'
+      },
+      'zh-TW': {
+        title: '📄 連結 Google 雲端硬碟需先安裝附加元件',
+        desc: '若要從 Google 雲端硬碟選取文件進行排版，請先至 Google Workspace Marketplace 免費安裝外掛程式。<br><span style="color:#5f6368;font-size:0.82rem;">※「範例」、PDF 與本機 Word (.docx) 排版無需安裝即可直接使用。</span>',
+        btnInstall: '🚀 開啟 Google Workspace Marketplace',
+        btnClose: '關閉'
+      },
+      ko: {
+        title: '📄 Google 드라이브 연동에는 부가기능 설치가 필요합니다',
+        desc: 'Google 드라이브의 문서를 선택하여 조판하려면 Google Workspace Marketplace에서 무료 부가기능을 설치해 주세요.<br><span style="color:#5f6368;font-size:0.82rem;">※ "샘플", PDF 및 로컬 Word (.docx) 조판은 설치 없이 바로 이용하실 수 있습니다.</span>',
+        btnInstall: '🚀 Google Workspace Marketplace 열기',
+        btnClose: '닫기'
       }
-      // クリックイベントから同期的にポップアップ認証を開始（iPad Safari のポップアップブロック回避）
-      return requestWebGisAuthConfigSyncFirst()
-        .then(async (cfg) => {
-          if (cfg && !cfg.developerKey) {
-            const devKey = await fetchWebPickerDeveloperKey();
-            if (devKey) {
-              cfg.developerKey = devKey;
-              gasBridgeReadyConfig = cfg;
-            }
-          }
-          return basePickerFn();
-        })
-        .catch((err) => {
-          const msg = (err && err.message) ? err.message : '';
-          if (msg === 'popup_closed' || msg === 'access_denied' || msg.includes('キャンセル')) {
-            if (statusMsg) statusMsg.style.display = 'none';
-            return;
-          }
-          if (msg === 'popup_failed_to_open') {
-            showStatus('ポップアップがブロックされました。ブラウザのポップアップ許可をオンにして再度お試しください。', 'error');
-            return;
-          }
-          showStatus('Google認証エラー: ' + (msg || '不明なエラー'), 'error');
-        });
     };
-  }
+    const mt = i18nModal[currentLanguage] || i18nModal['ja'];
 
-  openDocsPicker = wrapPickerWithWebGisAuth(_baseOpenDocsPicker, () => isDocsBusy);
-  openDocxDrivePicker = wrapPickerWithWebGisAuth(_baseOpenDocxDrivePicker, () => isDocxBusy);
-  openDrivePicker = wrapPickerWithWebGisAuth(_baseOpenDrivePicker, null);
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'marketplaceInstallModal';
+      modal.style.cssText = 'position:fixed;inset:0;background:rgba(32,33,36,0.55);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:99999;padding:16px;';
+      document.body.appendChild(modal);
+    }
+
+    modal.innerHTML =
+      '<div style="position:relative;overflow:hidden;background:#ffffff;border:1px solid #dadce0;border-radius:16px;max-width:480px;width:100%;padding:28px 24px 24px;box-shadow:0 20px 40px rgba(0,0,0,0.2);color:#1f1f1f;font-family:sans-serif;">' +
+        '<div style="position:absolute;top:0;left:0;right:0;height:6px;background:linear-gradient(90deg,#4285f4 0%,#4285f4 25%,#ea4335 25%,#ea4335 50%,#fbbc04 50%,#fbbc04 75%,#34a853 75%,#34a853 100%);"></div>' +
+        '<div style="font-size:1.08rem;font-weight:800;color:#1a73e8;margin-bottom:12px;">' + mt.title + '</div>' +
+        '<div style="font-size:0.92rem;line-height:1.65;color:#3c4043;margin-bottom:20px;">' + mt.desc + '</div>' +
+        '<div style="display:flex;flex-direction:column;gap:10px;">' +
+          '<a href="' + MARKETPLACE_INSTALL_URL + '" target="_blank" rel="noopener noreferrer" onclick="document.getElementById(\'marketplaceInstallModal\').style.display=\'none\';" style="display:block;text-align:center;background:linear-gradient(135deg,#1a73e8,#2563eb);color:#ffffff;text-decoration:none;padding:13px 18px;border-radius:10px;font-weight:700;font-size:0.95rem;box-shadow:0 4px 12px rgba(26,115,232,0.3);">' + mt.btnInstall + '</a>' +
+          '<button type="button" onclick="document.getElementById(\'marketplaceInstallModal\').style.display=\'none\';" style="background:#f8f9fa;border:1px solid #dadce0;color:#3c4043;padding:10px 16px;border-radius:10px;font-weight:600;cursor:pointer;">' + mt.btnClose + '</button>' +
+        '</div>' +
+      '</div>';
+    modal.style.display = 'flex';
+  };
+  window.showMarketplaceInstallModal = showMarketplaceInstallModal;
+
+  openDocsPicker = _baseOpenDocsPicker;
+  openDocxDrivePicker = _baseOpenDocxDrivePicker;
+  openDrivePicker = _baseOpenDrivePicker;
+  window.openDocxDrivePicker = openDocxDrivePicker;
+  window.openDrivePicker = openDrivePicker;
 
   // ==============================================================================
   // 第3ライン合流: Word (.docx) の書字方向を自動判別し、
@@ -8343,6 +8192,47 @@ async function loadSampleDocx() {
     return _prevExecuteDocxBeforeGuard(isExportPdf);
   };
   window.executeDocxLayout = executeDocxLayout;
+
+
+  // ============================================================================
+  // GA4 エンジン実行イベント計測（横→横 / 横→縦 / 縦→縦 / PDF見開き）
+  // ============================================================================
+  (function attachLineAlignedRenderAnalytics() {
+    const docsBtn = document.getElementById('btnDocsExportPdf');
+    if (docsBtn) {
+      docsBtn.addEventListener('click', function() {
+        if (typeof trackStudioEvent === 'function') {
+          const ev = currentWritingDirection === 'vertical'
+            ? 'linealigned_render_h2v'
+            : 'linealigned_render_h2h';
+          trackStudioEvent(ev, { source_type: 'docs' });
+        }
+      });
+    }
+
+    const docxBtn = document.getElementById('btnDocxExportPdf');
+    if (docxBtn) {
+      docxBtn.addEventListener('click', function() {
+        if (typeof trackStudioEvent === 'function') {
+          const isV2V = currentLoadedDocxSampleKind === 'v2v' ||
+            (!currentLoadedDocxSampleKind && typeof isCurrentDocxNativeVertical !== 'undefined' && isCurrentDocxNativeVertical);
+          const ev = isV2V
+            ? 'linealigned_render_v2v'
+            : (currentWritingDirection === 'vertical' ? 'linealigned_render_h2v' : 'linealigned_render_h2h');
+          trackStudioEvent(ev, { source_type: 'docx' });
+        }
+      });
+    }
+
+    const pdfBtn = document.getElementById('generateBtn');
+    if (pdfBtn) {
+      pdfBtn.addEventListener('click', function() {
+        if (typeof trackStudioEvent === 'function') {
+          trackStudioEvent('linealigned_render_pdf', { source_type: 'pdf' });
+        }
+      });
+    }
+  })();
 
 
   </script>
