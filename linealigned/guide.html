@@ -13,14 +13,32 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="google-site-verification" content="XTUyp1ouHdnj1jkzypNTPJRBj4YpdgQYlUPgpsipJKk" />
-  <title>Line-aligned | Word・Google ドキュメント™ の罫線ノート＆縦書き組版ツール</title>
+  <title>Line-aligned | Word (.docx)・Google ドキュメント™・PDF の罫線ノート＆縦書き組版スタジオ</title>
+  <meta name="description" content="Word (.docx) の行間固定による見出し・数式・図の上部切れを解決し、6.0 / 7.0 / 8.0mm の罫線・方眼ノートPDFへ自動組版。縦書き機能がない Google ドキュメント™ や横書き Word のワンクリック縦書きPDF化、縦書き Word 原稿の上下見開きノート化、iPad Goodnotes・両面印刷に対応した無料Webアプリ。">
+  <link rel="canonical" href="https://wasabikarashi.com/linealigned/guide.html">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://wasabikarashi.com/linealigned/guide.html">
+  <meta property="og:title" content="Line-aligned | Word・Google ドキュメント™・PDF の罫線ノート＆縦書き組版スタジオ">
+  <meta property="og:description" content="横書き→横書き罫線、横書き→縦書きPDF変換、縦書きWord→縦書き上下見開きノートの3ライン完備。インストール不要でブラウザからすぐ試せます。">
   <link rel="icon" type="image/x-icon" href="../favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
-  <meta property="og:image" content="https://wasabikarashi.com/images/ogp_banner_1200x630.png">
+  <meta property="og:image" content="https://wasabikarashi.com/images/v164/marketplace_02_vertical_typesetting.png">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://wasabikarashi.com/images/ogp_banner_1200x630.png">
+  <meta name="twitter:image" content="https://wasabikarashi.com/images/v164/marketplace_02_vertical_typesetting.png">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Line-aligned",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Web, ChromeOS, Windows, macOS, iPadOS, iOS, Android",
+    "url": "https://wasabikarashi.com/linealigned/",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" },
+    "description": "Word (.docx)・Google ドキュメント™・PDF を 6.0 / 7.0 / 8.0mm の罫線・方眼ノートおよび縦書きPDF（左右・上下見開き対応）へ自動組版する無料Webアプリケーション。"
+  }
+  </script>
   <style>
     :root {
       --primary: #1a73e8;
@@ -552,6 +570,18 @@
           <span class="lang-content zh">🔰 新手指南</span>
           <span class="lang-content ko">🔰 시작 가이드</span>
         </a>
+        <a href="#workflow-matrix" class="nav-link">
+          <span class="lang-content ja">対応パターン・活用法</span>
+          <span class="lang-content en">Workflows &amp; Presets</span>
+          <span class="lang-content zh">支援模式・活用法</span>
+          <span class="lang-content ko">지원 패턴·활용법</span>
+        </a>
+        <a href="#faq" class="nav-link">
+          <span class="lang-content ja">よくある質問</span>
+          <span class="lang-content en">FAQ</span>
+          <span class="lang-content zh">常見問題</span>
+          <span class="lang-content ko">FAQ</span>
+        </a>
         <a href="#changelog" class="nav-link">
           <span class="lang-content ja">開発履歴</span>
           <span class="lang-content en">Changelog</span>
@@ -602,21 +632,21 @@
       <span class="lang-content ko">Word (.docx)·Google 문서™·PDF 줄공책 및 세로쓰기 자동 조판 도구</span>
     </h1>
 
-    <p style="max-width: 840px;">
-      <span class="lang-content ja">Wordで行間を固定すると見出しや数式・図の上下が切れる問題を解決し、6.0 / 7.0 / 8.0mm の罫線・方眼にピタッと同期。さらに、縦書き機能がない Google ドキュメント™ や横書きの Word 原稿を、表・数式・図版・段組みを維持したままワンクリックで縦書きPDF（上下見開きノート対応）へ変換できます。</span>
-      <span class="lang-content en">Fixes Word’s "Exact" line-spacing clipping on headings, math, and figures by snapping everything cleanly onto 6.0 / 7.0 / 8.0 mm lines or grids—and converts horizontal Google Docs™ (which has no vertical text mode) or Word files directly into vertical &amp; spread PDFs in one click.</span>
-      <span class="lang-content zh">解決 Word 固定行高導致標題、公式與圖表上下被截斷的問題，精準對齊 6.0 / 7.0 / 8.0mm 格線與方格；更可將沒有直書功能的 Google 文件™ 或橫書 Word 原稿，完整保留表格、公式、文繞圖與多欄，一鍵轉為直書 PDF（支援上下跨頁筆記）。</span>
-      <span class="lang-content ko">Word에서 줄 간격 고정 시 제목·수식·그림이 잘리는 문제를 해결하여 6.0 / 7.0 / 8.0mm 줄눈·방안에 정확히 맞추며, 세로쓰기 기능이 없는 Google 문서™나 가로 Word 원고를 표·수식·도표·다단을 유지한 채 원클릭으로 세로쓰기 PDF(상하 펼침 노트 지원)로 변환합니다.</span>
+    <p style="max-width: 860px;">
+      <span class="lang-content ja">Wordで行間を固定すると見出しや数式・図の上下が切れる問題を解決し、6.0 / 7.0 / 8.0mm の罫線・方眼にピタッと同期。縦書き機能がない Google ドキュメント™ や横書き Word のワンクリック縦書きPDF化に加え、<strong>縦書きで作成された Word（.docx）原稿の文字方向も自動判別</strong>し、縦中横・ルビ・表・数式・図版を維持したまま美しい縦書き罫線・上下見開きノートへ組版します。</span>
+      <span class="lang-content en">Fixes Word’s "Exact" line-spacing clipping by snapping headings, math, and figures cleanly onto 6.0 / 7.0 / 8.0 mm lines or grids. Converts horizontal Google Docs™ or Word files into vertical PDFs in one click—and <strong>auto-detects native vertical Word (.docx) manuscripts</strong> to typeset vertical ruled &amp; top-bottom spread notebooks.</span>
+      <span class="lang-content zh">解決 Word 固定行高導致標題、公式與圖表被截斷的問題，精準對齊 6.0 / 7.0 / 8.0mm 格線與方格。除將 Google 文件™ 或橫書 Word 一鍵轉為直書 PDF 外，亦能<strong>自動判別原生直書 Word（.docx）原稿</strong>，完整保留縱中橫、注音、表格與公式輸出直書跨頁筆記。</span>
+      <span class="lang-content ko">Word에서 줄 간격 고정 시 제목·수식·그림이 잘리는 문제를 해결하여 6.0 / 7.0 / 8.0mm 줄눈·방안에 정확히 맞춥니다. Google 문서™·가로 Word의 원클릭 세로쓰기 변환은 물론, <strong>세로쓰기 Word(.docx) 원고도 자동 판별</strong>하여 세로 줄눈 및 상하 펼침 노트로 조판합니다.</span>
     </p>
 
     <!-- Call to Action & Product Hunt Badge -->
     <div style="display: flex; justify-content: center; align-items: center; gap: 1rem; flex-wrap: wrap; margin-top: 2rem;">
       <a href="/linealigned/" style="display: inline-flex; align-items: center; gap: 10px; background: #059669; color: #ffffff; padding: 0 26px; height: 54px; border-radius: 8px; font-weight: 700; text-decoration: none; font-size: 1.02rem; box-shadow: 0 4px 14px rgba(5,150,105,0.32); transition: var(--transition);">
         <span>📝</span>
-        <span class="lang-content ja">今すぐ試す（Word・PDF・サンプルはインストール不要）</span>
-        <span class="lang-content en">Try Now in Browser (No Install for Word, PDF &amp; Samples)</span>
-        <span class="lang-content zh">立即試用（Word・PDF・範本免安裝）</span>
-        <span class="lang-content ko">바로 체험하기 (Word·PDF·샘플 설치 불필요)</span>
+        <span class="lang-content ja">今すぐ試す（Word・PDF・全5種サンプルはインストール不要）</span>
+        <span class="lang-content en">Try Now in Browser (No Install for Word, PDF &amp; 5 Samples)</span>
+        <span class="lang-content zh">立即試用（Word・PDF・5種範本免安裝）</span>
+        <span class="lang-content ko">바로 체험하기 (Word·PDF·5종 샘플 설치 불필요)</span>
       </a>
       <a href="https://workspace.google.com/marketplace/app/linealigned/435629186234?flow_type=2" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 10px; background: var(--primary); color: #ffffff; padding: 0 24px; height: 54px; border-radius: 8px; font-weight: 700; text-decoration: none; font-size: 1rem; box-shadow: 0 4px 14px rgba(26,115,232,0.3); transition: var(--transition);">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -632,32 +662,32 @@
       </a>
     </div>
 
-    <!-- NEW TOP FEATURED: Horizontal -> Vertical PDF & Spread Showcase (ver.162) -->
+    <!-- NEW TOP FEATURED: 3-Line Typesetting Complete Showcase (ver.164) -->
     <div style="max-width: 1080px; margin: 1.75rem auto 0; background: #0f172a; border: 2px solid #10b981; border-radius: 16px; padding: 1.5rem 1.25rem; box-shadow: 0 12px 32px rgba(15,23,42,0.22); text-align: center;">
       <span style="display: inline-block; background: rgba(16,185,129,0.2); color: #6ee7b7; font-size: 0.84rem; font-weight: 800; padding: 4px 14px; border-radius: 20px; margin-bottom: 0.5rem; border: 1px solid rgba(16,185,129,0.45);">
-        <span class="lang-content ja">🆕 ver.162 大型アップデート：縦書き機能がない Google ドキュメント™ もそのまま縦書き化！</span>
-        <span class="lang-content en">🆕 ver.162 Update: One-Click Horizontal ➔ Vertical PDF &amp; Top-Bottom Spreads!</span>
-        <span class="lang-content zh">🆕 ver.162 重大更新：無直書功能的 Google 文件™ 與橫書 Word 一鍵轉為直書 PDF！</span>
-        <span class="lang-content ko">🆕 ver.162 업데이트: 세로쓰기 기능이 없는 Google 문서™와 가로 Word를 원클릭 세로쓰기화!</span>
+        <span class="lang-content ja">🆕 ver.164 大型アップデート：「横➔横」「横➔縦」「縦書きWord➔縦」の3大組版ライン完結！</span>
+        <span class="lang-content en">🆕 ver.164 Update: Full 3-Line Engine — Horiz➔Horiz, Horiz➔Vert &amp; Native Vertical Word➔Vert!</span>
+        <span class="lang-content zh">🆕 ver.164 重大更新：「橫➔橫」「橫➔直」「原生直書Word➔直」三大排版引擎全面到位！</span>
+        <span class="lang-content ko">🆕 ver.164 업데이트: 「가로➔가로」「가로➔세로」「세로 Word➔세로」 3대 조판 라인 완비!</span>
       </span>
       <h2 style="font-size: clamp(1.15rem, 2.4vw, 1.5rem); font-weight: 800; color: #ffffff; margin-bottom: 0.4rem;">
-        <span class="lang-content ja">横書きの Google ドキュメント™・Word (.docx) ➔ 本格・縦書きPDF ＆ 上下見開きノート</span>
-        <span class="lang-content en">Horizontal Google Docs™ &amp; Word (.docx) ➔ Vertical PDF &amp; Study Spreads</span>
-        <span class="lang-content zh">橫書 Google 文件™・Word (.docx) ➔ 專業直書 PDF 與上下跨頁學習筆記</span>
-        <span class="lang-content ko">가로쓰기 Google 문서™·Word (.docx) ➔ 세로쓰기 PDF 및 상하 펼침 학습 노트</span>
+        <span class="lang-content ja">Google ドキュメント™・横書き／縦書き Word (.docx) ➔ 本格・縦書きPDF ＆ 上下見開きノート</span>
+        <span class="lang-content en">Google Docs™ &amp; Horizontal/Vertical Word (.docx) ➔ Vertical PDF &amp; Study Spreads</span>
+        <span class="lang-content zh">Google 文件™・橫書／直書 Word (.docx) ➔ 專業直書 PDF 與上下跨頁學習筆記</span>
+        <span class="lang-content ko">Google 문서™·가로/세로 Word (.docx) ➔ 세로쓰기 PDF 및 상하 펼침 학습 노트</span>
       </h2>
       <p style="font-size: 0.9rem; color: #cbd5e1; max-width: 920px; margin: 0 auto 1rem;">
-        <span class="lang-content ja">原稿を書き直す必要はありません。普段どおり横書きで作成した文書の表・分数数式・図版回り込み・段組み・ルビ・傍点・蛍光マーカー・JIS禁則を維持したまま、6.0 / 7.0 / 8.0mm の縦罫線・方眼に揃った縦書きPDFへ自動変換。国語・古文・漢文・論文精読に最適な「上：縦書き本文 ／ 下：手書きノート」の上下見開き（A3・A4）にも対応しています。（※クリックで拡大）</span>
-        <span class="lang-content en">No reformatting needed. Preserves tables, math fractions, wrapped figures, multi-column sections, ruby/emphasis marks, highlights, and JIS line-breaking rules on 6.0 / 7.0 / 8.0 mm vertical lines or grids—plus A3/A4 Top-Bottom Spread Notes (top: vertical text / bottom: ruled note page). (*Click to zoom)</span>
-        <span class="lang-content zh">無需重寫原稿。完整保留橫書文件的表格、分數公式、圖片文繞圖、上下多欄、注音、旁點、螢光標記與 JIS 禁則處理，對齊 6.0 / 7.0 / 8.0mm 直罫線與方格，並支援「上段直書內文／下段手寫筆記」的 A3・A4 上下跨頁筆記。（※點擊放大）</span>
-        <span class="lang-content ko">원고를 다시 쓸 필요가 없습니다. 표·분수 수식·이미지 배치·다단·루비·강조점·형광펜·JIS 금칙 처리를 그대로 유지하며 6.0 / 7.0 / 8.0mm 세로 줄눈·방안에 맞춘 세로쓰기 PDF 및 '위: 세로 본문 / 아래: 필기 노트' 구성의 A3·A4 상하 펼침 노트를 생성합니다. (*클릭 시 확대)</span>
+        <span class="lang-content ja">縦書き機能がない Google ドキュメント™ や横書き Word の自動縦書き変換はもちろん、最初から縦書きで作成された国語教材・小説・論文 Word（.docx）の文字方向・縦中横・ルビ・表・数式・図版回り込みも自動認識。6.0 / 7.0 / 8.0mm の縦罫線・方眼や「上：縦書き本文 ／ 下：手書きノート」の上下見開き（A3・A4）をワンクリックで生成します。（※クリックで拡大）</span>
+        <span class="lang-content en">Converts horizontal Google Docs™ &amp; Word files into vertical PDFs—and automatically detects native vertical Word (.docx) manuscripts (preserving tate-chu-yoko, ruby, tables, math, and wrapped figures) onto 6.0 / 7.0 / 8.0 mm vertical lines or A3/A4 Top-Bottom Spread Notes. (*Click to zoom)</span>
+        <span class="lang-content zh">除將 Google 文件™ 與橫書 Word 轉為直書 PDF 外，亦能自動辨識原生直書 Word（.docx）教材與小說原稿（保留縱中橫、注音、表格、公式與文繞圖），精準對齊 6.0 / 7.0 / 8.0mm 直罫線並輸出 A3・A4 上下跨頁筆記。（※點擊放大）</span>
+        <span class="lang-content ko">Google 문서™와 가로 Word의 세로 변환은 물론, 처음부터 세로쓰기로 작성된 국어 교재·소설 Word(.docx)의 문자 방향·세로중가로·루비·표·수식도 자동 인식하여 6.0 / 7.0 / 8.0mm 세로 줄눈 및 A3·A4 상하 펼침 노트로 생성합니다. (*클릭 시 확대)</span>
       </p>
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; max-width: 1030px; margin: 0 auto;">
-        <div class="image-viewer" onclick="openImageModal('../images/v162/marketplace_02_vertical_typesetting.png')" style="cursor: zoom-in; border-radius: 10px; overflow: hidden; border: 1px solid #334155;">
-          <img src="../images/v162/marketplace_02_vertical_typesetting.png" alt="横書きの Google ドキュメント・Word をそのまま縦書きPDFへ自動変換" style="width: 100%; height: auto; display: block;" />
+        <div class="image-viewer" onclick="openImageModal('../images/v164/marketplace_02_vertical_typesetting.png')" style="cursor: zoom-in; border-radius: 10px; overflow: hidden; border: 1px solid #334155;">
+          <img src="../images/v164/marketplace_02_vertical_typesetting.png" alt="Google ドキュメント・Word（横書き／縦書き）からの縦書き罫線組版PDF比較" style="width: 100%; height: auto; display: block;" />
         </div>
-        <div class="image-viewer" onclick="openImageModal('../images/v162/marketplace_05_spread_overview.png')" style="cursor: zoom-in; border-radius: 10px; overflow: hidden; border: 1px solid #334155;">
-          <img src="../images/v162/marketplace_05_spread_overview.png" alt="横書き左右見開き × 縦書き上下見開きノート構成" style="width: 100%; height: auto; display: block;" />
+        <div class="image-viewer" onclick="openImageModal('../images/v164/marketplace_05_spread_overview.png')" style="cursor: zoom-in; border-radius: 10px; overflow: hidden; border: 1px solid #334155;">
+          <img src="../images/v164/marketplace_05_spread_overview.png" alt="横書き左右見開き × 縦書き上下見開きノート構成" style="width: 100%; height: auto; display: block;" />
         </div>
       </div>
     </div>
@@ -826,18 +856,18 @@
             <div class="lang-content ja">
               <div style="display: grid; gap: 1rem;">
                 <div>
-                  <strong style="color: #1a73e8; font-size: 1rem;">1. 『Line-aligned』って何？</strong><br>
-                  Word で「行間：固定値」にすると見出しや数式・図の上下が切れてしまい、また Google ドキュメント™ にはそもそも「ノートの罫線」も「縦書き機能」もありません。『Line-aligned』は、普段の <strong>Word（.docx）・Google ドキュメント™・PDF</strong> を読み込むだけで、<strong>①見切れゼロで罫線・方眼に揃えた横書きノートPDF</strong> や、<strong>②横書き原稿からの本格・縦書きPDF（上下見開きノート対応）</strong> へ自動組版する無料Webアプリです。
+                  <strong style="color: #1a73e8; font-size: 1rem;">1. 『Line-aligned』って何？（3つの自動組版エンジンを搭載）</strong><br>
+                  Word で「行間：固定値」にすると見出しや数式・図の上下が切れてしまい、また Google ドキュメント™ にはそもそも「ノートの罫線」も「縦書き機能」もありません。『Line-aligned』は、普段の <strong>Word（.docx）・Google ドキュメント™・PDF</strong> を読み込むだけで、<strong>①横書き➔横書き罫線ノートPDF（見切れゼロ）</strong>、<strong>②横書き➔本格・縦書きPDF自動変換</strong>、<strong>③縦書きWord原稿➔縦書き罫線・上下見開きノートPDF（文字方向を自動判別）</strong> の3ラインすべてに対応する無料Webアプリです。
                 </div>
                 <div>
-                  <strong style="color: #1a73e8; font-size: 1rem;">2. どんなノート・用紙が作れるの？（横書き・縦書き両対応）</strong><br>
-                  ・<strong>横書き（DOCS / DOCX）</strong>：A3デモ見開き、A3横見開き（左：組版 ／ 右：ノート）、A4見開き（裏：組版 ／ 表：ノート）、A4本文のみ、A5見開き、A5本文のみ<br>
-                  ・<strong>縦書き（DOCS / DOCX）</strong>：A3デモ見開き（左：横書き原本 ／ 右：縦書き組版）、A3上下見開きノート（上：縦書き ／ 下：ノート）、A4上下見開きノート（上［裏］：縦書き ／ 下［表］：ノート）、A4縦書き本文のみ<br>
-                  ・<strong>罫線・方眼・カラー</strong>：<code>6.0 / 7.0 / 8.0mm</code> の罫線（横罫・縦罫）・方眼・無地、4色プリセット（ライトグレー・スカイブルー・セピア・チャコール）＋カスタムカラーに対応。既存PDFモードでは手書きノート面（7.0mm方眼 / 6.0mm方眼 / A罫7.5mm / B罫6.0mm / 無地）を結合できます。
+                  <strong style="color: #1a73e8; font-size: 1rem;">2. どんなノート・用紙が作れるの？（横書き・縦書き・PDFすべて 6 / 7 / 8mm 統一）</strong><br>
+                  ・<strong>横書き出力（DOCS / 横書きDOCX）</strong>：A3デモ見開き、A3横見開き（左：組版 ／ 右：ノート）、A4見開き（裏：組版 ／ 表：ノート）、A4本文のみ、A5見開き、A5本文のみ<br>
+                  ・<strong>縦書き出力（DOCS / 横書きDOCX / 縦書きDOCX）</strong>：A3デモ見開き（左：原本再現 ／ 右：縦書き組版）、A3上下見開きノート（上：縦書き ／ 下：ノート）、A4上下見開きノート（上［裏］：縦書き ／ 下［表］：ノート）、A4縦書き本文のみ<br>
+                  ・<strong>罫線・方眼・カラー（全モード共通）</strong>：<code>6.0 / 7.0 / 8.0mm</code> の罫線（横罫・縦罫）・方眼・無地、4色プリセット（ライトグレー・スカイブルー・セピア・チャコール）＋カスタムカラーに対応。既存PDFモードでも同じ <code>6.0 / 7.0 / 8.0mm</code>（横罫線・方眼・無地）の手書きノート面結合と30ページごとの自動分冊が可能です。
                 </div>
                 <div>
                   <strong style="color: #1a73e8; font-size: 1rem;">3. インストール不要で試せる機能と、Marketplace インストールが必要な機能</strong><br>
-                  ・<strong>手元の Word（.docx）・PDF・内蔵サンプル（横書き5言語／縦書き見本帳）</strong>：インストールもログインも不要で、上の緑ボタン（<code>/linealigned/</code>）から今すぐブラウザで使えます。<br>
+                  ・<strong>手元の Word（.docx：横書き・縦書き両方）・PDF・内蔵サンプル全5種（Docs 2種／Word 3種）</strong>：インストールもログインも不要で、上の緑ボタン（<code>/linealigned/</code>）から今すぐブラウザで使えます。<br>
                   ・<strong>Google ドキュメント™（Google ドライブ連携）</strong>：Google Workspace Marketplace からの無料インストール（初回の連携許可のみ）が必要です。
                 </div>
                 <div>
@@ -855,8 +885,8 @@
                   ② スマホ・iPad・PC 共通で、すぐ上の<strong>「🚀 Google連携版 Studio を開く」</strong>URLをブックマーク（Safari の「ホーム画面に追加」も便利）しておくと1秒で開けます。
                 </div>
                 <div>
-                  <strong style="color: #1a73e8; font-size: 1rem;">9〜10. 内蔵サンプル体験 ＆ iPad・両面印刷での活用法</strong><br>
-                  まずはスタジオ内の<strong>「サンプルをセット」</strong>ボタンで横書き理系サンプルや縦書き見本帳をお試しください。出力したPDFは Goodnotes / Notability に読み込んで Apple Pencil で書き込んだり、自宅やコンビニで両面印刷してルーズリーフバインダーに綴じる学習ノートに最適です！
+                  <strong style="color: #1a73e8; font-size: 1rem;">9〜10. 全5種の内蔵サンプル体験 ＆ iPad・両面印刷での活用法</strong><br>
+                  ファイルを用意しなくても、スタジオ内のサンプルボタン（Google Docs 2種：横➔横／横➔縦、Word 3種：横➔横／横➔縦／縦➔縦）を押すだけで即座に体験でき、元のサンプル <code>.docx</code> もダウンロードして見比べられます。出力PDFは Goodnotes での Apple Pencil 書き込みや、両面印刷してルーズリーフバインダーに綴じる学習ノートに最適です！
                 </div>
               </div>
             </div>
@@ -864,38 +894,230 @@
             <!-- English 1-10 Guide -->
             <div class="lang-content en">
               <div style="display: grid; gap: 0.9rem;">
-                <div><strong style="color: #1a73e8;">1. What is Line-aligned?</strong><br>Word's "Exact" line spacing clips headings, math, and figures, while Google Docs™ lacks both notebook ruling lines and vertical text support. Line-aligned converts your <strong>Word (.docx), Google Docs™, and PDFs</strong> into zero-clipping <strong>6.0 / 7.0 / 8.0 mm ruled or grid notebooks</strong>—and converts horizontal Google Docs™ or Word files into <strong>vertical Japanese/CJK PDFs</strong> in one click.</div>
-                <div><strong style="color: #1a73e8;">2. Paper Sizes, Spreads &amp; Ruling Colors</strong><br>Supports <strong>Horizontal</strong> (A3 Demo/Note Spreads, A4 Spread/Body, A5 Spread/Body) and <strong>Vertical</strong> (A3/A4 Top-Bottom Spread Notes &amp; A4 Vertical Body) at <code>6.0 / 7.0 / 8.0 mm</code> ruled, grid, or blank styles with 4 color presets + custom color picker, plus existing PDF spread merging.</div>
-                <div><strong style="color: #1a73e8;">3. No-Install Web Studio vs. Google Docs™ Integration</strong><br>Local <strong>Word (.docx), PDFs, and built-in samples</strong> work immediately in your browser with zero install via the green button above (<code>/linealigned/</code>). Reading <strong>Google Docs™</strong> from Drive requires a free one-time Google Workspace Marketplace install.</div>
+                <div><strong style="color: #1a73e8;">1. What is Line-aligned? (3 Unified Typesetting Engines)</strong><br>Word's "Exact" line spacing clips headings, math, and figures, while Google Docs™ lacks notebook ruling lines and vertical text. Line-aligned handles all 3 workflows: <strong>(1) Horizontal ➔ Horizontal Ruled/Grid PDF</strong>, <strong>(2) Horizontal ➔ Vertical PDF conversion</strong>, and <strong>(3) Native Vertical Word (.docx) ➔ Vertical Ruled &amp; Spread PDF</strong> (auto-detected).</div>
+                <div><strong style="color: #1a73e8;">2. Paper Sizes, Spreads &amp; Unified 6 / 7 / 8 mm Ruling</strong><br>Supports <strong>Horizontal</strong> (A3 Demo/Note Spreads, A4 Spread/Body, A5 Spread/Body) and <strong>Vertical</strong> (A3/A4 Top-Bottom Spread Notes &amp; A4 Vertical Body) at unified <code>6.0 / 7.0 / 8.0 mm</code> ruled, grid, or blank styles with 4 color presets + custom color picker across Docs, Word, and PDF spread merging (with automatic 30-page splitting).</div>
+                <div><strong style="color: #1a73e8;">3. No-Install Web Studio vs. Google Docs™ Integration</strong><br>Local <strong>Word (.docx, horizontal or vertical), PDFs, and all 5 built-in samples</strong> work immediately in your browser with zero install via the green button above (<code>/linealigned/</code>). Reading <strong>Google Docs™</strong> from Drive requires a free one-time Google Workspace Marketplace install.</div>
                 <div><strong style="color: #1a73e8;">4–6. Account Tip &amp; Verified Permission Safety</strong><br>Use a personal <code>@gmail.com</code> account if your school (<code>.edu</code>) blocks add-ons. Line-aligned only reads files you explicitly select via Google Picker and never alters or deletes your original documents.</div>
                 <div style="background: #eff6ff; border-left: 4px solid #1a73e8; padding: 0.75rem 1rem; border-radius: 6px;"><strong style="color: #1e40af;">7–8. How to Launch Google-Linked Studio (Not a Docs Sidebar)</strong><br>Line-aligned opens as a dedicated full-screen web app: launch it anytime from the <strong>Google Apps 9-dots launcher</strong> (top-right of Google Search/Drive) or bookmark the <strong>"🚀 Open Google-Linked Studio"</strong> URL above (or "Add to Home Screen" on iPad/iPhone).</div>
-                <div><strong style="color: #1a73e8;">9–10. Test Built-in Samples &amp; Study on iPad or Paper</strong><br>Click "Load Sample" to preview multilingual math or vertical typesetting right away, then export your PDF to Goodnotes/Notability or print duplex for loose-leaf binders!</div>
+                <div><strong style="color: #1a73e8;">9–10. Test All 5 Built-in Samples &amp; Study on iPad or Paper</strong><br>Try all 5 samples (2 Docs + 3 Word: Horiz➔Horiz, Horiz➔Vert, Vert➔Vert) in one click, download the source <code>.docx</code> to inspect, and export your PDF to Goodnotes/Notability or duplex loose-leaf binders!</div>
               </div>
             </div>
 
             <!-- Traditional Chinese 1-10 Guide -->
             <div class="lang-content zh">
               <div style="display: grid; gap: 0.9rem;">
-                <div><strong style="color: #1a73e8;">1. 『Line-aligned』是什麼？</strong><br>在 Word 設定固定行高會截斷標題、公式與圖表，而 Google 文件™ 本身既沒有筆記格線也沒有直書功能。Line-aligned 可將 <strong>Word (.docx)、Google 文件™ 與 PDF</strong> 自動排版為零裁切的 <strong>6.0 / 7.0 / 8.0mm 格線／方格筆記 PDF</strong>，並可將橫書原稿一鍵轉為<strong>專業直書 PDF（支援上下跨頁筆記）</strong>。</div>
-                <div><strong style="color: #1a73e8;">2. 紙張版型、跨頁筆記與格線配色</strong><br>橫書支援 A3 示範／筆記跨頁、A4 跨頁／內文、A5 跨頁／內文；直書支援 A3／A4 上下跨頁筆記（上直書＋下筆記）與 A4 直書內文。提供 <code>6.0 / 7.0 / 8.0mm</code> 格線、方格、無格線及 4 種預設色＋自訂選色器；PDF 模式可合併手寫筆記面。</div>
-                <div><strong style="color: #1a73e8;">3. 免安裝網頁版 vs. Google 文件™ 連動</strong><br>本機 <strong>Word (.docx)、PDF 與內建橫／直書範本</strong>免安裝、免登入即可點擊上方綠色按鈕直接使用；若需讀取雲端硬碟內的 <strong>Google 文件™</strong>，請先免費安裝 Google Workspace Marketplace 應用程式（建議使用個人 <code>@gmail.com</code> 帳號）。</div>
-                <div style="background: #eff6ff; border-left: 4px solid #1a73e8; padding: 0.75rem 1rem; border-radius: 6px;"><strong style="color: #1e40af;">4〜8. 權限安全與啟動方式（非側邊欄外掛）</strong><br>本應用通過 Google 安全審查，僅讀取您選取的檔案，絕不修改原始文件。安裝後請從 Google 畫面右上角<strong>「九宮格（Google 應用程式）」圖示下方點選 Line-aligned</strong>，或直接開啟上方<strong>「🚀 開啟 Google 連動版 Studio」</strong>並加入書籤／主畫面！</div>
-                <div><strong style="color: #1a73e8;">9〜10. 內建範本體驗與 Goodnotes／雙面列印活用</strong><br>點擊「載入範本」即可體驗五語數理與直書見本帳，匯出之 PDF 可直接匯入 iPad Goodnotes 手寫或雙面列印裝入活頁夾！</div>
+                <div><strong style="color: #1a73e8;">1. 『Line-aligned』是什麼？（內建三大排版引擎）</strong><br>在 Word 設定固定行高會截斷標題、公式與圖表，而 Google 文件™ 既無格線也無直書功能。Line-aligned 同時支援：<strong>①橫書➔橫書格線筆記</strong>、<strong>②橫書➔直書 PDF 自動轉換</strong>、以及<strong>③原生直書 Word (.docx)➔直書格線與上下跨頁筆記</strong>（自動判別文字方向）。</div>
+                <div><strong style="color: #1a73e8;">2. 紙張版型、跨頁筆記與統一 6 / 7 / 8mm 格線配色</strong><br>橫書支援 A3 示範／筆記跨頁、A4／A5 跨頁與內文；直書支援 A3／A4 上下跨頁筆記與 A4 直書內文。全模式統一支援 <code>6.0 / 7.0 / 8.0mm</code> 格線、方格、無格線及 4 種預設色＋自訂選色器（PDF 模式亦支援 6/7/8mm 筆記面合併與每 30 頁自動分冊）。</div>
+                <div><strong style="color: #1a73e8;">3. 免安裝網頁版 vs. Google 文件™ 連動</strong><br>本機 <strong>Word (.docx 橫／直書)、PDF 與全部 5 種內建範本</strong>免安裝、免登入即可點擊上方綠色按鈕直接使用；讀取雲端硬碟 <strong>Google 文件™</strong> 則需免費安裝 Marketplace 應用（建議使用個人 <code>@gmail.com</code>）。</div>
+                <div style="background: #eff6ff; border-left: 4px solid #1a73e8; padding: 0.75rem 1rem; border-radius: 6px;"><strong style="color: #1e40af;">4〜8. 權限安全與啟動方式（非側邊欄外掛）</strong><br>本應用通過 Google 安全審查，僅讀取您選取的檔案，絕不修改原始文件。安裝後請從 Google 右上角<strong>「九宮格」圖示下方點選 Line-aligned</strong>，或直接將上方<strong>「🚀 開啟 Google 連動版 Studio」</strong>加入書籤！</div>
+                <div><strong style="color: #1a73e8;">9〜10. 5 種內建範本體驗與 Goodnotes／雙面列印活用</strong><br>一鍵體驗 5 種內建範本（Docs 2 種＋Word 3 種：橫➔橫／橫➔直／直➔直），並可下載原始 <code>.docx</code> 對照，匯出 PDF 直接用於 iPad Goodnotes 手寫或雙面列印裝訂！</div>
               </div>
             </div>
 
             <!-- Korean 1-10 Guide -->
             <div class="lang-content ko">
               <div style="display: grid; gap: 0.9rem;">
-                <div><strong style="color: #1a73e8;">1. 『Line-aligned』란 무엇인가요?</strong><br>Word에서 줄 간격을 고정하면 제목·수식·그림이 잘리고, Google 문서™에는 노트 줄눈과 세로쓰기 기능이 없습니다. Line-aligned는 <strong>Word (.docx), Google 문서™, PDF</strong>를 잘림 없는 <strong>6.0 / 7.0 / 8.0mm 줄눈·방안 노트 PDF</strong>로 조판하고, 가로 문서를 원클릭으로 <strong>세로쓰기 PDF(상하 펼침 노트 지원)</strong>로 변환해 주는 무료 웹 앱입니다.</div>
-                <div><strong style="color: #1a73e8;">2. 용지 규격·펼침 노트 및 줄눈 색상</strong><br>가로쓰기(A3 데모/가로 펼침, A4 펼침/본문, A5 펼침/본문)와 세로쓰기(A3·A4 상하 펼침 노트 및 A4 세로 본문), <code>6.0 / 7.0 / 8.0mm</code> 줄눈·방안·무지 및 4가지 기본 색상+사용자 지정 색상, 기존 PDF 노트면 결합을 지원합니다.</div>
-                <div><strong style="color: #1a73e8;">3. 무설치 웹 버전 vs. Google 문서™ 연동</strong><br>내 기기의 <strong>Word (.docx), PDF 및 내장 샘플</strong>은 설치·로그인 없이 위 초록색 버튼(<code>/linealigned/</code>)에서 바로 사용할 수 있으며, <strong>Google 문서™</strong> 연동 시에만 Marketplace 무료 설치(개인 <code>@gmail.com</code> 권장)가 필요합니다.</div>
-                <div style="background: #eff6ff; border-left: 4px solid #1a73e8; padding: 0.75rem 1rem; border-radius: 6px;"><strong style="color: #1e40af;">4~8. 권한 안전성 및 실행 방법 (문서 사이드바 아님)</strong><br>사용자가 직접 선택한 파일만 안전하게 읽으며 원본을 수정하지 않습니다. 설치 후 Google 우측 상단 <strong>'점 9개(Google 앱)' 목록 하단의 Line-aligned</strong>를 클릭하거나, 위 <strong>「🚀 Google 연동 Studio 열기」</strong> URL을 북마크(또는 홈 화면에 추가)하여 바로 실행하세요!</div>
-                <div><strong style="color: #1a73e8;">9~10. 샘플 체험 및 iPad·양면 인쇄 활용</strong><br>내장된 가로 수식 샘플과 세로 견본으로 즉시 체험해 보고, 출력한 PDF를 Goodnotes 필기나 양면 인쇄 바인더 노트로 활용해 보세요!</div>
+                <div><strong style="color: #1a73e8;">1. 『Line-aligned』란 무엇인가요? (3대 자동 조판 엔진 탑재)</strong><br>Word 줄 간격 고정 시 발생하는 잘림 문제를 해결하고, Google 문서™에 없는 줄눈·세로쓰기를 구현합니다. <strong>①가로➔가로 줄눈 노트</strong>, <strong>②가로➔세로쓰기 PDF 변환</strong>, <strong>③세로 Word(.docx)➔세로 줄눈·상하 펼침 노트(자동 판별)</strong> 3가지 라인을 모두 지원합니다.</div>
+                <div><strong style="color: #1a73e8;">2. 용지 규격·펼침 노트 및 통합 6 / 7 / 8mm 줄눈 색상</strong><br>가로쓰기(A3 데모/가로 펼침, A4·A5 펼침/본문)와 세로쓰기(A3·A4 상하 펼침 노트 및 A4 세로 본문), 전 모드 통합 <code>6.0 / 7.0 / 8.0mm</code> 줄눈·방안·무지 및 4가지 기본 색상+커스텀 색상, 기존 PDF 노트면 결합(30페이지 자동 분책)을 지원합니다.</div>
+                <div><strong style="color: #1a73e8;">3. 무설치 웹 버전 vs. Google 문서™ 연동</strong><br>내 기기의 <strong>Word(.docx 가로·세로), PDF 및 내장 샘플 5종</strong>은 설치·로그인 없이 위 초록색 버튼(<code>/linealigned/</code>)에서 바로 사용할 수 있으며, <strong>Google 문서™</strong> 연동 시에만 Marketplace 무료 설치(개인 <code>@gmail.com</code> 권장)가 필요합니다.</div>
+                <div style="background: #eff6ff; border-left: 4px solid #1a73e8; padding: 0.75rem 1rem; border-radius: 6px;"><strong style="color: #1e40af;">4~8. 권한 안전성 및 실행 방법 (문서 사이드바 아님)</strong><br>사용자가 선택한 파일만 안전하게 읽으며 원본을 수정하지 않습니다. 설치 후 Google 우측 상단 <strong>'점 9개(Google 앱)' 목록 하단의 Line-aligned</strong>를 클릭하거나, 위 <strong>「🚀 Google 연동 Studio 열기」</strong> URL을 북마크하여 바로 실행하세요!</div>
+                <div><strong style="color: #1a73e8;">9~10. 5종 샘플 체험 및 iPad·양면 인쇄 활용</strong><br>내장된 5종 샘플(Docs 2종 + Word 3종: 가로➔가로 / 가로➔세로 / 세로➔세로)을 즉시 체험하고 원본 <code>.docx</code>도 다운로드해 비교해 보세요!</div>
               </div>
             </div>
           </div>
         </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEW SECTION: 4 Input x Output Workflow Matrix & Subject Recipes -->
+  <section id="workflow-matrix" class="container" style="padding-top: 2.25rem; padding-bottom: 1rem;">
+    <div style="background: #ffffff; border: 1px solid var(--border); border-radius: 16px; padding: 2rem 1.5rem; box-shadow: var(--card-shadow);">
+      <div style="text-align: center; margin-bottom: 1.5rem;">
+        <span style="display: inline-block; background: #ecfdf5; color: #059669; font-size: 0.82rem; font-weight: 800; padding: 4px 14px; border-radius: 20px; margin-bottom: 0.5rem; border: 1px solid #a7f3d0;">
+          <span class="lang-content ja">📊 原稿タイプ別の対応一覧 ＆ 自動判別のしくみ</span>
+          <span class="lang-content en">📊 Supported Input Matrix &amp; Auto-Detection Guide</span>
+          <span class="lang-content zh">📊 四大原稿類型支援一覽與自動判別機制</span>
+          <span class="lang-content ko">📊 원고 유형별 지원 일람 및 자동 판별 안내</span>
+        </span>
+        <h2 style="font-size: 1.6rem; font-weight: 800; color: var(--text); margin-bottom: 0.45rem;">
+          <span class="lang-content ja">お手元のファイルを入れるだけ。4つの入力パターンすべてに対応</span>
+          <span class="lang-content en">Drop Any File In: Full Support Across All 4 Document Workflows</span>
+          <span class="lang-content zh">放入手邊檔案即可：完整對應四大文件排版流程</span>
+          <span class="lang-content ko">파일만 넣으면 끝: 4가지 문서 입력 패턴 완벽 지원</span>
+        </h2>
+        <p style="color: var(--text-muted); font-size: 0.94rem; max-width: 840px; margin: 0 auto;">
+          <span class="lang-content ja">Word（.docx）はアップロード時に文書内の文字方向（横書き／縦書き）を自動で読み取ります。迷わず直感的に操作でき、ファイルがなくても<strong>全5種の内蔵サンプル</strong>で今すぐ仕上がりを試せます。</span>
+          <span class="lang-content en">Word (.docx) files are inspected automatically on upload to detect horizontal vs. vertical writing direction—and you can test every workflow right now with <strong>5 built-in samples</strong>.</span>
+          <span class="lang-content zh">上傳 Word（.docx）時會自動讀取文件內的橫／直書設定，無需複雜操作；即使手邊沒有檔案，也能透過<strong>內建 5 種範本</strong>立即體驗。</span>
+          <span class="lang-content ko">Word(.docx) 업로드 시 문서 내 가로/세로 방향을 자동으로 인식하며, 파일이 없어도 <strong>내장된 5종 샘플</strong>로 지금 바로 테스트할 수 있습니다.</span>
+        </p>
+      </div>
+
+      <!-- 4 Workflow Cards -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(235px, 1fr)); gap: 1rem; margin-bottom: 1.75rem;">
+        <!-- Pattern 1: Google Docs -->
+        <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-top: 4px solid #2563eb; border-radius: 12px; padding: 1.15rem;">
+          <div style="font-size: 0.76rem; font-weight: 800; color: #2563eb; margin-bottom: 0.25rem;">PATTERN 1 — GOOGLE DOCS</div>
+          <h3 style="font-size: 1.02rem; font-weight: 800; margin-bottom: 0.45rem; color: var(--text);">
+            <span class="lang-content ja">Google ドキュメント™（横書き）</span>
+            <span class="lang-content en">Google Docs™ (Horizontal)</span>
+            <span class="lang-content zh">Google 文件™（橫書原稿）</span>
+            <span class="lang-content ko">Google 문서™ (가로 원고)</span>
+          </h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 0.6rem;">
+            <span class="lang-content ja">赤い切替ボタンで<strong>「横書き罫線ノート」</strong>と<strong>「縦書きPDF変換（上下見開き）」</strong>を自在に選択。縦書き機能がない Docs でもそのまま国語・論文用の縦書きプリントが作れます。</span>
+            <span class="lang-content en">Use the red toggle to output either <strong>Horizontal Ruled/Grid PDFs</strong> or <strong>Vertical &amp; Top-Bottom Spread PDFs</strong> directly from Google Drive.</span>
+            <span class="lang-content zh">透過紅色切換鈕自由選擇輸出<strong>「橫書格線筆記」</strong>或<strong>「直書 PDF（上下跨頁）」</strong>，讓無直書功能的 Docs 也能印製直書講義。</span>
+            <span class="lang-content ko">빨간 전환 버튼으로 <strong>「가로 줄눈 노트」</strong>와 <strong>「세로쓰기 PDF(상하 펼침)」</strong>를 자유롭게 선택하여 출력합니다.</span>
+          </p>
+          <div style="font-size: 0.78rem; background: #eff6ff; color: #1d4ed8; padding: 5px 9px; border-radius: 6px; font-weight: 700;">
+            <span class="lang-content ja">🧪 内蔵サンプル2種（横➔横 ／ 横➔縦）</span>
+            <span class="lang-content en">🧪 2 Built-in Samples (Horiz➔Horiz / Horiz➔Vert)</span>
+            <span class="lang-content zh">🧪 內建 2 種範本（橫➔橫 ／ 橫➔直）</span>
+            <span class="lang-content ko">🧪 내장 샘플 2종 (가로➔가로 / 가로➔세로)</span>
+          </div>
+        </div>
+
+        <!-- Pattern 2: Horizontal Word -->
+        <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-top: 4px solid #0284c7; border-radius: 12px; padding: 1.15rem;">
+          <div style="font-size: 0.76rem; font-weight: 800; color: #0284c7; margin-bottom: 0.25rem;">PATTERN 2 — HORIZONTAL WORD</div>
+          <h3 style="font-size: 1.02rem; font-weight: 800; margin-bottom: 0.45rem; color: var(--text);">
+            <span class="lang-content ja">横書き Word ファイル（.docx）</span>
+            <span class="lang-content en">Horizontal Word (.docx)</span>
+            <span class="lang-content zh">橫書 Word 檔案（.docx）</span>
+            <span class="lang-content ko">가로쓰기 Word 파일 (.docx)</span>
+          </h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 0.6rem;">
+            <span class="lang-content ja">自動で横書き原稿と認識し、赤いボタンを表示。<strong>行間固定による見出し・数式・図の上部切れを完全解消した横書き組版</strong>と、<strong>ワンクリック縦書きPDF変換</strong>の両方に対応します。</span>
+            <span class="lang-content en">Auto-detected as horizontal and unlocks the red direction switch: choose <strong>zero-clipping Horizontal Grid PDF</strong> or <strong>one-click Vertical PDF conversion</strong>.</span>
+            <span class="lang-content zh">自動識別為橫書並顯示切換鈕：可輸出<strong>零裁切橫書格線筆記</strong>（解決固定行高截斷問題），或<strong>一鍵轉為直書 PDF</strong>。</span>
+            <span class="lang-content ko">가로 원고로 자동 인식되어 전환 버튼이 표시됩니다. <strong>잘림 없는 가로 줄눈 조판</strong>과 <strong>원클릭 세로쓰기 변환</strong>을 모두 지원합니다.</span>
+          </p>
+          <div style="font-size: 0.78rem; background: #e0f2fe; color: #0369a1; padding: 5px 9px; border-radius: 6px; font-weight: 700;">
+            <span class="lang-content ja">🧪 内蔵サンプル2種＋原本 .docx 保存可</span>
+            <span class="lang-content en">🧪 2 Samples + Source .docx Download</span>
+            <span class="lang-content zh">🧪 內建 2 種範本＋可下載原始 .docx</span>
+            <span class="lang-content ko">🧪 내장 샘플 2종 + 원본 .docx 저장 가능</span>
+          </div>
+        </div>
+
+        <!-- Pattern 3: Native Vertical Word (NEW ver.164) -->
+        <div style="background: #ecfdf5; border: 1px solid #6ee7b7; border-top: 4px solid #059669; border-radius: 12px; padding: 1.15rem;">
+          <div style="font-size: 0.76rem; font-weight: 800; color: #059669; margin-bottom: 0.25rem;">PATTERN 3 — VERTICAL WORD (NEW)</div>
+          <h3 style="font-size: 1.02rem; font-weight: 800; margin-bottom: 0.45rem; color: var(--text);">
+            <span class="lang-content ja">縦書き Word ファイル（.docx）</span>
+            <span class="lang-content en">Native Vertical Word (.docx)</span>
+            <span class="lang-content zh">原生直書 Word 檔案（.docx）</span>
+            <span class="lang-content ko">세로쓰기 Word 파일 (.docx)</span>
+          </h3>
+          <p style="font-size: 0.85rem; color: #1e293b; line-height: 1.6; margin-bottom: 0.6rem;">
+            <span class="lang-content ja">Word の縦書き設定（<code>tbRl</code>）を<strong>自動判別して縦書きモードへロック</strong>。縦中横・ルビ・傍点・数式・表・図版回り込み・段組みを保ったまま、縦罫線や上下見開きノートへ美しく組版します。</span>
+            <span class="lang-content en"><strong>Auto-detects Word <code>tbRl</code> vertical layout</strong> and locks to vertical output—preserving tate-chu-yoko, ruby, equations, tables, wrapped charts, and columns on vertical ruled/spread pages.</span>
+            <span class="lang-content zh"><strong>自動判別 Word 直書設定（<code>tbRl</code>）</strong>並鎖定直書輸出，完整保留縱中橫、注音、公式、表格與文繞圖，精準對齊直罫線與上下跨頁筆記。</span>
+            <span class="lang-content ko">Word 세로쓰기 설정(<code>tbRl</code>)을 <strong>자동 판별하여 세로 모드로 고정</strong>. 세로중가로·루비·수식·표·도표 배치를 유지한 채 세로 줄눈·상하 펼침 노트로 조판합니다.</span>
+          </p>
+          <div style="font-size: 0.78rem; background: #d1fae5; color: #065f46; padding: 5px 9px; border-radius: 6px; font-weight: 700;">
+            <span class="lang-content ja">🧪 内蔵サンプル（縦書き➔縦書き）搭載</span>
+            <span class="lang-content en">🧪 Built-in Sample (Vert➔Vert) Included</span>
+            <span class="lang-content zh">🧪 內建範本（直書➔直書）一鍵體驗</span>
+            <span class="lang-content ko">🧪 내장 샘플 (세로➔세로) 탑재</span>
+          </div>
+        </div>
+
+        <!-- Pattern 4: Existing PDF -->
+        <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-top: 4px solid #6366f1; border-radius: 12px; padding: 1.15rem;">
+          <div style="font-size: 0.76rem; font-weight: 800; color: #4f46e5; margin-bottom: 0.25rem;">PATTERN 4 — EXISTING PDF</div>
+          <h3 style="font-size: 1.02rem; font-weight: 800; margin-bottom: 0.45rem; color: var(--text);">
+            <span class="lang-content ja">手元・ドライブの教材 PDF</span>
+            <span class="lang-content en">Textbook &amp; Lecture PDFs</span>
+            <span class="lang-content zh">本機或雲端教材 PDF</span>
+            <span class="lang-content ko">교재·강의 자료 PDF</span>
+          </h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 0.6rem;">
+            <span class="lang-content ja">講義スライド・過去問・論文PDFの隣に <code>6.0 / 7.0 / 8.0mm</code>（横罫線・方眼・無地）の手書きノート面を結合。ページ範囲抽出や110MB超ファイルの30頁ごと自動分冊にも対応。</span>
+            <span class="lang-content en">Pairs existing PDFs with <code>6.0 / 7.0 / 8.0 mm</code> ruled, grid, or blank note pages—supporting page-range slicing and automatic 30-page splitting for 110MB+ files.</span>
+            <span class="lang-content zh">為講義、考古題與論文 PDF 拼接 <code>6.0 / 7.0 / 8.0mm</code> 橫線、方格或空白筆記面，支援頁碼擷取與 110MB+ 大檔每 30 頁自動分冊。</span>
+            <span class="lang-content ko">강의안·기출문제·논문 PDF 옆에 <code>6.0 / 7.0 / 8.0mm</code> 줄눈·방안·무지 노트면을 결합하며, 페이지 범위 추출 및 30페이지 자동 분책을 지원합니다.</span>
+          </p>
+          <div style="font-size: 0.78rem; background: #eef2ff; color: #4338ca; padding: 5px 9px; border-radius: 6px; font-weight: 700;">
+            <span class="lang-content ja">📄 ドラッグ＆ドロップですぐ結合</span>
+            <span class="lang-content en">📄 Instant Drag &amp; Drop Merge</span>
+            <span class="lang-content zh">📄 拖放檔案立即合併跨頁</span>
+            <span class="lang-content ko">📄 드래그 &amp; 드롭 즉시 결합</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Subject & Use-Case Recommended Recipes -->
+      <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.35rem 1.25rem;">
+        <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--text); margin-bottom: 0.9rem; text-align: center;">
+          <span class="lang-content ja">💡 科目・用途別のおすすめ設定レシピ</span>
+          <span class="lang-content en">💡 Recommended Presets by Subject &amp; Study Style</span>
+          <span class="lang-content zh">💡 依學科與學習場景推薦的最佳設定組合</span>
+          <span class="lang-content ko">💡 과목·학습 스타일별 추천 설정 레시피</span>
+        </h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.9rem; font-size: 0.85rem; line-height: 1.6;">
+          <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.9rem;">
+            <div style="font-weight: 800; color: #92400e; margin-bottom: 0.25rem;">
+              <span class="lang-content ja">📖 国語・古文・漢文・小説の精読</span>
+              <span class="lang-content en">📖 Classical Literature &amp; Vertical Reading</span>
+              <span class="lang-content zh">📖 國文・古文・小說精讀預習</span>
+              <span class="lang-content ko">📖 국어·고전문학·소설 정독 노트</span>
+            </div>
+            <div style="color: var(--text-muted);">
+              <span class="lang-content ja"><strong>設定：</strong><code>縦書き</code> × <code>A3/A4上下見開き</code> × <code>8.0mm 縦罫線（セピア）</code><br>上段の縦書き本文を読みながら、下段のノートに品詞分解・現代語訳・板書をゆったり書き込めます。</span>
+              <span class="lang-content en"><strong>Preset:</strong> <code>Vertical</code> × <code>A3/A4 Top-Bottom Spread</code> × <code>8.0mm Sepia</code><br>Read vertical text on top and write translations, grammar notes, and annotations directly below.</span>
+              <span class="lang-content zh"><strong>建議設定：</strong><code>直書</code> × <code>A3/A4上下跨頁</code> × <code>8.0mm 復古棕</code><br>上段閱讀直書課文，下段寬敞空間可手寫語譯、注釋與課堂筆記。</span>
+              <span class="lang-content ko"><strong>추천 설정:</strong> <code>세로쓰기</code> × <code>A3/A4 상하 펼침</code> × <code>8.0mm 세피아</code><br>위쪽 본문을 읽으며 아래쪽 노트에 해석·어휘·판서를 여유 있게 필기합니다.</span>
+            </div>
+          </div>
+
+          <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.9rem;">
+            <div style="font-weight: 800; color: #0369a1; margin-bottom: 0.25rem;">
+              <span class="lang-content ja">📐 数学・物理・化学・英語長文演習</span>
+              <span class="lang-content en">📐 STEM Math, Physics &amp; Papers</span>
+              <span class="lang-content zh">📐 數理公式推導與外語論文研讀</span>
+              <span class="lang-content ko">📐 수학·과학 수식 및 영어 지문 연습</span>
+            </div>
+            <div style="color: var(--text-muted);">
+              <span class="lang-content ja"><strong>設定：</strong><code>横書き</code> × <code>A3横見開き / A4見開き</code> × <code>7.0mm 方眼（スカイブルー）</code><br>分数数式や図表も見切れずスナップ。右面の方眼ノートに途中式・補助線・グラフが綺麗に描けます。</span>
+              <span class="lang-content en"><strong>Preset:</strong> <code>Horizontal</code> × <code>A3/A4 Spread</code> × <code>7.0mm Sky-Blue Grid</code><br>Fractions and charts never clip, while the right-hand grid page keeps equations and diagrams neat.</span>
+              <span class="lang-content zh"><strong>建議設定：</strong><code>橫書</code> × <code>A3橫跨頁 / A4跨頁</code> × <code>7.0mm 天空藍方格</code><br>分數與圖表零截斷，右頁方格最適合手寫計算過程與繪製幾何輔助線。</span>
+              <span class="lang-content ko"><strong>추천 설정:</strong> <code>가로쓰기</code> × <code>A3 가로 펼침 / A4 펼침</code> × <code>7.0mm 스카이블루 방안</code><br>수식·도표가 잘리지 않으며 오른쪽 방안지에 풀이 과정과 그래프를 깔끔하게 작성합니다.</span>
+            </div>
+          </div>
+
+          <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.9rem;">
+            <div style="font-weight: 800; color: #047857; margin-bottom: 0.25rem;">
+              <span class="lang-content ja">📱 iPad（Goodnotes 等）デジタル学習</span>
+              <span class="lang-content en">📱 iPad (Goodnotes / Notability)</span>
+              <span class="lang-content zh">📱 iPad（Goodnotes 等）平板手寫</span>
+              <span class="lang-content ko">📱 iPad (Goodnotes 등) 태블릿 필기</span>
+            </div>
+            <div style="color: var(--text-muted);">
+              <span class="lang-content ja"><strong>設定：</strong>横向きなら <code>A3横見開き</code> ／ 縦持ちなら <code>A3上下見開き</code><br>1枚のシート内に「原本＋手書きノート」が一体化されるため、タブレット上でページを行き来する必要がありません。</span>
+              <span class="lang-content en"><strong>Preset:</strong> <code>A3 Landscape Spread</code> (landscape iPad) or <code>A3 Top-Bottom Spread</code> (portrait)<br>Keeps text and note space side-by-side on one canvas with zero page-flipping.</span>
+              <span class="lang-content zh"><strong>建議設定：</strong>橫放選 <code>A3橫跨頁</code> ／ 直拿選 <code>A3上下跨頁</code><br>單一頁面同時呈現教材與手寫區，在平板上無需頻繁翻頁即可專注書寫。</span>
+              <span class="lang-content ko"><strong>추천 설정:</strong> 가로 모드는 <code>A3 가로 펼침</code> / 세로 모드는 <code>A3 상하 펼침</code><br>한 화면에 교재와 필기 공간이 나란히 배치되어 페이지를 넘길 필요가 없습니다.</span>
+            </div>
+          </div>
+
+          <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.9rem;">
+            <div style="font-weight: 800; color: #4338ca; margin-bottom: 0.25rem;">
+              <span class="lang-content ja">🖨️ 両面印刷 ＆ ルーズリーフバインダー</span>
+              <span class="lang-content en">🖨️ Duplex Print &amp; Loose-Leaf Binders</span>
+              <span class="lang-content zh">🖨️ 雙面列印與活頁夾裝訂</span>
+              <span class="lang-content ko">🖨️ 양면 인쇄 및 루즈리프 바인더</span>
+            </div>
+            <div style="color: var(--text-muted);">
+              <span class="lang-content ja"><strong>設定：</strong><code>A4見開き</code>・<code>A5見開き</code>（横書き）／ <code>A4上下見開き</code>（縦書き）<br>奇数・偶数ページ順と内側のパンチ穴綴じ代マージンを自動計算。そのまま両面印刷して綴じるだけで見開き完成！</span>
+              <span class="lang-content en"><strong>Preset:</strong> <code>A4/A5 Spread</code> (Horiz) or <code>A4 Top-Bottom Spread</code> (Vert)<br>Odd/even page order and inner hole-punch margins are auto-calculated for instant duplex binding.</span>
+              <span class="lang-content zh"><strong>建議設定：</strong><code>A4/A5跨頁</code>（橫書）或 <code>A4上下跨頁</code>（直書）<br>自動計算奇偶頁序與內側打孔裝訂邊距，直接雙面列印裝夾即可完美對開！</span>
+              <span class="lang-content ko"><strong>추천 설정:</strong> <code>A4/A5 펼침</code>(가로) 또는 <code>A4 상하 펼침</code>(세로)<br>홀짝 페이지 순서와 타공 여백을 자동 계산하므로 그대로 양면 인쇄해 철하면 완성됩니다!</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -1015,27 +1237,27 @@
             <span class="lang-content zh">从右上角九点菜单一键开启</span>
             <span class="lang-content ko">우측 상단 메뉴에서 원클릭 실행</span>
           </div>
-          <div class="image-viewer" onclick="openImageModal('../images/v162/marketplace_01_launch_guide.png')" style="width: 100%; cursor: pointer; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); background: #ffffff;">
-            <img src="../images/v162/marketplace_01_launch_guide.png" alt="Google Apps Launcher & Line-aligned Studio ver.162" style="width: 100%; height: auto; display: block; object-fit: contain;" />
+          <div class="image-viewer" onclick="openImageModal('../images/v164/marketplace_01_launch_guide.png')" style="width: 100%; cursor: pointer; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); background: #ffffff;">
+            <img src="../images/v164/marketplace_01_launch_guide.png" alt="Google Apps Launcher & Line-aligned Studio ver.164" style="width: 100%; height: auto; display: block; object-fit: contain;" />
           </div>
         </div>
 
-        <!-- Step 2: DOCS モード（画像1） -->
+        <!-- Step 2: DOCS / DOCX モード（最新 v164 2ページ見開きプレビュー） -->
         <div style="background: #f8f9fa; border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; display: flex; flex-direction: column; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: var(--transition);">
           <div style="font-weight: 700; font-size: 1rem; color: var(--text); margin-bottom: 0.35rem;">
-            <span class="lang-content ja">② Google Docs 直接組版</span>
-            <span class="lang-content en">2. Google Docs Typesetting</span>
-            <span class="lang-content zh">② Google Docs 直接排版</span>
-            <span class="lang-content ko">② Google 문서 직접 조판</span>
+            <span class="lang-content ja">② Docs・Word 直接組版</span>
+            <span class="lang-content en">2. Docs &amp; Word Typesetting</span>
+            <span class="lang-content zh">② Docs・Word 直接排版</span>
+            <span class="lang-content ko">② 문서·Word 직접 조판</span>
           </div>
           <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem; min-height: 2.4em;">
-            <span class="lang-content ja">ドライブから選択・実寸見開きプレビュー</span>
-            <span class="lang-content en">Select from Drive, true-scale spread preview</span>
-            <span class="lang-content zh">从云端硬盘选入，原尺寸跨页预览</span>
-            <span class="lang-content ko">드라이브에서 선택, 실물 크기 펼침 미리보기</span>
+            <span class="lang-content ja">全5種サンプル内蔵・実寸見開きプレビュー</span>
+            <span class="lang-content en">5 built-in samples &amp; true-scale spread preview</span>
+            <span class="lang-content zh">內建 5 種範本・原尺寸跨頁預覽</span>
+            <span class="lang-content ko">5종 샘플 내장·실물 크기 펼침 미리보기</span>
           </div>
-          <div class="image-viewer" onclick="openImageModal('../images/step2_studio_docs.png')" style="width: 100%; cursor: pointer; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); background: #ffffff;">
-            <img src="../images/step2_studio_docs.png" alt="Line-aligned Studio Docs Mode" style="width: 100%; height: auto; display: block; object-fit: contain;" />
+          <div class="image-viewer" onclick="openImageModal('../images/v164/marketplace_04_multilingual_stem.png')" style="width: 100%; cursor: pointer; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); background: #ffffff;">
+            <img src="../images/v164/marketplace_04_multilingual_stem.png" alt="Line-aligned Studio ver.164 Spread Preview" style="width: 100%; height: auto; display: block; object-fit: contain;" />
           </div>
         </div>
 
@@ -1370,8 +1592,8 @@
             <span class="spec-item-desc">Google ドキュメント™ で設定されているフォント（明朝・ゴシック・欧文フォントなど）を忠実に使用して組版・出力します。</span>
           </li>
           <li>
-            <span class="spec-item-title">横書き組版および「横書き ➔ 縦書きPDF自動変換」に対応</span>
-            <span class="spec-item-desc">横書きで作成された Google ドキュメント™・Word（.docx）について、横書き罫線・方眼ノート組版と縦書きPDF変換（上下見開きノート対応）の両方に対応しています（PDFモードは既存PDFへ手書きノート面を結合する機能です）。</span>
+            <span class="spec-item-title">「横➔横」「横➔縦」「縦書きWord➔縦」の3大組版ラインに対応</span>
+            <span class="spec-item-desc">横書きの Google ドキュメント™・Word（.docx）からの横書き罫線組版および縦書きPDF自動変換に加え、最初から縦書きで作成された Word（.docx）原稿の文字方向・縦中横・ルビ・表・数式も自動判別して縦書きPDF（上下見開きノート対応）へ組版します（PDFモードは既存PDFへ 6.0 / 7.0 / 8.0mm の手書きノート面を結合する機能です）。</span>
           </li>
           <li>
             <span class="spec-item-title">1ページに収まらない大きな表について</span>
@@ -1495,6 +1717,118 @@
     </div>
   </section>
 
+  <!-- FAQ Section (4 Languages) -->
+  <section id="faq" class="container" style="padding-top: 0.5rem; padding-bottom: 2.5rem;">
+    <div style="background: #ffffff; border: 1px solid var(--border); border-radius: 16px; padding: 2rem 1.75rem; box-shadow: var(--card-shadow);">
+      <div style="text-align: center; margin-bottom: 1.5rem;">
+        <span style="display: inline-block; background: #eff6ff; color: #1d4ed8; font-size: 0.82rem; font-weight: 800; padding: 4px 14px; border-radius: 20px; margin-bottom: 0.5rem; border: 1px solid #bfdbfe;">
+          <span class="lang-content ja">❓ よくある質問（FAQ）</span>
+          <span class="lang-content en">❓ Frequently Asked Questions</span>
+          <span class="lang-content zh">❓ 常見問題（FAQ）</span>
+          <span class="lang-content ko">❓ 자주 묻는 질문 (FAQ)</span>
+        </span>
+        <h2 style="font-size: 1.55rem; font-weight: 800; color: var(--text);">
+          <span class="lang-content ja">ご利用前の疑問にお答えします</span>
+          <span class="lang-content en">Answers to Common Questions</span>
+          <span class="lang-content zh">使用前常見疑問解答</span>
+          <span class="lang-content ko">이용 전 자주 묻는 질문과 답변</span>
+        </h2>
+      </div>
+
+      <!-- Japanese FAQ -->
+      <div class="lang-content ja">
+        <div style="display: grid; gap: 0.9rem; font-size: 0.92rem; line-height: 1.7;">
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem 1.15rem;">
+            <strong style="color: #1e3a8a;">Q1. 料金はかかりますか？会員登録やインストールは必要ですか？</strong><br>
+            すべて<strong>完全無料</strong>でご利用いただけます。手元の Word（.docx）・PDF ファイルや内蔵サンプル5種は、会員登録もインストールも不要でブラウザ（<code>/linealigned/</code>）からすぐ使えます。Google ドキュメント™ をドライブから直接読み込む場合のみ、Google Workspace Marketplace からの無料インストールが必要です。
+          </div>
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem 1.15rem;">
+            <strong style="color: #1e3a8a;">Q2. Word ファイルが「横書き」か「縦書き」かは、自分で切り替える必要がありますか？</strong><br>
+            いいえ、<code>.docx</code> を読み込んだ瞬間にアプリが文書内の文字方向を<strong>自動判別</strong>します。横書きの Word 原稿を入れたときは「横書き ⇔ 縦書き」の赤い切替ボタンが表示され、最初から縦書きで作られた Word 原稿を入れたときは自動的に縦書きモードに固定される安心設計です。
+          </div>
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem 1.15rem;">
+            <strong style="color: #1e3a8a;">Q3. Marketplace でインストールしたのに、Google ドキュメントの「拡張機能（アドオン）」メニューに出てきません。</strong><br>
+            『Line-aligned』は狭いサイドバーではなく、実寸見開きプレビューを備えた<strong>全画面Webアプリ</strong>として動作します。Google 検索や Google ドライブ右上の<strong>「9つの点（Google アプリ）」アイコン一覧の下部にある『Line-aligned』</strong>をクリックするか、本ページ上部の「🚀 Google連携版 Studio を開く」をブックマークして起動してください。
+          </div>
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem 1.15rem;">
+            <strong style="color: #1e3a8a;">Q4. Word の「縦書き」ではどのような書式に対応していますか？</strong><br>
+            Word 標準の「文字列の方向：縦書き」で作成された段落・見出し（左罫線などの段落罫線含む）・縦中横（2桁数字や半角英字）・ルビ・傍点・蛍光マーカー・インライン数式・表・図版の回り込み・段組みに対応しています（※Word 固有の「原稿用紙設定」グリッド枠モードではなく、通常の縦書きページ設定をご使用ください）。
+          </div>
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem 1.15rem;">
+            <strong style="color: #1e3a8a;">Q5. アップロードした文書や PDF がサーバーに保存されたり、AI 学習に使われたりしませんか？</strong><br>
+            一切ありません。読み込まれたファイルは PDF 組版処理の数秒間だけメモリ上で一時変換され、処理完了と同時に破棄されます。サーバーへの保存・蓄積や外部提供・AI学習利用は行いません。
+          </div>
+        </div>
+      </div>
+
+      <!-- English FAQ -->
+      <div class="lang-content en">
+        <div style="display: grid; gap: 0.9rem; font-size: 0.92rem; line-height: 1.7;">
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem 1.15rem;">
+            <strong style="color: #1e3a8a;">Q1. Is Line-aligned completely free? Do I need an account or installation?</strong><br>
+            Yes—100% free. Local Word (<code>.docx</code>), PDFs, and all 5 built-in samples run directly in your browser with zero login or installation. Only direct Google Docs™ / Drive loading requires a free one-time Google Workspace Marketplace install.
+          </div>
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem 1.15rem;">
+            <strong style="color: #1e3a8a;">Q2. Do I have to manually tell the app whether my Word (.docx) file is horizontal or vertical?</strong><br>
+            No. Line-aligned automatically inspects your <code>.docx</code> on upload: horizontal Word files display the red Horizontal/Vertical switch, while native vertical Word manuscripts (<code>tbRl</code>) automatically lock to vertical output.
+          </div>
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem 1.15rem;">
+            <strong style="color: #1e3a8a;">Q3. I installed it from Marketplace, so why isn't it inside the Google Docs "Extensions" menu?</strong><br>
+            Line-aligned runs as a full-screen typesetting studio rather than a cramped Docs sidebar. Launch it from the <strong>Google Apps 9-dots icon</strong> (top-right of Google Search/Drive) or bookmark the Google-Linked Studio URL above.
+          </div>
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem 1.15rem;">
+            <strong style="color: #1e3a8a;">Q4. Are my uploaded documents stored on a server or used for AI training?</strong><br>
+            Never. Files are processed transiently in memory solely to render your PDF and discarded immediately upon completion. Nothing is stored, logged, or used for AI training.
+          </div>
+        </div>
+      </div>
+
+      <!-- Traditional Chinese FAQ -->
+      <div class="lang-content zh">
+        <div style="display: grid; gap: 0.9rem; font-size: 0.92rem; line-height: 1.7;">
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem 1.15rem;">
+            <strong style="color: #1e3a8a;">Q1. 使用需要付費、註冊或安裝嗎？</strong><br>
+            完全免費。本機 Word（<code>.docx</code>）、PDF 與內建 5 種範本皆免註冊、免安裝，直接在瀏覽器即可使用；僅在需要直接讀取雲端 Google 文件™ 時，才需免費安裝 Marketplace 應用程式。
+          </div>
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem 1.15rem;">
+            <strong style="color: #1e3a8a;">Q2. 上傳 Word 檔時，需要手動設定它是「橫書」還是「直書」嗎？</strong><br>
+            不需要。系統會在讀取 <code>.docx</code> 時自動判別：橫書 Word 會顯示紅色的「橫書／直書」切換鈕；原生直書 Word（<code>tbRl</code>）則會自動鎖定為直書排版模式（支援縱中橫、注音、公式、表格與文繞圖）。
+          </div>
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem 1.15rem;">
+            <strong style="color: #1e3a8a;">Q3. 從 Marketplace 安裝後，為什麼在 Google 文件的「擴充功能」選單找不到？</strong><br>
+            本工具為具備原尺寸跨頁預覽的「全螢幕網頁應用」，並非狹窄的文件側邊欄。請從 Google 畫面右上角<strong>「九宮格（Google 應用程式）」圖示下方點選 Line-aligned</strong>，或將上方連動版網址加入書籤即可一鍵開啟。
+          </div>
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem 1.15rem;">
+            <strong style="color: #1e3a8a;">Q4. 上傳的文件會被儲存在伺服器或用於 AI 訓練嗎？</strong><br>
+            絕不會。檔案僅在產生 PDF 的數秒內於記憶體暫時處理，完成後立即銷毀，絕不留存或用於任何 AI 訓練。
+          </div>
+        </div>
+      </div>
+
+      <!-- Korean FAQ -->
+      <div class="lang-content ko">
+        <div style="display: grid; gap: 0.9rem; font-size: 0.92rem; line-height: 1.7;">
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem 1.15rem;">
+            <strong style="color: #1e3a8a;">Q1. 무료인가요? 회원가입이나 설치가 필요한가요?</strong><br>
+            전 기능 완전 무료입니다. 내 기기의 Word(<code>.docx</code>), PDF 및 5종 샘플은 가입·설치 없이 브라우저에서 즉시 사용할 수 있으며, Google 문서™ 연동 시에만 Marketplace 무료 설치가 필요합니다.
+          </div>
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem 1.15rem;">
+            <strong style="color: #1e3a8a;">Q2. Word 파일이 가로쓰기인지 세로쓰기인지 직접 설정해야 하나요?</strong><br>
+            아닙니다. <code>.docx</code> 업로드 시 문서 방향을 자동 판별하여, 가로 Word는 '가로/세로' 전환 버튼을 표시하고 세로쓰기 Word(<code>tbRl</code>)는 자동으로 세로 출력 모드로 고정됩니다.
+          </div>
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem 1.15rem;">
+            <strong style="color: #1e3a8a;">Q3. Marketplace에서 설치했는데 Google 문서 '확장 프로그램' 메뉴에 보이지 않습니다.</strong><br>
+            본 앱은 좁은 사이드바가 아닌 전체 화면 웹 스튜디오로 동작합니다. Google 우측 상단 <strong>'점 9개(Google 앱)' 목록 하단의 Line-aligned</strong>를 클릭하거나, 상단의 연동 Studio URL을 북마크하여 실행해 주세요.
+          </div>
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem 1.15rem;">
+            <strong style="color: #1e3a8a;">Q4. 업로드한 문서가 서버에 저장되거나 AI 학습에 사용되나요?</strong><br>
+            전혀 그렇지 않습니다. 파일은 PDF 조판 시에만 메모리에서 일시 변환된 후 즉시 파기되며, 서버 저장이나 AI 학습에 일절 사용되지 않습니다.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Changelog Section -->
   <section id="changelog" class="changelog-section">
     <div class="changelog-container">
@@ -1512,6 +1846,33 @@
       </p>
 
             <div class="timeline">
+        <!-- 2026-11-21 (ver.164 Native Vertical Word .docx Typesetting & 5-Sample Studio) -->
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background: #059669; box-shadow: 0 0 0 4px #a7f3d0;"></div>
+          <div class="timeline-date">2026.11.21 (ver.164)</div>
+          <div class="timeline-content">
+            <h3>
+              <span class="lang-content ja">「縦書き Word (.docx) 原稿の直接組版」に対応し、3大組版ライン＆全5種サンプルが完結しました</span>
+              <span class="lang-content en">Added Native Vertical Word (.docx) Typesetting &amp; 5-Sample Studio UI</span>
+              <span class="lang-content zh">新增「原生直書 Word (.docx) 直接排版」，完成三大排版引擎與 5 種內建範本</span>
+              <span class="lang-content ko">「세로쓰기 Word (.docx) 직접 조판」 지원 및 3대 조판 라인·5종 샘플 완비</span>
+            </h3>
+            <ul>
+              <li>
+                <span class="lang-content ja"><strong>縦書き Word (.docx) 自動判別＆縦罫線組版エンジン新設:</strong> Word の縦書き設定（<code>tbRl</code>）や縦中横（<code>eastAsianLayout</code>）・ルビ・傍点・数式・表・図版回り込みを自動認識し、6.0 / 7.0 / 8.0mm 縦罫線・方眼および上下見開きノートへ忠実に組版できるようになりました。</span>
+                <span class="lang-content en"><strong>Native Vertical Word (.docx) Auto-Detection:</strong> Automatically detects Word <code>tbRl</code> vertical layouts, tate-chu-yoko, ruby, math equations, tables, and wrapped charts onto 6.0 / 7.0 / 8.0 mm vertical lines and top-bottom spreads.</span>
+                <span class="lang-content zh"><strong>原生直書 Word (.docx) 自動判別與直罫線排版:</strong> 自動辨識 Word 直書設定（<code>tbRl</code>）、縱中橫、注音、公式、表格與文繞圖，精準輸出 6.0 / 7.0 / 8.0mm 直罫線與上下跨頁筆記。</span>
+                <span class="lang-content ko"><strong>세로쓰기 Word (.docx) 자동 판별 및 세로 줄눈 조판:</strong> Word 세로 설정(<code>tbRl</code>), 세로중가로, 루비, 수식, 표, 도표 배치를 자동 인식하여 6.0 / 7.0 / 8.0mm 세로 줄눈 및 상하 펼침 노트로 조판합니다.</span>
+              </li>
+              <li>
+                <span class="lang-content ja"><strong>全5種の内蔵サンプル新設 ＆ 全モード 6.0 / 7.0 / 8.0mm 統一:</strong> Google ドキュメント2種（横➔横／横➔縦）・Word 3種（横➔横／横➔縦／縦➔縦）のワンクリック比較サンプルと原本 <code>.docx</code> 保存機能を搭載し、PDFノート結合も 6.0 / 7.0 / 8.0mm（横罫線・方眼・無地）および軽量見開き生成へ統一しました。</span>
+                <span class="lang-content en"><strong>5 Built-in Samples &amp; Unified 6.0 / 7.0 / 8.0 mm Controls:</strong> Added 5 instant workflow samples (2 Docs + 3 Word with source <code>.docx</code> downloads) and unified 6.0 / 7.0 / 8.0 mm ruled/grid/blank controls across all modes.</span>
+                <span class="lang-content zh"><strong>內建 5 種體驗範本與統一 6.0 / 7.0 / 8.0mm 格線規格:</strong> 新增 Docs 2 種＋Word 3 種一鍵範本（支援下載原始 <code>.docx</code>），並將 PDF 跨頁合併統一為 6.0 / 7.0 / 8.0mm 橫線／方格／空白與輕量化輸出。</span>
+                <span class="lang-content ko"><strong>내장 샘플 5종 신설 및 전 모드 6.0 / 7.0 / 8.0mm 통합:</strong> Docs 2종·Word 3종 원클릭 샘플(원본 <code>.docx</code> 다운로드 지원)을 탑재하고 PDF 결합 규격도 6.0 / 7.0 / 8.0mm로 통일했습니다.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
         <!-- 2026-11-20 (ver.162 Vertical Typesetting & Top-Bottom Spreads) -->
         <div class="timeline-item">
           <div class="timeline-dot" style="background: #059669; box-shadow: 0 0 0 4px #d1fae5;"></div>
