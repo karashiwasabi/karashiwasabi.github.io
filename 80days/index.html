@@ -1,0 +1,1728 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <title>八十日間世界一周</title>
+  <link rel="canonical" href="https://wasabikarashi.com/80days/">
+  <meta name="application-name" content="八十日間世界一周">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="八十日間世界一周">
+  <meta name="theme-color" content="#2c241b">
+  <link rel="icon" type="image/png" sizes="192x192" href="./favicon.png?v=1">
+  <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png?v=1">
+  <link rel="manifest" href="./manifest.webmanifest?v=1">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-310XSTTWSM"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-310XSTTWSM');
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4382223240782332" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <style>
+    /* =========================================================================
+       『正史三國志』総合索引（glossary.html / index.html）ブラウン／羊皮紙テーマ
+       ========================================================================= */
+    :root {
+      --bg-header-dark: #2c241b;
+      --bg-header-sub: #3d2f1d;
+      --bg-parchment: #f4f1ea;
+      --bg-card: #fffdf9;
+      --border-warm: #dcd3c1;
+      --accent-gold: #8c6d46;
+      --accent-gold-light: #d4b483;
+      --accent-red: #b3392b;
+      --text-primary: #261f18;
+      --text-muted: #6b5c4c;
+      --place-green: #1e6b3b;
+      --person-brown: #7c3f12;
+      --office-blue: #1e4e79;
+      --special-purple: #63317c;
+      --desktop-pane-width-pct: 50%;
+      --mobile-map-height-pct: 42%;
+      --mobile-reader-height-pct: 58%;
+      --reader-bottom-safe-px: 48px;
+      --z-map-controls: 700;
+      --z-map-toast: 720;
+      --z-index-overlay: 760;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      height: 100dvh;
+      overflow: hidden;
+      background: var(--bg-parchment);
+      color: var(--text-primary);
+      font-family: "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", Georgia, serif;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    .app-shell {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
+      min-height: 100vh;
+      min-height: 100dvh;
+      max-height: 100dvh;
+      overflow: hidden;
+    }
+
+    .left-pane {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      width: var(--desktop-pane-width-pct);
+      height: 100vh;
+      height: 100dvh;
+      min-height: 100dvh;
+      flex-shrink: 0;
+      border-right: 2px solid #bda988;
+      background: #dfd7c5;
+    }
+
+    #map {
+      width: 100%;
+      flex: 1 1 0%;
+      min-height: 0;
+    }
+
+    /* 地図上の巻切り替えバー（本家『正史三國志』と同一のスリム1行構成） */
+    .vol-nav-bar {
+      height: 38px;
+      min-height: 38px;
+      background: #2c241b;
+      color: #f7f1e5;
+      border-bottom: 1.5px solid #8c6d46;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      padding: 0 12px;
+      z-index: 2000;
+      user-select: none;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .home-top-link {
+      position: absolute;
+      left: 10px;
+      background: #3e2723;
+      color: #ffe082;
+      border: 1px solid #8c6d46;
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 0.76rem;
+      font-weight: bold;
+      text-decoration: none;
+      line-height: 1.3;
+      white-space: nowrap;
+    }
+    .home-top-link:hover { background: #5d4037; color: #fff; }
+    .slim-nav-btn {
+      background: #4e342e;
+      color: #ffd54f;
+      border: 1px solid #8c6d46;
+      border-radius: 4px;
+      padding: 2px 10px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      cursor: pointer;
+      line-height: 1.3;
+      text-decoration: none;
+    }
+    .slim-nav-btn:hover:not(:disabled) { background: #6d4c41; color: #fff; }
+    .slim-nav-btn:disabled {
+      background: transparent;
+      color: #6d5d4b;
+      border-color: #4e342e;
+      cursor: not-allowed;
+    }
+    .vol-nav-select {
+      background: #3e2723;
+      color: #f7f1e5;
+      border: 1px solid #8c6d46;
+      border-radius: 4px;
+      padding: 2px 10px;
+      font-size: 0.88rem;
+      font-weight: bold;
+      cursor: pointer;
+      text-align: center;
+      font-family: "Yu Mincho", "MS PMincho", serif;
+      letter-spacing: 0.05em;
+      min-width: 0;
+      max-width: 240px;
+    }
+    @media (max-width: 520px) {
+      .vol-nav-bar { gap: 6px; padding: 0 6px; }
+      .home-top-link { position: static; margin-right: auto; padding: 2px 6px; font-size: 0.72rem; }
+      .vol-nav-select { max-width: 150px; font-size: 0.8rem; }
+    }
+
+    /* 地図右上：[📌 地図固定] ボタン */
+    .map-lock-btn {
+      position: absolute;
+      top: 10px;
+      right: 54px;
+      z-index: var(--z-map-controls);
+      background: rgba(255, 253, 249, 0.95);
+      color: var(--text-primary);
+      border: 1px solid #a38e6d;
+      border-radius: 6px;
+      padding: 5px 9px;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 1px 5px rgba(0, 0, 0, 0.22);
+      white-space: nowrap;
+    }
+
+    .map-lock-btn.is-locked {
+      background: var(--accent-red);
+      color: #ffffff;
+      border-color: #7c1f15;
+    }
+
+    /* 左下1行トースト */
+    .map-toast {
+      position: absolute;
+      left: 10px;
+      bottom: 18px;
+      max-width: calc(100% - 20px);
+      z-index: var(--z-map-toast);
+      display: none;
+      align-items: center;
+      gap: 8px;
+      background: rgba(44, 36, 27, 0.94);
+      color: #fdf8ee;
+      border-left: 3px solid var(--accent-gold-light);
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 0.78rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .map-toast.is-visible {
+      display: inline-flex;
+    }
+
+    .map-toast-text {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .map-toast-close {
+      background: transparent;
+      border: none;
+      color: #dfd3be;
+      font-size: 0.85rem;
+      cursor: pointer;
+      padding: 0 2px;
+      flex-shrink: 0;
+    }
+
+    .nature-mtn-label {
+      color: #5c4328;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-shadow: 1px 1px 2px rgba(255,255,255,0.92), -1px -1px 2px rgba(255,255,255,0.92);
+      white-space: nowrap;
+      pointer-events: none;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    .nature-river-label {
+      color: #1f5a8a;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-shadow: 1px 1px 2px rgba(255,255,255,0.92), -1px -1px 2px rgba(255,255,255,0.92);
+      white-space: nowrap;
+      pointer-events: none;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    .place-pin-tooltip {
+      background: rgba(44, 36, 27, 0.9);
+      color: #fffdf8;
+      border: 1px solid #d4b483;
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 0.74rem;
+      font-weight: 700;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    }
+
+    .area-badge-label {
+      background: rgba(179, 57, 43, 0.84);
+      color: #ffffff;
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    /* 左ペイン上の五十音順 総合索引オーバーレイ（省スペース：件数表記なし・行ボタン列なし） */
+    .index-overlay {
+      position: absolute;
+      top: 50px;
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      z-index: var(--z-index-overlay);
+      background: rgba(255, 253, 249, 0.97);
+      border: 2px solid var(--accent-gold);
+      border-radius: 8px;
+      box-shadow: 0 6px 22px rgba(28, 22, 16, 0.3);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    .index-overlay.is-hidden {
+      display: none;
+    }
+
+    .index-top-controls {
+      background: var(--bg-header-dark);
+      padding: 7px 9px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .index-search-input {
+      flex: 1 1 auto;
+      min-width: 0;
+      background: #fffdf9;
+      color: var(--text-primary);
+      border: 1px solid #bda682;
+      border-radius: 5px;
+      padding: 5px 9px;
+      font-size: 0.82rem;
+    }
+
+    .view-map-btn {
+      background: var(--bg-header-sub);
+      color: #f6efe2;
+      border: 1px solid var(--accent-gold-light);
+      border-radius: 5px;
+      padding: 5px 9px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .index-cat-tabs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: var(--bg-header-sub);
+      border-bottom: 1px solid #6e5536;
+      flex-shrink: 0;
+    }
+
+    .cat-tab-btn {
+      background: transparent;
+      color: #e2d7c3;
+      border: none;
+      border-bottom: 3px solid transparent;
+      padding: 7px 4px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .cat-tab-btn.is-active {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.08);
+      border-bottom-color: var(--accent-gold-light);
+    }
+
+    .index-chips-scroll {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 10px 12px 18px;
+    }
+
+    .gojuon-group-heading {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--bg-header-sub);
+      border-bottom: 1px solid var(--border-warm);
+      padding-bottom: 2px;
+      margin: 10px 0 6px;
+    }
+
+    .gojuon-group-heading:first-child {
+      margin-top: 0;
+    }
+
+    .chips-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .index-chip {
+      background: #fbf7ef;
+      color: var(--text-primary);
+      border: 1px solid #d3c5ad;
+      border-radius: 5px;
+      padding: 4px 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+      line-height: 1.3;
+    }
+
+    .index-chip:hover {
+      background: #f1e7d4;
+      border-color: var(--accent-gold);
+    }
+
+    .index-chip.is-selected {
+      background: var(--bg-header-dark);
+      color: #ffffff;
+      border-color: var(--bg-header-dark);
+    }
+
+    .chip-yomi {
+      display: block;
+      font-size: 0.66rem;
+      font-weight: 400;
+      opacity: 0.78;
+    }
+
+    /* 右ペイン：選択項目の解説サマリー＋該当本文カード一覧 */
+    .right-pane {
+      width: var(--desktop-pane-width-pct);
+      height: 100%;
+      min-height: 0;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-parchment);
+    }
+
+    .reader-header {
+      background: var(--bg-header-dark);
+      color: #f6efe2;
+      padding: 8px 12px;
+      border-bottom: 1px solid #6e5536;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-shrink: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    .reader-app-name {
+      font-size: 0.72rem;
+      color: var(--accent-gold-light);
+      font-weight: 700;
+    }
+
+    .reader-vol-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .start-vol-link {
+      background: var(--accent-gold);
+      color: #ffffff;
+      text-decoration: none;
+      border-radius: 5px;
+      padding: 5px 10px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .records-scroll {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 12px 14px calc(var(--reader-bottom-safe-px) + env(safe-area-inset-bottom, 0px));
+    }
+
+    /* 選択項目の先頭解説カード */
+    .head-summary-card {
+      background: #fcf7ec;
+      border: 2px solid var(--accent-gold);
+      border-radius: 8px;
+      padding: 13px 15px;
+      margin-bottom: 14px;
+      font-family: system-ui, -apple-system, sans-serif;
+      box-shadow: 0 2px 8px rgba(44, 36, 27, 0.08);
+    }
+
+    .summary-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--bg-header-dark);
+      margin-bottom: 6px;
+    }
+
+    .summary-role-badge {
+      display: inline-block;
+      background: #ebe0cc;
+      color: #4a3720;
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .summary-desc {
+      font-size: 0.86rem;
+      line-height: 1.7;
+      color: var(--text-primary);
+    }
+
+    .homonym-switch-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 9px;
+      padding: 6px 8px;
+      background: #f3e8d6;
+      border-radius: 5px;
+    }
+
+    .homonym-btn {
+      background: #fffdf9;
+      color: var(--text-primary);
+      border: 1px solid #a88d63;
+      border-radius: 4px;
+      padding: 3px 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .homonym-btn.is-current {
+      background: var(--bg-header-sub);
+      color: #ffffff;
+    }
+
+    .summary-wiki-box {
+      margin-top: 9px;
+      padding: 8px 10px;
+      background: #f4f1ea;
+      border: 1px solid var(--border-warm);
+      border-radius: 6px;
+      font-size: 0.79rem;
+      line-height: 1.55;
+    }
+
+    /* 該当本文カード */
+    .record-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-warm);
+      border-left: 4px solid #cbbba0;
+      border-radius: 7px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+    }
+
+    .record-card.active-card {
+      border-left-color: var(--accent-red);
+      box-shadow: 0 2px 10px rgba(179, 57, 43, 0.14);
+    }
+
+    .card-meta-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      margin-bottom: 8px;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      flex-wrap: wrap;
+    }
+
+    .open-in-vol-link {
+      background: #efe6d5;
+      color: #3d2f1d;
+      text-decoration: none;
+      border: 1px solid #c5b190;
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-weight: 700;
+      font-size: 0.73rem;
+    }
+
+    .trans-box {
+      font-size: 0.95rem;
+      line-height: 1.88;
+      color: var(--text-primary);
+    }
+
+    .inline-place {
+      color: var(--place-green);
+      border-bottom: 2px solid var(--place-green);
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .inline-person {
+      color: var(--person-brown);
+      border-bottom: 1.5px dotted var(--person-brown);
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .inline-office {
+      color: var(--office-blue);
+      border-bottom: 1.5px dashed var(--office-blue);
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .inline-special {
+      color: var(--special-purple);
+      border-bottom: 1.5px dotted var(--special-purple);
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .matched-target-term {
+      background: #ffe58f;
+      border-radius: 3px;
+      padding: 0 2px;
+    }
+
+    .source-details {
+      margin-top: 9px;
+      border-top: 1px dashed var(--border-warm);
+      padding-top: 6px;
+    }
+
+    .source-details summary {
+      cursor: pointer;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .source-text-body {
+      margin-top: 6px;
+      padding: 8px 10px;
+      background: #f7f3eb;
+      border-radius: 5px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 0.88rem;
+      line-height: 1.7;
+    }
+
+    .adsense-footer-box {
+      margin-top: 18px;
+      padding: 10px;
+      background: #efeae0;
+      border: 1px solid var(--border-warm);
+      border-radius: 6px;
+      text-align: center;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    @media (max-width: 900px) {
+      .app-shell {
+        flex-direction: column;
+      }
+      .left-pane {
+        width: 100%;
+        height: var(--mobile-map-height-pct);
+        border-right: none;
+        border-bottom: 2px solid #bda988;
+      }
+      .right-pane {
+        width: 100%;
+        height: var(--mobile-reader-height-pct);
+      }
+      .map-lock-btn {
+        top: 6px;
+        right: 48px;
+        padding: 4px 7px;
+        font-size: 0.72rem;
+      }
+      .index-overlay {
+        top: 42px;
+        left: 6px;
+        right: 6px;
+        bottom: 6px;
+      }
+    }
+    /* 右ペイン上部：vol01.html と同一のスリム1行バー（左：本編リンク／右端：言語切替） */
+    .gloss-bar {
+      height: 38px;
+      min-height: 38px;
+      background: #2c241b;
+      border-bottom: 1.5px solid #8c6d46;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 10px;
+      flex-shrink: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+    .gloss-bar-link {
+      color: #ffe082;
+      background: #3e2723;
+      border: 1px solid #8c6d46;
+      border-radius: 4px;
+      padding: 2px 10px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .lang-switch-bar { margin-left: auto; display: inline-flex; gap: 3px; flex-shrink: 0; }
+    .lang-btn {
+      background: #4e342e;
+      color: #ffd54f;
+      border: 1px solid #8c6d46;
+      border-radius: 4px;
+      padding: 3px 7px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .lang-btn.is-active { background: #c9a66b; color: #ffffff; border-color: #e8d3a8; }
+    .back-to-index-btn {
+      background: #3e2723;
+      color: #ffe082;
+      border: 1px solid #8c6d46;
+      border-radius: 4px;
+      padding: 4px 12px;
+      font-size: 0.82rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 8px;
+    }
+    .back-to-index-btn:hover { background: #5d4037; color: #ffffff; }
+    /* 地図内部（Leaflet の [+][-]・レイヤーボタン等 z-index 最大1000）を独立スタッキングに閉じ込め、
+       索引オーバーレイ（z-index 1500）の上に突き抜けて検索欄へ重なるのを防ぐ */
+    #map {
+      position: relative;
+      z-index: 0;
+      isolation: isolate;
+    }
+    .index-overlay {
+      z-index: 1500;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- 左ペイン：地図 ＋ 五十音順総合索引オーバーレイ -->
+    <section class="left-pane" aria-label="歴史地図と総合索引ペイン">
+    <div class="vol-nav-bar">
+      <a href="https://wasabikarashi.com/" class="home-top-link" title="Portal" data-i18n="{&quot;ja&quot;: &quot;🏠 トップ&quot;, &quot;en&quot;: &quot;🏠 Top&quot;, &quot;zh_tw&quot;: &quot;🏠 首頁&quot;, &quot;zh_cn&quot;: &quot;🏠 首页&quot;, &quot;ko&quot;: &quot;🏠 홈&quot;}">🏠 トップ</a>
+      <button class="slim-nav-btn" disabled>←</button>
+      <select class="vol-nav-select" id="volNavSelect" onchange="if(window.arthurNavChange){window.arthurNavChange(this);return;} if(this.value) location.href=this.value;">
+        <option value="glossary.html" selected data-i18n="{&quot;ja&quot;: &quot;📑 登場人物・寄港地・用語 索引&quot;, &quot;en&quot;: &quot;📑 Index: People, Places, Terms&quot;, &quot;zh_tw&quot;: &quot;📑 人物・地點・用語 索引&quot;, &quot;zh_cn&quot;: &quot;📑 人物・地点・用语 索引&quot;, &quot;ko&quot;: &quot;📑 인물·지명·용어 색인&quot;}">📑 登場人物・寄港地・用語 索引</option>
+        <option value="vol01.html" data-i18n="{&quot;ja&quot;: &quot;第一章 フォッグ氏とパスパルトゥー&quot;, &quot;en&quot;: &quot;Chapter I: Phileas Fogg and Passepartout&quot;, &quot;zh_tw&quot;: &quot;第一章 福格先生與路路通&quot;, &quot;zh_cn&quot;: &quot;第一章 福格先生与路路通&quot;, &quot;ko&quot;: &quot;제1장 필리어스 포그와 파스파르투&quot;}">第一章 フォッグ氏とパスパルトゥー</option>
+      </select>
+      <button class="slim-nav-btn" disabled>→</button>
+    </div>
+    <script>
+    window.ARTHUR_TITLE_I18N = {"ja":"八十日間世界一周","en":"Around the World in 80 Days","zh_tw":"環遊世界八十天","zh_cn":"环游世界八十天","ko":"80일간의 세계일주"};
+    window.normalizeArthurLangCode = function(raw) {
+      if (!raw) return "";
+      var s = String(raw).trim().toLowerCase().replace(/-/g, "_");
+      if (s === "en" || s.indexOf("en_") === 0) return "en";
+      if (s === "ja" || s.indexOf("ja_") === 0) return "ja";
+      if (s === "ko" || s.indexOf("ko_") === 0) return "ko";
+      if (s === "zh_tw" || s === "zh_hk" || s === "zh_mo" || s.indexOf("zh_hant") === 0) return "zh_tw";
+      if (s === "zh" || s === "zh_cn" || s === "zh_sg" || s.indexOf("zh_hans") === 0 || s.indexOf("zh_") === 0) return "zh_cn";
+      return "";
+    };
+    window.isArthurSearchBot = function() {
+      try {
+        if (navigator.webdriver) return true;
+        var ua = String(navigator.userAgent || "");
+        return /bot|crawl|spider|slurp|mediapartners|adsbot|bingpreview|facebookexternalhit|twitterbot|discordbot|whatsapp|applebot|lighthouse/i.test(ua);
+      } catch (e) { return false; }
+    };
+    window.resolveArthurInitialLang = function() {
+      var key = 'days80_selected_lang';
+      try {
+        var qRaw = new URLSearchParams(location.search).get('lang');
+        var qNorm = window.normalizeArthurLangCode(qRaw);
+        if (qNorm) {
+          try { localStorage.setItem(key, qNorm); } catch (_e) {}
+          return qNorm;
+        }
+      } catch (e) {}
+      try {
+        var saved = window.normalizeArthurLangCode(localStorage.getItem(key));
+        if (saved) return saved;
+      } catch (e) {}
+      if (window.isArthurSearchBot()) return 'ja';
+      try {
+        var navList = (Array.isArray(navigator.languages) && navigator.languages.length > 0)
+          ? navigator.languages : [navigator.language || ""];
+        for (var i = 0; i < navList.length; i++) {
+          var detected = window.normalizeArthurLangCode(navList[i]);
+          if (detected) return detected;
+        }
+      } catch (e) {}
+      return 'ja';
+    };
+    window.applyNavLang = function(lang) {
+      document.documentElement.lang = lang === 'zh_tw' ? 'zh-Hant' : (lang === 'zh_cn' ? 'zh-Hans' : lang);
+      if (window.ARTHUR_TITLE_I18N && window.ARTHUR_TITLE_I18N[lang]) {
+        document.title = window.ARTHUR_TITLE_I18N[lang];
+      }
+      var bar = document.querySelector('.vol-nav-bar');
+      if (!bar) return;
+      var home = bar.querySelector('.home-top-link');
+      if (home && home.getAttribute('data-i18n')) {
+        var h = JSON.parse(home.getAttribute('data-i18n'));
+        if (h[lang]) home.textContent = h[lang];
+      }
+      bar.querySelectorAll('option').forEach(function(o) {
+        if (!o.getAttribute('data-i18n')) return;
+        var d = JSON.parse(o.getAttribute('data-i18n'));
+        if (d[lang]) o.textContent = d[lang];
+      });
+    };
+    try {
+      window.applyNavLang(window.resolveArthurInitialLang());
+    } catch (e) {}
+    </script>
+      <div id="map"></div>
+
+      <div id="mapToast" class="map-toast" role="status" aria-live="polite"></div>
+
+      <!-- 省スペース4分類索引パネル（件数表記・行ボタン列なし） -->
+      <div id="indexOverlay" class="index-overlay">
+        <div class="index-top-controls">
+          <input type="search" id="indexSearchInput" class="index-search-input" placeholder="人物・地名・部族・用語を検索…" aria-label="用語検索">
+          <button type="button" id="hideIndexViewMapBtn" class="view-map-btn">🗺️ 地図を見る</button>
+        </div>
+        <div class="index-cat-tabs" role="tablist">
+          <button type="button" class="cat-tab-btn is-active" data-cat="person">👤 人物</button>
+          <button type="button" class="cat-tab-btn" data-cat="place">🗺️ 地名</button>
+          <button type="button" class="cat-tab-btn" data-cat="office">👑 部族・称号</button>
+          <button type="button" class="cat-tab-btn" data-cat="special">🔖 用語</button>
+        </div>
+        <div id="indexChipsScroll" class="index-chips-scroll"></div>
+      </div>
+    </section>
+
+    <!-- 右ペイン：解説サマリー ＋ 登場本文カード一覧 -->
+    <main class="right-pane" aria-label="解説と本文一覧ペイン">
+      <div class="gloss-bar">
+        <a class="gloss-bar-link" id="startVolLink" href="vol01.html">📖 本編へ</a>
+        <div class="lang-switch-bar" id="langSwitchBar" role="group" aria-label="Language"></div>
+      </div>
+
+      <div id="recordsScroll" class="records-scroll">
+        <div id="headSummaryContainer">
+          <section class="ssr-overview"><h1>地図と一緒によむ八十日間世界一周 — 世界地図連動・5言語対訳リーダー＆総合索引</h1><p>ジュール・ヴェルヌ（Jules Verne）著『八十日間世界一周（Around the World in Eighty Days, 1873年英訳底本）』を、ロンドンからスエズ・インド・香港・横浜・北米大陸横断を経て地球を一周する実在都市ピンと連動して読み進めるデジタル古典リーダーです。英語底本・日本語訳・繁体字中国語・簡体字中国語・韓国語の5言語対訳を備え、本文中の寄港地・街路・登場人物・時代用語をクリックすることで地図上の位置や解説・登場箇所を参照できます。</p></section>
+          <section class="ssr-chapters"><h2>本編収録章一覧（全1章）</h2><ul>
+            <li><a href="vol01.html">第一章　フィリアス・フォッグとパスパルトゥーが互いに主従として受け入れること（Chapter I: Phileas Fogg and Passepartout）</a></li>
+          </ul></section>
+        </div>
+        <div id="matchingRecordsContainer">
+          <section class="ssr-glossary-section"><h2>登場人物解説一覧</h2>
+            <article class="ssr-glossary-entry"><h3>リチャード・ブリンズリー・シェリダン（しぇりだん：18〜19世紀のアイルランド出身の劇作家・英国庶民院議員）</h3><p>『悪口学校』で知られる劇作家・雄弁な英国政治家</p><p>『悪口学校』などの風刺喜劇と議会での名演説で知られた劇作家・政治家（1751–1816）。史実ではサヴィル・ロウ14番地（本作の記述では1814年に7番地）で晩年を過ごして没した。</p></article>
+            <article class="ssr-glossary-entry"><h3>ジェームズ・フォースター（じぇーむず・ふぉーすたー：フォッグ氏に解雇された前任の従僕）</h3><p>フォッグ家の前任従僕</p><p>パスパルトゥーの前にフィリアス・フォッグに仕えていた若い従僕。髭剃り用の湯を規定の華氏86度ではなく84度で持ってきたため、10月2日に解雇された。</p></article>
+            <article class="ssr-glossary-entry"><h3>バイロン卿（ばいろん：19世紀イギリス・ロマン派を代表する詩人）</h3><p>19世紀英国ロマン派を代表する詩人</p><p>『チャイルド・ハロルドの巡礼』などでヨーロッパ中に熱狂を巻き起こした英国の貴族詩人（1788–1824）。端整で憂いを帯びた容貌でも広く知られた。</p></article>
+            <article class="ssr-glossary-entry"><h3>ジャン・パスパルトゥー（じゃん・ぱすぱるとぅー：フォッグ氏に新たに雇われたフランス人従僕）</h3><p>フォッグ氏に仕える誠実で器用なフランス人従僕</p><p>「どこでも通り抜ける（万能鍵）」を意味するあだ名を持つ30歳のフランス人青年。旅芸人・サーカス曲馬乗り・体操教師・パリ消防隊の伍長など多彩な経歴を経て、平穏で規則正しい暮らしを求めてフォッグ家に奉公する。</p></article>
+            <article class="ssr-glossary-entry"><h3>フィリアス・フォッグ（ふぃりあす・ふぉっぐ：サヴィル・ロウ7番地に暮らす英国紳士・本作の主人公）</h3><p>サヴィル・ロウ7番地に暮らす謎めいた英国紳士・リフォーム・クラブ会員</p><p>ロンドンのサヴィル・ロウ7番地に独り暮らす裕福で寡黙な英国紳士。時計のように寸分の狂いもない規則正しい生活を送り、リフォーム・クラブで新聞とホイストを楽しむことを唯一の日課としている。</p></article>
+            <article class="ssr-glossary-entry"><h3>シャルル・ブロンダン（ぶろんだん：ナイアガラ瀑布の綱渡りで世界を驚かせたフランスの曲芸師）</h3><p>ナイアガラの滝の綱渡りで名を馳せたフランスの曲芸師</p><p>1859年にナイアガラ渓谷の上空に張ったロープを何度も渡り切り、欧米中で一世を風靡したフランスの綱渡り名人（1824–1897）。</p></article>
+            <article class="ssr-glossary-entry"><h3>ジュール・レオタール（れおたーる：空中ブランコを発明した19世紀フランスの軽業師）</h3><p>空中ブランコを創始した19世紀フランスの曲芸師</p><p>1859年にパリで史上初の空中ブランコ演技を披露し、体操・バレエ用衣装「レオタード」の語源ともなったフランスの伝説的アクロバット芸人（1838–1870）。</p></article>
+          </section>
+          <section class="ssr-glossary-section"><h2>関連地名解説一覧</h2>
+            <article class="ssr-glossary-entry"><h3>イギリス（いぎりす：グレートブリテン及びアイルランド連合王国）</h3><p>国家（第2階層） ／ イギリス（連合王国）</p><p>グレートブリテン及びアイルランド連合王国。19世紀の世界蒸気船航路・電信網の中心帝国。</p></article>
+            <article class="ssr-glossary-entry"><h3>イングランド（いんぐらんど：グレートブリテン島中南部を占める連合王国の中核地域）</h3><p>地方・構成国（第3階層） ／ イギリス・イングランド</p><p>グレートブリテン島中南部を占める中核地域で、首都ロンドンを擁する。</p></article>
+            <article class="ssr-glossary-entry"><h3>イングランド銀行・王立取引所（いんぐらんどぎんこう：シティ中心部の中央銀行と取引所）</h3><p>中央銀行・取引所（第6階層） ／ ロンドン・シティ・スレッドニードル街</p><p>シティ中心部に建つ英国の中央銀行および隣接する王立取引所（チェンジ）。ヴィクトリア朝の国際金融の心臓部。</p></article>
+            <article class="ssr-glossary-entry"><h3>王立研究所（おうりつけんきゅうじょ：アルベマール街21番地の名門科学研究機関）</h3><p>学術機関（第6階層） ／ ロンドン・メイフェア・アルベマール街21番地</p><p>1799年に創設された英国の科学実験・公開講演機関。デーヴィーやファラデーの研究拠点として名高い。</p></article>
+            <article class="ssr-glossary-entry"><h3>北アメリカ（きたあめりか：アメリカ合衆国・カナダを含む北米大陸）</h3><p>大陸・大州（第1階層） ／ アメリカ合衆国・カナダ</p><p>1870年代当時、開通間もない大陸横断鉄道が東西両岸を結んでいた北アメリカ大陸。</p></article>
+            <article class="ssr-glossary-entry"><h3>アメリカ五大湖（ごだいこ：北米北東部の大淡水湖群。19世紀には天然氷の輸出地）</h3><p>広域湖沼群（第3階層） ／ アメリカ合衆国北東部・カナダ国境地域</p><p>北米北東部の巨大淡水湖群。19世紀には北米の湖で切り出された天然氷が大西洋を越えてロンドンのクラブへ運ばれていた。</p></article>
+            <article class="ssr-glossary-entry"><h3>サヴィル・ロウ7番地（さゔぃる・ろう：メイフェアのバーリントン・ガーデンズに面するフォッグ邸）</h3><p>街路・邸宅（第6階層） ／ ロンドン・メイフェア・サヴィル・ロウ7番地</p><p>メイフェア地区のバーリントン・ガーデンズに面する高級紳士服仕立て街。その7番地にフォッグ氏の静かな邸宅がある。</p></article>
+            <article class="ssr-glossary-entry"><h3>シティ・オブ・ロンドン（してぃ・おぶ・ろんどん：ロンドンの歴史的旧市街・金融街）</h3><p>市内地区（第5階層） ／ ロンドン・シティ・オブ・ロンドン</p><p>ロンドンの歴史的旧市街にして国際金融・海運・商業の中枢地区。</p></article>
+            <article class="ssr-glossary-entry"><h3>パリ（ぱり：フランスの首都）</h3><p>都市（第4階層） ／ フランス・パリ</p><p>セーヌ川沿いのフランスの首都。パスパルトゥーがかつて消防隊の伍長を務めていた街。</p></article>
+            <article class="ssr-glossary-entry"><h3>フランス（ふらんす：西ヨーロッパの主要国・パスパルトゥーの母国）</h3><p>国家（第2階層） ／ フランス共和国</p><p>英仏海峡の対岸に位置する西ヨーロッパの主要国で、パスパルトゥーの母国。</p></article>
+            <article class="ssr-glossary-entry"><h3>法曹院（ほうそういん：テンプル・リンカーン・グレイ法曹院からなる法曹街）</h3><p>法曹地区（第5階層） ／ ロンドン・ホルボーン〜テンプル地区</p><p>テンプル、リンカーン法曹院、グレイ法曹院からなる英国法廷弁護士の伝統的な育成・自治機関。</p></article>
+            <article class="ssr-glossary-entry"><h3>ヨーロッパ（よーろっぱ：世界一周の出発・帰着地となるヨーロッパ州）</h3><p>大陸・大州（第1階層） ／ ヨーロッパ</p><p>ユーラシア大陸西端の大州であり、フォッグ氏の八十日間世界一周の出発・帰着大陸。</p></article>
+            <article class="ssr-glossary-entry"><h3>リフォーム・クラブ（りふぉーむ・くらぶ：ポール・モール街104番地に建つ名門紳士クラブ）</h3><p>歴史建築・クラブ（第6階層） ／ ロンドン・ポール・モール104番地</p><p>1836年創設、チャールズ・バリー設計のイタリア宮殿風建築で知られる名門紳士クラブ。モザイク床の玄関広間と斑岩円柱の円形回廊を備える。</p></article>
+            <article class="ssr-glossary-entry"><h3>ロンドン（ろんどん：イギリスの首都・世界一周の出発地にして帰着地）</h3><p>都市（第4階層） ／ イギリス・グレーター・ロンドン</p><p>テムズ川沿いに広がる大英帝国の首都であり、フォッグ氏の世界一周の出発地にして帰着地。</p></article>
+            <article class="ssr-glossary-entry"><h3>ロンドン・ドック（ろんどん・どっく：テムズ川下流ワッピングの商業船渠）</h3><p>港湾・船渠（第5階層） ／ ロンドン・ワッピング</p><p>1805年にロンドン塔下流のワッピングに開設された巨大商業ドック群。世界中の商船と貨物が集まった。</p></article>
+          </section>
+          <section class="ssr-glossary-section"><h2>称号・役職解説一覧</h2>
+            <article class="ssr-glossary-entry"><h3>パリ消防士（しょうぼうし：軍隊組織に属し高い身体能力で知られたパリの消防隊員。原文の fireman）</h3><p>パリ市を守る工兵系の消防隊員</p><p>ナポレオン時代に創設されたパリの消防隊（サプール＝ポンピエ）。軍の工兵部隊に属し、高度な体操・登攀訓練を受けた精鋭として知られた。</p></article>
+            <article class="ssr-glossary-entry"><h3>紳士（しんし：教養・礼節と経済的自立を備えた英国上流・中流階級の男性。原文の gentleman）</h3><p>ヴィクトリア朝英国の社会的身分・理想像</p><p>19世紀のイギリス社会において、高潔な品位・冷静な自制心・教養と経済的余裕を備えた男性を指す称号・階層概念。</p></article>
+            <article class="ssr-glossary-entry"><h3>従僕（じゅうぼく：主人の衣裳・身辺の世話を専門に担う男性使用人。原文の valet / domestic）</h3><p>主人の身辺・旅支度を支える個人付き使用人</p><p>ヨーロッパの上流家庭において、主人個人の衣服管理・整髪・日課の補佐や旅行時の随行を専門に務めた男性使用人（ヴァレット）。</p></article>
+          </section>
+          <section class="ssr-glossary-section"><h2>伝説武具・物語用語解説一覧</h2>
+            <article class="ssr-glossary-entry"><h3>ベアリング兄弟商会（べありんぐしょうかい：1762年創業、大英帝国の国際金融を担った名門マーチャント・バンク。原文の the Barings）</h3><p>国際金融商会・マーチャント・バンク</p><p>18〜19世紀のロンドンで絶大な信用を誇った名門銀行（ベアリングス銀行）。各国政府の公債引受や国際決済を手がけ、「ヨーロッパ第6の列強」とまで称された。</p></article>
+            <article class="ssr-glossary-entry"><h3>ホイスト（ほいすと：18〜19世紀の英国紳士クラブで盛んに遊ばれた4人用トランプ競技。原文の whist）</h3><p>英国紳士クラブの4人用トランプ競技</p><p>2人ずつペアを組んで13トリックを競う伝統的なトランプゲーム。私語を慎み記憶力と論理的推理を競う静粛な知的競技として英国紳士クラブで愛され、のちのブリッジの母体となった。</p></article>
+          </section>
+        </div>
+        <div class="adsense-footer-box">
+          <ins class="adsbygoogle"
+               style="display:block"
+               data-ad-client="ca-pub-4382223240782332"
+               data-ad-format="auto"
+               data-full-width-responsive="true"></ins>
+          <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script src="./shared_map_controller.js"></script>
+  <script src="./shared_glossary_corpus.js"></script>
+  <script>
+  (function() {
+    "use strict";
+
+    // =========================================================================
+    // 定数定義（マジックナンバー厳禁）
+    // =========================================================================
+    const INITIAL_MAP_LAT = 51.85;
+    const INITIAL_MAP_LNG = -2.6;
+    const INITIAL_MAP_ZOOM = 6;
+
+    const PLACES_MASTER = {"ヨーロッパ": {"key": "ヨーロッパ", "name": "ヨーロッパ", "yomi": "よーろっぱ", "label": "ヨーロッパ（よーろっぱ：世界一周の出発・帰着地となるヨーロッパ州）", "place_type": "area", "is_area": true, "is_river": false, "tier": 1, "tier_kind": "continent", "parent_key": "", "category": "大陸・大州（第1階層）", "province": "ヨーロッパ", "parent_area": "", "modern": "ヨーロッパ", "lat": 48.8, "lng": 4.0, "zoom": 4, "radius_m": 0, "is_pin": false, "area_polygon": [[62.0, -11.5], [62.0, 30.0], [35.0, 30.0], [35.0, -11.5]], "river_coords": [], "wiki_title": "", "hierarchy_path": ["ヨーロッパ"], "city_key": "", "role_i18n": {"ja": "大陸・大州（第1階層）／ ヨーロッパ", "en": "Continent (Lv.1) / Europe", "zh_tw": "大陸（第1層）／ 歐洲", "zh_cn": "大陆（第1层）／ 欧洲", "ko": "대륙(1계층) / 유럽"}, "desc_i18n": {"ja": "ユーラシア大陸西端の大州であり、フォッグ氏の八十日間世界一周の出発・帰着大陸。", "en": "Western peninsula of Eurasia; starting and concluding continent of Phileas Fogg's eighty-day journey.", "zh_tw": "歐亞大陸西端的大洲，福格先生八十天環球之旅的出發與歸返大洲。", "zh_cn": "欧亚大陆西端的大洲，福格先生八十天环球之旅的出发与归返大洲。", "ko": "유라시아 서쪽의 대륙으로 필리어스 포그의 80일 세계일주가 출발하고 귀환하는 대륙."}, "sort_key_i18n": {"zh_tw": "O", "zh_cn": "O"}, "name_i18n": {"ja": "ヨーロッパ", "en": "Europe", "zh_tw": "歐洲", "zh_cn": "欧洲", "ko": "유럽"}}, "北アメリカ": {"key": "北アメリカ", "name": "北アメリカ", "yomi": "きたあめりか", "label": "北アメリカ（きたあめりか：アメリカ合衆国・カナダを含む北米大陸）", "place_type": "area", "is_area": true, "is_river": false, "tier": 1, "tier_kind": "continent", "parent_key": "", "category": "大陸・大州（第1階層）", "province": "北アメリカ", "parent_area": "", "modern": "アメリカ合衆国・カナダ", "lat": 41.0, "lng": -98.0, "zoom": 4, "radius_m": 0, "is_pin": false, "area_polygon": [[60.0, -130.0], [60.0, -65.0], [24.0, -65.0], [24.0, -130.0]], "river_coords": [], "wiki_title": "", "hierarchy_path": ["北アメリカ"], "city_key": "", "role_i18n": {"ja": "大陸・大州（第1階層）／ アメリカ合衆国・カナダ", "en": "Continent (Wide Area) / North America", "zh_tw": "大陸（廣域）／ 北美洲", "zh_cn": "大陆（广域）／ 北美洲", "ko": "대륙(광역) / 북아메리카"}, "desc_i18n": {"ja": "1870年代当時、開通間もない大陸横断鉄道が東西両岸を結んでいた北アメリカ大陸。", "en": "The North American continent, spanned in the 1870s by the newly completed Pacific Railroad.", "zh_tw": "北美洲大陸，1870年代已由新竣工的太平洋橫貫鐵路連接東西兩岸。", "zh_cn": "北美洲大陆，1870年代已由新竣工的太平洋横贯铁路连接东西两岸。", "ko": "북아메리카 대륙. 1870년대에는 새로 개통된 대륙횡단철도가 동서 해안을 잇고 있었다."}, "sort_key_i18n": {"zh_tw": "B", "zh_cn": "B"}, "name_i18n": {"ja": "北アメリカ", "en": "North America", "zh_tw": "北美洲", "zh_cn": "北美洲", "ko": "북아메리카"}}, "イギリス": {"key": "イギリス", "name": "イギリス", "yomi": "いぎりす", "label": "イギリス（いぎりす：グレートブリテン及びアイルランド連合王国）", "place_type": "area", "is_area": true, "is_river": false, "tier": 2, "tier_kind": "country", "parent_key": "ヨーロッパ", "category": "国家（第2階層）", "province": "ヨーロッパ", "parent_area": "ヨーロッパ", "modern": "イギリス（連合王国）", "lat": 53.5, "lng": -2.2, "zoom": 5, "radius_m": 0, "is_pin": false, "area_polygon": [[60.9, -10.8], [60.9, 2.0], [49.8, 2.0], [49.8, -10.8]], "river_coords": [], "wiki_title": "", "hierarchy_path": ["ヨーロッパ", "イギリス"], "city_key": "", "role_i18n": {"ja": "国家（第2階層）／ イギリス（連合王国）", "en": "Country (Wide Area) / United Kingdom", "zh_tw": "國家（廣域）／ 英國（聯合王國）", "zh_cn": "国家（广域）／ 英国（联合王国）", "ko": "국가(광역) / 영국(연합왕국)"}, "desc_i18n": {"ja": "グレートブリテン及びアイルランド連合王国。19世紀の世界蒸気船航路・電信網の中心帝国。", "en": "The United Kingdom of Great Britain and Ireland, center of the 19th-century global steamship and telegraph network.", "zh_tw": "大不列顛與愛爾蘭聯合王國，十九世紀全球蒸汽船航線與電報網路的核心帝國。", "zh_cn": "大不列颠与爱尔兰联合王国，十九世纪全球蒸汽船航线与电报网络的核心帝国。", "ko": "그레이트브리튼 아일랜드 연합왕국. 19세기 전 세계 증기선 항로와 전신망의 중심이었던 국가."}, "sort_key_i18n": {"zh_tw": "Y", "zh_cn": "Y"}, "name_i18n": {"ja": "イギリス", "en": "United Kingdom", "zh_tw": "英國", "zh_cn": "英国", "ko": "영국"}}, "フランス": {"key": "フランス", "name": "フランス", "yomi": "ふらんす", "label": "フランス（ふらんす：西ヨーロッパの主要国・パスパルトゥーの母国）", "place_type": "area", "is_area": true, "is_river": false, "tier": 2, "tier_kind": "country", "parent_key": "ヨーロッパ", "category": "国家（第2階層）", "province": "ヨーロッパ", "parent_area": "ヨーロッパ", "modern": "フランス共和国", "lat": 46.6, "lng": 2.2, "zoom": 5, "radius_m": 0, "is_pin": false, "area_polygon": [[51.15, -5.2], [51.15, 9.6], [41.3, 9.6], [41.3, -5.2]], "river_coords": [], "wiki_title": "", "hierarchy_path": ["ヨーロッパ", "フランス"], "city_key": "", "role_i18n": {"ja": "国家（第2階層）／ フランス共和国", "en": "Country (Wide Area) / French Republic", "zh_tw": "國家（廣域）／ 法國", "zh_cn": "国家（广域）／ 法国", "ko": "국가(광역) / 프랑스"}, "desc_i18n": {"ja": "英仏海峡の対岸に位置する西ヨーロッパの主要国で、パスパルトゥーの母国。", "en": "Major Western European nation across the English Channel and homeland of Jean Passepartout.", "zh_tw": "隔英吉利海峽與英國相望的西歐大國，路路通的祖國。", "zh_cn": "隔英吉利海峡与英国相望的西欧大国，路路通的祖国。", "ko": "영불 해협 건너편의 서유럽 주요 국가이자 장 파스파르투의 모국."}, "sort_key_i18n": {"zh_tw": "F", "zh_cn": "F"}, "name_i18n": {"ja": "フランス", "en": "France", "zh_tw": "法國", "zh_cn": "法国", "ko": "프랑스"}}, "イングランド": {"key": "イングランド", "name": "イングランド", "yomi": "いんぐらんど", "label": "イングランド（いんぐらんど：グレートブリテン島中南部を占める連合王国の中核地域）", "place_type": "area", "is_area": true, "is_river": false, "tier": 3, "tier_kind": "region", "parent_key": "イギリス", "category": "地方・構成国（第3階層）", "province": "イギリス", "parent_area": "イギリス", "modern": "イギリス・イングランド", "lat": 52.35, "lng": -1.17, "zoom": 6, "radius_m": 0, "is_pin": false, "area_polygon": [[55.85, -5.75], [55.85, 1.8], [49.9, 1.8], [49.9, -5.75]], "river_coords": [], "wiki_title": "", "hierarchy_path": ["ヨーロッパ", "イギリス", "イングランド"], "city_key": "", "role_i18n": {"ja": "地方・構成国（第3階層）／ イギリス・イングランド", "en": "Region (Wide Area) / England, UK", "zh_tw": "地區（廣域）／ 英國英格蘭", "zh_cn": "地区（广域）／ 英国英格兰", "ko": "지역(광역) / 영국 잉글랜드"}, "desc_i18n": {"ja": "グレートブリテン島中南部を占める中核地域で、首都ロンドンを擁する。", "en": "The central and southern part of Great Britain, home to the capital city of London.", "zh_tw": "大不列顛島中南部核心地區，首都倫敦所在地。", "zh_cn": "大不列颠岛中南部核心地区，首都伦敦所在地。", "ko": "그레이트브리튼섬 중남부를 차지하는 연합왕국의 핵심 지역으로 수도 런던이 위치한다."}, "sort_key_i18n": {"zh_tw": "Y", "zh_cn": "Y"}, "name_i18n": {"ja": "イングランド", "en": "England", "zh_tw": "英格蘭", "zh_cn": "英格兰", "ko": "잉글랜드"}}, "五大湖": {"key": "五大湖", "name": "五大湖", "yomi": "ごだいこ", "label": "アメリカ五大湖（ごだいこ：北米北東部の大淡水湖群。19世紀には天然氷の輸出地）", "place_type": "point", "is_area": false, "is_river": false, "tier": 3, "tier_kind": "region", "parent_key": "北アメリカ", "category": "広域湖沼群（第3階層）", "province": "北アメリカ", "parent_area": "北アメリカ", "modern": "アメリカ合衆国北東部・カナダ国境地域", "lat": 43.8, "lng": -82.4, "zoom": 6, "radius_m": 45000, "is_pin": true, "area_polygon": [], "river_coords": [], "wiki_title": "", "hierarchy_path": ["北アメリカ", "五大湖"], "city_key": "", "role_i18n": {"ja": "広域湖沼群（第3階層）／ 北アメリカ北東部", "en": "Freshwater Lakes / North American Great Lakes", "zh_tw": "大型淡水湖群 ／ 北美五大湖", "zh_cn": "大型淡水湖群 ／ 北美五大湖", "ko": "대형 담수호군 / 북미 오대호"}, "desc_i18n": {"ja": "北米北東部の巨大淡水湖群。19世紀には北米の湖で切り出された天然氷が大西洋を越えてロンドンのクラブへ運ばれていた。", "en": "Vast freshwater lakes of northeastern North America; in the 19th century, natural winter ice cut from American lakes was shipped across the Atlantic to London clubs.", "zh_tw": "北美洲東北部龐大的淡水湖群；十九世紀時，北美湖泊冬季採切的天然冰塊曾遠渡大西洋供應倫敦高級俱樂部。", "zh_cn": "北美洲东北部庞大的淡水湖群；十九世纪时，北美湖泊冬季采切的天然冰块曾远渡大西洋供应伦敦高级俱乐部。", "ko": "북미 북동부의 거대 담수호군. 19세기에는 미국 호수에서 겨울철 채취한 천연 얼음이 대서양을 건너 런던 고급 클럽으로 수출되었다."}, "sort_key_i18n": {"zh_tw": "W", "zh_cn": "W"}, "name_i18n": {"ja": "アメリカ五大湖", "en": "Great Lakes", "zh_tw": "北美五大湖", "zh_cn": "北美五大湖", "ko": "북미 오대호"}}, "ロンドン": {"key": "ロンドン", "name": "ロンドン", "yomi": "ろんどん", "label": "ロンドン（ろんどん：イギリスの首都・世界一周の出発地にして帰着地）", "place_type": "point", "is_area": false, "is_river": false, "tier": 4, "tier_kind": "city", "parent_key": "イングランド", "category": "都市（第4階層）", "province": "イングランド", "parent_area": "イングランド", "modern": "イギリス・グレーター・ロンドン", "lat": 51.5095, "lng": -0.118, "zoom": 12, "radius_m": 2400, "is_pin": true, "area_polygon": [], "river_coords": [], "wiki_title": "", "hierarchy_path": ["ヨーロッパ", "イギリス", "イングランド", "ロンドン"], "city_key": "ロンドン", "role_i18n": {"ja": "都市（第4階層）／ イギリス・グレーター・ロンドン", "en": "Capital City / Greater London, UK", "zh_tw": "首都大城 ／ 英國倫敦", "zh_cn": "首都大城 ／ 英国伦敦", "ko": "수도·대도시 / 영국 런던"}, "desc_i18n": {"ja": "テムズ川沿いに広がる大英帝国の首都であり、フォッグ氏の世界一周の出発地にして帰着地。", "en": "Capital of the United Kingdom on the River Thames, and both starting and finishing point of Phileas Fogg's journey around the world.", "zh_tw": "位於泰晤士河畔的英國首都，也是福格先生環遊世界八十天旅程的起點與終點。", "zh_cn": "位于泰晤士河畔的英国首都，也是福格先生环游世界八十天旅程的起点与终点。", "ko": "템스강 연안의 영국 수도이자 필리어스 포그의 세계일주 여정의 출발점이자 도착점."}, "sort_key_i18n": {"zh_tw": "L", "zh_cn": "L"}, "name_i18n": {"ja": "ロンドン", "en": "London", "zh_tw": "倫敦", "zh_cn": "伦敦", "ko": "런던"}}, "パリ": {"key": "パリ", "name": "パリ", "yomi": "ぱり", "label": "パリ（ぱり：フランスの首都）", "place_type": "point", "is_area": false, "is_river": false, "tier": 4, "tier_kind": "city", "parent_key": "フランス", "category": "都市（第4階層）", "province": "フランス", "parent_area": "フランス", "modern": "フランス・パリ", "lat": 48.8566, "lng": 2.3522, "zoom": 12, "radius_m": 2400, "is_pin": true, "area_polygon": [], "river_coords": [], "wiki_title": "", "hierarchy_path": ["ヨーロッパ", "フランス", "パリ"], "city_key": "パリ", "role_i18n": {"ja": "都市（第4階層）／ フランス・パリ", "en": "Capital City / Paris, France", "zh_tw": "首都大城 ／ 法國巴黎", "zh_cn": "首都大城 ／ 法国巴黎", "ko": "수도·대도시 / 프랑스 파리"}, "desc_i18n": {"ja": "セーヌ川沿いのフランスの首都。パスパルトゥーがかつて消防隊の伍長を務めていた街。", "en": "Capital of France on the River Seine, where Passepartout previously served as a sergeant fireman.", "zh_tw": "塞納河畔的法國首都，路路通早年曾在此擔任消防隊伍長。", "zh_cn": "塞纳河畔的法国首都，路路通早年曾在此担任消防队伍长。", "ko": "센강 연안의 프랑스 수도로 파스파르투가 과거 소방대 분대장으로 근무했던 도시."}, "sort_key_i18n": {"zh_tw": "B", "zh_cn": "B"}, "name_i18n": {"ja": "パリ", "en": "Paris", "zh_tw": "巴黎", "zh_cn": "巴黎", "ko": "파리"}}, "シティ・オブ・ロンドン": {"key": "シティ・オブ・ロンドン", "name": "シティ・オブ・ロンドン", "yomi": "してぃ・おぶ・ろんどん", "label": "シティ・オブ・ロンドン（してぃ・おぶ・ろんどん：ロンドンの歴史的旧市街・金融街）", "place_type": "point", "is_area": false, "is_river": false, "tier": 5, "tier_kind": "district", "parent_key": "ロンドン", "category": "市内地区（第5階層）", "province": "イングランド", "parent_area": "イングランド", "modern": "ロンドン・シティ・オブ・ロンドン", "lat": 51.5155, "lng": -0.0922, "zoom": 14, "radius_m": 650, "is_pin": true, "area_polygon": [], "river_coords": [], "wiki_title": "", "hierarchy_path": ["ヨーロッパ", "イギリス", "イングランド", "ロンドン", "シティ・オブ・ロンドン"], "city_key": "ロンドン", "role_i18n": {"ja": "市内地区（第5階層）／ ロンドン・シティ", "en": "Financial District / City of London", "zh_tw": "金融城 ／ 倫敦金融城（舊城）", "zh_cn": "金融城 ／ 伦敦金融城（旧城）", "ko": "금융가·구시가지 / 시티 오브 런던"}, "desc_i18n": {"ja": "ロンドンの歴史的旧市街にして国際金融・海運・商業の中枢地区。", "en": "The historic core and commercial-financial heart of London, crowded with banks, counting-houses, and shipping offices.", "zh_tw": "倫敦歷史最悠久的核心舊城區與全球金融商業中樞，雲集銀行、帳房與航運商行。", "zh_cn": "伦敦历史最悠久的核心旧城区与全球金融商业中枢，云集银行、账房与航运商行。", "ko": "런던의 역사적 중심지이자 세계 금융·상업의 심장부로 은행과 회계소, 해운 상사가 밀집한 지역."}, "sort_key_i18n": {"zh_tw": "L", "zh_cn": "L"}, "name_i18n": {"ja": "シティ・オブ・ロンドン", "en": "City of London", "zh_tw": "倫敦金融城", "zh_cn": "伦敦金融城", "ko": "시티 오브 런던"}}, "サヴィル・ロウ": {"key": "サヴィル・ロウ", "name": "サヴィル・ロウ", "yomi": "さゔぃる・ろう", "label": "サヴィル・ロウ7番地（さゔぃる・ろう：メイフェアのバーリントン・ガーデンズに面するフォッグ邸）", "place_type": "point", "is_area": false, "is_river": false, "tier": 6, "tier_kind": "spot", "parent_key": "ロンドン", "category": "街路・邸宅（第6階層）", "province": "イングランド", "parent_area": "イングランド", "modern": "ロンドン・メイフェア・サヴィル・ロウ7番地", "lat": 51.5113, "lng": -0.1406, "zoom": 16, "radius_m": 95, "is_pin": true, "area_polygon": [], "river_coords": [], "wiki_title": "", "hierarchy_path": ["ヨーロッパ", "イギリス", "イングランド", "ロンドン", "サヴィル・ロウ"], "city_key": "ロンドン", "role_i18n": {"ja": "街路・邸宅（第6階層）／ ロンドン・メイフェア（Savile Row）", "en": "Street & Residence / Mayfair, Westminster, London", "zh_tw": "街區與宅邸 ／ 倫敦梅費爾薩佛街7號", "zh_cn": "街区与宅邸 ／ 伦敦梅费尔萨维尔街7号", "ko": "거리·저택 / 런던 메이페어 새빌 로 7번지"}, "desc_i18n": {"ja": "メイフェア地区のバーリントン・ガーデンズに面する高級紳士服仕立て街。その7番地にフォッグ氏の静かな邸宅がある。", "en": "An elegant street in Mayfair off Burlington Gardens, famed for bespoke tailoring; No. 7 Savile Row is Phileas Fogg's quiet London residence.", "zh_tw": "倫敦梅費爾區毗鄰伯靈頓花園的高雅街道，以頂級訂製西裝聞名；薩佛街7號即福格先生的住所。", "zh_cn": "伦敦梅费尔区毗邻伯灵顿花园的高雅街道，以顶级定制西装闻名；萨维尔街7号即福格先生的住所。", "ko": "런던 메이페어 지구 벌링턴 가든스 인근의 고급 거리로 맞춤 양복점 거리로도 유명하며, 7번지가 필리어스 포그의 저택이다."}, "sort_key_i18n": {"zh_tw": "S", "zh_cn": "S"}, "name_i18n": {"ja": "サヴィル・ロウ7番地", "en": "No. 7 Savile Row", "zh_tw": "薩佛街7號", "zh_cn": "萨维尔街7号", "ko": "새빌 로 7번지"}}, "リフォーム・クラブ": {"key": "リフォーム・クラブ", "name": "リフォーム・クラブ", "yomi": "りふぉーむ・くらぶ", "label": "リフォーム・クラブ（りふぉーむ・くらぶ：ポール・モール街104番地に建つ名門紳士クラブ）", "place_type": "point", "is_area": false, "is_river": false, "tier": 6, "tier_kind": "spot", "parent_key": "ロンドン", "category": "歴史建築・クラブ（第6階層）", "province": "イングランド", "parent_area": "イングランド", "modern": "ロンドン・ポール・モール104番地", "lat": 51.5069, "lng": -0.1332, "zoom": 16, "radius_m": 95, "is_pin": true, "area_polygon": [], "river_coords": [], "wiki_title": "", "hierarchy_path": ["ヨーロッパ", "イギリス", "イングランド", "ロンドン", "リフォーム・クラブ"], "city_key": "ロンドン", "role_i18n": {"ja": "歴史建築・クラブ（第6階層）／ ロンドン・ポール・モール104番地", "en": "Gentlemen's Club / 104 Pall Mall, St James's, London", "zh_tw": "紳士俱樂部 ／ 倫敦帕爾摩爾街104號", "zh_cn": "绅士俱乐部 ／ 伦敦帕尔摩尔街104号", "ko": "신사 클럽 / 런던 팰맬가 104번지 리폼 클럽"}, "desc_i18n": {"ja": "1836年創設、チャールズ・バリー設計のイタリア宮殿風建築で知られる名門紳士クラブ。モザイク床の玄関広間と斑岩円柱の円形回廊を備える。", "en": "Founded in 1836 at 104 Pall Mall with an Italianate palazzo building by Sir Charles Barry, featuring a grand mosaic-floored saloon and porphyry columns.", "zh_tw": "1836年創立於倫敦帕爾摩爾街104號的名門紳士俱樂部，由查爾斯·巴里爵士設計成義大利宮殿風格，擁有鑲嵌地板大廳與斑岩圓柱。", "zh_cn": "1836年创立于伦敦帕尔摩尔街104号的名门绅士俱乐部，由查尔斯·巴里爵士设计成意大利宫殿风格，拥有镶嵌地板大厅与斑岩圆柱。", "ko": "1836년 런던 팰맬가 104번지에 설립된 명문 신사 클럽. 찰스 배리 경이 이탈리아 궁전 양식으로 설계했으며 모자이크 바닥 홀과 반암 원주 돔으로 유명하다."}, "sort_key_i18n": {"zh_tw": "G", "zh_cn": "G"}, "name_i18n": {"ja": "リフォーム・クラブ", "en": "Reform Club", "zh_tw": "改革俱樂部", "zh_cn": "改革俱乐部", "ko": "리폼 클럽"}}, "王立研究所": {"key": "王立研究所", "name": "王立研究所", "yomi": "おうりつけんきゅうじょ", "label": "王立研究所（おうりつけんきゅうじょ：アルベマール街21番地の名門科学研究機関）", "place_type": "point", "is_area": false, "is_river": false, "tier": 6, "tier_kind": "spot", "parent_key": "ロンドン", "category": "学術機関（第6階層）", "province": "イングランド", "parent_area": "イングランド", "modern": "ロンドン・メイフェア・アルベマール街21番地", "lat": 51.5097, "lng": -0.1424, "zoom": 16, "radius_m": 95, "is_pin": true, "area_polygon": [], "river_coords": [], "wiki_title": "", "hierarchy_path": ["ヨーロッパ", "イギリス", "イングランド", "ロンドン", "王立研究所"], "city_key": "ロンドン", "role_i18n": {"ja": "学術機関（第6階層）／ ロンドン・メイフェア・アルベマール街21番地", "en": "Scientific Institution / 21 Albemarle Street, Mayfair, London", "zh_tw": "科學研究機構 ／ 倫敦梅費爾阿爾emarle街21號", "zh_cn": "科学研究机构 ／ 伦敦梅费尔阿尔伯马尔街21号", "ko": "학술·과학 기관 / 런던 메이페어 앨버말가 21번지 왕립연구소"}, "desc_i18n": {"ja": "1799年に創設された英国の科学実験・公開講演機関。デーヴィーやファラデーの研究拠点として名高い。", "en": "The Royal Institution of Great Britain, founded in 1799 on Albemarle Street for scientific research and public lectures, associated with Davy and Faraday.", "zh_tw": "1799年創立於倫敦梅費爾區的大不列顛皇家科學研究所，因戴維與法拉第等科學家的研究與公開講座而聞名。", "zh_cn": "1799年创立于伦敦梅费尔区的大不列颠皇家科学研究所，因戴维与法拉第等科学家的研究与公开讲座而闻名。", "ko": "1799년 런던 메이페어에 설립된 영국의 명문 과학 연구·강연 기관으로 험프리 데이비와 마이클 패러데이의 활약으로 유명하다."}, "sort_key_i18n": {"zh_tw": "H", "zh_cn": "H"}, "name_i18n": {"ja": "王立研究所", "en": "Royal Institution", "zh_tw": "皇家科學研究所", "zh_cn": "皇家科学研究所", "ko": "왕립연구소"}}, "法曹院": {"key": "法曹院", "name": "法曹院", "yomi": "ほうそういん", "label": "法曹院（ほうそういん：テンプル・リンカーン・グレイ法曹院からなる法曹街）", "place_type": "point", "is_area": false, "is_river": false, "tier": 5, "tier_kind": "district", "parent_key": "ロンドン", "category": "法曹地区（第5階層）", "province": "イングランド", "parent_area": "イングランド", "modern": "ロンドン・ホルボーン〜テンプル地区", "lat": 51.5162, "lng": -0.1135, "zoom": 15, "radius_m": 240, "is_pin": true, "area_polygon": [], "river_coords": [], "wiki_title": "", "hierarchy_path": ["ヨーロッパ", "イギリス", "イングランド", "ロンドン", "法曹院"], "city_key": "ロンドン", "role_i18n": {"ja": "法曹地区（第5階層）／ ロンドン・テンプル〜ホルボーン", "en": "Inns of Court / Temple, Lincoln's Inn & Gray's Inn, London", "zh_tw": "四大法學院 ／ 倫敦聖殿、林肯與格雷法學院", "zh_cn": "四大法学院 ／ 伦敦圣殿、林肯与格雷法学院", "ko": "법조원(인즈 오브 코트) / 런던 템플·링컨·그레이 법조원"}, "desc_i18n": {"ja": "テンプル、リンカーン法曹院、グレイ法曹院からなる英国法廷弁護士の伝統的な育成・自治機関。", "en": "London's historic professional associations for barristers—Inner and Middle Temple, Lincoln's Inn, and Gray's Inn—clustered near the Royal Courts of Justice.", "zh_tw": "倫敦培育與認證出庭大律師的傳統法律機構群，包含內外聖殿法學院、林肯法學院與格雷法學院。", "zh_cn": "伦敦培育与认证出庭大律师的传统法律机构群，包含内外圣殿法学院、林肯法学院与格雷法学院。", "ko": "영국 법정변호사(배리스터)들의 전통 법조 기관군으로 템플, 링컨 법조원, 그레이 법조원으로 이루어진 런던 법조 타운."}, "sort_key_i18n": {"zh_tw": "F", "zh_cn": "F"}, "name_i18n": {"ja": "法曹院", "en": "Inns of Court", "zh_tw": "四大法學院", "zh_cn": "四大法学院", "ko": "법조원"}}, "イングランド銀行": {"key": "イングランド銀行", "name": "イングランド銀行", "yomi": "いんぐらんどぎんこう", "label": "イングランド銀行・王立取引所（いんぐらんどぎんこう：シティ中心部の中央銀行と取引所）", "place_type": "point", "is_area": false, "is_river": false, "tier": 6, "tier_kind": "spot", "parent_key": "シティ・オブ・ロンドン", "category": "中央銀行・取引所（第6階層）", "province": "イングランド", "parent_area": "イングランド", "modern": "ロンドン・シティ・スレッドニードル街", "lat": 51.5141, "lng": -0.0885, "zoom": 16, "radius_m": 95, "is_pin": true, "area_polygon": [], "river_coords": [], "wiki_title": "", "hierarchy_path": ["ヨーロッパ", "イギリス", "イングランド", "ロンドン", "シティ・オブ・ロンドン", "イングランド銀行"], "city_key": "ロンドン", "role_i18n": {"ja": "中央銀行・取引所（第6階層）／ ロンドン・シティ・スレッドニードル街", "en": "Central Bank & Royal Exchange / Threadneedle St, City of London", "zh_tw": "中央銀行與皇家交易所 ／ 倫敦金融城針線街", "zh_cn": "中央银行与皇家交易所 ／ 伦敦金融城针线街", "ko": "중앙은행·왕립거래소 / 런던 시티 스레드니들가"}, "desc_i18n": {"ja": "シティ中心部に建つ英国の中央銀行および隣接する王立取引所（チェンジ）。ヴィクトリア朝の国際金融の心臓部。", "en": "The United Kingdom's central bank on Threadneedle Street and the adjacent Royal Exchange ('Change), nerve center of Victorian finance and commerce.", "zh_tw": "位於倫敦金融城針線街的英國中央銀行及其毗鄰的皇家交易所，為維多利亞時代金融與證券交易的中樞。", "zh_cn": "位于伦敦金融城针线街的英国中央银行及其毗邻的皇家交易所，为维多利亚时代金融与证券交易的中枢。", "ko": "런던 금융가 스레드니들가에 자리한 영국 중앙은행과 인접한 왕립거래소(체인지)로 빅토리아 시대 금융·교역의 중심지."}, "sort_key_i18n": {"zh_tw": "Y", "zh_cn": "Y"}, "name_i18n": {"ja": "イングランド銀行・取引所", "en": "Bank of England & 'Change", "zh_tw": "英格蘭銀行與交易所", "zh_cn": "英格兰银行与交易所", "ko": "잉글랜드 은행·거래소"}}, "ロンドン・ドック": {"key": "ロンドン・ドック", "name": "ロンドン・ドック", "yomi": "ろんどん・どっく", "label": "ロンドン・ドック（ろんどん・どっく：テムズ川下流ワッピングの商業船渠）", "place_type": "point", "is_area": false, "is_river": false, "tier": 5, "tier_kind": "district", "parent_key": "ロンドン", "category": "港湾・船渠（第5階層）", "province": "イングランド", "parent_area": "イングランド", "modern": "ロンドン・ワッピング", "lat": 51.5065, "lng": -0.068, "zoom": 15, "radius_m": 280, "is_pin": true, "area_polygon": [], "river_coords": [], "wiki_title": "", "hierarchy_path": ["ヨーロッパ", "イギリス", "イングランド", "ロンドン", "ロンドン・ドック"], "city_key": "ロンドン", "role_i18n": {"ja": "港湾・船渠（第5階層）／ ロンドン・ワッピング", "en": "Commercial Docks / Wapping, River Thames, London", "zh_tw": "商業船塢 ／ 倫敦泰晤士河畔瓦平區", "zh_cn": "商业船坞 ／ 伦敦泰晤士河畔瓦平区", "ko": "상업 부두·독 / 런던 템스강 와핑 지구"}, "desc_i18n": {"ja": "1805年にロンドン塔下流のワッピングに開設された巨大商業ドック群。世界中の商船と貨物が集まった。", "en": "Opened in 1805 downriver from the Tower of London at Wapping, handling merchant vessels and global cargo from across the world.", "zh_tw": "1805年啟用、位於倫敦塔下游瓦平區的龐大商業船塢群，匯聚來自世界各地的遠洋商船與貨物。", "zh_cn": "1805年启用、位于伦敦塔下游瓦平区的庞大商业船坞群，汇聚来自世界各地的远洋商船与货物。", "ko": "1805년 런던탑 하류 와핑 지구에 건설된 대규모 상업 부두 시설로 전 세계를 오가는 상선과 화물이 집결하던 곳."}, "sort_key_i18n": {"zh_tw": "L", "zh_cn": "L"}, "name_i18n": {"ja": "ロンドン・ドック", "en": "London Docks", "zh_tw": "倫敦船塢", "zh_cn": "伦敦船坞", "ko": "런던 독"}}};
+    const PERSON_GLOSSARY = {"フィリアス・フォッグ": {"name": "フィリアス・フォッグ（ふぃりあす・ふぉっぐ：サヴィル・ロウ7番地に暮らす英国紳士・本作の主人公）", "display_name": "フィリアス・フォッグ（英国紳士・主人公）", "yomi": "ふぃりあす・ふぉっぐ", "wiki_title": "フィリアス・フォッグ", "role": "サヴィル・ロウ7番地に暮らす謎めいた英国紳士・リフォーム・クラブ会員", "ai_desc": "ロンドンのサヴィル・ロウ7番地に独り暮らす裕福で寡黙な英国紳士。時計のように寸分の狂いもない規則正しい生活を送り、リフォーム・クラブで新聞とホイストを楽しむことを唯一の日課としている。", "role_i18n": {"ja": "サヴィル・ロウ7番地に暮らす謎めいた英国紳士・リフォーム・クラブ会員", "en": "Enigmatic English gentleman of 7 Savile Row & member of the Reform Club", "zh_tw": "居住於薩佛街7號的神祕英國紳士、改革俱樂部會員", "zh_cn": "居住于萨维尔街7号的神秘英国绅士、改革俱乐部会员", "ko": "새빌 로 7번지에 거주하는 수수께끼 같은 영국 신사·리폼 클럽 회원"}, "desc_i18n": {"ja": "ロンドンのサヴィル・ロウ7番地に独り暮らす裕福で寡黙な英国紳士。時計のように寸分の狂いもない規則正しい生活を送り、リフォーム・クラブで新聞とホイストを楽しむことを唯一の日課としている。", "en": "A wealthy, taciturn English gentleman living alone at No. 7 Savile Row, London. Famous for his clockwork regularity, he spends his days reading newspapers and playing whist at the Reform Club.", "zh_tw": "獨居於倫敦薩佛街7號、富裕而寡言的英國紳士。生活如鐘錶般分秒不差，平日唯一的消遣是在改革俱樂部閱讀報紙與打惠斯特紙牌。", "zh_cn": "独居于伦敦萨维尔街7号、富裕而寡言的英国绅士。生活如钟表般分秒不差，平日唯一的消遣是在改革俱乐部阅读报纸与打惠斯特纸牌。", "ko": "런던 새빌 로 7번지에 홀로 사는 부유하고 과묵한 영국 신사. 시계처럼 한 치의 오차도 없는 규칙적인 일상을 보내며, 리폼 클럽에서 신문을 읽고 휘스트 카드 게임을 즐긴다."}, "sort_key_i18n": {"zh_tw": "F", "zh_cn": "F"}}, "パスパルトゥー": {"name": "ジャン・パスパルトゥー（じゃん・ぱすぱるとぅー：フォッグ氏に新たに雇われたフランス人従僕）", "display_name": "ジャン・パスパルトゥー（フランス人従僕）", "yomi": "ぱすぱるとぅー", "wiki_title": "", "role": "フォッグ氏に仕える誠実で器用なフランス人従僕", "ai_desc": "「どこでも通り抜ける（万能鍵）」を意味するあだ名を持つ30歳のフランス人青年。旅芸人・サーカス曲馬乗り・体操教師・パリ消防隊の伍長など多彩な経歴を経て、平穏で規則正しい暮らしを求めてフォッグ家に奉公する。", "role_i18n": {"ja": "フォッグ氏に仕える誠実で器用なフランス人従僕", "en": "Honest and resourceful French valet newly hired by Phileas Fogg", "zh_tw": "福格先生新聘用的誠實機敏法國男僕", "zh_cn": "福格先生新聘用的诚实机敏法国男仆", "ko": "필리어스 포그에게 새로 고용된 성실하고 재주 많은 프랑스인 하인"}, "desc_i18n": {"ja": "「どこでも通り抜ける（万能鍵）」を意味するあだ名を持つ30歳のフランス人青年。旅芸人・サーカス曲馬乗り・体操教師・パリ消防隊の伍長など多彩な経歴を経て、平穏で規則正しい暮らしを求めてフォッグ家に奉公する。", "en": "A thirty-year-old Frenchman whose nickname means 'master key' or 'goes everywhere.' Formerly a street singer, circus acrobat, gymnastics professor, and Paris fireman, he enters Fogg's service hoping for a quiet, regular life.", "zh_tw": "年約三十歲的法國青年，綽號「路路通」意為「萬能鑰匙」。曾任街頭歌手、馬戲團特技演員、體操教師與巴黎消防隊伍長，為追求平靜規律的生活而進入福格家擔任貼身男僕。", "zh_cn": "年约三十岁的法国青年，绰号“路路通”意为“万能钥匙”。曾任街头歌手、马戏团特技演员、体操教师与巴黎消防队伍长，为追求平静规律的生活而进入福格家担任贴身男仆。", "ko": "‘어디든 통한다(만능열쇠)’는 뜻의 별명을 지닌 서른 살 프랑스 청년. 거리 가수, 서커스 곡예사, 체조 교사, 파리 소방대 분대장 등 다채로운 직업을 거친 뒤 평온한 삶을 바라며 포그의 하인으로 들어간다."}, "sort_key_i18n": {"zh_tw": "L", "zh_cn": "L"}}, "ジェームズ・フォースター": {"name": "ジェームズ・フォースター（じぇーむず・ふぉーすたー：フォッグ氏に解雇された前任の従僕）", "display_name": "ジェームズ・フォースター（前任の従僕）", "yomi": "じぇーむず・ふぉーすたー", "wiki_title": "", "role": "フォッグ家の前任従僕", "ai_desc": "パスパルトゥーの前にフィリアス・フォッグに仕えていた若い従僕。髭剃り用の湯を規定の華氏86度ではなく84度で持ってきたため、10月2日に解雇された。", "role_i18n": {"ja": "フォッグ家の前任従僕", "en": "Phileas Fogg's dismissed former servant", "zh_tw": "遭福格解僱的前任男僕", "zh_cn": "遭福格解雇的前任男仆", "ko": "포그에게 해고된 전임 하인"}, "desc_i18n": {"ja": "パスパルトゥーの前にフィリアス・フォッグに仕えていた若い従僕。髭剃り用の湯を規定の華氏86度ではなく84度で持ってきたため、10月2日に解雇された。", "en": "The young servant who preceded Passepartout in Phileas Fogg's household, dismissed on October 2 for bringing shaving-water at 84°F instead of the required 86°F.", "zh_tw": "在路路通之前服侍福格的年輕僕人，於10月2日因端來的刮鬍水是華氏84度而非規定的86度而遭解僱。", "zh_cn": "在路路通之前服侍福格的年轻仆人，于10月2日因端来的刮胡水是华氏84度而非规定的86度而遭解雇。", "ko": "파스파르투 이전에 필리어스 포그를 모시던 젊은 하인. 면도용 물을 규정된 화씨 86도가 아닌 84도로 가져왔다는 이유로 10월 2일에 해고되었다."}, "sort_key_i18n": {"zh_tw": "F", "zh_cn": "F"}}, "シェリダン": {"name": "リチャード・ブリンズリー・シェリダン（しぇりだん：18〜19世紀のアイルランド出身の劇作家・英国庶民院議員）", "display_name": "シェリダン（劇作家・政治家）", "yomi": "しぇりだん", "wiki_title": "リチャード・ブリンズリー・シェリダン", "role": "『悪口学校』で知られる劇作家・雄弁な英国政治家", "ai_desc": "『悪口学校』などの風刺喜劇と議会での名演説で知られた劇作家・政治家（1751–1816）。史実ではサヴィル・ロウ14番地（本作の記述では1814年に7番地）で晩年を過ごして没した。", "role_i18n": {"ja": "『悪口学校』で知られる劇作家・雄弁な英国政治家", "en": "Irish-born playwright and British Whig statesman", "zh_tw": "愛爾蘭裔劇作家與英國下議院演說家", "zh_cn": "爱尔兰裔剧作家与英国下议院演说家", "ko": "아일랜드 출신의 극작가이자 영국 하원의원"}, "desc_i18n": {"ja": "『悪口学校』などの風刺喜劇と議会での名演説で知られた劇作家・政治家（1751–1816）。史実ではサヴィル・ロウ14番地（本作の記述では1814年に7番地）で晩年を過ごして没した。", "en": "Richard Brinsley Sheridan (1751–1816), celebrated playwright of The School for Scandal and brilliant parliamentary orator, who spent his final years on Savile Row.", "zh_tw": "理查德·布林斯利·謝里丹（1751–1816），以《造謠學校》聞名的劇作家與英國國會雄辯家，晚年居於倫敦薩佛街並於該處逝世。", "zh_cn": "理查德·布林斯利·谢里丹（1751–1816），以《造谣学校》闻名的剧作家与英国国会雄辩家，晚年居于伦敦萨维尔街并于该处逝世。", "ko": "리처드 브린즐리 셰리든(1751–1816). 『험담 학교』 등의 풍자 희극과 의회 명연설로 이름 높았던 극작가 겸 정치가로, 말년을 새빌 로에서 보내고 세상을 떠났다."}, "sort_key_i18n": {"zh_tw": "X", "zh_cn": "X"}}, "バイロン": {"name": "バイロン卿（ばいろん：19世紀イギリス・ロマン派を代表する詩人）", "display_name": "バイロン（英国ロマン派の詩人）", "yomi": "ばいろん", "wiki_title": "ジョージ・ゴードン・バイロン", "role": "19世紀英国ロマン派を代表する詩人", "ai_desc": "『チャイルド・ハロルドの巡礼』などでヨーロッパ中に熱狂を巻き起こした英国の貴族詩人（1788–1824）。端整で憂いを帯びた容貌でも広く知られた。", "role_i18n": {"ja": "19世紀英国ロマン派を代表する詩人", "en": "Leading poet of the British Romantic movement", "zh_tw": "十九世紀英國浪漫主義代表詩人", "zh_cn": "十九世纪英国浪漫主义代表诗人", "ko": "19세기 영국 낭만주의를 대표하는 시인"}, "desc_i18n": {"ja": "『チャイルド・ハロルドの巡礼』などでヨーロッパ中に熱狂を巻き起こした英国の貴族詩人（1788–1824）。端整で憂いを帯びた容貌でも広く知られた。", "en": "Lord Byron (1788–1824), one of the major figures of British Romanticism and author of Childe Harold's Pilgrimage, famed across Europe for his striking features.", "zh_tw": "拜倫勳爵（1788–1824），英國浪漫主義代表詩人，《恰爾德·哈羅德遊記》作者，以俊美而帶憂鬱氣質的容貌聞名歐洲。", "zh_cn": "拜伦勋爵（1788–1824），英国浪漫主义代表诗人，《恰尔德·哈罗德游记》作者，以俊美而带忧郁气质的容貌闻名欧洲。", "ko": "조지 고든 바이런 경(1788–1824). 『차일드 해럴드의 편력』 등으로 전 유럽에 열풍을 일으킨 영국 낭만파 귀족 시인으로, 수려한 용모로도 널리 알려졌다."}, "sort_key_i18n": {"zh_tw": "B", "zh_cn": "B"}}, "レオタール": {"name": "ジュール・レオタール（れおたーる：空中ブランコを発明した19世紀フランスの軽業師）", "display_name": "レオタール（空中ブランコ創始者）", "yomi": "れおたーる", "wiki_title": "ジュール・レオタール", "role": "空中ブランコを創始した19世紀フランスの曲芸師", "ai_desc": "1859年にパリで史上初の空中ブランコ演技を披露し、体操・バレエ用衣装「レオタード」の語源ともなったフランスの伝説的アクロバット芸人（1838–1870）。", "role_i18n": {"ja": "空中ブランコを創始した19世紀フランスの曲芸師", "en": "19th-century French acrobat who invented the flying trapeze", "zh_tw": "發明空中飛人特技的十九世紀法國雜技家", "zh_cn": "发明空中飞人特技的十九世纪法国杂技家", "ko": "공중그네를 창시한 19세기 프랑스의 곡예사"}, "desc_i18n": {"ja": "1859年にパリで史上初の空中ブランコ演技を披露し、体操・バレエ用衣装「レオタード」の語源ともなったフランスの伝説的アクロバット芸人（1838–1870）。", "en": "Jules Léotard (1838–1870), French acrobat who debuted the flying trapeze act in Paris in 1859 and gave his name to the one-piece garment known as the leotard.", "zh_tw": "朱爾·雷奧塔爾（1838–1870），1859年於巴黎首創空中飛人秋千表演的法國傳奇特技家，緊身連體衣「Leotard」即得名於他。", "zh_cn": "朱尔·雷奥塔尔（1838–1870），1859年于巴黎首创空中飞人秋千表演的法国传奇特技家，紧身连体衣“Leotard”即得名于他。", "ko": "쥘 레오타르(1838–1870). 1859년 파리에서 세계 최초로 공중그네 곡예를 선보였으며, 체조·발레복 ‘레오타드’의 어원이 된 프랑스의 전설적인 곡예사."}, "sort_key_i18n": {"zh_tw": "L", "zh_cn": "L"}}, "ブロンダン": {"name": "シャルル・ブロンダン（ぶろんだん：ナイアガラ瀑布の綱渡りで世界を驚かせたフランスの曲芸師）", "display_name": "ブロンダン（伝説の綱渡り芸人）", "yomi": "ぶろんだん", "wiki_title": "シャルル・ブロンダン", "role": "ナイアガラの滝の綱渡りで名を馳せたフランスの曲芸師", "ai_desc": "1859年にナイアガラ渓谷の上空に張ったロープを何度も渡り切り、欧米中で一世を風靡したフランスの綱渡り名人（1824–1897）。", "role_i18n": {"ja": "ナイアガラの滝の綱渡りで名を馳せたフランスの曲芸師", "en": "French tightrope walker famed for crossing Niagara Falls", "zh_tw": "以橫越尼加拉大瀑布走鋼索聞名世界的法國特技家", "zh_cn": "以横越尼亚加拉大瀑布走钢索闻名世界的法国特技家", "ko": "나이아가라 폭포 외줄타기로 세계를 놀라게 한 프랑스 곡예사"}, "desc_i18n": {"ja": "1859年にナイアガラ渓谷の上空に張ったロープを何度も渡り切り、欧米中で一世を風靡したフランスの綱渡り名人（1824–1897）。", "en": "Charles Blondin (1824–1897), world-famous French funambulist who repeatedly walked across the Niagara Gorge on a high wire beginning in 1859.", "zh_tw": "夏爾·布隆丹（1824–1897），1859年起多次在尼加拉峽谷高空走鋼索橫渡成功的法國傳奇走繩大師。", "zh_cn": "夏尔·布隆丹（1824–1897），1859年起多次在尼亚加拉峡谷高空走钢索横渡成功的法国传奇走绳大师。", "ko": "샤를 블롱댕(1824–1897). 1859년 나이아가라 협곡 상공에 친 외줄을 여러 차례 건너며 세계적인 명성을 얻은 프랑스의 줄타기 명인."}, "sort_key_i18n": {"zh_tw": "B", "zh_cn": "B"}}};
+    const OFFICE_GLOSSARY = {"紳士": {"title": "紳士（しんし：教養・礼節と経済的自立を備えた英国上流・中流階級の男性。原文の gentleman）", "yomi": "しんし", "wiki_title": "ジェントルマン", "rank": "ヴィクトリア朝英国の社会的身分・理想像", "ai_desc": "19世紀のイギリス社会において、高潔な品位・冷静な自制心・教養と経済的余裕を備えた男性を指す称号・階層概念。", "role_i18n": {"ja": "ヴィクトリア朝英国の社会的身分・理想像", "en": "Victorian English social ideal of a cultivated, independent man", "zh_tw": "維多利亞時代英國具備教養與獨立財力的上流男性", "zh_cn": "维多利亚时代英国具备教养与独立财力的上流男性", "ko": "빅토리아 시대 영국의 교양과 자제력을 갖춘 상류층 남성"}, "desc_i18n": {"ja": "19世紀のイギリス社会において、高潔な品位・冷静な自制心・教養と経済的余裕を備えた男性を指す称号・階層概念。", "en": "In 19th-century Britain, a man of social standing, independent means, self-possession, and honorable conduct.", "zh_tw": "十九世紀英國社會中，兼具體面身分、經濟獨立、冷靜自持與高尚品格的男性典範。", "zh_cn": "十九世纪英国社会中，兼具体面身份、经济独立、冷静自持与高尚品格的男性典范。", "ko": "19세기 영국 사회에서 품위 있는 예절, 냉정한 자제력, 교양과 경제적 여유를 두루 갖춘 남성을 가리키는 사회적 이상향."}, "sort_key_i18n": {"zh_tw": "S", "zh_cn": "S"}}, "従僕": {"title": "従僕（じゅうぼく：主人の衣裳・身辺の世話を専門に担う男性使用人。原文の valet / domestic）", "yomi": "じゅうぼく", "wiki_title": "ヴァレット", "rank": "主人の身辺・旅支度を支える個人付き使用人", "ai_desc": "ヨーロッパの上流家庭において、主人個人の衣服管理・整髪・日課の補佐や旅行時の随行を専門に務めた男性使用人（ヴァレット）。", "role_i18n": {"ja": "主人の身辺・旅支度を支える個人付き使用人", "en": "Personal male attendant responsible for a gentleman's wardrobe and travel", "zh_tw": "專司主人衣著起居與隨行旅務的貼身男僕", "zh_cn": "专司主人衣着起居与随行旅务的贴身男仆", "ko": "주인의 의복·신변 시중과 여행 수행을 전담하는 남성 하인"}, "desc_i18n": {"ja": "ヨーロッパの上流家庭において、主人個人の衣服管理・整髪・日課の補佐や旅行時の随行を専門に務めた男性使用人（ヴァレット）。", "en": "A gentleman's personal manservant (valet) in European households, attending to attire, daily schedule, and travel arrangements.", "zh_tw": "歐洲上流家庭中專門照料男主人衣冠整潔、日常作息與外出旅務的貼身男侍（Valet）。", "zh_cn": "欧洲上流家庭中专门照料男主人衣冠整洁、日常作息与外出旅务的贴身男侍（Valet）。", "ko": "유럽 상류 가정에서 남자 주인의 의복 관리, 일과 보좌 및 여행 수행을 전문으로 맡았던 개인 시종(발레)."}, "sort_key_i18n": {"zh_tw": "P", "zh_cn": "P"}}, "消防士": {"title": "パリ消防士（しょうぼうし：軍隊組織に属し高い身体能力で知られたパリの消防隊員。原文の fireman）", "yomi": "しょうぼうし", "wiki_title": "パリ消防旅団", "rank": "パリ市を守る工兵系の消防隊員", "ai_desc": "ナポレオン時代に創設されたパリの消防隊（サプール＝ポンピエ）。軍の工兵部隊に属し、高度な体操・登攀訓練を受けた精鋭として知られた。", "role_i18n": {"ja": "パリ市を守る工兵系の消防隊員", "en": "Member of the Paris military fire brigade (Sapeurs-Pompiers)", "zh_tw": "隸屬軍隊工兵體系、以矯健身手聞名的巴黎消防隊員", "zh_cn": "隶属军队工兵体系、以矫健身手闻名的巴黎消防队员", "ko": "군 공병 조직에 속해 뛰어난 체력으로 이름 높았던 파리 소방대원"}, "desc_i18n": {"ja": "ナポレオン時代に創設されたパリの消防隊（サプール＝ポンピエ）。軍の工兵部隊に属し、高度な体操・登攀訓練を受けた精鋭として知られた。", "en": "A member of the Paris Sapeurs-Pompiers, a military engineering fire brigade established under Napoleon and renowned for rigorous gymnastic training.", "zh_tw": "拿破崙時期創立的巴黎消防隊（工兵消防員），隸屬軍方工兵體系，以嚴格的體操與攀爬訓練聞名。", "zh_cn": "拿破仑时期创立的巴黎消防队（工兵消防员），隶属军方工兵体系，以严格的体操与攀爬训练闻名。", "ko": "나폴레옹 시대에 창설된 파리 소방대(사푀르 퐁피에). 군 공병 부대에 속하며 고도의 체조·등반 훈련을 받은 정예 대원으로 유명했다."}, "sort_key_i18n": {"zh_tw": "X", "zh_cn": "X"}}};
+    const SPECIAL_GLOSSARY = {"ベアリング商会": {"title": "ベアリング兄弟商会（べありんぐしょうかい：1762年創業、大英帝国の国際金融を担った名門マーチャント・バンク。原文の the Barings）", "yomi": "べありんぐしょうかい", "wiki_title": "ベアリングス銀行", "mapping_note": "19世紀ロンドンの最高峰の信用を誇った国際金融商会", "ai_desc": "18〜19世紀のロンドンで絶大な信用を誇った名門銀行（ベアリングス銀行）。各国政府の公債引受や国際決済を手がけ、「ヨーロッパ第6の列強」とまで称された。", "role_i18n": {"ja": "国際金融商会・マーチャント・バンク", "en": "Prestigious London merchant banking house founded in 1762", "zh_tw": "創立於1762年、執大英帝國國際金融牛耳的倫敦名門銀行", "zh_cn": "创立于1762年、执大英帝国国际金融牛耳的伦敦名门银行", "ko": "1762년 창업하여 대영제국의 국제 금융을 이끈 런던의 명문 은행"}, "desc_i18n": {"ja": "18〜19世紀のロンドンで絶大な信用を誇った名門銀行（ベアリングス銀行）。各国政府の公債引受や国際決済を手がけ、「ヨーロッパ第6の列強」とまで称された。", "en": "Baring Brothers & Co., one of 19th-century London's premier merchant banks, so influential in global finance that it was dubbed the 'Sixth Great Power of Europe.'", "zh_tw": "霸菱兄弟公司（霸菱銀行），十九世紀倫敦信譽最崇高的商業銀行之一，因掌握龐大國際金融業務而被譽為「歐洲第六列強」。", "zh_cn": "霸菱兄弟公司（霸菱银行），十九世纪伦敦信誉最崇高的商业银行之一，因掌握庞大国际金融业务而被誉为“欧洲第六列强”。", "ko": "베어링 형제 상회(베어링스 은행). 18~19세기 런던에서 절대적인 신용을 자랑하며 ‘유럽 제6의 열강’이라 불린 국제 금융 명문가."}, "sort_key_i18n": {"zh_tw": "B", "zh_cn": "B"}}, "ホイスト": {"title": "ホイスト（ほいすと：18〜19世紀の英国紳士クラブで盛んに遊ばれた4人用トランプ競技。原文の whist）", "yomi": "ほいすと", "wiki_title": "ホイスト", "mapping_note": "コントラクト・ブリッジの前身となった知的トランプ競技", "ai_desc": "2人ずつペアを組んで13トリックを競う伝統的なトランプゲーム。私語を慎み記憶力と論理的推理を競う静粛な知的競技として英国紳士クラブで愛され、のちのブリッジの母体となった。", "role_i18n": {"ja": "英国紳士クラブの4人用トランプ競技", "en": "Classic four-player trick-taking card game favored in English clubs", "zh_tw": "風靡十八至十九世紀英國紳士俱樂部的四人紙牌競技", "zh_cn": "风靡十八至十九世纪英国绅士俱乐部的四人纸牌竞技", "ko": "18~19세기 영국 신사 클럽에서 널리 즐기던 4인용 카드 게임"}, "desc_i18n": {"ja": "2人ずつペアを組んで13トリックを競う伝統的なトランプゲーム。私語を慎み記憶力と論理的推理を競う静粛な知的競技として英国紳士クラブで愛され、のちのブリッジの母体となった。", "en": "A silent, strategic four-player partnership card game using a 52-card deck, prized in Victorian gentlemen's clubs and ancestor to modern contract bridge.", "zh_tw": "兩人一組對戰、講究記憶與邏輯推算的安靜紙牌遊戲，深受維多利亞時代英國紳士俱樂部喜愛，為現代橋牌的前身。", "zh_cn": "两人一组对战、讲究记忆与逻辑推算的安静纸牌游戏，深受维多利亚时代英国绅士俱乐部喜爱，为现代桥牌的前身。", "ko": "2명씩 짝을 지어 13트릭을 겨루는 고전 카드 게임. 대화를 삼가고 기억력과 추리력을 겨루는 정숙한 지성 게임으로 영국 신사 클럽에서 사랑받았으며 현대 브리지의 모태가 되었다."}, "sort_key_i18n": {"zh_tw": "H", "zh_cn": "H"}}};
+    const NATURE_MOUNTAINS = [];
+    const NATURE_RIVERS = [];
+    const CORPUS_RECORDS = Array.isArray(window.SHARED_GLOSSARY_CORPUS) ? window.SHARED_GLOSSARY_CORPUS : [];
+
+    // 清音化マップ（濁音・半濁音・小書き仮名を五十音見出しに合流）
+    const VOICED_TO_SEION_MAP = {
+      "ぁ":"あ","ぃ":"い","ぅ":"う","ぇ":"え","ぉ":"お","ゔ":"う",
+      "が":"か","ぎ":"き","ぐ":"く","げ":"け","ご":"こ",
+      "ざ":"さ","じ":"し","ず":"す","ぜ":"せ","ぞ":"そ",
+      "だ":"た","ぢ":"ち","づ":"つ","っ":"つ","で":"て","ど":"と",
+      "ば":"は","び":"ひ","ぶ":"ふ","べ":"へ","ぼ":"ほ",
+      "ぱ":"は","ぴ":"ひ","ぷ":"ふ","ぺ":"へ","ぽ":"ほ",
+      "ゃ":"や","ゅ":"ゆ","ょ":"よ","ゎ":"わ"
+    };
+
+    function normalizeYomiForSort(yomiStr) {
+      const kataToHira = String(yomiStr || "").replace(/[ァ-ヶ]/g, function(ch) {
+        return String.fromCharCode(ch.charCodeAt(0) - 0x60);
+      });
+      let out = "";
+      for (let i = 0; i < kataToHira.length; i++) {
+        const c = kataToHira[i];
+        out += VOICED_TO_SEION_MAP[c] || c;
+      }
+      return out;
+    }
+
+    function getGojuonRowHeading(yomiStr) {
+      const norm = normalizeYomiForSort(yomiStr);
+      const first = norm.charAt(0);
+      if ("あいうえお".includes(first)) return "あ行";
+      if ("かきくけこ".includes(first)) return "か行";
+      if ("さしすせそ".includes(first)) return "さ行";
+      if ("たちつてと".includes(first)) return "た行";
+      if ("なにぬねの".includes(first)) return "な行";
+      if ("はひふへほ".includes(first)) return "は行";
+      if ("まみむめも".includes(first)) return "ま行";
+      if ("やゆよ".includes(first)) return "や行";
+      if ("らりるれろ".includes(first)) return "ら行";
+      if ("わをん".includes(first)) return "わ行";
+      return "その他";
+    }
+
+    function escapeHtml(str) {
+      return String(str || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    // =========================================================================
+    // 索引オーバーレイ開閉＆共通地図コントローラ（shared_map_controller.js）初期化
+    // =========================================================================
+    const indexOverlayEl = document.getElementById("indexOverlay");
+    const reopenIndexBtn = document.getElementById("reopenIndexBtn");
+    const hideIndexViewMapBtn = document.getElementById("hideIndexViewMapBtn");
+    const searchInputEl = document.getElementById("indexSearchInput");
+    const chipsScrollEl = document.getElementById("indexChipsScroll");
+
+    function setIndexOverlayVisible(visible) {
+      indexOverlayEl.classList.toggle("is-hidden", !visible);
+      if (reopenIndexBtn) {
+        reopenIndexBtn.style.display = visible ? "none" : "inline-flex";
+      }
+    }
+
+    hideIndexViewMapBtn.addEventListener("click", function() {
+      setIndexOverlayVisible(false);
+    });
+    if (reopenIndexBtn) {
+      reopenIndexBtn.addEventListener("click", function() {
+        setIndexOverlayVisible(true);
+      });
+    }
+
+    function syncCatTabButtons() {
+      document.querySelectorAll(".cat-tab-btn").forEach(function(b) {
+        b.classList.toggle("is-active", b.getAttribute("data-cat") === currentCategory);
+      });
+    }
+
+    const mapCtrl = window.AntaraMapController.create({
+      containerId: "map",
+      toastId: "mapToast",
+      initialCenter: [INITIAL_MAP_LAT, INITIAL_MAP_LNG],
+      initialZoom: INITIAL_MAP_ZOOM,
+      places: PLACES_MASTER,
+      naturalFeatures: NATURE_MOUNTAINS,
+      riverLines: NATURE_RIVERS,
+      singlePinOnlyOnFocus: false,
+      displayNameOf: function(k) { return localName("place", k); },
+      natureLabelMode: "glossary",
+      protectedControlIds: ["mapToast", "indexOverlay"],
+      beforeFocusPlace: function() {
+        setIndexOverlayVisible(false);
+      },
+      onPlaceShapeClick: function(placeKey) {
+        currentCategory = "place";
+        syncCatTabButtons();
+        selectGlossaryEntry("place", placeKey, true);
+      },
+      onRiverClick: function(riverKey) {
+        if (PLACES_MASTER[riverKey]) {
+          currentCategory = "place";
+          syncCatTabButtons();
+          selectGlossaryEntry("place", riverKey, true);
+        }
+      }
+    });
+
+    mapCtrl.renderOverviewProvinces();
+
+    function collectPlaceKeysFromCorpusRecords(recList) {
+      const keys = [];
+      const seen = new Set();
+      recList.forEach(function(rec) {
+        if (!rec.places) return;
+        rec.places.split(",").forEach(function(rawK) {
+          const k = rawK.trim();
+          if (k && PLACES_MASTER[k] && !seen.has(k)) {
+            seen.add(k);
+            keys.push(k);
+          }
+        });
+      });
+      return keys;
+    }
+
+    // =========================================================================
+    // 4分類索引データ構築
+    // =========================================================================
+    // =========================================================================
+    // 多言語（en / ja / zh_tw / zh_cn / ko）。本編 vol01.html と保存キー arthur_selected_lang を共有
+    // =========================================================================
+    const LANG_STORAGE_KEY = "days80_selected_lang";
+    const SUPPORTED_LANGS = ["en", "ja", "zh_tw", "zh_cn", "ko"];
+    const LANG_BUTTONS = [
+      { code: "en", label: "EN" }, { code: "ja", label: "日" }, { code: "zh_tw", label: "繁" },
+      { code: "zh_cn", label: "簡" }, { code: "ko", label: "韓" }
+    ];
+    const LANG_TAGGED_FIELD = { en: "raw_tagged", ja: "translation_tagged", zh_tw: "zh_tw_tagged", zh_cn: "zh_cn_tagged", ko: "ko_tagged" };
+    const LANG_SORT_LOCALE = { en: "en", ja: "ja", zh_tw: "zh-Hant", zh_cn: "zh-Hans", ko: "ko" };
+    const GLOSS_I18N = {
+      ja: {
+        tabPerson: "👤 人物", tabPlace: "🗺️ 地名", tabOffice: "👑 称号", tabSpecial: "🔖 用語",
+        searchPh: "人物・地名・称号・用語を検索…", viewMap: "🗺️ 地図を見る", back: "← 索引一覧に戻る",
+        open: "📖 本編で開く", source: "📜 原典（英語底本）を表示", noMatch: "該当する項目がありません。",
+        noRec: "現在の公開範囲には該当する本文カードがまだありません。", startVol: "📖 本編へ",
+        typeProse: "本文", typeVerse: "詩篇",
+        paraFmt: function(v, n, t) { return v + "・第" + n + "段落（" + t + "）"; },
+        onMap: function(name) { return "地図上に「" + name + "」の位置を表示しています。"; }
+      },
+      en: {
+        tabPerson: "👤 People", tabPlace: "🗺️ Places", tabOffice: "👑 Titles", tabSpecial: "🔖 Terms",
+        searchPh: "Search people, places, titles, terms…", viewMap: "🗺️ View map", back: "← Back to index list",
+        open: "📖 Open in story", source: "📜 Show English source", noMatch: "No matching entries.",
+        noRec: "No story card in the published range yet.", startVol: "📖 Read",
+        typeProse: "Prose", typeVerse: "Verse",
+        paraFmt: function(v, n, t) { return v + " · Para " + n + " (" + t + ")"; },
+        onMap: function(name) { return "Showing the location of " + name + " on the map."; }
+      },
+      zh_tw: {
+        tabPerson: "👤 人物", tabPlace: "🗺️ 地名", tabOffice: "👑 稱號", tabSpecial: "🔖 用語",
+        searchPh: "搜尋人物、地名、稱號、用語…", viewMap: "🗺️ 查看地圖", back: "← 返回索引列表",
+        open: "📖 在本篇開啟", source: "📜 顯示英文底本", noMatch: "沒有符合的項目。",
+        noRec: "目前公開範圍內尚無相關正文卡片。", startVol: "📖 閱讀本篇",
+        typeProse: "正文", typeVerse: "詩篇",
+        paraFmt: function(v, n, t) { return v + "・第" + n + "段（" + t + "）"; },
+        onMap: function(name) { return "地圖上顯示「" + name + "」的位置。"; }
+      },
+      zh_cn: {
+        tabPerson: "👤 人物", tabPlace: "🗺️ 地名", tabOffice: "👑 称号", tabSpecial: "🔖 用语",
+        searchPh: "搜索人物、地名、称号、用语…", viewMap: "🗺️ 查看地图", back: "← 返回索引列表",
+        open: "📖 在本篇打开", source: "📜 显示英文底本", noMatch: "没有符合的项目。",
+        noRec: "目前公开范围内尚无相关正文卡片。", startVol: "📖 阅读本篇",
+        typeProse: "正文", typeVerse: "诗篇",
+        paraFmt: function(v, n, t) { return v + "・第" + n + "段（" + t + "）"; },
+        onMap: function(name) { return "地图上显示「" + name + "」的位置。"; }
+      },
+      ko: {
+        tabPerson: "👤 인물", tabPlace: "🗺️ 지명", tabOffice: "👑 칭호", tabSpecial: "🔖 용어",
+        searchPh: "인물·지명·칭호·용어 검색…", viewMap: "🗺️ 지도 보기", back: "← 색인 목록으로 돌아가기",
+        open: "📖 본편에서 열기", source: "📜 영문 저본 보기", noMatch: "해당하는 항목이 없습니다.",
+        noRec: "현재 공개 범위에는 해당하는 본문 카드가 아직 없습니다.", startVol: "📖 본편 읽기",
+        typeProse: "본문", typeVerse: "시편",
+        paraFmt: function(v, n, t) { return v + "・제" + n + "단락(" + t + ")"; },
+        onMap: function(name) { return "지도에 「" + name + "」의 위치를 표시하고 있습니다."; }
+      }
+    };
+
+    let currentLang = window.resolveArthurInitialLang ? window.resolveArthurInitialLang() : "ja";
+    if (SUPPORTED_LANGS.indexOf(currentLang) < 0) currentLang = "ja";
+
+    // 言語別の項目表示名：本文タグ {{kind:キー|表示語}} の表示語（各言語の最初の出現）から構築する
+    const LOCAL_NAMES = {};
+    function buildLocalNames() {
+      CORPUS_RECORDS.forEach(function(rec) {
+        SUPPORTED_LANGS.forEach(function(lg) {
+          const src = String(rec[LANG_TAGGED_FIELD[lg]] || "");
+          let m;
+          TAG_REGEX.lastIndex = 0;
+          while ((m = TAG_REGEX.exec(src)) !== null) {
+            const id = m[1] + ":" + m[2];
+            if (!LOCAL_NAMES[id]) LOCAL_NAMES[id] = {};
+            if (!LOCAL_NAMES[id][lg]) LOCAL_NAMES[id][lg] = m[3];
+          }
+        });
+      });
+    }
+
+    // 表示名：地名はマスターの name_i18n を最優先し、他は本文タグ表示語へフォールバック
+    function localName(kind, key) {
+      if (kind === "place" && PLACES_MASTER[key] && PLACES_MASTER[key].name_i18n && PLACES_MASTER[key].name_i18n[currentLang]) {
+        return PLACES_MASTER[key].name_i18n[currentLang];
+      }
+      const byLang = LOCAL_NAMES[kind + ":" + key];
+      if (currentLang !== "ja" && byLang && byLang[currentLang]) return byLang[currentLang];
+      if (kind === "person" && PERSON_GLOSSARY[key]) return PERSON_GLOSSARY[key].display_name || key;
+      return key;
+    }
+
+    // 階層ツリー用CSSの注入
+    (function injectHierarchyTreeStyles() {
+      const st = document.createElement("style");
+      st.textContent = [
+        ".place-tree-root { margin-bottom: 12px; }",
+        ".place-tree-node { margin: 4px 0; }",
+        ".place-tree-children { margin-left: 14px; padding-left: 10px; border-left: 2px solid #d5c7b0; margin-top: 4px; }",
+        ".place-tree-leaf-grid { display: flex; flex-wrap: wrap; gap: 6px; margin: 5px 0 6px 14px; padding-left: 10px; border-left: 2px dotted #cbbba0; }",
+        ".place-tier-badge { display: inline-block; font-size: 0.66rem; font-weight: 700; padding: 1px 5px; border-radius: 3px; margin-right: 4px; vertical-align: middle; background: #e8dcc8; color: #4a3720; }",
+        ".index-chip.tier-1 { background: #ede3d2; border-color: #9c7d4c; font-weight: 700; }",
+        ".index-chip.tier-2, .index-chip.tier-3 { background: #f5efe4; border-color: #b89f78; font-weight: 700; }",
+        ".index-chip.tier-4 { background: #eef4fa; border-color: #7da0c4; font-weight: 700; }",
+        ".summary-hierarchy-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin-bottom: 8px; padding: 5px 8px; background: #f3eadb; border-radius: 5px; font-size: 0.76rem; }",
+        ".summary-anc-btn { background: #fffdf9; color: #3d2f1d; border: 1px solid #bda682; border-radius: 4px; padding: 2px 7px; font-size: 0.74rem; font-weight: 700; cursor: pointer; }",
+        ".summary-anc-btn:hover { background: #e8dcc8; }",
+        ".summary-anc-btn.is-self { background: var(--bg-header-sub); color: #ffffff; border-color: var(--bg-header-dark); }"
+      ].join("\n");
+      document.head.appendChild(st);
+    })();
+
+    const TIER_ICONS = { 1: "🌍", 2: "🏳️", 3: "🗺️", 4: "🏙️", 5: "🏘️", 6: "📍" };
+    const TIER_NAMES_I18N = {
+      ja: { 1: "大陸", 2: "国", 3: "地方", 4: "都市", 5: "地区", 6: "地点" },
+      en: { 1: "Continent", 2: "Country", 3: "Region", 4: "City", 5: "District", 6: "Spot" },
+      zh_tw: { 1: "大洲", 2: "國家", 3: "地區", 4: "城市", 5: "城區", 6: "地點" },
+      zh_cn: { 1: "大洲", 2: "国家", 3: "地区", 4: "城市", 5: "城区", 6: "地点" },
+      ko: { 1: "대륙", 2: "국가", 3: "지방", 4: "도시", 5: "지구", 6: "지점" }
+    };
+
+    function getDescendantPlaceKeys(rootKey) {
+      const result = new Set([rootKey]);
+      Object.keys(PLACES_MASTER).forEach(function(k) {
+        const p = PLACES_MASTER[k];
+        if (p && Array.isArray(p.hierarchy_path) && p.hierarchy_path.indexOf(rootKey) >= 0) {
+          result.add(k);
+        }
+      });
+      return result;
+    }
+
+    function renderPlaceHierarchyTreeHtml() {
+      const childrenByParent = {};
+      Object.keys(PLACES_MASTER).forEach(function(k) {
+        const p = PLACES_MASTER[k];
+        const pk = p.parent_key || "__ROOT__";
+        if (!childrenByParent[pk]) childrenByParent[pk] = [];
+        childrenByParent[pk].push(p);
+      });
+      Object.keys(childrenByParent).forEach(function(pk) {
+        childrenByParent[pk].sort(function(a, b) {
+          if (Number(a.tier || 4) !== Number(b.tier || 4)) return Number(a.tier || 4) - Number(b.tier || 4);
+          return localName("place", a.key).localeCompare(localName("place", b.key), LANG_SORT_LOCALE[currentLang]);
+        });
+      });
+
+      const tNames = TIER_NAMES_I18N[currentLang] || TIER_NAMES_I18N.ja;
+
+      function renderChipBtn(p) {
+        const tier = Number(p.tier || 4);
+        const icon = TIER_ICONS[tier] || "📍";
+        const tLabel = tNames[tier] || "";
+        const selCls = (selectedKind === "place" && selectedKey === p.key) ? " is-selected" : "";
+        return (
+          '<button type="button" class="index-chip tier-' + tier + selCls + '" ' +
+          'data-chip-kind="place" data-chip-key="' + escapeHtml(p.key) + '">' +
+          '<span class="place-tier-badge">' + escapeHtml(icon + " " + tLabel) + '</span>' +
+          escapeHtml(localName("place", p.key)) +
+          '</button>'
+        );
+      }
+
+      function renderSubtree(parentKey) {
+        const kids = childrenByParent[parentKey] || [];
+        if (kids.length === 0) return "";
+        const branchNodes = kids.filter(function(p) { return (childrenByParent[p.key] || []).length > 0; });
+        const leafNodes = kids.filter(function(p) { return (childrenByParent[p.key] || []).length === 0; });
+
+        const out = [];
+        if (leafNodes.length > 0) {
+          out.push('<div class="place-tree-leaf-grid">');
+          leafNodes.forEach(function(lp) { out.push(renderChipBtn(lp)); });
+          out.push('</div>');
+        }
+        branchNodes.forEach(function(bp) {
+          out.push('<div class="place-tree-node">');
+          out.push(renderChipBtn(bp));
+          out.push('<div class="place-tree-children">' + renderSubtree(bp.key) + '</div>');
+          out.push('</div>');
+        });
+        return out.join("");
+      }
+
+      const roots = childrenByParent["__ROOT__"] || [];
+      return roots.map(function(rp) {
+        return (
+          '<div class="place-tree-root">' +
+            renderChipBtn(rp) +
+            '<div class="place-tree-children">' + renderSubtree(rp.key) + '</div>' +
+          '</div>'
+        );
+      }).join("");
+    }
+
+    // 言語別の肩書き（role_i18n）・解説（desc_i18n）：未登録時のみ日本語へ安全にフォールバック
+    function masterOf(kind, key) {
+      return kind === "person" ? PERSON_GLOSSARY[key]
+        : (kind === "place" ? PLACES_MASTER[key] : (kind === "office" ? OFFICE_GLOSSARY[key] : SPECIAL_GLOSSARY[key]));
+    }
+    function roleOf(kind, key) {
+      const d = masterOf(kind, key);
+      if (!d || !d.role_i18n) return "";
+      return d.role_i18n[currentLang] || d.role_i18n.ja || "";
+    }
+    function descOf(kind, key) {
+      const d = masterOf(kind, key);
+      if (!d || !d.desc_i18n) return "";
+      return d.desc_i18n[currentLang] || d.desc_i18n.ja || "";
+    }
+    // チップ副表示用の短い属性（「／」または「 / 」より前だけ）
+    function shortRoleOf(kind, key) {
+      return roleOf(kind, key).split("／")[0].split(" / ")[0].trim();
+    }
+
+    // ハングル音節 → 初声グループ（Unicode: 0xAC00 起点、初声1文字あたり588音節、全11172音節）
+    const HANGUL_SYLLABLE_BASE = 0xAC00;
+    const HANGUL_SYLLABLES_PER_INITIAL = 588;
+    const HANGUL_SYLLABLE_COUNT = 11172;
+    const KO_INITIAL_GROUP = ["ㄱ","ㄱ","ㄴ","ㄷ","ㄷ","ㄹ","ㅁ","ㅂ","ㅂ","ㅅ","ㅅ","ㅇ","ㅈ","ㅈ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
+    const KO_GROUP_ORDER = ["ㄱ","ㄴ","ㄷ","ㄹ","ㅁ","ㅂ","ㅅ","ㅇ","ㅈ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ","#"];
+    const KO_INITIAL_FALLBACK = "#";
+
+    function buildCategoryEntries(cat) {
+      const items = [];
+      const master = cat === "person" ? PERSON_GLOSSARY
+        : (cat === "place" ? PLACES_MASTER : (cat === "office" ? OFFICE_GLOSSARY : SPECIAL_GLOSSARY));
+      Object.keys(master).forEach(function(k) {
+        const d = master[k];
+        const baseName = localName(cat, k);
+        const role = roleOf(cat, k);
+        // 人物は日本語と同じく「名前（肩書き）」のリッチ表示（他言語も同一情報量）
+        let label = baseName;
+        if (cat === "person" && currentLang !== "ja" && role) {
+          label = currentLang === "en" ? baseName + " (" + role + ")" : baseName + "（" + role + "）";
+        }
+        const names = LOCAL_NAMES[cat + ":" + k] || {};
+        const allNames = Object.keys(names).map(function(lg) { return names[lg]; }).join(" ");
+        const allRoles = d.role_i18n ? Object.keys(d.role_i18n).map(function(lg) { return d.role_i18n[lg]; }).join(" ") : "";
+        const allDescs = d.desc_i18n ? Object.keys(d.desc_i18n).map(function(lg) { return d.desc_i18n[lg]; }).join(" ") : "";
+        items.push({
+          kind: cat,
+          key: k,
+          label: label,
+          sortName: baseName,
+          sortKey: (d.sort_key_i18n && d.sort_key_i18n[currentLang]) || "",
+          subText: shortRoleOf(cat, k),
+          yomi: d.yomi || k,
+          searchBlob: (k + " " + label + " " + allNames + " " + allRoles + " " + allDescs + " " + (d.display_name || "") + " " +
+            (d.name || "") + " " + (d.title || "") + " " + (d.yomi || "") + " " + (d.ai_desc || "") + " " + (d.label || "") + " " + (d.modern || "")).toLowerCase()
+        });
+      });
+
+      items.sort(function(a, b) {
+        if (currentLang === "ja") {
+          return normalizeYomiForSort(a.yomi).localeCompare(normalizeYomiForSort(b.yomi), "ja");
+        }
+        if (currentLang === "zh_tw" || currentLang === "zh_cn") {
+          if (a.sortKey !== b.sortKey) return a.sortKey.localeCompare(b.sortKey);
+        }
+        return String(a.sortName).toLowerCase().localeCompare(String(b.sortName).toLowerCase(), LANG_SORT_LOCALE[currentLang]);
+      });
+      return items;
+    }
+
+    let currentCategory = "person";
+    let selectedKind = "";
+    let selectedKey = "";
+
+    function getGroupHeading(it) {
+      if (currentLang === "ja") return getGojuonRowHeading(it.yomi);
+      if (currentLang === "en") {
+        const c = String(it.sortName).charAt(0).toUpperCase();
+        return (c >= "A" && c <= "Z") ? c : "#";
+      }
+      if (currentLang === "zh_tw" || currentLang === "zh_cn") {
+        // 辞書側 sort_key_i18n（ピンイン頭文字）でグループ化
+        const c = String(it.sortKey).charAt(0).toUpperCase();
+        return (c >= "A" && c <= "Z") ? c : "#";
+      }
+      if (currentLang === "ko") {
+        const idx = String(it.sortName).charCodeAt(0) - HANGUL_SYLLABLE_BASE;
+        if (idx >= 0 && idx < HANGUL_SYLLABLE_COUNT) {
+          return KO_INITIAL_GROUP[Math.floor(idx / HANGUL_SYLLABLES_PER_INITIAL)];
+        }
+        return KO_INITIAL_FALLBACK;
+      }
+      return "";
+    }
+
+    function renderIndexChips() {
+      const dict = GLOSS_I18N[currentLang] || GLOSS_I18N.ja;
+      const q = searchInputEl.value.trim().toLowerCase();
+      if (currentCategory === "place" && !q) {
+        chipsScrollEl.innerHTML = renderPlaceHierarchyTreeHtml();
+        return;
+      }
+      const entries = buildCategoryEntries(currentCategory).filter(function(item) {
+        return !q || item.searchBlob.includes(q);
+      });
+
+      const grouped = {};
+      const order = [];
+      entries.forEach(function(it) {
+        const g = getGroupHeading(it);
+        if (!grouped[g]) { grouped[g] = []; order.push(g); }
+        grouped[g].push(it);
+      });
+      let rowOrder = order;
+      if (currentLang === "ja") {
+        rowOrder = ["あ行","か行","さ行","た行","な行","は行","ま行","や行","ら行","わ行","その他"];
+      } else if (currentLang === "ko") {
+        rowOrder = KO_GROUP_ORDER;
+      } else {
+        rowOrder = order.slice().sort(function(a, b) {
+          if (a === "#") return 1;
+          if (b === "#") return -1;
+          return a.localeCompare(b);
+        });
+      }
+
+      const htmlParts = [];
+      rowOrder.forEach(function(rowName) {
+        const arr = grouped[rowName];
+        if (!arr || arr.length === 0) return;
+        htmlParts.push('<div class="gojuon-group-heading">' + escapeHtml(rowName) + '</div>');
+        htmlParts.push('<div class="chips-grid">');
+        arr.forEach(function(it) {
+          const selCls = (it.kind === selectedKind && it.key === selectedKey) ? " is-selected" : "";
+          // 日本語は読み仮名、他言語は短い肩書き（人物は名前と肩書きを併記済みのため副表示なし）
+          let subHtml = "";
+          if (currentLang === "ja") {
+            subHtml = '<span class="chip-yomi">' + escapeHtml(it.yomi) + '</span>';
+          } else if (it.kind !== "person" && it.subText) {
+            subHtml = '<span class="chip-yomi">' + escapeHtml(it.subText) + '</span>';
+          }
+          htmlParts.push(
+            '<button type="button" class="index-chip' + selCls + '" ' +
+            'data-chip-kind="' + escapeHtml(it.kind) + '" data-chip-key="' + escapeHtml(it.key) + '">' +
+            escapeHtml(it.label) + subHtml + '</button>'
+          );
+        });
+        htmlParts.push('</div>');
+      });
+
+      chipsScrollEl.innerHTML = htmlParts.length > 0
+        ? htmlParts.join("")
+        : '<div style="padding:14px;color:#6b5c4c;font-size:0.84rem;">' + escapeHtml(dict.noMatch) + '</div>';
+    }
+
+    document.querySelectorAll(".cat-tab-btn").forEach(function(btn) {
+      btn.addEventListener("click", function() {
+        currentCategory = btn.getAttribute("data-cat");
+        syncCatTabButtons();
+        renderIndexChips();
+      });
+    });
+
+    searchInputEl.addEventListener("input", function() {
+      renderIndexChips();
+    });
+
+    chipsScrollEl.addEventListener("click", function(ev) {
+      const baseTarget = (ev.target && ev.target.nodeType === 1) ? ev.target : (ev.target ? ev.target.parentElement : null);
+      if (!baseTarget) return;
+      const chip = baseTarget.closest("[data-chip-key]");
+      if (!chip) return;
+      const kind = chip.getAttribute("data-chip-kind");
+      const key = chip.getAttribute("data-chip-key");
+      selectGlossaryEntry(kind, key, true);
+    });
+
+    // =========================================================================
+    // 右ペイン：解説サマリー＋該当本文カードレンダリング（スクロール連動なし）
+    // =========================================================================
+    const TAG_REGEX = /\{\{(place|person|office|special):([^|}]+)\|([^}]+)\}\}/g;
+    const headSummaryContainerEl = document.getElementById("headSummaryContainer");
+    const matchingRecordsContainerEl = document.getElementById("matchingRecordsContainer");
+    const recordsScrollEl = document.getElementById("recordsScroll");
+
+    function recordContainsTag(rec, targetKind, targetKey) {
+      const text = SUPPORTED_LANGS.map(function(lg) { return rec[LANG_TAGGED_FIELD[lg]] || ""; }).join(" ");
+      let m;
+      TAG_REGEX.lastIndex = 0;
+      while ((m = TAG_REGEX.exec(text)) !== null) {
+        if (m[1] === targetKind && m[2] === targetKey) return true;
+      }
+      return false;
+    }
+
+    function recordContainsTagSet(rec, targetKind, targetKeySet) {
+      const text = SUPPORTED_LANGS.map(function(lg) { return rec[LANG_TAGGED_FIELD[lg]] || ""; }).join(" ");
+      let m;
+      TAG_REGEX.lastIndex = 0;
+      while ((m = TAG_REGEX.exec(text)) !== null) {
+        if (m[1] === targetKind && targetKeySet.has(m[2])) return true;
+      }
+      return false;
+    }
+
+    function convertTaggedTextWithHighlightSet(taggedStr, targetKind, targetKeySet) {
+      const src = String(taggedStr || "");
+      let result = "";
+      let lastIdx = 0;
+      let match;
+      TAG_REGEX.lastIndex = 0;
+      while ((match = TAG_REGEX.exec(src)) !== null) {
+        result += escapeHtml(src.slice(lastIdx, match.index));
+        const kind = match[1];
+        const key = match[2];
+        const surface = match[3];
+        const hitCls = (kind === targetKind && targetKeySet.has(key)) ? " matched-target-term" : "";
+        result += (
+          '<span class="inline-' + escapeHtml(kind) + hitCls + '" ' +
+          'data-tag-kind="' + escapeHtml(kind) + '" data-tag-key="' + escapeHtml(key) + '">' +
+          escapeHtml(surface) + '</span>'
+        );
+        lastIdx = TAG_REGEX.lastIndex;
+      }
+      result += escapeHtml(src.slice(lastIdx));
+      return result;
+    }
+
+    function selectGlossaryEntry(kind, key, hideOverlayFlag, refreshOnly) {
+      const dict = GLOSS_I18N[currentLang] || GLOSS_I18N.ja;
+      selectedKind = kind;
+      selectedKey = key;
+      renderIndexChips();
+
+      if (hideOverlayFlag) {
+        setIndexOverlayVisible(false);
+      }
+
+      let titleStr = localName(kind, key);
+      let badgeStr = "";
+      let descStr = "";
+      let homonyms = [];
+      let placeHierarchyHtml = "";
+      const matchKeySet = (kind === "place") ? getDescendantPlaceKeys(key) : new Set([key]);
+
+      if (kind === "place" && PLACES_MASTER[key]) {
+        const p = PLACES_MASTER[key];
+        if (currentLang === "ja") titleStr = p.label || key;
+        badgeStr = p.category + (p.modern ? " ／ " + p.modern : "");
+        descStr = dict.onMap(localName("place", key));
+        const pathArr = Array.isArray(p.hierarchy_path) ? p.hierarchy_path : [key];
+        if (pathArr.length > 0) {
+          placeHierarchyHtml = '<div class="summary-hierarchy-bar">' + pathArr.map(function(pk, idx) {
+            const pNode = PLACES_MASTER[pk] || {};
+            const pIcon = TIER_ICONS[Number(pNode.tier || 4)] || "📍";
+            const selfCls = pk === key ? " is-self" : "";
+            const sep = idx > 0 ? '<span style="color:#8c6d46;font-weight:700;">›</span>' : "";
+            return sep + '<button type="button" class="summary-anc-btn' + selfCls + '" data-anc-place-key="' + escapeHtml(pk) + '">' +
+              escapeHtml(pIcon + " " + localName("place", pk)) + '</button>';
+          }).join("") + '</div>';
+        }
+      } else if (kind === "person" && PERSON_GLOSSARY[key]) {
+        const d = PERSON_GLOSSARY[key];
+        if (currentLang === "ja") titleStr = d.name || key;
+        badgeStr = d.role || "";
+        descStr = d.ai_desc || "";
+        homonyms = Array.isArray(d.homonyms) ? d.homonyms : [];
+      } else if (kind === "office" && OFFICE_GLOSSARY[key]) {
+        const d = OFFICE_GLOSSARY[key];
+        if (currentLang === "ja") titleStr = d.title || key;
+        badgeStr = d.rank || "";
+        descStr = d.ai_desc || "";
+      } else if (kind === "special" && SPECIAL_GLOSSARY[key]) {
+        const d = SPECIAL_GLOSSARY[key];
+        if (currentLang === "ja") titleStr = d.title || key;
+        badgeStr = d.mapping_note || "";
+        descStr = d.ai_desc || "";
+      }
+
+      const i18nRole = roleOf(kind, key);
+      const i18nDesc = descOf(kind, key);
+      if (i18nRole) badgeStr = i18nRole;
+      if (i18nDesc) descStr = i18nDesc;
+
+      const summaryParts = ['<div class="head-summary-card">'];
+      summaryParts.push('<button type="button" class="back-to-index-btn" id="backToIndexBtn">' + escapeHtml(dict.back) + '</button>');
+      if (placeHierarchyHtml) {
+        summaryParts.push(placeHierarchyHtml);
+      }
+      if (kind === "person" && homonyms.length > 0) {
+        const allH = [key].concat(homonyms);
+        summaryParts.push('<div class="homonym-switch-bar">');
+        summaryParts.push('<span style="font-size:0.74rem;font-weight:700;width:100%;">👥 </span>');
+        allH.forEach(function(hk) {
+          const hd = PERSON_GLOSSARY[hk];
+          if (!hd) return;
+          const cur = hk === key ? " is-current" : "";
+          summaryParts.push(
+            '<button type="button" class="homonym-btn' + cur + '" data-homonym-key="' + escapeHtml(hk) + '">' +
+            escapeHtml(localName("person", hk)) + '</button>'
+          );
+        });
+        summaryParts.push('</div>');
+      }
+
+      summaryParts.push('<div class="summary-title">' + escapeHtml(titleStr) + '</div>');
+      if (badgeStr) {
+        summaryParts.push('<div class="summary-role-badge">' + escapeHtml(badgeStr) + '</div>');
+      }
+      summaryParts.push('<div class="summary-desc">' + escapeHtml(descStr) + '</div>');
+      summaryParts.push('</div>');
+      headSummaryContainerEl.innerHTML = summaryParts.join("");
+
+      const matchedRecs = CORPUS_RECORDS.filter(function(rec) {
+        return recordContainsTagSet(rec, kind, matchKeySet);
+      });
+
+      if (matchedRecs.length === 0) {
+        matchingRecordsContainerEl.innerHTML = '<div class="record-card">' + escapeHtml(dict.noRec) + '</div>';
+        if (kind === "place" && !refreshOnly) {
+          mapCtrl.renderPlaceKeys(Array.from(matchKeySet), false);
+          mapCtrl.focusPlace(key, key, true);
+        } else if (kind !== "place" && !refreshOnly) {
+          mapCtrl.renderOverviewProvinces();
+        }
+      } else {
+        matchingRecordsContainerEl.innerHTML = matchedRecs.map(function(rec) {
+          const jumpHref = rec.vol_file + "?para=" + rec.para_index + "&rec=" + encodeURIComponent(rec.id) + "&lang=" + currentLang;
+          const volLabel = (rec.vol_short_label_i18n && rec.vol_short_label_i18n[currentLang]) || rec.vol_short_label;
+          const typeLabel = rec.type === "詩篇" ? dict.typeVerse : dict.typeProse;
+          const mainTagged = rec[LANG_TAGGED_FIELD[currentLang]] || rec.translation_tagged;
+          const sourceHtml = currentLang === "en" ? "" : (
+            '<details class="source-details" open>' +
+              '<summary>' + escapeHtml(dict.source) + '</summary>' +
+              '<div class="source-text-body">' + convertTaggedTextWithHighlightSet(rec.raw_tagged, kind, matchKeySet) + '</div>' +
+            '</details>'
+          );
+          return (
+            '<article class="record-card" data-rec-id="' + escapeHtml(rec.id) + '">' +
+              '<div class="card-meta-bar">' +
+                '<strong>' + escapeHtml(dict.paraFmt(volLabel, rec.para_index, typeLabel)) + '</strong>' +
+                '<a class="open-in-vol-link" href="' + escapeHtml(jumpHref) + '">' + escapeHtml(dict.open) + '</a>' +
+              '</div>' +
+              '<div class="trans-box">' + convertTaggedTextWithHighlightSet(mainTagged, kind, matchKeySet) + '</div>' +
+              sourceHtml +
+            '</article>'
+          );
+        }).join("");
+
+        if (kind === "place" && !refreshOnly) {
+          mapCtrl.renderPlaceKeys(Array.from(matchKeySet), false);
+          mapCtrl.focusPlace(key, key, true);
+        } else if (kind !== "place" && !refreshOnly) {
+          mapCtrl.renderPlaceKeys(collectPlaceKeysFromCorpusRecords(matchedRecs), false);
+        }
+      }
+
+      recordsScrollEl.scrollTop = 0;
+    }
+
+    // 詳細ビューから索引一覧へ戻る（検索をクリアして一覧オーバーレイを再表示）
+    function returnToIndexList() {
+      searchInputEl.value = "";
+      setIndexOverlayVisible(true);
+      renderIndexChips();
+      chipsScrollEl.scrollTop = 0;
+    }
+
+    // 言語切替：UI文言・ナビバー・索引・詳細・地図ピン表示名を一括更新
+    function applyGlossaryLang() {
+      const dict = GLOSS_I18N[currentLang] || GLOSS_I18N.ja;
+      document.documentElement.lang = currentLang === "zh_tw" ? "zh-Hant" : (currentLang === "zh_cn" ? "zh-Hans" : currentLang);
+      searchInputEl.placeholder = dict.searchPh;
+      hideIndexViewMapBtn.textContent = dict.viewMap;
+      const tabText = { person: dict.tabPerson, place: dict.tabPlace, office: dict.tabOffice, special: dict.tabSpecial };
+      document.querySelectorAll(".cat-tab-btn").forEach(function(b) {
+        b.textContent = tabText[b.getAttribute("data-cat")];
+      });
+      const startLinkEl = document.getElementById("startVolLink");
+      if (startLinkEl) startLinkEl.textContent = dict.startVol;
+      document.querySelectorAll("#langSwitchBar .lang-btn").forEach(function(b) {
+        b.classList.toggle("is-active", b.getAttribute("data-lang-code") === currentLang);
+      });
+      if (window.applyNavLang) window.applyNavLang(currentLang);
+    }
+
+    function setGlossaryLang(code) {
+      currentLang = code;
+      try { localStorage.setItem(LANG_STORAGE_KEY, code); } catch (e) {}
+      applyGlossaryLang();
+      if (mapCtrl && mapCtrl.refreshLanguageLabels) mapCtrl.refreshLanguageLabels();
+      renderIndexChips();
+      if (selectedKey) selectGlossaryEntry(selectedKind, selectedKey, false, true);
+    }
+
+    headSummaryContainerEl.addEventListener("click", function(ev) {
+      if (ev.target.closest("#backToIndexBtn")) {
+        returnToIndexList();
+        return;
+      }
+      const ancBtn = ev.target.closest("[data-anc-place-key]");
+      if (ancBtn) {
+        selectGlossaryEntry("place", ancBtn.getAttribute("data-anc-place-key"), true);
+        return;
+      }
+      const hBtn = ev.target.closest("[data-homonym-key]");
+      if (hBtn) {
+        selectGlossaryEntry("person", hBtn.getAttribute("data-homonym-key"), false);
+      }
+    });
+
+    // 本文内タグクリック（緑地名は記事一覧を切り替えず読書位置を維持したまま地図だけ移動）
+    matchingRecordsContainerEl.addEventListener("click", function(ev) {
+      const baseTarget = (ev.target && ev.target.nodeType === 1) ? ev.target : (ev.target ? ev.target.parentElement : null);
+      if (!baseTarget) return;
+      const tagEl = baseTarget.closest("[data-tag-kind]");
+      if (!tagEl) return;
+      const kind = tagEl.getAttribute("data-tag-kind");
+      const key = tagEl.getAttribute("data-tag-key");
+      if (kind === "place") {
+        mapCtrl.focusPlace(key, tagEl.textContent || key, true);
+      } else {
+        currentCategory = kind;
+        syncCatTabButtons();
+        selectGlossaryEntry(kind, key, true);
+      }
+    });
+
+    // ナビバー <select> で「索引」を再選択した場合も一覧画面へリセット復帰（同一値でも change が発火するよう開く時に未選択化）
+    const volNavSelectEl = document.getElementById("volNavSelect");
+    window.arthurNavChange = function(sel) {
+      if (sel.value === "glossary.html") {
+        returnToIndexList();
+        sel.blur();
+        return;
+      }
+      if (sel.value) window.location.href = sel.value;
+    };
+    if (volNavSelectEl) {
+      volNavSelectEl.addEventListener("focus", function() { volNavSelectEl.selectedIndex = -1; });
+      volNavSelectEl.addEventListener("blur", function() {
+        if (volNavSelectEl.selectedIndex < 0) volNavSelectEl.selectedIndex = 0;
+      });
+    }
+
+    // 言語ボタン（EN / 日 / 繁 / 簡 / 韓）
+    const langSwitchBarEl = document.getElementById("langSwitchBar");
+    LANG_BUTTONS.forEach(function(item) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "lang-btn";
+      btn.setAttribute("data-lang-code", item.code);
+      btn.textContent = item.label;
+      btn.addEventListener("click", function() { setGlossaryLang(item.code); });
+      langSwitchBarEl.appendChild(btn);
+    });
+
+    // 初期表示：索引パネルは開いたまま、最初の代表人物（フィリアス・フォッグ）を詳細表示
+    buildLocalNames();
+    applyGlossaryLang();
+    renderIndexChips();
+    const initialKey = PERSON_GLOSSARY["フィリアス・フォッグ"] ? "フィリアス・フォッグ" : Object.keys(PERSON_GLOSSARY)[0];
+    if (initialKey) {
+      selectGlossaryEntry("person", initialKey, false);
+    }
+  })();
+  </script>
+</body>
+</html>

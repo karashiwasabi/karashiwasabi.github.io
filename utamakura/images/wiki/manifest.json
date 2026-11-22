@@ -61,8 +61,8 @@
   },
   {
     "place": "阿武隈川",
-    "file_key": "AbukumaGawaKako.jpg",
-    "local_path": "images/wiki/AbukumaGawaKako.jpg"
+    "file_key": "river_abukumagawa.svg",
+    "local_path": "images/wiki/river_abukumagawa.svg"
   },
   {
     "place": "会津根",
@@ -73,11 +73,6 @@
     "place": "安積山",
     "file_key": "Asakayama Park.jpg",
     "local_path": "images/wiki/Asakayama_Park.jpg"
-  },
-  {
-    "place": "飯塚",
-    "file_key": "Iizakaonsen-Sabakoyu.JPG",
-    "local_path": "images/wiki/Iizakaonsen-Sabakoyu.jpg"
   },
   {
     "place": "伊達の大木戸",
@@ -121,13 +116,13 @@
   },
   {
     "place": "二本松",
-    "file_key": "Nihonmatsu_Castle_Minowa_Gate_20100625-01.jpg",
-    "local_path": "images/wiki/Nihonmatsu_Castle_Minowa_Gate_20100625-01.jpg"
+    "file_key": "reg_nihonmatsu.svg",
+    "local_path": "images/wiki/reg_nihonmatsu.svg"
   },
   {
     "place": "白石",
-    "file_key": "Shiroishi-jyou2015.jpg",
-    "local_path": "images/wiki/Shiroishi-jyou2015.jpg"
+    "file_key": "Shiroishi Castle.JPG",
+    "local_path": "images/wiki/Shiroishi_Castle.jpg"
   },
   {
     "place": "名取川",
@@ -136,18 +131,13 @@
   },
   {
     "place": "仙台",
-    "file_key": "SendaiJoOtemonSumiYagura2003-11.jpg",
-    "local_path": "images/wiki/SendaiJoOtemonSumiYagura2003-11.jpg"
+    "file_key": "reg_sendai.svg",
+    "local_path": "images/wiki/reg_sendai.svg"
   },
   {
     "place": "つつじが岡",
     "file_key": "Tsutsujigaoka Tenmangu Shrine 202305b.jpg",
     "local_path": "images/wiki/Tsutsujigaoka_Tenmangu_Shrine_202305b.jpg"
-  },
-  {
-    "place": "塩竈",
-    "file_key": "211030_Shiogama-jinja_Shiogama_Miyagi_pref_Japan02s3.jpg",
-    "local_path": "images/wiki/211030_Shiogama-jinja_Shiogama_Miyagi_pref_Japan02s3.jpg"
   },
   {
     "place": "壺の碑",
@@ -168,11 +158,6 @@
     "place": "平泉",
     "file_key": "230728_Motsuji_Hiraizumi_Iwate_pref_Japan37s3.jpg",
     "local_path": "images/wiki/230728_Motsuji_Hiraizumi_Iwate_pref_Japan37s3.jpg"
-  },
-  {
-    "place": "金華山",
-    "file_key": "20091011金華山.jpg",
-    "local_path": "images/wiki/20091011___.jpg"
   },
   {
     "place": "金鶏山",
@@ -221,8 +206,8 @@
   },
   {
     "place": "山形",
-    "file_key": "220430_Yamagata_Castle_Yamagata_Yamagata_pref_Japan21s3.jpg",
-    "local_path": "images/wiki/220430_Yamagata_Castle_Yamagata_Yamagata_pref_Japan21s3.jpg"
+    "file_key": "reg_yamagata.svg",
+    "local_path": "images/wiki/reg_yamagata.svg"
   },
   {
     "place": "立石寺",
@@ -233,11 +218,6 @@
     "place": "最上川",
     "file_key": "Tozawa_Mogami_Gorge_Of_Mogami_River_1.JPG",
     "local_path": "images/wiki/Tozawa_Mogami_Gorge_Of_Mogami_River_1.jpg"
-  },
-  {
-    "place": "酒田",
-    "file_key": "酒田市日和山公園.JPG",
-    "local_path": "images/wiki/wiki_4478e83377.jpg"
   },
   {
     "place": "白糸の滝",
@@ -256,8 +236,8 @@
   },
   {
     "place": "鶴岡",
-    "file_key": "Cherry_blossoms_in_Tsuruoka_Park_2024a.jpg",
-    "local_path": "images/wiki/Cherry_blossoms_in_Tsuruoka_Park_2024a.jpg"
+    "file_key": "reg_tsuruoka.svg",
+    "local_path": "images/wiki/reg_tsuruoka.svg"
   },
   {
     "place": "鳥海山",
@@ -271,8 +251,8 @@
   },
   {
     "place": "秋田",
-    "file_key": "Osumi-Yagura_of_Kubota-Castle_20160424.jpg",
-    "local_path": "images/wiki/Osumi-Yagura_of_Kubota-Castle_20160424.jpg"
+    "file_key": "reg_akita.svg",
+    "local_path": "images/wiki/reg_akita.svg"
   },
   {
     "place": "金沢",
@@ -305,11 +285,6 @@
     "local_path": "images/wiki/Tateyama_Mountains_and_Onna-iwa_viewed_from_Amaharashi_Coast_20190309134344.jpg"
   },
   {
-    "place": "湯殿山",
-    "file_key": "Yudonosan_Torii_gate_2006-A.jpg",
-    "local_path": "images/wiki/Yudonosan_Torii_gate_2006-A.jpg"
-  },
-  {
     "place": "東叡山",
     "file_key": "Five-storied_Pagoda_-_Kan'ei-ji.jpg",
     "local_path": "images/wiki/Five-storied_Pagoda_-_Kan_ei-ji.jpg"
@@ -330,19 +305,14 @@
     "local_path": "images/wiki/Daimonzaka8618.jpg"
   },
   {
-    "place": "谷組",
-    "file_key": "Gifu-Kegonji.jpg",
-    "local_path": "images/wiki/Gifu-Kegonji.jpg"
-  },
-  {
     "place": "石山",
     "file_key": "Ishiyama_temple.jpg",
     "local_path": "images/wiki/Ishiyama_temple.jpg"
   },
   {
     "place": "長島",
-    "file_key": "Nagashima_castle_ootemon.JPG",
-    "local_path": "images/wiki/Nagashima_castle_ootemon.jpg"
+    "file_key": "reg_nagashima.svg",
+    "local_path": "images/wiki/reg_nagashima.svg"
   },
   {
     "place": "丸岡",
@@ -390,11 +360,6 @@
     "local_path": "images/wiki/Asuka_Nara_2009-5-23.jpg"
   },
   {
-    "place": "小倉山",
-    "file_key": "京都_嵐山_大堰川より小倉山（２８６ｍ）_Kyouto_Arashiyama_-_panoramio.jpg",
-    "local_path": "images/wiki/_____________________Kyouto_Arashiyama_-_panoramio.jpg"
-  },
-  {
     "place": "平城京",
     "file_key": "復元された第一次大極殿.jpg",
     "local_path": "images/wiki/wiki_69108dd966.jpg"
@@ -435,16 +400,6 @@
     "local_path": "images/wiki/Tatsuta_River__Ikaruga__Nara04.jpg"
   },
   {
-    "place": "住の江",
-    "file_key": "Sumiyoshi-taisha,_keidai-2.jpg",
-    "local_path": "images/wiki/Sumiyoshi-taisha__keidai-2.jpg"
-  },
-  {
-    "place": "難波",
-    "file_key": "Naniwa_Palace_Site.jpg",
-    "local_path": "images/wiki/Naniwa_Palace_Site.jpg"
-  },
-  {
     "place": "熟田津",
     "file_key": "Wakehama_Beach_20240519_(1).jpg",
     "local_path": "images/wiki/Wakehama_Beach_20240519__1_.jpg"
@@ -453,11 +408,6 @@
     "place": "畝傍山",
     "file_key": "Unebi-yama.jpg",
     "local_path": "images/wiki/Unebi-yama.jpg"
-  },
-  {
-    "place": "耳成山",
-    "file_key": "Miminashiyama201805.jpg",
-    "local_path": "images/wiki/Miminashiyama201805.jpg"
   },
   {
     "place": "蒲生野",
@@ -525,16 +475,6 @@
     "local_path": "images/wiki/Takasago-jinja04s3.jpg"
   },
   {
-    "place": "初瀬",
-    "file_key": "Hasedera_Sakurai_Nara_pref16n4272.jpg",
-    "local_path": "images/wiki/Hasedera_Sakurai_Nara_pref16n4272.jpg"
-  },
-  {
-    "place": "河原院",
-    "file_key": "SyoseienBoukakaku.jpg",
-    "local_path": "images/wiki/SyoseienBoukakaku.jpg"
-  },
-  {
     "place": "二上山",
     "file_key": "Mount_Nijo,_zenkei.jpg",
     "local_path": "images/wiki/Mount_Nijo__zenkei.jpg"
@@ -585,13 +525,343 @@
     "local_path": "images/wiki/Tatsuta_River__Ikaruga__Nara02.jpg"
   },
   {
-    "place": "松帆の浦",
-    "file_key": "Matsuhonoura（Awaji, Hyogo）-01.jpg",
-    "local_path": "images/wiki/Matsuhonoura_Awaji__Hyogo_-01.jpg"
-  },
-  {
     "place": "ならの小川",
     "file_key": "Kamo-wakeikazuchi-jinja09n4272.jpg",
     "local_path": "images/wiki/Kamo-wakeikazuchi-jinja09n4272.jpg"
+  },
+  {
+    "place": "江戸・隅田川圏",
+    "file_key": "area_edo_sumida.svg",
+    "local_path": "images/wiki/area_edo_sumida.svg",
+    "caption": "江戸・隅田川圏（律令国色分け図：東海道（武蔵国））"
+  },
+  {
+    "place": "日光・下野路圏",
+    "file_key": "area_nikko_shimotsuke.svg",
+    "local_path": "images/wiki/area_nikko_shimotsuke.svg",
+    "caption": "日光・下野路圏（律令国色分け図：東山道（下野国））"
+  },
+  {
+    "place": "那須・黒羽圏",
+    "file_key": "area_nasu_kurobane.svg",
+    "local_path": "images/wiki/area_nasu_kurobane.svg",
+    "caption": "那須・黒羽圏（律令国色分け図：東山道（下野国））"
+  },
+  {
+    "place": "出羽（象潟・出羽三山）圏",
+    "file_key": "area_dewa_kisakata.svg",
+    "local_path": "images/wiki/area_dewa_kisakata.svg",
+    "caption": "出羽（象潟・出羽三山）圏（律令国色分け図：東山道（出羽国））"
+  },
+  {
+    "place": "畿内・都（歌枕遠望）圏",
+    "file_key": "area_kinai_miyako.svg",
+    "local_path": "images/wiki/area_kinai_miyako.svg",
+    "caption": "畿内・都（歌枕遠望）圏（律令国色分け図：畿内・近江・播磨・紀伊）"
+  },
+  {
+    "place": "常陸国圏",
+    "file_key": "area_hitachi.svg",
+    "local_path": "images/wiki/area_hitachi.svg",
+    "caption": "常陸国圏（律令国色分け図：東海道（常陸国））"
+  },
+  {
+    "place": "越後国圏",
+    "file_key": "area_echigo.svg",
+    "local_path": "images/wiki/area_echigo.svg",
+    "caption": "越後国圏（律令国色分け図：北陸道（越後国・佐渡国））"
+  },
+  {
+    "place": "北陸（越中・加賀）圏",
+    "file_key": "area_hokuriku_etchu_kaga.svg",
+    "local_path": "images/wiki/area_hokuriku_etchu_kaga.svg",
+    "caption": "北陸（越中・加賀）圏（律令国色分け図：北陸道（越中国・加賀国））"
+  },
+  {
+    "place": "越前・美濃・伊勢圏",
+    "file_key": "area_echizen_mino_ise.svg",
+    "local_path": "images/wiki/area_echizen_mino_ise.svg",
+    "caption": "越前・美濃・伊勢圏（律令国色分け図：北陸道（越前国）・東山道（美濃国）・東海道（伊勢国））"
+  },
+  {
+    "place": "蝦夷・北方圏",
+    "file_key": "area_ezo_hoppo.svg",
+    "local_path": "images/wiki/area_ezo_hoppo.svg",
+    "caption": "蝦夷・北方圏（律令国色分け図：北海道（蝦夷地））"
+  },
+  {
+    "place": "駿河・富士山圏",
+    "file_key": "area_suruga_fujisan.svg",
+    "local_path": "images/wiki/area_suruga_fujisan.svg",
+    "caption": "駿河・富士山圏（律令国色分け図：東海道（駿河国・甲斐国））"
+  },
+  {
+    "place": "奥州（白河・松島）圏",
+    "file_key": "area_oshu_shirakawa_matsushima.svg",
+    "local_path": "images/wiki/area_oshu_shirakawa_matsushima.svg",
+    "caption": "奥州（白河・松島）圏（律令国色分け図：東山道（陸奥国））"
+  },
+  {
+    "place": "山陰（因幡・隠岐）圏",
+    "file_key": "area_sanin_inaba_oki.svg",
+    "local_path": "images/wiki/area_sanin_inaba_oki.svg",
+    "caption": "山陰（因幡・隠岐）圏（律令国色分け図：山陰道（因幡国・隠岐国））"
+  },
+  {
+    "place": "瀬戸内・伊予（熟田津）圏",
+    "file_key": "area_setouchi_iyo.svg",
+    "local_path": "images/wiki/area_setouchi_iyo.svg",
+    "caption": "瀬戸内・伊予（熟田津）圏（律令国色分け図：南海道（伊予国・讃岐国））"
+  },
+  {
+    "place": "西海道・大宰府圏",
+    "file_key": "area_saikaido_dazaifu.svg",
+    "local_path": "images/wiki/area_saikaido_dazaifu.svg",
+    "caption": "西海道・大宰府圏（律令国色分け図：西海道（筑前国））"
+  },
+  {
+    "place": "播磨・淡路（明石海峡）圏",
+    "file_key": "area_harima_awaji.svg",
+    "local_path": "images/wiki/area_harima_awaji.svg",
+    "caption": "播磨・淡路（明石海峡）圏（律令国色分け図：山陽道（播磨国）・南海道（淡路国））"
+  },
+  {
+    "place": "丹後・若狭（天橋立・由良）圏",
+    "file_key": "area_tango_wakasa.svg",
+    "local_path": "images/wiki/area_tango_wakasa.svg",
+    "caption": "丹後・若狭（天橋立・由良）圏（律令国色分け図：山陰道（丹後国）・北陸道（若狭国））"
+  },
+  {
+    "place": "隅田川",
+    "file_key": "river_sumidagawa.svg",
+    "local_path": "images/wiki/river_sumidagawa.svg",
+    "caption": "隅田川（旧国×水系流路図）"
+  },
+  {
+    "place": "黒塚",
+    "file_key": "Kuroduka.jpg",
+    "local_path": "images/wiki/Kuroduka.jpg",
+    "caption": "安達ヶ原・黒塚（福島県二本松市）"
+  },
+  {
+    "place": "蝦夷が島",
+    "file_key": "reg_ezogashima.svg",
+    "local_path": "images/wiki/reg_ezogashima.svg",
+    "caption": "蝦夷が島（多賀城碑「去蝦夷国界一百二十里」に記された北方・蝦夷ヶ島領域図）"
+  },
+  {
+    "place": "那須野",
+    "file_key": "reg_nasuno.svg",
+    "local_path": "images/wiki/reg_nasuno.svg",
+    "caption": "那須野（下野国北東部に広がる広大な扇状地「那須野が原」の範囲と歌枕群）"
+  },
+  {
+    "place": "岩城",
+    "file_key": "reg_iwaki.svg",
+    "local_path": "images/wiki/reg_iwaki.svg",
+    "caption": "岩城（「これより東に岩城・相馬・三春といふ所あり」― 陸奥国東南・岩城（磐城）領域図）"
+  },
+  {
+    "place": "相馬",
+    "file_key": "reg_soma.svg",
+    "local_path": "images/wiki/reg_soma.svg",
+    "caption": "相馬（「これより東に岩城・相馬・三春といふ所あり」― 陸奥国浜通り・相馬領域図）"
+  },
+  {
+    "place": "三春",
+    "file_key": "reg_miharu.svg",
+    "local_path": "images/wiki/reg_miharu.svg",
+    "caption": "三春（「これより東に岩城・相馬・三春といふ所あり」― 阿武隈山系西麓・三春領域図）"
+  },
+  {
+    "place": "檜皮の宿",
+    "file_key": "reg_hiwadanojuku.svg",
+    "local_path": "images/wiki/reg_hiwadanojuku.svg",
+    "caption": "檜皮の宿（「檜皮の宿を離れて、あさか山有。道よりちかし」― 奥州街道・日和田宿と安積山位置図）"
+  },
+  {
+    "place": "福島",
+    "file_key": "reg_fukushima.svg",
+    "local_path": "images/wiki/reg_fukushima.svg",
+    "caption": "福島（「月をわたりて、福島に宿る」― 陸奥国信夫郡・奥州街道福島宿と信夫歌枕群）"
+  },
+  {
+    "place": "宮城野",
+    "file_key": "reg_miyagino.svg",
+    "local_path": "images/wiki/reg_miyagino.svg",
+    "caption": "宮城野（仙台城下東郊に広がった萩の歌枕「宮城野」の範囲と周辺名所位置図）"
+  },
+  {
+    "place": "玉田横野",
+    "file_key": "reg_tamadayokono.svg",
+    "local_path": "images/wiki/reg_tamadayokono.svg",
+    "caption": "玉田横野（「玉田・横野・つつじが岡はあせび咲くころなり」― 仙台東郊の歌枕群位置図）"
+  },
+  {
+    "place": "石巻",
+    "file_key": "reg_ishinomaki.svg",
+    "local_path": "images/wiki/reg_ishinomaki.svg",
+    "caption": "石巻（北上川河口の湊町「石の巻」領域と金華山・袖の渡り・尾駁の牧・真野の萱原位置図）"
+  },
+  {
+    "place": "登米",
+    "file_key": "reg_tome.svg",
+    "local_path": "images/wiki/reg_tome.svg",
+    "caption": "登米（石巻から北上川沿いに北上して一宿した「とま（登米）」領域と平泉への旅程図）"
+  },
+  {
+    "place": "南部",
+    "file_key": "reg_nanbu.svg",
+    "local_path": "images/wiki/reg_nanbu.svg",
+    "caption": "南部（「衣が関を隔てて南部口をさし固め」― 平泉北方に広がる陸奥国北部・南部領領域図）"
+  },
+  {
+    "place": "岩手の里",
+    "file_key": "reg_iwatenosato.svg",
+    "local_path": "images/wiki/reg_iwatenosato.svg",
+    "caption": "岩手の里（「岩手の里・小黒崎・みつの小島を過ぎて」― 平泉から出羽越え（尿前の関）への街道図）"
+  },
+  {
+    "place": "最上の庄",
+    "file_key": "reg_mogaminosho.svg",
+    "local_path": "images/wiki/reg_mogaminosho.svg",
+    "caption": "最上の庄（尿前の関・大山を越えて入った出羽国「最上の庄」領域と尾花沢・大石田位置図）"
+  },
+  {
+    "place": "板敷山",
+    "file_key": "reg_itajikiyama.svg",
+    "local_path": "images/wiki/reg_itajikiyama.svg",
+    "caption": "板敷山（「板敷山の北を流れて、果ては酒田の海に入る」― 最上峡・板敷山と最上川下流位置図）"
+  },
+  {
+    "place": "温海山",
+    "file_key": "reg_atsumiyama.svg",
+    "local_path": "images/wiki/reg_atsumiyama.svg",
+    "caption": "温海山（「あつみ山や吹浦かけて夕涼み」― 出羽庄内海岸・温海山（温海岳）と鼠ヶ関・酒田位置図）"
+  },
+  {
+    "place": "汐越",
+    "file_key": "reg_shiokoshi.svg",
+    "local_path": "images/wiki/reg_shiokoshi.svg",
+    "caption": "汐越（「象潟や料理何くふ神祭／汐越や鶴はぎぬれて海涼し」― 象潟・汐越の旧潟湖位置図）"
+  },
+  {
+    "place": "卯の花山",
+    "file_key": "reg_unohanayama.svg",
+    "local_path": "images/wiki/reg_unohanayama.svg",
+    "caption": "卯の花山（越中国・加賀国境に連なる砺波山系「卯の花山」と倶利伽羅が谷・有磯海位置図）"
+  },
+  {
+    "place": "小松",
+    "file_key": "reg_komatsu.svg",
+    "local_path": "images/wiki/reg_komatsu.svg",
+    "caption": "小松（「しほらしき名や小松吹萩薄」― 加賀国能美郡・小松城下領域と多太神社・那谷寺位置図）"
+  },
+  {
+    "place": "大聖寺",
+    "file_key": "reg_daishoji.svg",
+    "local_path": "images/wiki/reg_daishoji.svg",
+    "caption": "大聖寺（加賀・越前国境の城下「大聖寺」領域と全昌寺・山中温泉・吉崎位置図）"
+  },
+  {
+    "place": "汐越の松",
+    "file_key": "reg_shiogoshinomatsu.svg",
+    "local_path": "images/wiki/reg_shiogoshinomatsu.svg",
+    "caption": "汐越の松（「終宵嵐に波をはこばせて月をたれたる汐越の松」― 越前・加賀国境の吉崎・浜坂海浜位置図）"
+  },
+  {
+    "place": "有明",
+    "file_key": "reg_ariake_arima.svg",
+    "local_path": "images/wiki/reg_ariake_arima.svg",
+    "caption": "有明（那谷寺段「花の上こぐとよまれし桜の老木」西行歌ゆかりの地 ― 摂津国有馬領域図）"
+  },
+  {
+    "place": "難波潟",
+    "file_key": "reg_naniwagata.svg",
+    "local_path": "images/wiki/reg_naniwagata.svg",
+    "caption": "難波潟（「難波潟みじかき蘆のふしの間も」― 古代大阪湾奥・淀川河口の干潟（難波潟・難波江）範囲図）"
+  },
+  {
+    "place": "明石の門",
+    "file_key": "reg_akashinoto.svg",
+    "local_path": "images/wiki/reg_akashinoto.svg",
+    "caption": "明石の門（「ともしびの明石大門に入らむ日や」― 播磨国と淡路島を隔てる海峡「明石の門」位置図）"
+  },
+  {
+    "place": "生野",
+    "file_key": "reg_ikuno_tamba.svg",
+    "local_path": "images/wiki/reg_ikuno_tamba.svg",
+    "caption": "生野（「大江山いく野の道の遠ければまだふみも見ず天の橋立」― 丹波国天田郡・生野〜丹後路図）"
+  },
+  {
+    "place": "得名津",
+    "file_key": "reg_enatsu.svg",
+    "local_path": "images/wiki/reg_enatsu.svg",
+    "caption": "得名津（「住吉の得名津に立ちて見渡せば武庫の泊ゆ出づる船人」― 住吉海浜・得名津と大阪湾対岸図）"
+  },
+  {
+    "place": "須賀川",
+    "file_key": "reg_sukagawa.svg",
+    "local_path": "images/wiki/reg_sukagawa.svg"
+  },
+  {
+    "place": "瀬の上",
+    "file_key": "reg_senoue.svg",
+    "local_path": "images/wiki/reg_senoue.svg"
+  },
+  {
+    "place": "桑折",
+    "file_key": "reg_koori.svg",
+    "local_path": "images/wiki/reg_koori.svg"
+  },
+  {
+    "place": "笠島",
+    "file_key": "reg_kasashima.svg",
+    "local_path": "images/wiki/reg_kasashima.svg"
+  },
+  {
+    "place": "岩沼",
+    "file_key": "reg_iwanuma.svg",
+    "local_path": "images/wiki/reg_iwanuma.svg"
+  },
+  {
+    "place": "おくの細道",
+    "file_key": "reg_okunohosomichi.svg",
+    "local_path": "images/wiki/reg_okunohosomichi.svg"
+  },
+  {
+    "place": "尾花沢",
+    "file_key": "reg_obanazawa.svg",
+    "local_path": "images/wiki/reg_obanazawa.svg"
+  },
+  {
+    "place": "大石田",
+    "file_key": "reg_oishida.svg",
+    "local_path": "images/wiki/reg_oishida.svg"
+  },
+  {
+    "place": "那古",
+    "file_key": "reg_nago.svg",
+    "local_path": "images/wiki/reg_nago.svg"
+  },
+  {
+    "place": "山科",
+    "file_key": "reg_yamashina.svg",
+    "local_path": "images/wiki/reg_yamashina.svg"
+  },
+  {
+    "place": "みかの原",
+    "file_key": "reg_mikanohara.svg",
+    "local_path": "images/wiki/reg_mikanohara.svg"
+  },
+  {
+    "place": "丸山",
+    "file_key": "Yakushidou Iouji (Fukushima).JPG",
+    "local_path": "images/wiki/Yakushidou_Iouji__Fukushima_.jpg"
+  },
+  {
+    "place": "竜田山",
+    "file_key": "Tatsuta-taisha, haiden.jpg",
+    "local_path": "images/wiki/Tatsuta-taisha__haiden.jpg"
   }
 ]
