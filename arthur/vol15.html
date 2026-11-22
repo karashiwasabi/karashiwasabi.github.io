@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>アーサー王物語</title>
+  <link rel="canonical" href="https://wasabikarashi.com/arthur/vol15.html">
   <meta name="application-name" content="アーサー王物語">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -844,7 +845,54 @@
       <a class="slim-nav-btn" href="vol16.html" title="next">→</a>
     </div>
     <script>
+    window.ARTHUR_TITLE_I18N = {"ja":"アーサー王物語","en":"King Arthur","zh_tw":"亞瑟王物語","zh_cn":"亚瑟王物语","ko":"아서왕 이야기"};
+    window.normalizeArthurLangCode = function(raw) {
+      if (!raw) return "";
+      var s = String(raw).trim().toLowerCase().replace(/-/g, "_");
+      if (s === "en" || s.indexOf("en_") === 0) return "en";
+      if (s === "ja" || s.indexOf("ja_") === 0) return "ja";
+      if (s === "ko" || s.indexOf("ko_") === 0) return "ko";
+      if (s === "zh_tw" || s === "zh_hk" || s === "zh_mo" || s.indexOf("zh_hant") === 0) return "zh_tw";
+      if (s === "zh" || s === "zh_cn" || s === "zh_sg" || s.indexOf("zh_hans") === 0 || s.indexOf("zh_") === 0) return "zh_cn";
+      return "";
+    };
+    window.isArthurSearchBot = function() {
+      try {
+        if (navigator.webdriver) return true;
+        var ua = String(navigator.userAgent || "");
+        return /bot|crawl|spider|slurp|mediapartners|adsbot|bingpreview|facebookexternalhit|twitterbot|discordbot|whatsapp|applebot|lighthouse/i.test(ua);
+      } catch (e) { return false; }
+    };
+    window.resolveArthurInitialLang = function() {
+      var key = 'arthur_selected_lang';
+      try {
+        var qRaw = new URLSearchParams(location.search).get('lang');
+        var qNorm = window.normalizeArthurLangCode(qRaw);
+        if (qNorm) {
+          try { localStorage.setItem(key, qNorm); } catch (_e) {}
+          return qNorm;
+        }
+      } catch (e) {}
+      try {
+        var saved = window.normalizeArthurLangCode(localStorage.getItem(key));
+        if (saved) return saved;
+      } catch (e) {}
+      if (window.isArthurSearchBot()) return 'ja';
+      try {
+        var navList = (Array.isArray(navigator.languages) && navigator.languages.length > 0)
+          ? navigator.languages : [navigator.language || ""];
+        for (var i = 0; i < navList.length; i++) {
+          var detected = window.normalizeArthurLangCode(navList[i]);
+          if (detected) return detected;
+        }
+      } catch (e) {}
+      return 'ja';
+    };
     window.applyNavLang = function(lang) {
+      document.documentElement.lang = lang === 'zh_tw' ? 'zh-Hant' : (lang === 'zh_cn' ? 'zh-Hans' : lang);
+      if (window.ARTHUR_TITLE_I18N && window.ARTHUR_TITLE_I18N[lang]) {
+        document.title = window.ARTHUR_TITLE_I18N[lang];
+      }
       var bar = document.querySelector('.vol-nav-bar');
       if (!bar) return;
       var home = bar.querySelector('.home-top-link');
@@ -859,8 +907,7 @@
       });
     };
     try {
-      var qLang = new URLSearchParams(location.search).get('lang');
-      window.applyNavLang(qLang || localStorage.getItem('arthur_selected_lang') || 'ja');
+      window.applyNavLang(window.resolveArthurInitialLang());
     } catch (e) {}
     </script>
       <div id="map"></div>
@@ -1367,10 +1414,7 @@
       }
     };
 
-    const qLang = urlParams.get("lang");
-    let currentLang = (qLang && SUPPORTED_LANGS.includes(qLang))
-      ? qLang
-      : (localStorage.getItem(LANG_STORAGE_KEY) || "ja");
+    let currentLang = window.resolveArthurInitialLang ? window.resolveArthurInitialLang() : "ja";
     if (!SUPPORTED_LANGS.includes(currentLang)) currentLang = "ja";
 
     const langStyleEl = document.createElement("style");
