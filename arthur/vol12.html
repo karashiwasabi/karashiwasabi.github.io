@@ -1164,19 +1164,63 @@
     const modalEl = document.getElementById("glossaryModal");
     const modalTitleEl = document.getElementById("modalTitle");
     const modalBodyEl = document.getElementById("modalBody");
-    const wikiCache = {};
-
-    function closeGlossaryModal() {
-      if (modalEl) modalEl.classList.remove("is-open");
-    }
+    const modalCloseBtnEl = document.getElementById("modalCloseBtn");
+    let activeModalState = null;
 
     const PLACE_NAMES_I18N = {"ブリテン島": {"en": "Britain", "ja": "ブリテン", "zh_tw": "不列顛", "zh_cn": "不列颠", "ko": "브리튼"}, "ティンタジェル": {"en": "Tintegal", "ja": "ティンタジェル", "zh_tw": "廷塔哲", "zh_cn": "廷塔哲", "ko": "틴타겔"}, "オークニー": {"en": "Orkney", "ja": "オークニー", "zh_tw": "奧克尼", "zh_cn": "奥克尼", "ko": "오크니"}, "カンタベリー": {"en": "Canterbury", "ja": "カンタベリー", "zh_tw": "坎特伯里", "zh_cn": "坎特伯雷", "ko": "캔터베리"}, "ロンドン": {"en": "London", "ja": "ロンドン", "zh_tw": "倫敦", "zh_cn": "伦敦", "ko": "런던"}, "ウェールズ": {"en": "Wales", "ja": "ウェールズ", "zh_tw": "威爾斯", "zh_cn": "威尔士", "ko": "웨일스"}, "スコットランド": {"en": "Scotland", "ja": "スコットランド", "zh_tw": "蘇格蘭", "zh_cn": "苏格兰", "ko": "스코틀랜드"}, "コーンウォール": {"en": "Cornwall", "ja": "コーンウォール", "zh_tw": "康沃爾", "zh_cn": "康沃尔", "ko": "콘월"}, "ノーサンバーランド": {"en": "Northumberland", "ja": "ノーサンバーランド", "zh_tw": "諾森伯蘭", "zh_cn": "诺森伯兰", "ko": "노섬벌랜드"}, "イングランド": {"en": "England", "ja": "イングランド", "zh_tw": "英格蘭", "zh_cn": "英格兰", "ko": "잉글랜드"}, "アスクの森": {"en": "Forests of the Usk", "ja": "アスクの森", "zh_tw": "烏斯克森林", "zh_cn": "乌斯克森林", "ko": "어스크의 숲"}, "カーレオン": {"en": "Carleon", "ja": "カーレオン", "zh_tw": "卡利恩", "zh_cn": "卡利恩", "ko": "칼리언"}, "カーディフ": {"en": "Cardiff", "ja": "カーディフ", "zh_tw": "卡地夫", "zh_cn": "卡迪夫", "ko": "카디프"}, "ウィンチェスター": {"en": "Winchester", "ja": "ウィンチェスター", "zh_tw": "溫徹斯特", "zh_cn": "温彻斯特", "ko": "윈체스터"}};
+    const TERM_NAMES_I18N = {"office:王": {"en": "King", "ja": "王", "zh_tw": "國王", "zh_cn": "国王", "ko": "왕"}, "person:ユーサー": {"en": "Uther-Pendragon", "ja": "ユーサー・ペンドラゴン", "zh_tw": "烏瑟·潘德拉剛", "zh_cn": "乌瑟·潘德拉刚", "ko": "우서 펜드래건"}, "place:ブリテン島": {"en": "Britain", "ja": "ブリテン", "zh_tw": "不列顛", "zh_cn": "不列颠", "ko": "브리튼"}, "office:ペンドラゴン": {"en": "Pendragonship", "ja": "ペンドラゴン位", "zh_tw": "潘德拉剛之位", "zh_cn": "潘德拉刚之位", "ko": "펜드래건 지위"}, "special:魔術師": {"en": "enchanter", "ja": "魔術師", "zh_tw": "魔法師", "zh_cn": "魔法师", "ko": "마법사"}, "person:マーリン": {"en": "Merlin the Wise", "ja": "マーリン", "zh_tw": "梅林", "zh_cn": "梅林", "ko": "멀린"}, "office:騎士": {"en": "knight", "ja": "騎士", "zh_tw": "騎士", "zh_cn": "骑士", "ko": "기사"}, "person:ウルフィアス": {"en": "Ulfius", "ja": "ウルフィアス", "zh_tw": "烏爾菲亞斯", "zh_cn": "乌尔菲亚斯", "ko": "울피우스"}, "person:イグレーヌ": {"en": "Igraine", "ja": "イグレーヌ", "zh_tw": "伊格蕾茵", "zh_cn": "伊格蕾茵", "ko": "이그레인"}, "person:ゲルロイス": {"en": "Gerlois", "ja": "ゲルロイス", "zh_tw": "格洛伊斯", "zh_cn": "格洛伊斯", "ko": "게를루아"}, "office:公爵": {"en": "Duke", "ja": "公", "zh_tw": "公爵", "zh_cn": "公爵", "ko": "공작"}, "place:ティンタジェル": {"en": "Tintegal", "ja": "ティンタジェル", "zh_tw": "廷塔哲", "zh_cn": "廷塔哲", "ko": "틴타겔"}, "person:マルゲーズ": {"en": "Margaise", "ja": "マルゲーズ", "zh_tw": "瑪嘉絲", "zh_cn": "玛嘉丝", "ko": "마르게즈"}, "person:モルガン・ル・フェイ": {"en": "Morgana le Fay", "ja": "モルガン・ル・フェイ", "zh_tw": "摩根勒菲", "zh_cn": "摩根勒菲", "ko": "모르가나 르 페이"}, "special:魔女": {"en": "sorceress", "ja": "魔女", "zh_tw": "女巫", "zh_cn": "女巫", "ko": "마녀"}, "office:王妃": {"en": "Queen", "ja": "王妃", "zh_tw": "王后", "zh_cn": "王后", "ko": "왕비"}, "person:ユリエンス": {"en": "Urien", "ja": "ユリエンス", "zh_tw": "尤里安", "zh_cn": "尤里安", "ko": "유리엔"}, "special:ゴア": {"en": "Gore", "ja": "ゴア", "zh_tw": "戈爾", "zh_cn": "戈尔", "ko": "고어"}, "person:ロット": {"en": "Lot", "ja": "ロット", "zh_tw": "洛特", "zh_cn": "洛特", "ko": "로트"}, "place:オークニー": {"en": "Orkney", "ja": "オークニー", "zh_tw": "奧克尼", "zh_cn": "奥克尼", "ko": "오크니"}, "special:予言": {"en": "prophecy", "ja": "予言", "zh_tw": "預言", "zh_cn": "预言", "ko": "예언"}, "office:男爵": {"en": "barons", "ja": "男爵", "zh_tw": "男爵", "zh_cn": "男爵", "ko": "남작"}, "office:大司教": {"en": "Archbishop", "ja": "大司教", "zh_tw": "大主教", "zh_cn": "大主教", "ko": "대주교"}, "place:カンタベリー": {"en": "Canterbury", "ja": "カンタベリー", "zh_tw": "坎特伯里", "zh_cn": "坎特伯雷", "ko": "캔터베리"}, "special:魔法": {"en": "magic", "ja": "魔法", "zh_tw": "魔法", "zh_cn": "魔法", "ko": "마법"}, "person:ロベール・ド・ボロン": {"en": "Robert de Boron", "ja": "ロベール・ド・ボロン", "zh_tw": "羅伯特·德·波隆", "zh_cn": "罗伯特·德·波隆", "ko": "로베르 드 보롱"}, "person:レオデグランス": {"en": "Leodegrance", "ja": "レオデグランス", "zh_tw": "雷奧多格蘭", "zh_cn": "雷奥多格兰", "ko": "레오데그란스"}, "special:カミリアード": {"en": "Camiliard", "ja": "カミリアード", "zh_tw": "卡米利亞德", "zh_cn": "卡米利亚德", "ko": "카밀리아드"}, "person:リエンス": {"en": "Ryence", "ja": "リエンス", "zh_tw": "雷恩斯", "zh_cn": "雷恩斯", "ko": "리엔스"}, "place:ロンドン": {"en": "London", "ja": "ロンドン", "zh_tw": "倫敦", "zh_cn": "伦敦", "ko": "런던"}, "person:エクター": {"en": "Sir Ector", "ja": "エクター卿", "zh_tw": "艾克托爵士", "zh_cn": "艾克托爵士", "ko": "엑터 경"}, "place:ウェールズ": {"en": "Wales", "ja": "ウェールズ", "zh_tw": "威爾斯", "zh_cn": "威尔士", "ko": "웨일스"}, "person:ケイ": {"en": "Sir Kay", "ja": "ケイ卿", "zh_tw": "凱爵士", "zh_cn": "凯爵士", "ko": "케이 경"}, "person:アーサー": {"en": "Arthur", "ja": "アーサー", "zh_tw": "亞瑟", "zh_cn": "亚瑟", "ko": "아서"}, "office:従者": {"en": "esquire-at-arms", "ja": "武具従者", "zh_tw": "隨身侍從", "zh_cn": "随身侍从", "ko": "무구 종자"}, "special:グリフォン": {"en": "gryphon", "ja": "グリフォン", "zh_tw": "格里芬", "zh_cn": "格里芬", "ko": "그리폰"}, "person:バン": {"en": "Ban", "ja": "バン", "zh_tw": "班", "zh_cn": "班", "ko": "반"}, "person:ボールス": {"en": "Bors", "ja": "ボールス", "zh_tw": "博爾斯", "zh_cn": "博尔斯", "ko": "보어스"}, "special:馬上槍試合": {"en": "tournament", "ja": "馬上槍試合", "zh_tw": "比武大會", "zh_cn": "比武大会", "ko": "마상창시합"}, "office:紋章官": {"en": "heralds", "ja": "紋章官", "zh_tw": "紋章官", "zh_cn": "纹章官", "ko": "문장관"}, "special:聖ジョージ": {"en": "St. George", "ja": "聖ジョージ", "zh_tw": "聖喬治", "zh_cn": "圣乔治", "ko": "성 조지"}, "special:円卓": {"en": "round table", "ja": "円卓", "zh_tw": "圓桌", "zh_cn": "圆桌", "ko": "원탁"}, "person:マドール・ド・ラ・ポルト": {"en": "Sir Mador de la Porte", "ja": "マドール・ド・ラ・ポルト卿", "zh_tw": "馬多爾·德·拉·波爾特爵士", "zh_cn": "马多尔·德·拉·波尔特爵士", "ko": "마도르 드 라 포르트 경"}, "person:ベディヴィア": {"en": "Sir Bedevere", "ja": "ベディヴィア卿", "zh_tw": "貝迪維爾爵士", "zh_cn": "贝迪维尔爵士", "ko": "베디비어 경"}, "person:バラモルギネアス": {"en": "Sir Balamorgineas", "ja": "バラモルギネアス卿", "zh_tw": "巴拉摩吉尼亞斯爵士", "zh_cn": "巴拉摩吉尼亚斯爵士", "ko": "발라모르기네아스 경"}, "office:執事長": {"en": "Seneschal", "ja": "執事長", "zh_tw": "宮廷總管", "zh_cn": "宫廷总管", "ko": "집사장"}, "person:ランスロット": {"en": "Sir Launcelot", "ja": "ランスロット卿", "zh_tw": "蘭斯洛特爵士", "zh_cn": "兰斯洛特爵士", "ko": "란슬롯 경"}, "person:ペリアス": {"en": "Sir Pellias", "ja": "ペリアス卿", "zh_tw": "佩利亞斯爵士", "zh_cn": "佩利亚斯爵士", "ko": "펠리아스 경"}, "person:マーハウス": {"en": "Sir Marhaus", "ja": "マーハウス卿", "zh_tw": "馬豪斯爵士", "zh_cn": "马豪斯爵士", "ko": "마하우스 경"}, "person:ガウェイン": {"en": "Sir Gawaine", "ja": "ガウェイン卿", "zh_tw": "高文爵士", "zh_cn": "高文爵士", "ko": "가웨인 경"}, "special:聖杯": {"en": "Holy Grail", "ja": "聖杯", "zh_tw": "聖杯", "zh_cn": "圣杯", "ko": "성배"}, "person:フィオン": {"en": "Fion", "ja": "フィオン", "zh_tw": "菲昂", "zh_cn": "菲昂", "ko": "피온"}, "place:スコットランド": {"en": "Scotland", "ja": "スコットランド", "zh_tw": "蘇格蘭", "zh_cn": "苏格兰", "ko": "스코틀랜드"}, "person:マーク": {"en": "Mark", "ja": "マーク", "zh_tw": "馬克", "zh_cn": "马克", "ko": "마크"}, "place:コーンウォール": {"en": "Cornwall", "ja": "コーンウォール", "zh_tw": "康沃爾", "zh_cn": "康沃尔", "ko": "콘월"}, "person:ペリノア": {"en": "Pellinore", "ja": "ペリノア", "zh_tw": "佩利諾爾", "zh_cn": "佩利诺尔", "ko": "펠리노어"}, "person:クラレンス": {"en": "Clarence", "ja": "クラレンス", "zh_tw": "克拉倫斯", "zh_cn": "克拉伦斯", "ko": "클래런스"}, "place:ノーサンバーランド": {"en": "Northumberland", "ja": "ノーサンバーランド", "zh_tw": "諾森伯蘭", "zh_cn": "诺森伯兰", "ko": "노섬벌랜드"}, "place:イングランド": {"en": "England", "ja": "イングランド", "zh_tw": "英格蘭", "zh_cn": "英格兰", "ko": "잉글랜드"}, "person:黒騎士": {"en": "Sable Knight", "ja": "黒騎士", "zh_tw": "黑騎士", "zh_cn": "黑骑士", "ko": "흑기사"}, "special:エクスカリバー": {"en": "Excalibur", "ja": "エクスカリバー", "zh_tw": "艾克斯卡利伯", "zh_cn": "艾克斯卡利伯", "ko": "엑스칼리버"}, "special:妖精の国": {"en": "land of Faerie", "ja": "妖精の国", "zh_tw": "仙境", "zh_cn": "仙境", "ko": "요정의 나라"}, "special:魔法の湖": {"en": "Lake of Enchantment", "ja": "魔法の湖", "zh_tw": "魔法之湖", "zh_cn": "魔法之湖", "ko": "마법의 호수"}, "place:アスクの森": {"en": "Forests of the Usk", "ja": "アスクの森", "zh_tw": "烏斯克森林", "zh_cn": "乌斯克森林", "ko": "어스크의 숲"}, "person:ユーウェイン": {"en": "Ewaine", "ja": "ユーウェイン", "zh_tw": "尤韋恩", "zh_cn": "尤韦恩", "ko": "유웨인"}, "person:カラドック": {"en": "Caradoc", "ja": "カラドック", "zh_tw": "卡拉多克", "zh_cn": "卡拉多克", "ko": "카라독"}, "person:ゲライント": {"en": "Geraint", "ja": "ゲライント", "zh_tw": "傑蘭特", "zh_cn": "杰兰特", "ko": "게라인트"}, "person:ボドウィン": {"en": "Bodwin", "ja": "ボドウィン", "zh_tw": "博德溫", "zh_cn": "博德温", "ko": "보드윈"}, "person:コンスタンティン": {"en": "Constantine", "ja": "コンスタンティン", "zh_tw": "君士坦丁", "zh_cn": "君士坦丁", "ko": "콘스탄틴"}, "person:ブランディレス": {"en": "Brandiles", "ja": "ブランディレス", "zh_tw": "布蘭迪萊斯", "zh_cn": "布兰迪莱斯", "ko": "브란딜레스"}, "office:小姓": {"en": "page", "ja": "小姓", "zh_tw": "侍童", "zh_cn": "侍童", "ko": "시동"}, "person:マイルズ": {"en": "Myles", "ja": "マイルズ", "zh_tw": "邁爾斯", "zh_cn": "迈尔斯", "ko": "마일스"}, "person:グリフレット": {"en": "Griflet", "ja": "グリフレット", "zh_tw": "格里弗萊特", "zh_cn": "格里弗莱特", "ko": "그리플렛"}, "special:歓喜の谷": {"en": "Valley of Delight", "ja": "歓喜の谷", "zh_tw": "歡愉之谷", "zh_cn": "欢愉之谷", "ko": "환희의 골짜기"}, "place:カーレオン": {"en": "Carleon", "ja": "カーレオン", "zh_tw": "卡利恩", "zh_cn": "卡利恩", "ko": "칼리언"}, "special:ミゼリコルディア": {"en": "misericordia", "ja": "ミゼリコルディア", "zh_tw": "慈悲短劍", "zh_cn": "慈悲短剑", "ko": "자비의 단검"}, "office:隠者": {"en": "hermit", "ja": "隠者", "zh_tw": "隱者", "zh_cn": "隐者", "ko": "은자"}, "person:グィネヴィア": {"en": "Guinevere", "ja": "グィネヴィア", "zh_tw": "桂妮薇兒", "zh_cn": "桂妮薇儿", "ko": "기네비어"}, "special:アロイ": {"en": "Arroy", "ja": "アロイ", "zh_tw": "阿羅伊", "zh_cn": "阿罗伊", "ko": "아로이"}, "person:ニムエ": {"en": "Nymue", "ja": "ニムエ", "zh_tw": "妮繆", "zh_cn": "妮缪", "ko": "니무에"}, "person:湖の乙女": {"en": "Ladies of the Lake", "ja": "湖の乙女たち", "zh_tw": "湖中仙女", "zh_cn": "湖中仙女", "ko": "호수의 처녀들"}, "person:アグラヴァル": {"en": "Aglaval", "ja": "アグラヴァル", "zh_tw": "阿格拉瓦爾", "zh_cn": "阿格拉瓦尔", "ko": "아글라발"}, "person:ラモラック": {"en": "Lamorack", "ja": "ラモラック", "zh_tw": "拉莫拉克", "zh_cn": "拉莫拉克", "ko": "라모라크"}, "person:ドーナー": {"en": "Dornar", "ja": "ドーナー", "zh_tw": "多納爾", "zh_cn": "多纳尔", "ko": "도르나르"}, "person:モーダント": {"en": "Mordaunt", "ja": "モーダント", "zh_tw": "莫當特", "zh_cn": "莫当特", "ko": "모돈트"}, "special:ティンタガロン": {"en": "Tintagalon", "ja": "ティンタガロン", "zh_tw": "廷塔加隆", "zh_cn": "廷塔加隆", "ko": "틴타갈론"}, "person:メリセン": {"en": "Mellicene", "ja": "メリセン", "zh_tw": "梅莉森", "zh_cn": "梅莉森", "ko": "멜리센"}, "person:ラルフ": {"en": "Ralph", "ja": "ラルフ", "zh_tw": "拉爾夫", "zh_cn": "拉尔夫", "ko": "랠프"}, "place:カーディフ": {"en": "Cardiff", "ja": "カーディフ", "zh_tw": "卡地夫", "zh_cn": "卡迪夫", "ko": "카디프"}, "special:キャメロット": {"en": "Camelot", "ja": "キャメロット", "zh_tw": "卡美洛", "zh_cn": "卡美洛", "ko": "카멜롯"}, "person:ディナドール": {"en": "Dinador", "ja": "ディナドール", "zh_tw": "迪納多爾", "zh_cn": "迪纳多尔", "ko": "디나도르"}, "person:ドリサンド": {"en": "Dorisand", "ja": "ドリサンド", "zh_tw": "多里桑德", "zh_cn": "多里桑德", "ko": "도리산드"}, "special:危うき席": {"en": "SEAT PERILOUS", "ja": "危うき席", "zh_tw": "危席", "zh_cn": "危席", "ko": "위험한 자리"}, "place:ウィンチェスター": {"en": "Winchester", "ja": "ウィンチェスター", "zh_tw": "溫徹斯特", "zh_cn": "温彻斯特", "ko": "윈체스터"}, "special:王の席": {"en": "Seat Royal", "ja": "王の席", "zh_tw": "君王之席", "zh_cn": "君王之席", "ko": "왕의 자리"}, "person:ガヘリス": {"en": "Geheris", "ja": "ガヘリス", "zh_tw": "加赫里斯", "zh_cn": "加赫里斯", "ko": "가헤리스"}, "person:アグラヴェイン": {"en": "Agravaine", "ja": "アグラヴェイン", "zh_tw": "阿格拉溫", "zh_cn": "阿格拉温", "ko": "아그라베인"}, "person:カデレス": {"en": "Caderes", "ja": "カデレス", "zh_tw": "卡德雷斯", "zh_cn": "卡德雷斯", "ko": "카데레스"}, "person:サグラモール": {"en": "Sagramore", "ja": "サグラモール", "zh_tw": "薩格拉莫爾", "zh_cn": "萨格拉莫尔", "ko": "사그라모어"}, "person:ディナダン": {"en": "Dinadan", "ja": "ディナダン", "zh_tw": "迪納丹", "zh_cn": "迪纳丹", "ko": "디나단"}, "person:ドディナス": {"en": "Dodinas", "ja": "ドディナス", "zh_tw": "多迪納斯", "zh_cn": "多迪纳斯", "ko": "도디나스"}, "person:ブルーイン": {"en": "Bruin", "ja": "ブルーイン", "zh_tw": "布魯因", "zh_cn": "布鲁因", "ko": "브루인"}, "person:メリオット": {"en": "Meliot", "ja": "メリオット", "zh_tw": "梅利奧特", "zh_cn": "梅利奥特", "ko": "멜리오트"}, "special:ログレス": {"en": "Logres", "ja": "ログレス", "zh_tw": "洛格雷斯", "zh_cn": "洛格雷斯", "ko": "로그레스"}, "person:ラディナス": {"en": "Ladinas", "ja": "ラディナス", "zh_tw": "拉迪納斯", "zh_cn": "拉迪纳斯", "ko": "라디나스"}, "person:パーサヴァント": {"en": "Persavant", "ja": "パーサヴァント", "zh_tw": "珀薩萬特", "zh_cn": "珀萨万特", "ko": "퍼사반트"}, "person:ディナス": {"en": "Dinas", "ja": "ディナス", "zh_tw": "迪納斯", "zh_cn": "迪纳斯", "ko": "디나스"}, "person:ブライアン": {"en": "Brian", "ja": "ブライアン", "zh_tw": "布萊恩", "zh_cn": "布莱恩", "ko": "브라이언"}, "special:リスティノワーズ": {"en": "Listinoise", "ja": "リスティノワーズ", "zh_tw": "利斯蒂努瓦茲", "zh_cn": "利斯蒂努瓦兹", "ko": "리스티누아즈"}, "person:パロミデス": {"en": "Palomides", "ja": "パロミデス", "zh_tw": "帕洛米德斯", "zh_cn": "帕洛米德斯", "ko": "팔로미데스"}, "person:デグレイン": {"en": "Degraine", "ja": "デグレイン", "zh_tw": "德格蘭", "zh_cn": "德格兰", "ko": "데그레인"}, "person:エピノグレス": {"en": "Epinogres", "ja": "エピノグレス", "zh_tw": "埃皮諾格雷斯", "zh_cn": "埃皮诺格雷斯", "ko": "에피노그레스"}, "person:ヴィヴィアン": {"en": "Vivien", "ja": "ヴィヴィアン", "zh_tw": "薇薇安", "zh_cn": "薇薇安", "ko": "비비언"}, "person:ラミエル": {"en": "Lamiel", "ja": "ラミエル", "zh_tw": "拉米爾", "zh_cn": "拉米尔", "ko": "라미엘"}, "person:ルーカン": {"en": "Lucan", "ja": "ルーカン", "zh_tw": "盧坎", "zh_cn": "卢坎", "ko": "루칸"}, "person:ガラハッド": {"en": "Galahad", "ja": "ガラハッド", "zh_tw": "加拉哈德", "zh_cn": "加拉哈德", "ko": "갤러해드"}, "person:ラック": {"en": "Lac", "ja": "ラック", "zh_tw": "拉克", "zh_cn": "拉克", "ko": "라크"}, "person:ハーヴィス": {"en": "Hervise de Reuel", "ja": "ハーヴィス", "zh_tw": "赫維斯", "zh_cn": "赫维斯", "ko": "허비스"}, "person:ガリアー": {"en": "Galliar of Rouge", "ja": "ガリアー", "zh_tw": "加利亞爾", "zh_cn": "加利亚尔", "ko": "갈리아르"}, "person:マーヴェイズ": {"en": "Marvaise Leisle", "ja": "マーヴェイズ・ライル", "zh_tw": "馬維斯·萊爾", "zh_cn": "马维斯·莱尔", "ko": "마베이스 라일"}, "person:ライオネル": {"en": "Lionel", "ja": "ライオネル", "zh_tw": "萊昂內爾", "zh_cn": "莱昂内尔", "ko": "라이오넬"}, "person:カダー": {"en": "Cadar", "ja": "カダー", "zh_tw": "卡達爾", "zh_cn": "卡达尔", "ko": "카다르"}, "person:ボードマガス": {"en": "Baudemagus", "ja": "ボードマガス", "zh_tw": "博德馬古斯", "zh_cn": "博德马古斯", "ko": "보드마구스"}, "person:トール": {"en": "Tor", "ja": "トール", "zh_tw": "托爾", "zh_cn": "托尔", "ko": "토르"}, "special:アヴァロン": {"en": "Avalon", "ja": "アヴァロン", "zh_tw": "阿瓦隆", "zh_cn": "阿瓦隆", "ko": "아발론"}, "special:オジエ・ル・ダノワ": {"en": "Ogier le Danois", "ja": "オジエ・ル・ダノワ", "zh_tw": "丹麥人奧吉爾", "zh_cn": "丹麦人奥吉尔", "ko": "오지에 르 다누아"}, "special:聖霊降臨祭": {"en": "Pentecost", "ja": "聖霊降臨祭", "zh_tw": "五旬節", "zh_cn": "五旬节", "ko": "성령강림절"}, "person:ドマス": {"en": "Sir Domas de Noir", "ja": "黒のドマス卿", "zh_tw": "黑多馬斯爵士", "zh_cn": "黑多马斯爵士", "ko": "검은 도마스 경"}, "person:アカロン": {"en": "Sir -Accalon", "ja": "アカロン卿", "zh_tw": "阿卡隆爵士", "zh_cn": "阿卡隆爵士", "ko": "아칼론 경"}, "person:オンツレイク": {"en": "Sir Ontzlake", "ja": "オンツレイク卿", "zh_tw": "昂茲萊克爵士", "zh_cn": "昂兹莱克爵士", "ko": "온츨레이크 경"}, "person:ゴマイン": {"en": "Lady Gomyne of the Fair Hair", "ja": "美しき髪のゴマイン夫人", "zh_tw": "美髮戈邁恩夫人", "zh_cn": "美发戈迈恩夫人", "ko": "고운 머릿결의 고마인 부인"}, "person:パーセネット": {"en": "Parcenet", "ja": "パーセネット", "zh_tw": "帕瑟涅特", "zh_cn": "帕瑟涅特", "ko": "파세네트"}, "person:エタード": {"en": "Lady Ettard", "ja": "エタード姫", "zh_tw": "艾塔德夫人", "zh_cn": "艾塔德夫人", "ko": "에타드 부인"}, "special:グラントメヌル": {"en": "Grantmesnle", "ja": "グラントメヌル", "zh_tw": "格蘭特梅尼爾", "zh_cn": "格兰特梅尼尔", "ko": "그란트메닐"}, "person:エンガモア": {"en": "Sir Engamore of Malverat", "ja": "エンガモア卿", "zh_tw": "恩加莫爾爵士", "zh_cn": "恩加莫尔爵士", "ko": "엔가모어 경"}, "person:フロリアン": {"en": "Florian", "ja": "フロリアン", "zh_tw": "弗洛里安", "zh_cn": "弗洛里安", "ko": "플로리안"}, "person:ブランデミア": {"en": "Sir Brandemere", "ja": "ブランデミア卿", "zh_tw": "布蘭德米爾爵士", "zh_cn": "布兰德米尔爵士", "ko": "브랜데미어 경"}, "person:アドレサック": {"en": "Red Knight", "ja": "赤い騎士", "zh_tw": "紅騎士", "zh_cn": "红骑士", "ko": "붉은 기사"}, "person:ポンテフェレット": {"en": "Ponteferet", "ja": "ポンテフェレット", "zh_tw": "龐特費雷特", "zh_cn": "庞特费雷特", "ko": "폰테페레트"}, "office:修道院長": {"en": "abbot", "ja": "修道院長", "zh_tw": "修道院長", "zh_cn": "修道院长", "ko": "수도원장"}, "office:修道士": {"en": "friar", "ja": "修道士", "zh_tw": "修士", "zh_cn": "修士", "ko": "수사"}, "person:モンテノワール": {"en": "Montenoir", "ja": "モンテノワール", "zh_tw": "蒙特努瓦爾", "zh_cn": "蒙特努瓦尔", "ko": "몽트누아르"}, "person:ガンサレット": {"en": "Gansaret", "ja": "ガンサレット", "zh_tw": "甘薩雷特", "zh_cn": "甘萨雷特", "ko": "간사레트"}, "person:ソーロイズ": {"en": "Sir Sorloise", "ja": "ソーロイズ卿", "zh_tw": "索洛伊斯爵士", "zh_cn": "索洛伊斯爵士", "ko": "솔로이즈 경"}, "person:ブライアン_森": {"en": "Sir Brian", "ja": "ブライアン卿", "zh_tw": "布萊恩爵士", "zh_cn": "布莱恩爵士", "ko": "브라이언 경"}, "person:アラーディン": {"en": "Sir Alardin", "ja": "アラーディン卿", "zh_tw": "阿拉丁爵士", "zh_cn": "阿拉丁爵士", "ko": "알라딘 경"}, "person:アブラモア": {"en": "Sir Ablamor", "ja": "アブラモア卿", "zh_tw": "阿布拉莫爾爵士", "zh_cn": "阿布拉莫尔爵士", "ko": "아블라모어 경"}, "person:ボイズナード": {"en": "Boisenard", "ja": "ボイズナード", "zh_tw": "布瓦瑟納爾", "zh_cn": "布瓦瑟纳尔", "ko": "부아즈나르"}, "person:パーシヴァル": {"en": "Sir Percival", "ja": "パーシヴァル卿", "zh_tw": "帕西瓦爾爵士", "zh_cn": "帕西瓦尔爵士", "ko": "퍼시벌 경"}};
+    const MODAL_I18N = {
+      ja: {
+        close: "✕ 閉じる",
+        homonym: "👥 同名異人の切り替え：",
+        occHeading: "📖 登場箇所へジャンプ",
+        occFmt: function(v, p) { return "第" + v + "章 第" + p + "段"; }
+      },
+      en: {
+        close: "✕ Close",
+        homonym: "👥 Disambiguation:",
+        occHeading: "📖 Appears in",
+        occFmt: function(v, p) { return "Ch. " + v + " · Para " + p; }
+      },
+      zh_tw: {
+        close: "✕ 關閉",
+        homonym: "👥 同名異人切換：",
+        occHeading: "📖 登場段落跳轉",
+        occFmt: function(v, p) { return "第" + v + "篇 第" + p + "段"; }
+      },
+      zh_cn: {
+        close: "✕ 关闭",
+        homonym: "👥 同名异人切换：",
+        occHeading: "📖 登场段落跳转",
+        occFmt: function(v, p) { return "第" + v + "篇 第" + p + "段"; }
+      },
+      ko: {
+        close: "✕ 닫기",
+        homonym: "👥 동명이인 전환:",
+        occHeading: "📖 등장 단락으로 이동",
+        occFmt: function(v, p) { return "제" + v + "편 제" + p + "단"; }
+      }
+    };
+
     function localPlaceName(key) {
       const lg = (typeof currentLang === "string" && currentLang) ? currentLang : "ja";
       if (lg !== "ja" && PLACE_NAMES_I18N[key] && PLACE_NAMES_I18N[key][lg]) {
         return PLACE_NAMES_I18N[key][lg];
       }
       return key;
+    }
+
+    function localTermName(kind, key) {
+      const lg = (typeof currentLang === "string" && currentLang) ? currentLang : "ja";
+      const byLang = TERM_NAMES_I18N[kind + ":" + key];
+      if (lg !== "ja" && byLang && byLang[lg]) return byLang[lg];
+      if (kind === "person" && PERSON_GLOSSARY[key]) return PERSON_GLOSSARY[key].display_name || key;
+      return key;
+    }
+
+    function closeGlossaryModal() {
+      activeModalState = null;
+      if (modalEl) modalEl.classList.remove("is-open");
     }
 
     const mapCtrl = window.AntaraMapController.create({
@@ -1211,7 +1255,12 @@
       else if (kind === "special") entry = SPECIAL_GLOSSARY[key];
       if (!entry) return;
 
-      const titleStr = entry.name || entry.title || key;
+      activeModalState = { kind: kind, key: key };
+      const lg = (typeof currentLang === "string" && currentLang) ? currentLang : "ja";
+      const mDict = MODAL_I18N[lg] || MODAL_I18N.ja;
+      if (modalCloseBtnEl) modalCloseBtnEl.textContent = mDict.close;
+
+      const titleStr = lg === "ja" ? (entry.name || entry.title || key) : localTermName(kind, key);
       modalTitleEl.textContent = titleStr;
 
       const htmlParts = [];
@@ -1219,12 +1268,17 @@
       if (kind === "person" && Array.isArray(entry.homonyms) && entry.homonyms.length > 0) {
         const allKeys = [key].concat(entry.homonyms);
         htmlParts.push('<div class="homonym-switch-bar">');
-        htmlParts.push('<span style="font-size:0.74rem;font-weight:700;color:#5a4631;width:100%;">👥 同名異人の切り替え：</span>');
+        htmlParts.push('<span style="font-size:0.74rem;font-weight:700;color:#5a4631;width:100%;">' + escapeHtml(mDict.homonym) + '</span>');
         allKeys.forEach(function(hKey) {
           const hEntry = PERSON_GLOSSARY[hKey];
           if (!hEntry) return;
           const curCls = hKey === key ? " is-current" : "";
-          const btnLabel = hEntry.display_name || hKey;
+          let btnLabel = hEntry.display_name || hKey;
+          if (lg !== "ja") {
+            const hBase = localTermName("person", hKey);
+            const hRole = (hEntry.role_i18n && hEntry.role_i18n[lg]) ? hEntry.role_i18n[lg].split("／")[0].split(" / ")[0].trim() : "";
+            btnLabel = hRole ? (hBase + (lg === "en" ? " (" + hRole + ")" : "（" + hRole + "）")) : hBase;
+          }
           htmlParts.push(
             '<button type="button" class="homonym-btn' + curCls + '" ' +
             'data-switch-kind="person" data-switch-key="' + escapeHtml(hKey) + '">' +
@@ -1234,39 +1288,26 @@
         htmlParts.push('</div>');
       }
 
-      if (entry.role || entry.rank) {
-        htmlParts.push('<div class="modal-role-badge">' + escapeHtml(entry.role || entry.rank) + '</div>');
-      }
+      const badgeStr = (entry.role_i18n && entry.role_i18n[lg]) || entry.role || entry.rank || entry.mapping_note || "";
+      const descStr = (entry.desc_i18n && entry.desc_i18n[lg]) || entry.ai_desc || "";
 
-      if (entry.mapping_note) {
-        htmlParts.push('<div class="modal-mapping-note">' + escapeHtml(entry.mapping_note) + '</div>');
+      if (badgeStr) {
+        htmlParts.push('<div class="modal-role-badge">' + escapeHtml(badgeStr) + '</div>');
       }
-
-      htmlParts.push('<div>' + escapeHtml(entry.ai_desc || "") + '</div>');
-
-      if (entry.wiki_title) {
-        const wikiUrl = "https://ja.wikipedia.org/wiki/" + encodeURIComponent(entry.wiki_title);
-        htmlParts.push(
-          '<div id="modalWikiBox" class="modal-wiki-box">' +
-          '<strong>🌐 Wikipedia（' + escapeHtml(entry.wiki_title) + '）</strong>' +
-          '<div id="modalWikiExtract" style="margin-top:4px;color:#4a3f33;">読み込み中…</div>' +
-          '<div style="margin-top:4px;"><a href="' + escapeHtml(wikiUrl) + '" target="_blank" rel="noopener noreferrer">Wikipedia記事を開く ↗</a></div>' +
-          '</div>'
-        );
-      }
+      htmlParts.push('<div>' + escapeHtml(descStr) + '</div>');
 
       const crossIdx = window.SHARED_CROSS_INDEX;
       if (crossIdx && crossIdx.occurrences && crossIdx.occurrences[kind] && crossIdx.occurrences[kind][key]) {
         const occRecIds = crossIdx.occurrences[kind][key];
         if (occRecIds.length > 0) {
           htmlParts.push('<div class="modal-occ-section">');
-          htmlParts.push('<div class="modal-occ-heading">📖 登場箇所へジャンプ</div>');
+          htmlParts.push('<div class="modal-occ-heading">' + escapeHtml(mDict.occHeading) + '</div>');
           htmlParts.push('<div class="occ-jump-list">');
           occRecIds.forEach(function(rid) {
             const recMeta = crossIdx.records[rid];
             if (!recMeta) return;
             const volFile = "vol" + String(recMeta.vol_id).padStart(2, "0") + ".html";
-            const label = "第" + recMeta.vol_id + "章 第" + recMeta.para + "段";
+            const label = mDict.occFmt(recMeta.vol_id, recMeta.para);
             if (Number(recMeta.vol_id) === CURRENT_VOL_ID) {
               htmlParts.push(
                 '<button type="button" class="occ-jump-btn" data-jump-para="' + recMeta.para + '" data-jump-rec="' + escapeHtml(rid) + '">' +
@@ -1274,7 +1315,7 @@
               );
             } else {
               htmlParts.push(
-                '<a class="occ-jump-btn" href="' + escapeHtml(volFile) + '?para=' + recMeta.para + '&rec=' + encodeURIComponent(rid) + '">' +
+                '<a class="occ-jump-btn" href="' + escapeHtml(volFile) + '?para=' + recMeta.para + '&rec=' + encodeURIComponent(rid) + '&lang=' + encodeURIComponent(lg) + '">' +
                 escapeHtml(label) + '</a>'
               );
             }
@@ -1285,27 +1326,6 @@
 
       modalBodyEl.innerHTML = htmlParts.join("");
       modalEl.classList.add("is-open");
-
-      if (entry.wiki_title) {
-        const wTitle = entry.wiki_title;
-        const targetDiv = document.getElementById("modalWikiExtract");
-        if (wikiCache[wTitle]) {
-          if (targetDiv) targetDiv.textContent = wikiCache[wTitle];
-        } else {
-          fetch("https://ja.wikipedia.org/api/rest_v1/page/summary/" + encodeURIComponent(wTitle))
-            .then(function(res) { return res.ok ? res.json() : null; })
-            .then(function(data) {
-              const txt = (data && data.extract) ? data.extract : "Wikipedia要約を取得できませんでした。リンクから直接ご覧ください。";
-              wikiCache[wTitle] = txt;
-              const currentDiv = document.getElementById("modalWikiExtract");
-              if (currentDiv) currentDiv.textContent = txt;
-            })
-            .catch(function() {
-              const currentDiv = document.getElementById("modalWikiExtract");
-              if (currentDiv) currentDiv.textContent = "オフラインまたは接続制限のためWikipedia要約を表示できません。";
-            });
-        }
-      }
     }
 
     modalBodyEl.addEventListener("click", function(ev) {
@@ -1489,6 +1509,9 @@
           });
           applyLanguageToStaticUi();
           renderRecords(true);
+          if (activeModalState && modalEl && modalEl.classList.contains("is-open")) {
+            openGlossaryModal(activeModalState.kind, activeModalState.key);
+          }
         });
         langBar.appendChild(btn);
       });
