@@ -1508,6 +1508,138 @@
 
   // アラビア語・ペルシャ語などのRTL（右から左）文字が含まれているか判定する正規表現
   const RTL_CHAR_REGEX = /[\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC]/;
+  // かな・漢字（CJK縦書き文字）を含むかどうかの判定（現代短歌等で英単語が一部混じる場合も縦書きを維持する基準）
+  const CJK_VERTICAL_CHAR_REGEX = /[\u3040-\u30FF\u31F0-\u31FF\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF]/;
+  // ラテン文字・キリル文字・ギリシャ文字・ハングル・アラビア文字等の横書きスクリプト判定正規表現
+  const HORIZONTAL_SCRIPT_CHAR_REGEX = /[A-Za-z\u00C0-\u024F\u0370-\u03FF\u0400-\u04FF\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC\uAC00-\uD7AF]/;
+  const HANGUL_CHAR_REGEX = /[\uAC00-\uD7AF]/;
+
+  // 多言語入力上限および縦書きジャンルの欧文・横書き自動組版フォールバック定数
+  const MAX_MULTILINGUAL_LINE_CHARS = 45;
+  const MAX_MULTILINGUAL_AUTHOR_CHARS = 36;
+  const HORIZONTAL_FALLBACK_3LINES_FONT_SIZE_PX = 54;
+  const HORIZONTAL_FALLBACK_4LINES_FONT_SIZE_PX = 50;
+  const HORIZONTAL_FALLBACK_5LINES_FONT_SIZE_PX = 48;
+
+  const PORTAL_HOME_I18N = {
+    'ja': { text: '🏠 トップ', title: '総合トップページへ戻る' },
+    'en': { text: '🏠 Home', title: 'Back to Home' },
+    'zh-TW': { text: '🏠 首頁', title: '返回首頁' },
+    'zh-CN': { text: '🏠 首页', title: '返回首页' },
+    'ko': { text: '🏠 홈', title: '홈으로 돌아가기' },
+    'fa': { text: '🏠 خانه', title: 'بازگشت به صفحه اصلی' }
+  };
+
+  const HINT_I18N_MAP = {
+    '5音目安': { 'en': '~5 syllables', 'zh-TW': '約5音', 'zh-CN': '约5音', 'ko': '5음절', 'fa': '۵ هجا' },
+    '7音目安': { 'en': '~7 syllables', 'zh-TW': '約7音', 'zh-CN': '约7音', 'ko': '7음절', 'fa': '۷ هجا' },
+    '五言 / 七言': { 'en': '5 or 7 syllables', 'zh-TW': '五言 / 七言', 'zh-CN': '五言 / 七言', 'ko': '오언 / 칠언', 'fa': '۴ مصرع' }
+  };
+
+  const FONT_LABEL_EN_MAP = {
+    haiku: 'Yuji Syuku / Cormorant Garamond',
+    tanka: 'Shippori Mincho / Cormorant Garamond',
+    jueju: 'Yuji Mai / Cormorant Garamond',
+    sijo: 'Gowun Batang',
+    rubaiyat: 'Amiri',
+    ghazal: 'Amiri',
+    limerick: 'Cormorant Garamond',
+    epigram: 'Cormorant Garamond',
+    suncatcher: 'Share Tech Mono'
+  };
+
+  const ENGLISH_GENRE_DEFAULTS = {
+    haiku: {
+      author: 'Matsuo Basho',
+      lines: [
+        'An old silent pond',
+        'A frog jumps into the pond—',
+        'Splash! Silence again.'
+      ]
+    },
+    tanka: {
+      author: 'Ki no Tomonori',
+      lines: [
+        'In the peaceful light',
+        'of this gentle spring sunshine,',
+        'why do cherry blooms',
+        'scatter down to earth below',
+        'with such restless, hurried hearts?'
+      ]
+    }
+  };
+
+  // 縦書き3ジャンル（俳句・短歌・絶句）も英語等の横書き短詩を入力できるよう文字数上限を拡張し、日本語既定値を保持する
+  ['haiku', 'tanka', 'jueju'].forEach((gKey) => {
+    const cfg = GENRE_CONFIGS[gKey];
+    if (!cfg) return;
+    cfg.jaDefaultAuthor = cfg.defaultAuthor;
+    cfg.fields.forEach((f) => {
+      f.jaDefaultText = f.defaultText;
+      f.maxLength = MAX_MULTILINGUAL_LINE_CHARS;
+    });
+  });
+  if (authorInput) {
+    authorInput.maxLength = MAX_MULTILINGUAL_AUTHOR_CHARS;
+  }
+
+  function syncGenreDefaultsForUiLang(langKey) {
+    ['haiku', 'tanka'].forEach((gKey) => {
+      const cfg = GENRE_CONFIGS[gKey];
+      const enDef = ENGLISH_GENRE_DEFAULTS[gKey];
+      if (!cfg || !enDef) return;
+      const useEn = (langKey === 'en');
+      cfg.defaultAuthor = useEn ? enDef.author : cfg.jaDefaultAuthor;
+      cfg.fields.forEach((f, idx) => {
+        f.defaultText = (useEn && enDef.lines[idx]) ? enDef.lines[idx] : f.jaDefaultText;
+      });
+    });
+  }
+
+  // かな・漢字を含まず英語（ラテン文字・ハングル・RTL等）のみで入力された場合は、縦書きジャンルも自動で欧文・横書き組版に切り替える
+  const baseGetEffectiveConfig = getEffectiveConfig;
+  getEffectiveConfig = function () {
+    const resolved = baseGetEffectiveConfig();
+    if (resolved.layoutMode !== 'vertical') {
+      return resolved;
+    }
+    const activeTexts = (currentLines && currentLines.length > 0)
+      ? currentLines
+      : Array.from(document.querySelectorAll('.line-field')).map((inp) => inp.value.trim()).filter(Boolean);
+    const joined = activeTexts.join(' ');
+    if (!joined || CJK_VERTICAL_CHAR_REGEX.test(joined) || !HORIZONTAL_SCRIPT_CHAR_REGEX.test(joined)) {
+      return resolved;
+    }
+
+    const lineCount = resolved.fields.length;
+    const startY = (lineCount <= 3)
+      ? HORIZONTAL_START_Y_3LINES_PX
+      : ((lineCount === 4) ? HORIZONTAL_START_Y_4LINES_PX : HORIZONTAL_START_Y_5LINES_PX);
+    const linePitchY = (lineCount <= 3)
+      ? HORIZONTAL_LINE_PITCH_3LINES_PX
+      : ((lineCount === 4) ? HORIZONTAL_LINE_PITCH_4LINES_PX : HORIZONTAL_LINE_PITCH_5LINES_PX);
+    const baseFontSize = (lineCount <= 3)
+      ? HORIZONTAL_FALLBACK_3LINES_FONT_SIZE_PX
+      : ((lineCount === 4) ? HORIZONTAL_FALLBACK_4LINES_FONT_SIZE_PX : HORIZONTAL_FALLBACK_5LINES_FONT_SIZE_PX);
+
+    const isRtl = RTL_CHAR_REGEX.test(joined);
+    const isHangul = HANGUL_CHAR_REGEX.test(joined);
+    const fallbackFontFamily = isRtl
+      ? '"Amiri", "Shippori Mincho", serif'
+      : (isHangul ? '"Gowun Batang", "Shippori Mincho", serif' : '"Cormorant Garamond", "Shippori Mincho", serif');
+
+    return {
+      ...resolved,
+      layoutMode: isRtl ? 'horizontal_auto_rtl' : 'horizontal',
+      fontFamily: fallbackFontFamily,
+      fontWeight: '700',
+      startY,
+      linePitchY,
+      baseFontSize
+    };
+  };
+
+  syncGenreDefaultsForUiLang(currentUiLang);
 
   function getLocalizedFieldLabel(genreKey, field, idx) {
     if (currentUiLang === 'ja') return field.label;
@@ -1515,14 +1647,45 @@
     return `${dict.linePrefix}${idx + 1}${dict.lineSuffix}`;
   }
 
+  function getLocalizedFieldHint(field) {
+    if (currentUiLang === 'ja') return field.hint;
+    const mapped = HINT_I18N_MAP[field.hint];
+    if (mapped) {
+      return mapped[currentUiLang] || mapped['en'] || field.hint;
+    }
+    return field.hint;
+  }
+
+  function getLocalizedFontIndicator(genreKey, config) {
+    if (currentUiLang === 'ja') return `Font: ${config.fontLabel}`;
+    return `Font: ${FONT_LABEL_EN_MAP[genreKey] || config.fontLabel}`;
+  }
+
   function applyUiLanguage(langKey) {
     if (!I18N_DICT[langKey]) langKey = 'en';
+
+    // 言語切替前に、入力欄が既定サンプルのまま（未編集）かどうかを判定する
+    const activeCfg = GENRE_CONFIGS[currentGenreKey];
+    const lineInputs = Array.from(document.querySelectorAll('.line-field'));
+    const prevDefaults = activeCfg ? activeCfg.fields.map((f) => f.defaultText) : [];
+    const prevAuthorDefault = activeCfg ? activeCfg.defaultAuthor : '';
+    const isAllDefaultLines = lineInputs.length > 0 && lineInputs.every((inp, idx) => inp.value === prevDefaults[idx]);
+    const isDefaultAuthor = authorInput && (authorInput.value === prevAuthorDefault);
+
     currentUiLang = langKey;
     localStorage.setItem(STORAGE_KEY_UI_LANG, langKey);
     langSelect.value = langKey;
+    syncGenreDefaultsForUiLang(langKey);
 
     const dict = I18N_DICT[langKey];
     document.documentElement.lang = langKey;
+
+    const portalTopLink = document.querySelector('.portal-top-link');
+    const homeInfo = PORTAL_HOME_I18N[langKey] || PORTAL_HOME_I18N['en'];
+    if (portalTopLink && homeInfo) {
+      portalTopLink.textContent = homeInfo.text;
+      portalTopLink.title = homeInfo.title;
+    }
 
     // ジャンルボタンのラベル更新
     document.querySelectorAll('.genre-btn').forEach((btn) => {
@@ -1532,14 +1695,35 @@
       }
     });
 
-    // 各行のラベル更新（ユーザーが入力中のテキスト自体は消さずに維持）
+    // 各行のラベル・ヒント更新（未編集サンプル状態なら言語別サンプルへ連動、手入力中のテキストは維持）
     const config = GENRE_CONFIGS[currentGenreKey];
     config.fields.forEach((field, idx) => {
       const labelSpan = document.getElementById(`lineLabel_${idx}`);
       if (labelSpan) {
         labelSpan.textContent = getLocalizedFieldLabel(currentGenreKey, field, idx);
       }
+      const hintSpan = document.getElementById(`lineHint_${idx}`);
+      if (hintSpan) {
+        hintSpan.textContent = getLocalizedFieldHint(field);
+      }
+      const inp = document.getElementById(`lineInput_${idx}`);
+      if (inp) {
+        inp.placeholder = field.defaultText;
+        if (isAllDefaultLines) {
+          inp.value = field.defaultText;
+        }
+      }
     });
+
+    if (authorInput) {
+      authorInput.placeholder = config.defaultAuthor;
+      if (isAllDefaultLines && isDefaultAuthor) {
+        authorInput.value = config.defaultAuthor;
+      }
+    }
+    if (fontIndicator) {
+      fontIndicator.textContent = getLocalizedFontIndicator(currentGenreKey, config);
+    }
 
     authorLabelText.textContent = dict.authorLabel;
     if (bgThemeLabelText && dict.bgLabel) {
@@ -1590,10 +1774,11 @@
       const group = document.createElement('div');
       group.className = 'form-group';
       const labelStr = getLocalizedFieldLabel(genreKey, field, idx);
+      const hintStr = getLocalizedFieldHint(field);
       group.innerHTML = `
         <label class="form-label" for="lineInput_${idx}">
           <span id="lineLabel_${idx}">${labelStr}</span>
-          <span class="char-count">${field.hint}</span>
+          <span class="char-count" id="lineHint_${idx}">${hintStr}</span>
         </label>
         <input type="text" id="lineInput_${idx}" ${dirAttr} class="text-input line-field" placeholder="${field.defaultText.replace(/"/g, '&quot;')}" value="${field.defaultText.replace(/"/g, '&quot;')}" maxlength="${field.maxLength}">
       `;
@@ -1602,8 +1787,9 @@
 
     authorInput.placeholder = config.defaultAuthor;
     authorInput.value = config.defaultAuthor;
-    fontIndicator.textContent = `Font: ${config.fontLabel}`;
+    fontIndicator.textContent = getLocalizedFontIndicator(genreKey, config);
     ensureGenreFontsLoaded(config);
+    ensureGenreFontsLoaded(GENRE_CONFIGS.epigram);
   }
 
   langSelect.addEventListener('change', () => {
