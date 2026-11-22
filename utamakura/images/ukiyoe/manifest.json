@@ -308,5 +308,155 @@
     "caption": "歌川広重『六十余州名所図会 淡路 五色浜』",
     "file_key": "The Famous Scenes of the Sixty States 54 Awaji.jpg",
     "local_path": "images/ukiyoe/r60_awaji_goshikihama.jpg"
+  },
+  {
+    "place": "月山",
+    "id": "r60_dewa_mogamigawa",
+    "artist": "歌川広重",
+    "series": "六十余州名所図会",
+    "title": "出羽 最上川 月山遠望",
+    "caption": "歌川広重『六十余州名所図会 出羽 最上川 月山遠望』",
+    "file_key": "Hiroshige, Mogami River and Mount Gassan, Dewa Province.jpg",
+    "local_path": "images/ukiyoe/r60_dewa_mogamigawa.jpg"
+  },
+  {
+    "place": "日光山",
+    "id": "colbase_nikko_kirifuri",
+    "artist": "二代歌川広重",
+    "series": "諸国名所百景",
+    "title": "日光霧降の滝",
+    "caption": "二代歌川広重『諸国名所百景 日光霧降の滝』（東京国立博物館所蔵 / 出典：ColBase CC BY 4.0）",
+    "file_key": "colbase_nikko_kirifuri.jpg",
+    "local_path": "images/ukiyoe/colbase_nikko_kirifuri.jpg"
+  },
+  {
+    "place": "小倉山",
+    "id": "colbase_hyakunin_ogurayama",
+    "artist": "葛飾北斎",
+    "series": "百人一首うばがゑとき",
+    "title": "貞信公（小倉山）",
+    "caption": "葛飾北斎『百人一首宇波か縁説・貞信公』（東京国立博物館所蔵 / 出典：ColBase CC BY 4.0）",
+    "file_key": "colbase_hyakunin_ogurayama.jpg",
+    "local_path": "images/ukiyoe/colbase_hyakunin_ogurayama.jpg"
+  },
+  {
+    "place": "宇治",
+    "id": "colbase_uji_byodoin_snow",
+    "artist": "作者不詳（江戸時代）",
+    "series": "名所図屏風",
+    "title": "平等院雪景図屏風",
+    "caption": "『平等院雪景図屏風』（京都国立博物館所蔵 / 出典：ColBase CC BY 4.0）",
+    "file_key": "colbase_uji_byodoin_snow.jpg",
+    "local_path": "images/ukiyoe/colbase_uji_byodoin_snow.jpg"
+  },
+  {
+    "place": "東叡山",
+    "id": "colbase_toto_toeizan",
+    "artist": "歌川広重",
+    "series": "東都名所",
+    "title": "上野東叡山",
+    "caption": "歌川広重『東都名所 上野東叡山』（東京国立博物館所蔵 / 出典：ColBase CC BY 4.0）",
+    "file_key": "colbase_toto_toeizan.jpg",
+    "local_path": "images/ukiyoe/colbase_toto_toeizan.jpg"
+  },
+  {
+    "place": "高砂",
+    "id": "aic_hyakunin_takasago",
+    "artist": "葛飾北斎",
+    "series": "百人一首うばがゑとき",
+    "title": "権中納言匡房（高砂の尾上の桜）",
+    "caption": "葛飾北斎『百人一首うばがゑとき 権中納言匡房』（シカゴ美術館所蔵 / CC0）",
+    "file_key": "aic_hyakunin_takasago.jpg",
+    "local_path": "images/ukiyoe/aic_hyakunin_takasago.jpg"
+  },
+  {
+    "place": "内裏",
+    "id": "aic_tokaido_dairi",
+    "artist": "歌川広重",
+    "series": "東海道五十三次（狂歌入東海道）",
+    "title": "京 内裏",
+    "caption": "歌川広重『東海道大尾 京 内裏』（シカゴ美術館所蔵 / CC0）",
+    "file_key": "aic_tokaido_dairi.jpg",
+    "local_path": "images/ukiyoe/aic_tokaido_dairi.jpg"
+  },
+  {
+    "place": "鳥海山",
+    "id": "ndl_meisho100_chokaisan",
+    "artist": "歌川広重（二代）",
+    "series": "諸国名所百景",
+    "title": "出羽鳥海山",
+    "caption": "歌川広重（二代）『諸国名所百景 出羽鳥海山』（国立国会図書館デジタルコレクション所蔵 / PDM）",
+    "file_key": "ndl_meisho100_chokaisan.jpg",
+    "local_path": "images/ukiyoe/ndl_meisho100_chokaisan.jpg"
+  },
+  {
+    "place": "新潟",
+    "id": "ndl_meisho100_niigata",
+    "artist": "歌川広重（二代）",
+    "series": "諸国名所百景",
+    "title": "越後新潟の景",
+    "caption": "歌川広重（二代）『諸国名所百景 越後新潟の景』（国立国会図書館デジタルコレクション所蔵 / PDM）",
+    "file_key": "ndl_meisho100_niigata.jpg",
+    "local_path": "images/ukiyoe/ndl_meisho100_niigata.jpg"
+  },
+  {
+    "place": "那智",
+    "id": "ndl_meisho100_nachi",
+    "artist": "歌川広重（二代）",
+    "series": "諸国名所百景",
+    "title": "紀州那智山大滝",
+    "caption": "歌川広重（二代）『諸国名所百景 紀州那智山大滝』（国立国会図書館デジタルコレクション所蔵 / PDM）",
+    "file_key": "ndl_meisho100_nachi.jpg",
+    "local_path": "images/ukiyoe/ndl_meisho100_nachi.jpg"
+  },
+  {
+    "place": "大坂",
+    "id": "ndl_meisho100_osaka_tenpozan",
+    "artist": "歌川広重（二代）",
+    "series": "諸国名所百景",
+    "title": "大坂天保山",
+    "caption": "歌川広重（二代）『諸国名所百景 大坂天保山』（国立国会図書館デジタルコレクション所蔵 / PDM）",
+    "file_key": "ndl_meisho100_osaka_tenpozan.jpg",
+    "local_path": "images/ukiyoe/ndl_meisho100_osaka_tenpozan.jpg"
+  },
+  {
+    "place": "野田の玉川",
+    "id": "hiroshige_mutamagawa_nodanotamagawa",
+    "artist": "歌川広重",
+    "series": "諸国六玉河",
+    "title": "陸奥 野田の玉川",
+    "caption": "歌川広重『諸国六玉河 陸奥 野田の玉川』（メトロポリタン美術館所蔵 / CC0）",
+    "file_key": "諸国六玉河 陸奥 野田の玉川-Mutsu, Noda no Tamagawa MET DP121547.jpg",
+    "local_path": "images/ukiyoe/hiroshige_mutamagawa_nodanotamagawa.jpg"
+  },
+  {
+    "place": "福井",
+    "id": "hokusai_meikyo_fukui",
+    "artist": "葛飾北斎",
+    "series": "諸国名橋奇覧",
+    "title": "ゑちぜんふくゐの橋",
+    "caption": "葛飾北斎『諸國名橋奇覧 ゑちぜんふくゐの橋』（メトロポリタン美術館所蔵 / CC0）",
+    "file_key": "諸國名橋奇覧 ゑちぜんふくゐの橋-Fukui Bridge in Echizen Province (Echizen Fukui no hashi), from the series Remarkable Views of Bridges in Various Provinces (Shokoku meikyō kiran) MET DP141231.jpg",
+    "local_path": "images/ukiyoe/hokusai_meikyo_fukui.jpg"
+  },
+  {
+    "place": "近江の海",
+    "id": "colbase_tokaido53_otsu_biwako",
+    "artist": "歌川広重",
+    "series": "五十三次名所図会",
+    "title": "五十四 大津 三井寺観音堂より大津の町湖水眺望",
+    "caption": "歌川広重『五十三次名所図会 五十四 大津 三井寺観音堂より大津の町湖水眺望』（東京国立博物館所蔵 / 出典：ColBase CC BY 4.0）",
+    "file_key": "colbase_tokaido53_otsu_biwako.jpg",
+    "local_path": "images/ukiyoe/colbase_tokaido53_otsu_biwako.jpg"
+  },
+  {
+    "place": "都",
+    "id": "colbase_tokaido53_kyo_sanjo",
+    "artist": "歌川広重",
+    "series": "五十三次名所図会",
+    "title": "五十五 大尾 京 三條大はし",
+    "caption": "歌川広重『五十三次名所図会 五十五 大尾 京 三條大はし』（東京国立博物館所蔵 / 出典：ColBase CC BY 4.0）",
+    "file_key": "colbase_tokaido53_kyo_sanjo.jpg",
+    "local_path": "images/ukiyoe/colbase_tokaido53_kyo_sanjo.jpg"
   }
 ]

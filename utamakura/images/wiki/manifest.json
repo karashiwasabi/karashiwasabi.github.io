@@ -1,5 +1,10 @@
 [
   {
+    "place": "深川",
+    "file_key": "Saitoan20111228.jpg",
+    "local_path": "images/wiki/Saitoan20111228.jpg"
+  },
+  {
     "place": "白河関",
     "file_key": "Shirakawa-no-seki_Jinja_Sando.jpg",
     "local_path": "images/wiki/Shirakawa-no-seki_Jinja_Sando.jpg"
@@ -40,6 +45,11 @@
     "local_path": "images/wiki/Urami_taki__Nikko_.jpg"
   },
   {
+    "place": "那須の篠原",
+    "file_key": "Tamamoinari.jpg",
+    "local_path": "images/wiki/Tamamoinari.jpg"
+  },
+  {
     "place": "那須八幡宮",
     "file_key": "Nasu-jinja,_roumon-1.jpg",
     "local_path": "images/wiki/Nasu-jinja__roumon-1.jpg"
@@ -58,6 +68,11 @@
     "place": "会津根",
     "file_key": "Mt._Bandaisan_0811.JPG",
     "local_path": "images/wiki/Mt._Bandaisan_0811.jpg"
+  },
+  {
+    "place": "安積山",
+    "file_key": "Asakayama Park.jpg",
+    "local_path": "images/wiki/Asakayama_Park.jpg"
   },
   {
     "place": "飯塚",
@@ -125,9 +140,24 @@
     "local_path": "images/wiki/SendaiJoOtemonSumiYagura2003-11.jpg"
   },
   {
+    "place": "つつじが岡",
+    "file_key": "Tsutsujigaoka Tenmangu Shrine 202305b.jpg",
+    "local_path": "images/wiki/Tsutsujigaoka_Tenmangu_Shrine_202305b.jpg"
+  },
+  {
     "place": "塩竈",
     "file_key": "211030_Shiogama-jinja_Shiogama_Miyagi_pref_Japan02s3.jpg",
     "local_path": "images/wiki/211030_Shiogama-jinja_Shiogama_Miyagi_pref_Japan02s3.jpg"
+  },
+  {
+    "place": "壺の碑",
+    "file_key": "Tagajo-hi.JPG",
+    "local_path": "images/wiki/Tagajo-hi.jpg"
+  },
+  {
+    "place": "末の松山",
+    "file_key": "Tagajo Sue-no-Matsuyama 01.JPG",
+    "local_path": "images/wiki/Tagajo_Sue-no-Matsuyama_01.jpg"
   },
   {
     "place": "瑞巌寺",
@@ -163,6 +193,21 @@
     "place": "光堂",
     "file_key": "230728_Chusonji_Hiraizumi_Iwate_pref_Japan01s3.jpg",
     "local_path": "images/wiki/230728_Chusonji_Hiraizumi_Iwate_pref_Japan01s3.jpg"
+  },
+  {
+    "place": "影沼",
+    "file_key": "鏡沼跡（福島県）.jpg",
+    "local_path": "images/wiki/wiki_5cff269adf.jpg"
+  },
+  {
+    "place": "沖の石",
+    "file_key": "Tagajo Oki-no-Ishi 01.JPG",
+    "local_path": "images/wiki/Tagajo_Oki-no-Ishi_01.jpg"
+  },
+  {
+    "place": "籬が島",
+    "file_key": "曲木神社 Magaki Shrine - panoramio.jpg",
+    "local_path": "images/wiki/_____Magaki_Shrine_-_panoramio.jpg"
   },
   {
     "place": "雄島",
@@ -335,6 +380,11 @@
     "local_path": "images/wiki/Mizu-shima_Island__Fukui_.jpg"
   },
   {
+    "place": "須磨",
+    "file_key": "Suma_coast.jpg",
+    "local_path": "images/wiki/Suma_coast.jpg"
+  },
+  {
     "place": "飛鳥",
     "file_key": "Asuka_Nara_2009-5-23.jpg",
     "local_path": "images/wiki/Asuka_Nara_2009-5-23.jpg"
@@ -373,6 +423,11 @@
     "place": "筑波山",
     "file_key": "Mount_Tsukuba_seen_from_the_WSW_(2006).jpg",
     "local_path": "images/wiki/Mount_Tsukuba_seen_from_the_WSW__2006_.jpg"
+  },
+  {
+    "place": "いなばの山",
+    "file_key": "Ube-jinja,_haiden-2.jpg",
+    "local_path": "images/wiki/Ube-jinja__haiden-2.jpg"
   },
   {
     "place": "竜田川",
@@ -450,9 +505,24 @@
     "local_path": "images/wiki/wiki_7667c34bf6.jpg"
   },
   {
+    "place": "年魚市潟",
+    "file_key": "年魚市潟景勝.jpg",
+    "local_path": "images/wiki/wiki_a45e351114.jpg"
+  },
+  {
+    "place": "大宰府",
+    "file_key": "Ruin the Tofuro Up200607030320.JPG",
+    "local_path": "images/wiki/Ruin_the_Tofuro_Up200607030320.jpg"
+  },
+  {
     "place": "吉野",
     "file_key": "Cherry_blossoms_at_Yoshinoyama_01.jpg",
     "local_path": "images/wiki/Cherry_blossoms_at_Yoshinoyama_01.jpg"
+  },
+  {
+    "place": "高砂",
+    "file_key": "Takasago-jinja04s3.jpg",
+    "local_path": "images/wiki/Takasago-jinja04s3.jpg"
   },
   {
     "place": "初瀬",
@@ -473,6 +543,11 @@
     "place": "近江の海",
     "file_key": "Mangetsu-ji,_Ukimidō_at_Sunset_01.jpg",
     "local_path": "images/wiki/Mangetsu-ji__Ukimid__at_Sunset_01.jpg"
+  },
+  {
+    "place": "飼飯の海",
+    "file_key": "Keino_matsubara_01.jpg",
+    "local_path": "images/wiki/Keino_matsubara_01.jpg"
   },
   {
     "place": "伊吹山",
@@ -508,6 +583,11 @@
     "place": "三室山",
     "file_key": "Tatsuta_River,_Ikaruga,_Nara02.JPG",
     "local_path": "images/wiki/Tatsuta_River__Ikaruga__Nara02.jpg"
+  },
+  {
+    "place": "松帆の浦",
+    "file_key": "Matsuhonoura（Awaji, Hyogo）-01.jpg",
+    "local_path": "images/wiki/Matsuhonoura_Awaji__Hyogo_-01.jpg"
   },
   {
     "place": "ならの小川",
