@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Line-aligned Studio - A3/A4/A5見開きノート</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&display=swap" rel="stylesheet">
   <script src="https://apis.google.com/js/api.js"></script>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script>
@@ -529,6 +532,35 @@
       background: linear-gradient(135deg, #00b248, #137333);
       box-shadow: 0 6px 16px rgba(52, 168, 83, 0.38);
     }
+    .export-action-group {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 10px;
+      width: 100%;
+    }
+    .btn-export-png {
+      background: linear-gradient(135deg, #1a73e8, #2563eb);
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(26, 115, 232, 0.28);
+    }
+    .btn-export-png:hover {
+      background: linear-gradient(135deg, #1557b0, #1d4ed8);
+      box-shadow: 0 6px 16px rgba(26, 115, 232, 0.38);
+    }
+    @media (max-width: 640px) {
+      .export-action-group {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 8px;
+      }
+    }
 
     /* 無効化（disabled）・稼働中（working）状態スタイル */
     button:disabled, select:disabled {
@@ -760,7 +792,7 @@
   <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 0.75rem;">
     <div style="font-size: 1.05rem; font-weight: 800; color: #1f1f1f;">
       <span style="color: #1a73e8; font-weight: 900;">Line-aligned</span>
-      <span style="color: #5f6368; font-size: 0.78rem; margin-left: 6px;">ver.164 (Build 20261121_2042)</span>
+      <span style="color: #5f6368; font-size: 0.78rem; margin-left: 6px;">ver.165 (Build 20261123_1216)</span>
     </div>
     <div style="display: flex; align-items: center; gap: 6px;">
       <a href="https://wasabikarashi.com/" id="uiLinkTop" style="display: inline-flex; align-items: center; gap: 3px; background: #f1f5f9; border: 1px solid #dadce0; border-radius: 8px; padding: 5px 10px; font-size: 0.75rem; font-weight: 700; color: #3c4043; text-decoration: none; white-space: nowrap;">トップ</a>
@@ -876,9 +908,14 @@
     <button class="btn-rerun" id="btnDocsPreview" onclick="executeDocsLayout(false)" disabled style="display: none;">
       <span id="uiTextBtnPreview">プレビュー</span>
     </button>
-    <button class="btn-export-pdf" id="btnDocsExportPdf" onclick="executeDocsLayout(true)" disabled>
-      <span id="uiTextBtnExport">PDF出力 / 印刷</span>
-    </button>
+    <div class="export-action-group">
+      <button class="btn-export-pdf" id="btnDocsExportPdf" onclick="executeDocsLayout(true)" disabled>
+        <span id="uiTextBtnExport">PDF出力 / 印刷</span>
+      </button>
+      <button type="button" class="btn-export-png" id="btnDocsExportPngZip" onclick="executeDocsPngZipExport()" disabled>
+        <span id="uiTextBtnExportPng">PNG出力 (ZIP)</span>
+      </button>
+    </div>
 
     <div id="docsPreviewContainer" class="docs-preview-container" style="display: none;">
       <div class="docs-preview-header">
@@ -1069,9 +1106,14 @@
     <button class="btn-rerun" id="btnDocxPreview" onclick="executeDocxLayout(false)" disabled style="display: none;">
       <span id="uiTextBtnDocxPreview">プレビュー</span>
     </button>
-    <button class="btn-export-pdf" id="btnDocxExportPdf" onclick="executeDocxLayout(true)" disabled>
-      <span id="uiTextBtnDocxExport">PDF出力 / 印刷</span>
-    </button>
+    <div class="export-action-group">
+      <button class="btn-export-pdf" id="btnDocxExportPdf" onclick="executeDocxLayout(true)" disabled>
+        <span id="uiTextBtnDocxExport">PDF出力 / 印刷</span>
+      </button>
+      <button type="button" class="btn-export-png" id="btnDocxExportPngZip" onclick="executeDocxPngZipExport()" disabled>
+        <span id="uiTextBtnDocxExportPng">PNG出力 (ZIP)</span>
+      </button>
+    </div>
 
     <div id="docxPreviewContainer" class="docs-preview-container" style="display: none;">
       <div class="docs-preview-header">
@@ -4377,6 +4419,9 @@ async function loadSampleDocx() {
 
       // ブラウザ内PDFダウンロード発火ヘルパー（分冊対応）
       function triggerPdfBlobDownload(pdfBytes, downloadFileName) {
+        if (typeof window.__captureGeneratedPdfChunk === 'function' && window.__captureGeneratedPdfChunk(pdfBytes, downloadFileName)) {
+          return;
+        }
         const blob = new Blob([pdfBytes], { type: 'application/pdf' });
         const downloadUrl = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -8233,6 +8278,1517 @@ async function loadSampleDocx() {
       });
     }
   })();
+
+
+  // ==============================================================================
+  // 新機能統合モジュール (ver.165):
+  //   1. DOCS / DOCX タブ専用「PNG出力 (ZIP)」一括書き出し（全用紙・見開き・原稿用紙対応）
+  //   2. 縦書き「① 用紙・印刷形式」への「A4 原稿用紙（20字×20行）」追加
+  //      （選択時は不要な「② 罫線の種類・幅」を自動非表示化・罫線カラー連動・JIS句読点同マス処理）
+  // ==============================================================================
+
+  // --- PNG・PKZIP 出力用定数（マジックナンバー厳禁） ---
+  const PngExportRenderScale = 3.0;           // 72dpi × 3.0 = 216dpi 高精細出力スケール
+  const PngMaxSafeCanvasPixels = 12500000;    // モバイルブラウザ Canvas 上限保護ピクセル数
+  const PngPageIndexPadDigits = 3;            // P001.png 形式のゼロ埋め桁数
+  const ZipFormatVersionNeeded = 20;          // PKZIP 2.0 規格バージョン
+  const ZipGeneralPurposeUtf8Bit = 0x0800;    // General purpose bit 11 (UTF-8 ファイル名フラグ)
+  const ZipDefaultDosTime = 0x0000;           // DOS 時刻初期値 (00:00:00)
+  const ZipDefaultDosDate = 0x0021;           // DOS 日付初期値 (1980-01-01)
+  const ZipExternalFileAttrDefault = 0;       // 外部ファイル属性既定値
+  const ZipIeeeCrc32Polynomial = 0xEDB88320;  // IEEE 802.3 CRC-32 多項式
+  const ZipByteMask = 0xFF;                   // 1バイトマスク
+  const ZipCrcTableLength = 256;              // CRC-32 ルックアップテーブル要素数
+  const ZipBitsPerByte = 8;                   // 1バイトあたりのビット数
+
+  // --- A4横置き 400字詰め原稿用紙（20字×20行）幾何学定数（単位: mm / pt / px） ---
+  const GenkoModeValue = 'v-a4-genko';
+  const GenkoPaperWidthMm = 297.0;            // A4横置き 幅 (mm)
+  const GenkoPaperHeightMm = 210.0;           // A4横置き 高さ (mm)
+  const GenkoRowsPerCol = 20;                 // 1行あたりの縦マス数（20字）
+  const GenkoColsPerHalf = 10;                // 左右各ブロックの行数（10行）
+  const GenkoTotalColsPerPage = 20;           // 1ページの総行数（10行 × 2 = 20行 = 400字）
+  const GenkoCellSizeMm = 8.0;                // 1マスの辺長 (8.0mm 正方形 -> 縦20マス = 160.0mm)
+  const GenkoRubyGapWidthMm = 3.0;            // 各行右隣のルビ欄幅 (3.0mm -> 全10行に付属し半面幅 = 110.0mm)
+  const GenkoCenterPillarWidthMm = 13.2;      // 中央柱（魚尾エリア）の幅 (13.2mm -> 内枠全幅 = 233.2mm)
+  const GenkoMarginTopMm = 25.0;              // 天余白 (mm)
+  const GenkoOuterFrameGapMm = 1.4;           // 二重外枠の間隔 (mm)
+  const GenkoOuterStrokePt = 1.2;             // 二重外枠の外側太線幅 (pt)
+  const GenkoInnerStrokePt = 0.55;            // 内枠・行縦線の線幅 (pt)
+  const GenkoCellDividerStrokePt = 0.32;      // マス目横区切り線の線幅 (pt)
+  const GenkoGyobiUpperRow = 5;               // 上魚尾の基準行インデックス（上から5マス目境界）
+  const GenkoGyobiLowerRow = 15;              // 下魚尾の基準行インデックス（上から15マス目境界）
+  const GenkoGyobiHalfWidthMm = 3.4;          // 魚尾マークの半幅 (mm)
+  const GenkoGyobiBodyHeightMm = 2.6;         // 魚尾マークの上下高さ (mm)
+  const GenkoGyobiNotchDepthMm = 1.1;         // 魚尾マーク燕尾切れ込み深さ (mm)
+  const GenkoPillarLineGapMm = 1.8;           // 魚尾と中央縦飾り線の間隔 (mm)
+  const GenkoPageNumFontSizePt = 8.0;         // 下部ページ番号のフォントサイズ (pt)
+  const GenkoPageNumBottomOffsetMm = 9.5;     // 下部ページ番号の下端からの高さ (mm)
+  const GenkoCanvasPxPerMm = 11.0;            // 文字描画 Canvas 解像度 (約280dpi相当: 297mm -> 3267px)
+  const GenkoMainFontRatio = 0.68;            // マス辺長に対する本文文字サイズ比率 (8.0mm * 0.68 = 5.44mm ≒ 15.4pt)
+  const GenkoSmallKanaScale = 0.80;           // 小書き仮名の縮小比率
+  const GenkoSmallKanaShiftXRatio = 0.10;     // 小書き仮名の右シフト比率
+  const GenkoSmallKanaShiftYRatio = -0.08;    // 小書き仮名の上シフト比率
+  const GenkoPunctCornerInsetRatio = 0.17;    // 句読点インク外枠のマス右上角からの内側マージン比率
+  const GenkoBracketHalfShiftRatio = 0.05;    // 開き括弧（下寄せ）・閉じ括弧（上寄せ）のマス内中心シフト比率
+  const GenkoCornerBracketXShiftRatio = 0.12; // カギ括弧「」（右寄せ・左寄せ）のマス内水平シフト比率
+  const GenkoTrailingParentShiftY = -0.10;    // 行末同マス時の親文字上シフト比率
+  const GenkoTrailingMarkScale = 0.72;        // 行末同マス時の句読点・閉じ括弧縮小比率
+  const GenkoTrailingCornerInsetRatio = 0.08; // 行末同マス時のマス右下角からの内側マージン比率
+  const GenkoTcyFontScale = 0.56;             // 2桁縦中横の文字縮小比率
+  const GenkoTcyCharOffsetRatio = 0.23;       // 2桁縦中横の左右文字オフセット比率
+  const GenkoRubyFontRatio = 0.28;            // ルビ文字サイズ比率（マス辺長比）
+  const GenkoRubyLineFitRatio = 0.86;         // 1マス内に複数ルビ文字が入る際の行高フィット上限比率
+  const GenkoMaxTrailingMarksPerCell = 2;     // 20マス目に同居許容する最大句読点・閉じ括弧数
+  const GenkoRotationQuarterTurnRad = Math.PI / 2.0; // 縦書き約物の時計回り90度回転角 (rad)
+  const GenkoTextColorHex = '#1F1F1F';        // 原稿用紙の本文インク色
+  const GenkoDefaultLineColorHex = '#D0D0D0'; // 罫線カラー既定値
+
+  // --- 多言語辞書（日・En・繁・韓） ---
+  const GENKO_AND_PNG_I18N = {
+    ja: {
+      paperGenko: 'A4 原稿用紙（20字×20行）',
+      btnExportPng: 'PNG出力 (ZIP)',
+      workingPng: 'PNG (ZIP) 生成中...',
+      renderingPngPage: 'PNG変換中...',
+      packingZip: 'ZIPアーカイブを作成中...',
+      donePngZip: '完了！「{name}」をダウンロードしました。',
+      workingGenko: '原稿用紙（20字×20行）に組版中...',
+      genkoFileSuffix: '_原稿用紙_20x20'
+    },
+    en: {
+      paperGenko: 'A4 Manuscript Paper (20×20)',
+      btnExportPng: 'Export PNG (ZIP)',
+      workingPng: 'Generating PNG (ZIP)...',
+      renderingPngPage: 'Rendering PNG...',
+      packingZip: 'Creating ZIP archive...',
+      donePngZip: 'Done! Downloaded "{name}".',
+      workingGenko: 'Typesetting on 20×20 manuscript paper...',
+      genkoFileSuffix: '_Manuscript_20x20'
+    },
+    'zh-TW': {
+      paperGenko: 'A4 稿紙（20字×20行）',
+      btnExportPng: '匯出 PNG (ZIP)',
+      workingPng: '正在產生 PNG (ZIP)...',
+      renderingPngPage: '正在轉換 PNG...',
+      packingZip: '正在建立 ZIP 壓縮檔...',
+      donePngZip: '完成！已下載「{name}」。',
+      workingGenko: '正在進行 20×20 稿紙排版...',
+      genkoFileSuffix: '_稿紙_20x20'
+    },
+    ko: {
+      paperGenko: 'A4 원고지 (20자×20행)',
+      btnExportPng: 'PNG 내보내기 (ZIP)',
+      workingPng: 'PNG (ZIP) 생성 중...',
+      renderingPngPage: 'PNG 변환 중...',
+      packingZip: 'ZIP 압축 파일 생성 중...',
+      donePngZip: '완료! "{name}" 파일을 다운로드했습니다.',
+      workingGenko: '원고지(20자×20행) 조판 중...',
+      genkoFileSuffix: '_원고지_20x20'
+    }
+  };
+
+  function getGenkoPngText(lang) {
+    return GENKO_AND_PNG_I18N[lang || currentLanguage] || GENKO_AND_PNG_I18N.ja;
+  }
+
+  // UNIFIED_UI_I18N の縦書き用紙プルダウンに「A4 原稿用紙（20字×20行）」を登録
+  Object.keys(GENKO_AND_PNG_I18N).forEach(langKey => {
+    const gt = GENKO_AND_PNG_I18N[langKey];
+    const ut = UNIFIED_UI_I18N[langKey];
+    if (ut && Array.isArray(ut.paperVertical)) {
+      const exists = ut.paperVertical.some(item => item.value === GenkoModeValue);
+      if (!exists) {
+        ut.paperVertical.push({
+          value: GenkoModeValue,
+          label: gt.paperGenko
+        });
+      }
+    }
+  });
+
+  // 原稿用紙選択時は「② 罫線の種類・幅」が不要なため自動で非表示にし、「① 用紙・印刷形式」を1列全幅に広げる
+  function syncRuleVisibilityForGenkoMode(prefix) {
+    const paperSel = document.getElementById(prefix + 'PaperProfileSelect');
+    const legacyGridSel = document.getElementById(prefix + 'GridTypeSelect');
+    if (!paperSel || !legacyGridSel) return;
+
+    const isGenko = (currentWritingDirection === 'vertical' && paperSel.value === GenkoModeValue);
+    const ruleSettingItem = legacyGridSel.closest('.setting-item');
+    const settingsGrid = paperSel.closest('.settings-grid');
+
+    if (ruleSettingItem) {
+      ruleSettingItem.style.display = isGenko ? 'none' : '';
+    }
+    if (settingsGrid) {
+      settingsGrid.style.gridTemplateColumns = isGenko ? 'minmax(0, 1fr)' : '';
+    }
+  }
+
+  function syncAllGenkoRuleVisibilities() {
+    syncRuleVisibilityForGenkoMode('docs');
+    syncRuleVisibilityForGenkoMode('docx');
+  }
+
+  function applyPngAndGenkoLabels(lang) {
+    const gt = getGenkoPngText(lang);
+    const docsPngSpan = document.getElementById('uiTextBtnExportPng');
+    const docxPngSpan = document.getElementById('uiTextBtnDocxExportPng');
+    if (docsPngSpan && !isDocsBusy) docsPngSpan.textContent = gt.btnExportPng;
+    if (docxPngSpan && !isDocxBusy) docxPngSpan.textContent = gt.btnExportPng;
+    syncAllGenkoRuleVisibilities();
+  }
+
+  // 用紙設定変更・方向切替・言語切替のすべてに原稿用紙UI制御とPNGラベル同期を連動
+  const _prevOnDocsSettingBeforeGenko = onDocsSettingChanged;
+  onDocsSettingChanged = function() {
+    syncRuleVisibilityForGenkoMode('docs');
+    return _prevOnDocsSettingBeforeGenko();
+  };
+  window.onDocsSettingChanged = onDocsSettingChanged;
+
+  const _prevOnDocxSettingBeforeGenko = onDocxSettingChanged;
+  onDocxSettingChanged = function() {
+    syncRuleVisibilityForGenkoMode('docx');
+    return _prevOnDocxSettingBeforeGenko();
+  };
+  window.onDocxSettingChanged = onDocxSettingChanged;
+
+  const _prevRebuildPaperBeforeGenko = rebuildPaperAndRuleOptionsForDirection;
+  rebuildPaperAndRuleOptionsForDirection = function(dir, preservePaperValue) {
+    _prevRebuildPaperBeforeGenko(dir, preservePaperValue);
+    syncAllGenkoRuleVisibilities();
+  };
+
+  const _prevSwitchDirBeforeGenko = window.switchWritingDirection;
+  window.switchWritingDirection = function(dir) {
+    _prevSwitchDirBeforeGenko(dir);
+    syncAllGenkoRuleVisibilities();
+  };
+
+  const _prevSwitchLangBeforeGenkoPng = window.switchLanguage;
+  window.switchLanguage = function(lang) {
+    _prevSwitchLangBeforeGenkoPng(lang);
+    applyPngAndGenkoLabels(currentLanguage);
+  };
+  switchLanguage = window.switchLanguage;
+
+  // ボタンの有効/無効・稼働中ロックに PNG出力 (ZIP) ボタンを完全連動
+  const _prevSetDocsBusyBeforePng = setDocsButtonsBusy;
+  setDocsButtonsBusy = function(busy, activeAction) {
+    _prevSetDocsBusyBeforePng(busy, activeAction);
+    const btnPng = document.getElementById('btnDocsExportPngZip');
+    const txtPng = document.getElementById('uiTextBtnExportPng');
+    const gt = getGenkoPngText(currentLanguage);
+    const hasFile = !!selectedDocsId;
+    if (btnPng) {
+      btnPng.disabled = !!busy || !hasFile;
+      btnPng.classList.toggle('btn-working', !!busy && activeAction === 'export_png');
+    }
+    if (txtPng) {
+      txtPng.textContent = (busy && activeAction === 'export_png') ? gt.workingPng : gt.btnExportPng;
+    }
+  };
+  window.setDocsButtonsBusy = setDocsButtonsBusy;
+
+  const _prevSetDocxBusyBeforePng = setDocxButtonsBusy;
+  setDocxButtonsBusy = function(busy, activeAction) {
+    _prevSetDocxBusyBeforePng(busy, activeAction);
+    const btnPng = document.getElementById('btnDocxExportPngZip');
+    const txtPng = document.getElementById('uiTextBtnDocxExportPng');
+    const gt = getGenkoPngText(currentLanguage);
+    const hasFile = !!(selectedDocxFileId || selectedDocxBase64);
+    if (btnPng) {
+      btnPng.disabled = !!busy || !hasFile;
+      btnPng.classList.toggle('btn-working', !!busy && activeAction === 'export_png');
+    }
+    if (txtPng) {
+      txtPng.textContent = (busy && activeAction === 'export_png') ? gt.workingPng : gt.btnExportPng;
+    }
+  };
+  window.setDocxButtonsBusy = setDocxButtonsBusy;
+
+  // ==============================================================================
+  // PKZIP アーカイブ生成（STORE 無圧縮・IEEE 802.3 CRC-32・UTF-8 ファイル名対応）
+  // ==============================================================================
+  const zipCrc32LookupTable = (function buildCrc32Table() {
+    const tbl = new Uint32Array(ZipCrcTableLength);
+    for (let n = 0; n < ZipCrcTableLength; n++) {
+      let c = n;
+      for (let k = 0; k < ZipBitsPerByte; k++) {
+        c = (c & 1) ? (ZipIeeeCrc32Polynomial ^ (c >>> 1)) : (c >>> 1);
+      }
+      tbl[n] = c >>> 0;
+    }
+    return tbl;
+  })();
+
+  function computeZipCrc32(bytes) {
+    let crc = 0xFFFFFFFF;
+    for (let i = 0; i < bytes.length; i++) {
+      crc = zipCrc32LookupTable[(crc ^ bytes[i]) & ZipByteMask] ^ (crc >>> ZipBitsPerByte);
+    }
+    return (crc ^ 0xFFFFFFFF) >>> 0;
+  }
+
+  function createZipArchiveBytes(fileEntries) {
+    const encoder = new TextEncoder();
+    const prepared = fileEntries.map(entry => {
+      const nameBytes = encoder.encode(entry.name);
+      const dataBytes = entry.bytes instanceof Uint8Array ? entry.bytes : new Uint8Array(entry.bytes);
+      const crc = computeZipCrc32(dataBytes);
+      return { nameBytes, dataBytes, crc };
+    });
+
+    let localTotalBytes = 0;
+    let centralTotalBytes = 0;
+    for (let i = 0; i < prepared.length; i++) {
+      localTotalBytes += ZipLfhFixedHeaderBytes + prepared[i].nameBytes.length + prepared[i].dataBytes.length;
+      centralTotalBytes += ZipCdfhFixedHeaderBytes + prepared[i].nameBytes.length;
+    }
+
+    const totalSize = localTotalBytes + centralTotalBytes + ZipEocdMinLengthBytes;
+    const out = new Uint8Array(totalSize);
+    const view = new DataView(out.buffer);
+
+    let localOffset = 0;
+    const offsets = [];
+
+    for (let i = 0; i < prepared.length; i++) {
+      const item = prepared[i];
+      offsets.push(localOffset);
+
+      view.setUint32(localOffset, ZipLocalFileHeaderSig, true);
+      view.setUint16(localOffset + 4, ZipFormatVersionNeeded, true);
+      view.setUint16(localOffset + 6, ZipGeneralPurposeUtf8Bit, true);
+      view.setUint16(localOffset + 8, ZipCompressionStored, true);
+      view.setUint16(localOffset + 10, ZipDefaultDosTime, true);
+      view.setUint16(localOffset + 12, ZipDefaultDosDate, true);
+      view.setUint32(localOffset + 14, item.crc, true);
+      view.setUint32(localOffset + 18, item.dataBytes.length, true);
+      view.setUint32(localOffset + 22, item.dataBytes.length, true);
+      view.setUint16(localOffset + ZipLfhNameLenOffset, item.nameBytes.length, true);
+      view.setUint16(localOffset + ZipLfhExtraLenOffset, 0, true);
+
+      out.set(item.nameBytes, localOffset + ZipLfhFixedHeaderBytes);
+      out.set(item.dataBytes, localOffset + ZipLfhFixedHeaderBytes + item.nameBytes.length);
+      localOffset += ZipLfhFixedHeaderBytes + item.nameBytes.length + item.dataBytes.length;
+    }
+
+    const centralStartOffset = localOffset;
+    let cdPos = centralStartOffset;
+
+    for (let i = 0; i < prepared.length; i++) {
+      const item = prepared[i];
+      view.setUint32(cdPos, ZipCentralFileHeaderSig, true);
+      view.setUint16(cdPos + 4, ZipFormatVersionNeeded, true);
+      view.setUint16(cdPos + 6, ZipFormatVersionNeeded, true);
+      view.setUint16(cdPos + 8, ZipGeneralPurposeUtf8Bit, true);
+      view.setUint16(cdPos + ZipCdfhMethodOffset, ZipCompressionStored, true);
+      view.setUint16(cdPos + 12, ZipDefaultDosTime, true);
+      view.setUint16(cdPos + 14, ZipDefaultDosDate, true);
+      view.setUint32(cdPos + 16, item.crc, true);
+      view.setUint32(cdPos + ZipCdfhCompSizeOffset, item.dataBytes.length, true);
+      view.setUint32(cdPos + 24, item.dataBytes.length, true);
+      view.setUint16(cdPos + ZipCdfhNameLenOffset, item.nameBytes.length, true);
+      view.setUint16(cdPos + ZipCdfhExtraLenOffset, 0, true);
+      view.setUint16(cdPos + ZipCdfhCommentLenOffset, 0, true);
+      view.setUint16(cdPos + 34, 0, true);
+      view.setUint16(cdPos + 36, 0, true);
+      view.setUint32(cdPos + 38, ZipExternalFileAttrDefault, true);
+      view.setUint32(cdPos + ZipCdfhLocalHdrOffOffset, offsets[i], true);
+
+      out.set(item.nameBytes, cdPos + ZipCdfhFixedHeaderBytes);
+      cdPos += ZipCdfhFixedHeaderBytes + item.nameBytes.length;
+    }
+
+    view.setUint32(cdPos, ZipEocdSignature, true);
+    view.setUint16(cdPos + 4, 0, true);
+    view.setUint16(cdPos + 6, 0, true);
+    view.setUint16(cdPos + 8, prepared.length, true);
+    view.setUint16(cdPos + 10, prepared.length, true);
+    view.setUint32(cdPos + ZipEocdCdSizeOffset, centralTotalBytes, true);
+    view.setUint32(cdPos + ZipEocdCdOffsetOffset, centralStartOffset, true);
+    view.setUint16(cdPos + 20, 0, true);
+
+    return out;
+  }
+
+  function canvasToPngBytes(canvas) {
+    return new Promise((resolve, reject) => {
+      canvas.toBlob((blob) => {
+        if (!blob) {
+          reject(new Error('PNG Blob の生成に失敗しました。'));
+          return;
+        }
+        blob.arrayBuffer().then(buf => resolve(new Uint8Array(buf))).catch(reject);
+      }, 'image/png');
+    });
+  }
+
+  async function convertPdfChunksToPngZipAndDownload(pdfChunks, zipBaseName) {
+    if (typeof pdfjsLib === 'undefined') {
+      throw new Error('PDF.js ライブラリがロードされていません。');
+    }
+    const gt = getGenkoPngText(currentLanguage);
+    if (docsProgressTimer) {
+      clearInterval(docsProgressTimer);
+      docsProgressTimer = null;
+    }
+    if (progressContainer) progressContainer.style.display = 'block';
+
+    // 全チャンクの総ページ数を事前集計
+    const loadedDocs = [];
+    let grandTotalPages = 0;
+    for (let c = 0; c < pdfChunks.length; c++) {
+      const dataCopy = new Uint8Array(pdfChunks[c].bytes);
+      const pdfDoc = await pdfjsLib.getDocument({ data: dataCopy }).promise;
+      loadedDocs.push(pdfDoc);
+      grandTotalPages += pdfDoc.numPages;
+    }
+
+    if (grandTotalPages === 0) {
+      throw new Error('出力対象のページがありません。');
+    }
+
+    const pngEntries = [];
+    let globalPageIndex = 0;
+
+    for (let dIdx = 0; dIdx < loadedDocs.length; dIdx++) {
+      const pdfDoc = loadedDocs[dIdx];
+      for (let pNum = 1; pNum <= pdfDoc.numPages; pNum++) {
+        globalPageIndex++;
+        const pct = Math.round((globalPageIndex / grandTotalPages) * 92);
+        if (progressBar) progressBar.style.width = pct + '%';
+        if (progressPercent) progressPercent.textContent = pct + '%';
+        if (progressStatus) {
+          progressStatus.textContent = gt.renderingPngPage + ' (' + globalPageIndex + ' / ' + grandTotalPages + ')';
+        }
+
+        const page = await pdfDoc.getPage(pNum);
+        const baseVp = page.getViewport({ scale: 1.0 });
+        let renderScale = PngExportRenderScale;
+        const estPixels = (baseVp.width * renderScale) * (baseVp.height * renderScale);
+        if (estPixels > PngMaxSafeCanvasPixels) {
+          renderScale = Math.sqrt(PngMaxSafeCanvasPixels / (baseVp.width * baseVp.height));
+        }
+
+        const viewport = page.getViewport({ scale: renderScale });
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.max(1, Math.round(viewport.width));
+        canvas.height = Math.max(1, Math.round(viewport.height));
+        const ctx = canvas.getContext('2d', { alpha: false });
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+        const pngBytes = await canvasToPngBytes(canvas);
+
+        // メモリ即時解放
+        canvas.width = 1;
+        canvas.height = 1;
+
+        const paddedNum = String(globalPageIndex).padStart(PngPageIndexPadDigits, '0');
+        pngEntries.push({
+          name: 'P' + paddedNum + '.png',
+          bytes: pngBytes
+        });
+
+        await new Promise(r => setTimeout(r, 0));
+      }
+      if (typeof pdfDoc.destroy === 'function') {
+        try { await pdfDoc.destroy(); } catch (_eDestroy) {}
+      }
+    }
+
+    if (progressBar) progressBar.style.width = '97%';
+    if (progressPercent) progressPercent.textContent = '97%';
+    if (progressStatus) progressStatus.textContent = gt.packingZip;
+    await new Promise(r => setTimeout(r, 0));
+
+    const zipBytes = createZipArchiveBytes(pngEntries);
+    const cleanBase = (zipBaseName || 'LineAligned').replace(/\.pdf$/i, '').replace(/_Part\d+_P\d+-\d+$/i, '');
+    const zipFileName = cleanBase + '_PNG.zip';
+
+    const zipBlob = new Blob([zipBytes], { type: 'application/zip' });
+    const dlUrl = URL.createObjectURL(zipBlob);
+    const a = document.createElement('a');
+    a.href = dlUrl;
+    a.download = zipFileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(dlUrl);
+
+    return zipFileName;
+  }
+
+  // PNG ZIP キャプチャセッション機構（既存の全PDF生成パイプラインの出力を無改造で横取りしてPNG ZIP化）
+  let activePngZipCaptureChunks = null;
+
+  window.__captureGeneratedPdfChunk = function(pdfBytes, downloadFileName) {
+    if (!Array.isArray(activePngZipCaptureChunks)) return false;
+    activePngZipCaptureChunks.push({
+      bytes: pdfBytes instanceof Uint8Array ? pdfBytes : new Uint8Array(pdfBytes),
+      fileName: downloadFileName || 'output.pdf'
+    });
+    return true;
+  };
+
+  const _prevHandleDocsPdfOutputForPng = handleDocsPdfOutput;
+  handleDocsPdfOutput = function(bytes, isExportPdf, defaultFileName, paperMode) {
+    if (isExportPdf && Array.isArray(activePngZipCaptureChunks)) {
+      activePngZipCaptureChunks.push({
+        bytes: bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes),
+        fileName: defaultFileName || 'output.pdf'
+      });
+      return;
+    }
+    return _prevHandleDocsPdfOutputForPng(bytes, isExportPdf, defaultFileName, paperMode);
+  };
+  window.handleDocsPdfOutput = handleDocsPdfOutput;
+
+  const _prevHandleDocxPdfOutputForPng = handleDocxPdfOutput;
+  handleDocxPdfOutput = function(bytes, isExportPdf, defaultFileName, paperMode) {
+    if (isExportPdf && Array.isArray(activePngZipCaptureChunks)) {
+      activePngZipCaptureChunks.push({
+        bytes: bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes),
+        fileName: defaultFileName || 'output.pdf'
+      });
+      return;
+    }
+    return _prevHandleDocxPdfOutputForPng(bytes, isExportPdf, defaultFileName, paperMode);
+  };
+  window.handleDocxPdfOutput = handleDocxPdfOutput;
+
+  window.executeDocsPngZipExport = async function() {
+    if (isDocsBusy) return;
+    if (!selectedDocsId) {
+      showStatus('先にファイルを選択してください。', 'error');
+      return;
+    }
+    if (typeof trackStudioEvent === 'function') {
+      trackStudioEvent('linealigned_render_png_zip', { source_type: 'docs', direction: currentWritingDirection });
+    }
+    activePngZipCaptureChunks = [];
+    try {
+      await window.executeDocsLayout(true);
+      if (activePngZipCaptureChunks.length === 0) {
+        return;
+      }
+      setDocsButtonsBusy(true, 'export_png');
+      const firstFileName = activePngZipCaptureChunks[0].fileName;
+      const chunksToConvert = activePngZipCaptureChunks.slice();
+      activePngZipCaptureChunks = null;
+
+      const zipFileName = await convertPdfChunksToPngZipAndDownload(chunksToConvert, firstFileName);
+      const gt = getGenkoPngText(currentLanguage);
+      stopDocsWorkingProgress(true, 'PNG (ZIP) 完了');
+      showStatus(gt.donePngZip.replace('{name}', zipFileName), 'success');
+    } catch (err) {
+      stopDocsWorkingProgress(false);
+      showStatus('PNG出力エラー: ' + err.message, 'error');
+    } finally {
+      activePngZipCaptureChunks = null;
+      setDocsButtonsBusy(false);
+    }
+  };
+
+  window.executeDocxPngZipExport = async function() {
+    if (isDocxBusy) return;
+    if (!selectedDocxFileId && !selectedDocxBase64) {
+      showStatus('先にファイルを選択してください。', 'error');
+      return;
+    }
+    if (typeof trackStudioEvent === 'function') {
+      trackStudioEvent('linealigned_render_png_zip', { source_type: 'docx', direction: currentWritingDirection });
+    }
+    activePngZipCaptureChunks = [];
+    try {
+      await window.executeDocxLayout(true);
+      if (activePngZipCaptureChunks.length === 0) {
+        return;
+      }
+      setDocxButtonsBusy(true, 'export_png');
+      const firstFileName = activePngZipCaptureChunks[0].fileName;
+      const chunksToConvert = activePngZipCaptureChunks.slice();
+      activePngZipCaptureChunks = null;
+
+      const zipFileName = await convertPdfChunksToPngZipAndDownload(chunksToConvert, firstFileName);
+      const gt = getGenkoPngText(currentLanguage);
+      stopDocsWorkingProgress(true, 'PNG (ZIP) 完了');
+      showStatus(gt.donePngZip.replace('{name}', zipFileName), 'success');
+    } catch (err) {
+      stopDocsWorkingProgress(false);
+      showStatus('PNG出力エラー: ' + err.message, 'error');
+    } finally {
+      activePngZipCaptureChunks = null;
+      setDocxButtonsBusy(false);
+    }
+  };
+
+
+  // ==============================================================================
+  // 縦書き A4 原稿用紙（20字×20行・400字詰め）組版 ＆ ベクターPDFエンジン
+  // ==============================================================================
+  const GenkoCornerPunctSet = new Set(['、', '。', '，', '．']);
+  const GenkoOpeningBracketSet = new Set([
+    '（', '(', '「', '『', '【', '〔', '〈', '《', '［', '[', '｛', '{'
+  ]);
+  const GenkoClosingBracketSet = new Set([
+    '）', ')', '」', '』', '】', '〕', '〉', '》', '］', ']', '｝', '}'
+  ]);
+  const GenkoMirrorRotateSet = new Set(['ー', '〜', '～', '~']);
+  const GenkoTrailingHangableSet = new Set([
+    '、', '。', '，', '．', '）', '」', '』', '】', '〕', '〉', '》', '］', '｝', '〟', '”', '’', ')', ']', '}'
+  ]);
+  const GenkoSmallKanaSet = new Set([
+    'ぁ', 'ぃ', 'ぅ', 'ぇ', 'ぉ', 'っ', 'ゃ', 'ゅ', 'ょ', 'ゎ', 'ゕ', 'ゖ',
+    'ァ', 'ィ', 'ゥ', 'ェ', 'ォ', 'ッ', 'ャ', 'ュ', 'ョ', 'ヮ', 'ヵ', 'ヶ'
+  ]);
+  const GenkoRotate90CharSet = new Set([
+    'ー', '—', '―', '‐', '－', '-', '–', '〜', '～', '~', '…', '‥', '＝', '=',
+    '（', '）', '(', ')', '「', '」', '『', '』', '【', '】', '〔', '〕',
+    '〈', '〉', '《', '》', '［', '］', '[', ']', '｛', '｝', '{', '}', '：', '；', ':', ';'
+  ]);
+
+  function decodeXmlEntitiesForGenko(raw) {
+    if (!raw) return '';
+    return raw
+      .replace(/&#x([0-9a-fA-F]+);/g, (_, hex) => String.fromCodePoint(parseInt(hex, 16)))
+      .replace(/&#(\d+);/g, (_, dec) => String.fromCodePoint(parseInt(dec, 10)))
+      .replace(/&quot;/g, '"')
+      .replace(/&apos;/g, "'")
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&amp;/g, '&');
+  }
+
+  function isHalfwidthDigitChar(ch) {
+    return ch >= '0' && ch <= '9';
+  }
+
+  // Word (.docx) の word/document.xml から原稿用紙用の段落列（ルビ対応・複数セル表除外）を抽出
+  function parseParagraphsFromDocxXmlForGenko(xmlText) {
+    if (!xmlText) return [];
+    const bodyMatch = xmlText.match(/<w:body\b[^>]*>([\s\S]*?)<\/w:body>/i);
+    let bodyXml = bodyMatch ? bodyMatch[1] : xmlText;
+
+    // テキストボックス内の重複段落を除外
+    bodyXml = bodyXml.replace(/<w:txbxContent\b[^>]*>[\s\S]*?<\/w:txbxContent>/gi, '');
+
+    // 表 (<w:tbl>): 1行×1列の囲み枠のみ段落を残し、2セル以上の表はスキップ
+    bodyXml = bodyXml.replace(/<w:tbl\b[^>]*>[\s\S]*?<\/w:tbl>/gi, (tblBlock) => {
+      const tcMatches = tblBlock.match(/<w:tc\b/gi);
+      if (tcMatches && tcMatches.length === 1) {
+        return tblBlock;
+      }
+      return '';
+    });
+
+    const paragraphs = [];
+    const pRegex = /<w:p\b[^>]*>([\s\S]*?)<\/w:p>/gi;
+    let pMatch;
+    while ((pMatch = pRegex.exec(bodyXml)) !== null) {
+      const pInner = pMatch[1];
+      const hasPageBreak = /<w:br\b[^>]*\bw:type\s*=\s*["']page["']/i.test(pInner);
+
+      let firstLineIndent = false;
+      const pPrMatch = pInner.match(/<w:pPr\b[^>]*>([\s\S]*?)<\/w:pPr>/i);
+      if (pPrMatch) {
+        const indMatch = pPrMatch[1].match(/<w:ind\b([^>]*)\/?>/i);
+        if (indMatch) {
+          const attrs = indMatch[1];
+          const hangingMatch = attrs.match(/\bw:hanging\s*=\s*["'](\d+)["']/i);
+          const firstMatch = attrs.match(/\bw:firstLine\s*=\s*["'](\d+)["']/i);
+          const firstCharsMatch = attrs.match(/\bw:firstLineChars\s*=\s*["'](\d+)["']/i);
+          if (!hangingMatch && ((firstMatch && parseInt(firstMatch[1], 10) > 0) || (firstCharsMatch && parseInt(firstCharsMatch[1], 10) > 0))) {
+            firstLineIndent = true;
+          }
+        }
+      }
+
+      // pPr を除いた本文要素から <w:ruby>・<w:t>・<w:tab/>・<w:br/> を順番に抽出
+      const contentXml = pInner.replace(/<w:pPr\b[^>]*>[\s\S]*?<\/w:pPr>/gi, '');
+      const segments = [];
+      const tokenRegex = /<w:ruby\b[^>]*>([\s\S]*?)<\/w:ruby>|<w:t(?:\s+[^>]*)?>([\s\S]*?)<\/w:t>|<w:tab\b[^>]*\/?>|<w:br\b([^>]*)\/?>/gi;
+      let tk;
+      let currentLineSegs = [];
+
+      while ((tk = tokenRegex.exec(contentXml)) !== null) {
+        if (tk[1] !== undefined) {
+          const rubyInner = tk[1];
+          const baseParts = [];
+          const rtParts = [];
+          const rbMatch = rubyInner.match(/<w:rubyBase\b[^>]*>([\s\S]*?)<\/w:rubyBase>/i);
+          const rtMatch = rubyInner.match(/<w:rt\b[^>]*>([\s\S]*?)<\/w:rt>/i);
+          if (rbMatch) {
+            const btRe = /<w:t(?:\s+[^>]*)?>([\s\S]*?)<\/w:t>/gi;
+            let bm;
+            while ((bm = btRe.exec(rbMatch[1])) !== null) baseParts.push(decodeXmlEntitiesForGenko(bm[1]));
+          }
+          if (rtMatch) {
+            const rtRe = /<w:t(?:\s+[^>]*)?>([\s\S]*?)<\/w:t>/gi;
+            let rm;
+            while ((rm = rtRe.exec(rtMatch[1])) !== null) rtParts.push(decodeXmlEntitiesForGenko(rm[1]));
+          }
+          const baseText = baseParts.join('');
+          const rubyText = rtParts.join('').trim();
+          if (baseText) {
+            currentLineSegs.push({ text: baseText, ruby: rubyText });
+          }
+        } else if (tk[2] !== undefined) {
+          const decoded = decodeXmlEntitiesForGenko(tk[2]);
+          if (decoded) {
+            currentLineSegs.push({ text: decoded, ruby: '' });
+          }
+        } else if (tk[0].toLowerCase().startsWith('<w:tab')) {
+          currentLineSegs.push({ text: '　', ruby: '' });
+        } else if (tk[0].toLowerCase().startsWith('<w:br')) {
+          const brAttrs = tk[3] || '';
+          if (!/\bw:type\s*=\s*["']page["']/i.test(brAttrs)) {
+            segments.push(currentLineSegs);
+            currentLineSegs = [];
+          }
+        }
+      }
+      segments.push(currentLineSegs);
+
+      for (let sIdx = 0; sIdx < segments.length; sIdx++) {
+        const segList = segments[sIdx];
+        const plainJoined = segList.map(s => s.text).join('').replace(/\r/g, '');
+        if (sIdx === 0 && hasPageBreak && paragraphs.length > 0) {
+          paragraphs.push({ pageBreak: true, segments: [] });
+        }
+        if (plainJoined.length === 0) {
+          paragraphs.push({ pageBreak: false, segments: [] });
+          continue;
+        }
+        if (sIdx === 0 && firstLineIndent && !/^[\s　「『（【〔〈《“‘]/.test(plainJoined)) {
+          segList.unshift({ text: '　', ruby: '' });
+        }
+        paragraphs.push({ pageBreak: false, segments: segList });
+      }
+    }
+
+    // 末尾の連続空段落をトリム
+    while (paragraphs.length > 0) {
+      const last = paragraphs[paragraphs.length - 1];
+      if (!last.pageBreak && (!last.segments || last.segments.length === 0)) {
+        paragraphs.pop();
+      } else {
+        break;
+      }
+    }
+    return paragraphs;
+  }
+
+  // Google Docs API 生JSON から原稿用紙用の段落列を抽出
+  function parseParagraphsFromDocsJsonForGenko(docJsonStr) {
+    const docObj = typeof docJsonStr === 'string' ? JSON.parse(docJsonStr) : docJsonStr;
+    let bodyContent = (docObj && docObj.body && Array.isArray(docObj.body.content)) ? docObj.body.content : [];
+    if (bodyContent.length === 0 && docObj && Array.isArray(docObj.tabs) && docObj.tabs.length > 0) {
+      const tab0 = docObj.tabs[0];
+      if (tab0 && tab0.documentTab && tab0.documentTab.body && Array.isArray(tab0.documentTab.body.content)) {
+        bodyContent = tab0.documentTab.body.content;
+      }
+    }
+
+    const paragraphs = [];
+
+    function appendParagraphElement(paraObj) {
+      if (!paraObj || !Array.isArray(paraObj.elements)) return;
+      let rawText = '';
+      let hasPageBreak = false;
+
+      for (let i = 0; i < paraObj.elements.length; i++) {
+        const el = paraObj.elements[i];
+        if (el.pageBreak) {
+          hasPageBreak = true;
+        }
+        if (el.textRun && typeof el.textRun.content === 'string') {
+          rawText += el.textRun.content;
+        }
+      }
+
+      if (hasPageBreak && paragraphs.length > 0) {
+        paragraphs.push({ pageBreak: true, segments: [] });
+      }
+
+      rawText = rawText.replace(/\r/g, '').replace(/\u000b/g, '\n');
+      if (rawText.endsWith('\n')) {
+        rawText = rawText.slice(0, -1);
+      }
+      rawText = rawText.replace(/\t/g, '　');
+
+      const pStyle = paraObj.paragraphStyle || {};
+      const indentFirst = pStyle.indentFirstLine && typeof pStyle.indentFirstLine.magnitude === 'number'
+        ? pStyle.indentFirstLine.magnitude
+        : 0;
+
+      const subLines = rawText.split('\n');
+      for (let s = 0; s < subLines.length; s++) {
+        let lineStr = subLines[s];
+        if (lineStr.length === 0) {
+          paragraphs.push({ pageBreak: false, segments: [] });
+          continue;
+        }
+        if (s === 0 && indentFirst > 0 && !/^[\s　「『（【〔〈《“‘]/.test(lineStr)) {
+          lineStr = '　' + lineStr;
+        }
+        paragraphs.push({
+          pageBreak: false,
+          segments: [{ text: lineStr, ruby: '' }]
+        });
+      }
+    }
+
+    for (let i = 0; i < bodyContent.length; i++) {
+      const item = bodyContent[i];
+      if (item.paragraph) {
+        appendParagraphElement(item.paragraph);
+      } else if (item.table && Array.isArray(item.table.tableRows)) {
+        // 1行×1列の囲み枠表のみ本文として展開
+        if (item.table.tableRows.length === 1 &&
+            Array.isArray(item.table.tableRows[0].tableCells) &&
+            item.table.tableRows[0].tableCells.length === 1) {
+          const cellContent = item.table.tableRows[0].tableCells[0].content || [];
+          for (let c = 0; c < cellContent.length; c++) {
+            if (cellContent[c].paragraph) appendParagraphElement(cellContent[c].paragraph);
+          }
+        }
+      }
+    }
+
+    while (paragraphs.length > 0) {
+      const last = paragraphs[paragraphs.length - 1];
+      if (!last.pageBreak && (!last.segments || last.segments.length === 0)) {
+        paragraphs.pop();
+      } else {
+        break;
+      }
+    }
+    return paragraphs;
+  }
+
+  // 1段落のセグメント列を原稿用紙の1マス単位セル配列へトークナイズ（2桁半角数字は縦中横化・行跨ぎルビ分割メタデータ付与）
+  let nextGenkoRubyGroupSeq = 1;
+
+  function tokenizeParagraphForGenko(segments) {
+    const tokens = [];
+    for (let s = 0; s < segments.length; s++) {
+      const seg = segments[s];
+      const chars = Array.from(seg.text || '');
+      const rubyText = (seg.ruby || '').trim();
+      const segTokens = [];
+
+      for (let i = 0; i < chars.length; i++) {
+        const ch = chars[i];
+        if (ch === '\r' || ch === '\n') continue;
+
+        // 前後が数字でないちょうど2桁の半角数字は縦中横（1マスに2桁横並び）
+        if (isHalfwidthDigitChar(ch) &&
+            i + 1 < chars.length &&
+            isHalfwidthDigitChar(chars[i + 1]) &&
+            (i === 0 || !isHalfwidthDigitChar(chars[i - 1])) &&
+            (i + 2 >= chars.length || !isHalfwidthDigitChar(chars[i + 2]))) {
+          segTokens.push({
+            kind: 'tcy',
+            text: ch + chars[i + 1],
+            ruby: '',
+            rubySpanCells: 0,
+            rubyGroupId: 0,
+            rubyFullChars: null,
+            rubyCellOffset: 0,
+            rubyTotalCells: 0,
+            trailingMarks: []
+          });
+          i++;
+          continue;
+        }
+
+        const mappedChar = (ch === ' ') ? '　' : ch;
+        segTokens.push({
+          kind: 'char',
+          text: mappedChar,
+          ruby: '',
+          rubySpanCells: 0,
+          rubyGroupId: 0,
+          rubyFullChars: null,
+          rubyCellOffset: 0,
+          rubyTotalCells: 0,
+          trailingMarks: []
+        });
+      }
+
+      if (rubyText && segTokens.length > 0) {
+        const groupId = nextGenkoRubyGroupSeq++;
+        const rubyFullChars = Array.from(rubyText);
+        const totalCells = segTokens.length;
+        for (let k = 0; k < totalCells; k++) {
+          segTokens[k].rubyGroupId = groupId;
+          segTokens[k].rubyFullChars = rubyFullChars;
+          segTokens[k].rubyCellOffset = k;
+          segTokens[k].rubyTotalCells = totalCells;
+        }
+      }
+
+      for (let k = 0; k < segTokens.length; k++) {
+        tokens.push(segTokens[k]);
+      }
+    }
+    return tokens;
+  }
+
+  // 確定した1列（最大20マス）内の各セルを走査し、行を跨いだ熟語ルビも親文字数の比率で過不足なく分割して枠内に収める
+  function assignColumnSegmentedRubies(colCells) {
+    let r = 0;
+    while (r < colCells.length) {
+      const gid = colCells[r].rubyGroupId;
+      if (!gid || !colCells[r].rubyFullChars || colCells[r].rubyTotalCells <= 0) {
+        r++;
+        continue;
+      }
+      let endR = r;
+      while (endR + 1 < colCells.length && colCells[endR + 1].rubyGroupId === gid) {
+        endR++;
+      }
+
+      const fullChars = colCells[r].rubyFullChars;
+      const totalRubyLen = fullChars.length;
+      const totalParentCells = colCells[r].rubyTotalCells;
+      const offsetStart = colCells[r].rubyCellOffset;
+      const offsetEnd = colCells[endR].rubyCellOffset + 1;
+
+      const sliceStart = Math.round((offsetStart * totalRubyLen) / totalParentCells);
+      const sliceEnd = Math.round((offsetEnd * totalRubyLen) / totalParentCells);
+      const subRuby = fullChars.slice(sliceStart, sliceEnd).join('');
+
+      // この行で実際に占有しているマス数（endR - r + 1）に厳密一致させ、下枠はみ出しを物理的にゼロにする
+      colCells[r].ruby = subRuby;
+      colCells[r].rubySpanCells = (endR - r + 1);
+      for (let clearIdx = r + 1; clearIdx <= endR; clearIdx++) {
+        colCells[clearIdx].ruby = '';
+        colCells[clearIdx].rubySpanCells = 0;
+      }
+
+      r = endR + 1;
+    }
+  }
+
+  // 段落配列を 20字×20行（400字詰め）の各ページグリッドへ割り付け（行頭句読点・閉じ括弧の20マス目同居処理＆行跨ぎルビ分割付き）
+  function layoutGenkoPages(paragraphs) {
+    const pages = [];
+    let currentCols = [];
+
+    function flushPage() {
+      if (currentCols.length > 0) {
+        pages.push(currentCols);
+        currentCols = [];
+      }
+    }
+
+    function pushColumn(cells) {
+      assignColumnSegmentedRubies(cells);
+      currentCols.push(cells);
+      if (currentCols.length >= GenkoTotalColsPerPage) {
+        flushPage();
+      }
+    }
+
+    for (let pIdx = 0; pIdx < paragraphs.length; pIdx++) {
+      const para = paragraphs[pIdx];
+      if (para.pageBreak) {
+        flushPage();
+        continue;
+      }
+
+      if (!para.segments || para.segments.length === 0) {
+        // 空行段落は1行分の空き行を送る（ただしページ先頭では無駄な空行を作らない）
+        if (currentCols.length > 0) {
+          pushColumn([]);
+        }
+        continue;
+      }
+
+      const tokens = tokenizeParagraphForGenko(para.segments);
+      if (tokens.length === 0) {
+        if (currentCols.length > 0) pushColumn([]);
+        continue;
+      }
+
+      let idx = 0;
+      while (idx < tokens.length) {
+        const colCells = [];
+        while (colCells.length < GenkoRowsPerCol && idx < tokens.length) {
+          colCells.push(tokens[idx]);
+          idx++;
+        }
+
+        // 20マス目直後に句読点・閉じ括弧が続く場合は、次行頭に送らず20マス目右下に同居させる
+        if (colCells.length === GenkoRowsPerCol && idx < tokens.length) {
+          const lastCell = colCells[GenkoRowsPerCol - 1];
+          let guardCount = 0;
+          while (idx < tokens.length &&
+                 guardCount < GenkoMaxTrailingMarksPerCell &&
+                 tokens[idx].kind === 'char' &&
+                 GenkoTrailingHangableSet.has(tokens[idx].text)) {
+            lastCell.trailingMarks.push(tokens[idx].text);
+            idx++;
+            guardCount++;
+          }
+        }
+
+        pushColumn(colCells);
+      }
+    }
+
+    flushPage();
+    if (pages.length === 0) {
+      pages.push([]);
+    }
+    return pages;
+  }
+
+  // 原稿用紙の幾何座標ヘルパー（colIndex: 0..19 右→左, rowIndex: 0..19 上→下, 全20行の右隣にルビ欄を確保）
+  function computeGenkoGeometryMm() {
+    const stepMm = GenkoCellSizeMm + GenkoRubyGapWidthMm;
+    const halfWidthMm = GenkoColsPerHalf * stepMm;
+    const totalInnerWidthMm = (halfWidthMm * 2.0) + GenkoCenterPillarWidthMm;
+    const innerLeftMm = (GenkoPaperWidthMm - totalInnerWidthMm) / 2.0;
+    const innerRightMm = innerLeftMm + totalInnerWidthMm;
+    const innerTopMm = GenkoMarginTopMm;
+    const innerHeightMm = GenkoRowsPerCol * GenkoCellSizeMm;
+    const innerBottomMm = innerTopMm + innerHeightMm;
+    const leftHalfRightMm = innerLeftMm + halfWidthMm;
+    const rightHalfLeftMm = innerRightMm - halfWidthMm;
+    const pillarCenterXMm = (leftHalfRightMm + rightHalfLeftMm) / 2.0;
+
+    // 各行の右隣に GenkoRubyGapWidthMm のルビ欄を配置（1行目 col=0 や 11行目 col=10 のルビも確実に枠内に収まる）
+    function getColLeftXMm(colIndex) {
+      if (colIndex < GenkoColsPerHalf) {
+        return innerRightMm - stepMm - (colIndex * stepMm);
+      }
+      const k = colIndex - GenkoColsPerHalf;
+      return leftHalfRightMm - stepMm - (k * stepMm);
+    }
+
+    return {
+      halfWidthMm,
+      totalInnerWidthMm,
+      innerLeftMm,
+      innerRightMm,
+      innerTopMm,
+      innerHeightMm,
+      innerBottomMm,
+      leftHalfRightMm,
+      rightHalfLeftMm,
+      pillarCenterXMm,
+      getColLeftXMm
+    };
+  }
+
+  // pdf-lib 上へ原稿用紙の純粋ベクター枠線・ルビ欄・二重外枠を描画（中央マークなしシンプル仕様）
+  function drawGenkoVectorGridOnPdfPage(pdfPage, geom, lineColorHex, pageNumber, totalPages, pageFont) {
+    const strokeColor = hexToRgbPdfLib(lineColorHex || GenkoDefaultLineColorHex);
+    const pageH = GenkoPaperHeightMm;
+    const toPdfY = (topDownYMm) => (pageH - topDownYMm) * MmToPt;
+    const toPdfX = (xMm) => xMm * MmToPt;
+
+    // 1. 外側太枠（二重外枠の外側）
+    const outerLeft = geom.innerLeftMm - GenkoOuterFrameGapMm;
+    const outerTop = geom.innerTopMm - GenkoOuterFrameGapMm;
+    const outerW = geom.totalInnerWidthMm + (GenkoOuterFrameGapMm * 2.0);
+    const outerH = geom.innerHeightMm + (GenkoOuterFrameGapMm * 2.0);
+
+    pdfPage.drawRectangle({
+      x: toPdfX(outerLeft),
+      y: toPdfY(outerTop + outerH),
+      width: outerW * MmToPt,
+      height: outerH * MmToPt,
+      borderColor: strokeColor,
+      borderWidth: GenkoOuterStrokePt
+    });
+
+    // 2. 内枠本体
+    pdfPage.drawRectangle({
+      x: toPdfX(geom.innerLeftMm),
+      y: toPdfY(geom.innerBottomMm),
+      width: geom.totalInnerWidthMm * MmToPt,
+      height: geom.innerHeightMm * MmToPt,
+      borderColor: strokeColor,
+      borderWidth: GenkoInnerStrokePt
+    });
+
+    // 3. 中央空白帯の左右境界線
+    pdfPage.drawLine({
+      start: { x: toPdfX(geom.leftHalfRightMm), y: toPdfY(geom.innerTopMm) },
+      end: { x: toPdfX(geom.leftHalfRightMm), y: toPdfY(geom.innerBottomMm) },
+      thickness: GenkoInnerStrokePt,
+      color: strokeColor
+    });
+    pdfPage.drawLine({
+      start: { x: toPdfX(geom.rightHalfLeftMm), y: toPdfY(geom.innerTopMm) },
+      end: { x: toPdfX(geom.rightHalfLeftMm), y: toPdfY(geom.innerBottomMm) },
+      thickness: GenkoInnerStrokePt,
+      color: strokeColor
+    });
+
+    // 4. 全20行の左右縦罫線と、各行内19本のマス目水平区切り線
+    for (let col = 0; col < GenkoTotalColsPerPage; col++) {
+      const colLeftMm = geom.getColLeftXMm(col);
+      const colRightMm = colLeftMm + GenkoCellSizeMm;
+
+      // 行の左境界線（各半面の左端 col=9, col=19 は中央帯・内枠左線と一致するため重複描画しない）
+      if (col !== GenkoColsPerHalf - 1 && col !== GenkoTotalColsPerPage - 1) {
+        pdfPage.drawLine({
+          start: { x: toPdfX(colLeftMm), y: toPdfY(geom.innerTopMm) },
+          end: { x: toPdfX(colLeftMm), y: toPdfY(geom.innerBottomMm) },
+          thickness: GenkoInnerStrokePt,
+          color: strokeColor
+        });
+      }
+
+      // 行の右境界線（全行とも右隣にルビ欄があるため必ず描画）
+      pdfPage.drawLine({
+        start: { x: toPdfX(colRightMm), y: toPdfY(geom.innerTopMm) },
+        end: { x: toPdfX(colRightMm), y: toPdfY(geom.innerBottomMm) },
+        thickness: GenkoInnerStrokePt,
+        color: strokeColor
+      });
+
+      // マス目の横区切り線（1〜19マス目境界）
+      for (let r = 1; r < GenkoRowsPerCol; r++) {
+        const yMm = geom.innerTopMm + (r * GenkoCellSizeMm);
+        pdfPage.drawLine({
+          start: { x: toPdfX(colLeftMm), y: toPdfY(yMm) },
+          end: { x: toPdfX(colRightMm), y: toPdfY(yMm) },
+          thickness: GenkoCellDividerStrokePt,
+          color: strokeColor
+        });
+      }
+    }
+
+    // 5. 中央柱の魚尾（ぎょび）マーク（上下2箇所）と中央飾り縦線
+    const upperGyobiYMm = geom.innerTopMm + (GenkoGyobiUpperRow * GenkoCellSizeMm);
+    const lowerGyobiYMm = geom.innerTopMm + (GenkoGyobiLowerRow * GenkoCellSizeMm);
+    const cxMm = geom.pillarCenterXMm;
+
+    const hwPt = GenkoGyobiHalfWidthMm * MmToPt;
+    const bhPt = GenkoGyobiBodyHeightMm * MmToPt;
+    const ndPt = GenkoGyobiNotchDepthMm * MmToPt;
+
+    const upperSvgPath =
+      'M ' + (-hwPt).toFixed(2) + ' 0 ' +
+      'L ' + hwPt.toFixed(2) + ' 0 ' +
+      'L ' + hwPt.toFixed(2) + ' ' + bhPt.toFixed(2) + ' ' +
+      'L 0 ' + (bhPt - ndPt).toFixed(2) + ' ' +
+      'L ' + (-hwPt).toFixed(2) + ' ' + bhPt.toFixed(2) + ' Z';
+    pdfPage.drawSvgPath(upperSvgPath, {
+      x: toPdfX(cxMm),
+      y: toPdfY(upperGyobiYMm - GenkoGyobiBodyHeightMm * 0.5),
+      color: strokeColor,
+      borderColor: strokeColor,
+      borderWidth: 0.2
+    });
+
+    const lowerSvgPath =
+      'M ' + (-hwPt).toFixed(2) + ' ' + bhPt.toFixed(2) + ' ' +
+      'L ' + hwPt.toFixed(2) + ' ' + bhPt.toFixed(2) + ' ' +
+      'L ' + hwPt.toFixed(2) + ' 0 ' +
+      'L 0 ' + ndPt.toFixed(2) + ' ' +
+      'L ' + (-hwPt).toFixed(2) + ' 0 Z';
+    pdfPage.drawSvgPath(lowerSvgPath, {
+      x: toPdfX(cxMm),
+      y: toPdfY(lowerGyobiYMm - GenkoGyobiBodyHeightMm * 0.5),
+      color: strokeColor,
+      borderColor: strokeColor,
+      borderWidth: 0.2
+    });
+
+    const lineStartYMm = upperGyobiYMm + GenkoGyobiBodyHeightMm * 0.5 + GenkoPillarLineGapMm;
+    const lineEndYMm = lowerGyobiYMm - GenkoGyobiBodyHeightMm * 0.5 - GenkoPillarLineGapMm;
+    if (lineEndYMm > lineStartYMm) {
+      pdfPage.drawLine({
+        start: { x: toPdfX(cxMm), y: toPdfY(lineStartYMm) },
+        end: { x: toPdfX(cxMm), y: toPdfY(lineEndYMm) },
+        thickness: GenkoCellDividerStrokePt,
+        color: strokeColor
+      });
+    }
+
+    // 6. 下部ページ番号表記
+    if (pageFont) {
+      const label = String(pageNumber) + ' / ' + String(totalPages);
+      const textWidth = pageFont.widthOfTextAtSize(label, GenkoPageNumFontSizePt);
+      pdfPage.drawText(label, {
+        x: toPdfX(cxMm) - (textWidth / 2.0),
+        y: GenkoPageNumBottomOffsetMm * MmToPt,
+        size: GenkoPageNumFontSizePt,
+        font: pageFont,
+        color: strokeColor
+      });
+    }
+  }
+
+  // 1ページ分の文字レイヤーを高解像度透過PNGとしてレンダリング（縦書き約物回転・句読点右上・小書き仮名・20マス目同居対応）
+  async function renderGenkoTextLayerPngBytes(pageCols, geom) {
+    const canvasW = Math.round(GenkoPaperWidthMm * GenkoCanvasPxPerMm);
+    const canvasH = Math.round(GenkoPaperHeightMm * GenkoCanvasPxPerMm);
+    const canvas = document.createElement('canvas');
+    canvas.width = canvasW;
+    canvas.height = canvasH;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvasW, canvasH);
+
+    const cellPx = GenkoCellSizeMm * GenkoCanvasPxPerMm;
+    const mainFontPx = cellPx * GenkoMainFontRatio;
+    const fontStack = "'Noto Serif JP', 'BIZ UDPMincho', 'Yu Mincho', 'Hiragino Mincho ProN', 'MS Mincho', serif";
+
+    ctx.fillStyle = GenkoTextColorHex;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    // Canvas TextMetrics の実測インクバウンディングボックスからグリフの物理中心ズレを補正して描画
+    function drawInkCenteredGlyph(ch, targetInkCenterX, targetInkCenterY, fontPx, rotateMode) {
+      ctx.save();
+      ctx.font = '400 ' + fontPx.toFixed(1) + 'px ' + fontStack;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      const m = ctx.measureText(ch);
+      const hasBox = (typeof m.actualBoundingBoxLeft === 'number' &&
+                      typeof m.actualBoundingBoxRight === 'number' &&
+                      typeof m.actualBoundingBoxAscent === 'number' &&
+                      typeof m.actualBoundingBoxDescent === 'number' &&
+                      (m.actualBoundingBoxLeft + m.actualBoundingBoxRight) > 0);
+      // 描画原点 (0,0) に対するインク中心座標 (inkCx, inkCy)
+      const inkCx = hasBox ? (m.actualBoundingBoxRight - m.actualBoundingBoxLeft) / 2.0 : 0;
+      const inkCy = hasBox ? (m.actualBoundingBoxDescent - m.actualBoundingBoxAscent) / 2.0 : 0;
+
+      ctx.translate(targetInkCenterX, targetInkCenterY);
+      if (rotateMode === 'cw90_mirror') {
+        // 長音符「ー」・波ダッシュ「〜」: 時計回り90度回転＋左右鏡像で縦書き本来の打ち込み・筆勢を再現
+        ctx.rotate(GenkoRotationQuarterTurnRad);
+        ctx.scale(1, -1);
+      } else if (rotateMode === 'cw90') {
+        ctx.rotate(GenkoRotationQuarterTurnRad);
+      }
+      ctx.fillText(ch, -inkCx, -inkCy);
+      ctx.restore();
+    }
+
+    function drawSingleVerticalGlyph(ch, cellLeftPx, cellTopPx, centerX, centerY, fontPx) {
+      if (ch === '　' || ch === ' ') return;
+
+      if (GenkoCornerPunctSet.has(ch)) {
+        // 句読点（、。）：実測インク外枠をマス右上角から一定パディング内側に精密配置
+        ctx.save();
+        ctx.font = '400 ' + fontPx.toFixed(1) + 'px ' + fontStack;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        const m = ctx.measureText(ch);
+        const inkW = (typeof m.actualBoundingBoxLeft === 'number') ? (m.actualBoundingBoxLeft + m.actualBoundingBoxRight) : (fontPx * 0.25);
+        const inkH = (typeof m.actualBoundingBoxAscent === 'number') ? (m.actualBoundingBoxAscent + m.actualBoundingBoxDescent) : (fontPx * 0.25);
+        const insetPx = cellPx * GenkoPunctCornerInsetRatio;
+        const targetCx = (cellLeftPx + cellPx) - insetPx - (inkW / 2.0);
+        const targetCy = cellTopPx + insetPx + (inkH / 2.0);
+        ctx.restore();
+        drawInkCenteredGlyph(ch, targetCx, targetCy, fontPx, 'none');
+        return;
+      }
+
+      if (GenkoSmallKanaSet.has(ch)) {
+        drawInkCenteredGlyph(
+          ch,
+          centerX + (cellPx * GenkoSmallKanaShiftXRatio),
+          centerY + (cellPx * GenkoSmallKanaShiftYRatio),
+          fontPx * GenkoSmallKanaScale,
+          'none'
+        );
+        return;
+      }
+
+      if (GenkoMirrorRotateSet.has(ch)) {
+        drawInkCenteredGlyph(ch, centerX, centerY, fontPx, 'cw90_mirror');
+        return;
+      }
+
+      if (GenkoOpeningBracketSet.has(ch)) {
+        const isCornerQuote = (ch === '「' || ch === '『');
+        const shiftX = isCornerQuote ? (cellPx * GenkoCornerBracketXShiftRatio) : 0;
+        drawInkCenteredGlyph(ch, centerX + shiftX, centerY + (cellPx * GenkoBracketHalfShiftRatio), fontPx, 'cw90');
+        return;
+      }
+
+      if (GenkoClosingBracketSet.has(ch)) {
+        const isCornerQuote = (ch === '」' || ch === '』');
+        const shiftX = isCornerQuote ? (-cellPx * GenkoCornerBracketXShiftRatio) : 0;
+        drawInkCenteredGlyph(ch, centerX + shiftX, centerY - (cellPx * GenkoBracketHalfShiftRatio), fontPx, 'cw90');
+        return;
+      }
+
+      if (GenkoRotate90CharSet.has(ch)) {
+        drawInkCenteredGlyph(ch, centerX, centerY, fontPx, 'cw90');
+        return;
+      }
+
+      // 通常文字（漢字・仮名・全角記号）: フォント本来の仮想ボディ中央配置＋ベースライン微補正
+      ctx.save();
+      ctx.font = '400 ' + fontPx.toFixed(1) + 'px ' + fontStack;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(ch, centerX, centerY);
+      ctx.restore();
+    }
+
+    for (let col = 0; col < pageCols.length && col < GenkoTotalColsPerPage; col++) {
+      const cells = pageCols[col];
+      const colLeftPx = geom.getColLeftXMm(col) * GenkoCanvasPxPerMm;
+      const colCenterX = colLeftPx + (cellPx / 2.0);
+
+      for (let row = 0; row < cells.length && row < GenkoRowsPerCol; row++) {
+        const cell = cells[row];
+        const cellTopPx = (geom.innerTopMm + (row * GenkoCellSizeMm)) * GenkoCanvasPxPerMm;
+        const hasTrailing = cell.trailingMarks && cell.trailingMarks.length > 0;
+        const baseCenterY = cellTopPx + (cellPx / 2.0) + (hasTrailing ? (cellPx * GenkoTrailingParentShiftY) : 0);
+
+        if (cell.kind === 'tcy') {
+          const tcyChars = Array.from(cell.text);
+          const tcyFontPx = mainFontPx * GenkoTcyFontScale;
+          if (tcyChars.length === 2) {
+            drawInkCenteredGlyph(tcyChars[0], colCenterX - (cellPx * GenkoTcyCharOffsetRatio), baseCenterY, tcyFontPx, 'none');
+            drawInkCenteredGlyph(tcyChars[1], colCenterX + (cellPx * GenkoTcyCharOffsetRatio), baseCenterY, tcyFontPx, 'none');
+          } else {
+            drawInkCenteredGlyph(cell.text, colCenterX, baseCenterY, tcyFontPx, 'none');
+          }
+        } else {
+          drawSingleVerticalGlyph(cell.text, colLeftPx, cellTopPx, colCenterX, baseCenterY, mainFontPx);
+        }
+
+        // 20マス目の行末同居約物（句読点・閉じ括弧）を実測インク中心でマス右下へ配置
+        if (hasTrailing) {
+          const trailFontPx = mainFontPx * GenkoTrailingMarkScale;
+          const insetPx = cellPx * GenkoTrailingCornerInsetRatio;
+          for (let tIdx = 0; tIdx < cell.trailingMarks.length; tIdx++) {
+            const mark = cell.trailingMarks[tIdx];
+            const shiftLeft = tIdx * (cellPx * 0.24);
+            const tx = (colLeftPx + cellPx) - insetPx - (trailFontPx * 0.22) - shiftLeft;
+            const ty = (cellTopPx + cellPx) - insetPx - (trailFontPx * 0.22);
+            const rotMode = GenkoRotate90CharSet.has(mark) ? 'cw90' : 'none';
+            drawInkCenteredGlyph(mark, tx, ty, trailFontPx, rotMode);
+          }
+        }
+
+        // ルビ（ふりがな）がある場合は行右隣のルビ欄へ縦に描画（行末下枠を超えないよう厳密クランプ）
+        if (cell.ruby) {
+          const rubyChars = Array.from(cell.ruby);
+          if (rubyChars.length > 0) {
+            const safeSpanCells = Math.max(1, Math.min(cell.rubySpanCells || 1, GenkoRowsPerCol - row));
+            const spanPx = safeSpanCells * cellPx;
+            const stepY = spanPx / rubyChars.length;
+            const rubyFontPx = Math.min(cellPx * GenkoRubyFontRatio, stepY * GenkoRubyLineFitRatio);
+            const rubyAreaWidthPx = GenkoRubyGapWidthMm * GenkoCanvasPxPerMm;
+            const rubyCenterX = colLeftPx + cellPx + (rubyAreaWidthPx * 0.5);
+            for (let rIdx = 0; rIdx < rubyChars.length; rIdx++) {
+              const rCh = rubyChars[rIdx];
+              const ry = cellTopPx + (stepY * (rIdx + 0.5));
+              const rRot = GenkoMirrorRotateSet.has(rCh)
+                ? 'cw90_mirror'
+                : (GenkoRotate90CharSet.has(rCh) ? 'cw90' : 'none');
+              drawInkCenteredGlyph(rCh, rubyCenterX, ry, rubyFontPx, rRot);
+            }
+          }
+        }
+      }
+    }
+
+    const pngBytes = await canvasToPngBytes(canvas);
+    canvas.width = 1;
+    canvas.height = 1;
+    return pngBytes;
+  }
+
+  async function ensureGenkoWebFontsReady() {
+    if (document.fonts && typeof document.fonts.load === 'function') {
+      try {
+        await Promise.all([
+          document.fonts.load("400 16px 'Noto Serif JP'").catch(() => null),
+          document.fonts.load("600 16px 'Noto Serif JP'").catch(() => null)
+        ]);
+      } catch (_eFont) {}
+    }
+  }
+
+  // 段落データから A4横置き 400字詰め原稿用紙 PDF（右綴じ /R2L ベクター枠線＋高精細文字）を生成
+  async function generateGenkoManuscriptPdfBytes(paragraphs, lineColorHex, onPageProgress) {
+    await ensureGenkoWebFontsReady();
+    const pagesGrid = layoutGenkoPages(paragraphs);
+    const totalPages = pagesGrid.length;
+    const geom = computeGenkoGeometryMm();
+
+    const outDoc = await PDFLib.PDFDocument.create();
+    // 右綴じ (/ViewerPreferences << /Direction /R2L >>) を PDF カタログに設定
+    try {
+      const vpDict = outDoc.context.obj({ Direction: PDFLib.PDFName.of('R2L') });
+      outDoc.catalog.set(PDFLib.PDFName.of('ViewerPreferences'), vpDict);
+    } catch (_eR2L) {}
+
+    let pageFont = null;
+    try {
+      pageFont = await outDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+    } catch (_eFontEmbed) {}
+
+    const pageWPt = GenkoPaperWidthMm * MmToPt;
+    const pageHPt = GenkoPaperHeightMm * MmToPt;
+
+    for (let pIdx = 0; pIdx < totalPages; pIdx++) {
+      if (typeof onPageProgress === 'function') {
+        onPageProgress(pIdx + 1, totalPages);
+      }
+      const pdfPage = outDoc.addPage([pageWPt, pageHPt]);
+      drawGenkoVectorGridOnPdfPage(pdfPage, geom, lineColorHex, pIdx + 1, totalPages, pageFont);
+
+      const cols = pagesGrid[pIdx];
+      if (cols && cols.length > 0) {
+        const textPngBytes = await renderGenkoTextLayerPngBytes(cols, geom);
+        const pngImage = await outDoc.embedPng(textPngBytes);
+        pdfPage.drawImage(pngImage, {
+          x: 0,
+          y: 0,
+          width: pageWPt,
+          height: pageHPt
+        });
+      }
+      await new Promise(r => setTimeout(r, 0));
+    }
+
+    return await outDoc.save({ useObjectStreams: true });
+  }
+
+  // DOCS タブで「A4 原稿用紙（20字×20行）」選択時の組版実行フック
+  const _prevExecDocsBeforeGenko = window.executeDocsLayout;
+  window.executeDocsLayout = async function(isExportPdf) {
+    const paperSel = document.getElementById('docsPaperProfileSelect');
+    const paperMode = paperSel ? paperSel.value : '';
+    if (currentWritingDirection !== 'vertical' || paperMode !== GenkoModeValue) {
+      return _prevExecDocsBeforeGenko(isExportPdf);
+    }
+
+    if (isDocsBusy) return;
+    if (!selectedDocsId) {
+      showStatus('先にファイルを選択してください。', 'error');
+      return;
+    }
+
+    const gt = getGenkoPngText(currentLanguage);
+    setDocsButtonsBusy(true, 'export');
+    startDocsWorkingProgress(gt.workingGenko);
+    const lineColorHex = (document.getElementById('docsLineColorPicker') ? document.getElementById('docsLineColorPicker').value : GenkoDefaultLineColorHex) || GenkoDefaultLineColorHex;
+    const baseName = (selectedDocsName || 'Document').replace(/\.[^/.]+$/, '');
+
+    try {
+      let paragraphs = [];
+      const isHorizSample = (selectedDocsId === SAMPLE_MULTILINGUAL_DOCS_ID);
+      const isVertSample = (selectedDocsId === SAMPLE_VERTICAL_DOCS_ID);
+
+      if (isHorizSample || isVertSample) {
+        const srcServer = isVertSample ? TATEGAKI_CLOUD_RUN_URL : STUDIO_CLOUD_RUN_URL;
+        const resp = await fetch(srcServer.replace(/\/$/, '') + '/v3/sample/docx', { method: 'GET' });
+        if (!resp.ok) throw new Error('サンプル取得エラー (HTTP ' + resp.status + ')');
+        const rawBytes = new Uint8Array(await resp.arrayBuffer());
+        const xmlText = await extractDocxMainDocumentXml(rawBytes);
+        paragraphs = parseParagraphsFromDocxXmlForGenko(xmlText);
+      } else {
+        const rawPayload = await callGasRpc('getDocsRawPayloadForBrowser', { fileId: selectedDocsId });
+        if (!rawPayload || !rawPayload.success || !rawPayload.documentJson) {
+          throw new Error((rawPayload && rawPayload.error) ? rawPayload.error : 'Googleドキュメントの取得に失敗しました');
+        }
+        paragraphs = parseParagraphsFromDocsJsonForGenko(rawPayload.documentJson);
+      }
+
+      if (docsProgressTimer) { clearInterval(docsProgressTimer); docsProgressTimer = null; }
+      const pdfBytes = await generateGenkoManuscriptPdfBytes(paragraphs, lineColorHex, (cur, total) => {
+        const pct = Math.round((cur / total) * 95);
+        if (progressBar) progressBar.style.width = pct + '%';
+        if (progressPercent) progressPercent.textContent = pct + '%';
+        if (progressStatus) progressStatus.textContent = gt.workingGenko + ' (' + cur + ' / ' + total + ')';
+      });
+
+      handleDocsPdfOutput(pdfBytes, true, baseName + gt.genkoFileSuffix + '.pdf', paperMode);
+    } catch (err) {
+      stopDocsWorkingProgress(false);
+      setDocsButtonsBusy(false);
+      if (err && err.message === 'NOT_INSTALLED') {
+        if (statusMsg) statusMsg.style.display = 'none';
+        showMarketplaceInstallModal();
+        return;
+      }
+      showStatus('原稿用紙組版エラー: ' + err.message, 'error');
+    }
+  };
+  executeDocsLayout = window.executeDocsLayout;
+
+  // DOCX タブで「A4 原稿用紙（20字×20行）」選択時の組版実行フック
+  const _prevExecDocxBeforeGenko = window.executeDocxLayout;
+  window.executeDocxLayout = async function(isExportPdf) {
+    const paperSel = document.getElementById('docxPaperProfileSelect');
+    const paperMode = paperSel ? paperSel.value : '';
+    if (currentWritingDirection !== 'vertical' || paperMode !== GenkoModeValue) {
+      return _prevExecDocxBeforeGenko(isExportPdf);
+    }
+
+    if (isDocxBusy) return;
+    if (!selectedDocxFileId && !selectedDocxBase64) {
+      showStatus('先にファイルを選択してください。', 'error');
+      return;
+    }
+
+    const gt = getGenkoPngText(currentLanguage);
+    setDocxButtonsBusy(true, 'export');
+    startDocsWorkingProgress(gt.workingGenko);
+    const lineColorHex = (document.getElementById('docxLineColorPicker') ? document.getElementById('docxLineColorPicker').value : GenkoDefaultLineColorHex) || GenkoDefaultLineColorHex;
+    const baseName = (selectedDocxName || 'Document').replace(/\.[^/.]+$/, '');
+
+    try {
+      let effectiveB64 = selectedDocxBase64;
+      if (!effectiveB64 && selectedDocxFileId) {
+        const dlRes = await callGasRpc('getDriveDocxBase64ForBrowser', { fileId: selectedDocxFileId });
+        if (!dlRes || !dlRes.success || !dlRes.docxBase64) {
+          throw new Error((dlRes && dlRes.error) ? dlRes.error : 'Googleドライブからの .docx 取得に失敗しました');
+        }
+        effectiveB64 = dlRes.docxBase64;
+      }
+
+      const cleanB64 = effectiveB64.includes(',') ? effectiveB64.split(',')[1] : effectiveB64;
+      const rawBytes = base64ToBytes(cleanB64);
+      const xmlText = await extractDocxMainDocumentXml(rawBytes);
+      if (!xmlText) {
+        throw new Error('Word (.docx) 本文 XML の展開に失敗しました。');
+      }
+      const paragraphs = parseParagraphsFromDocxXmlForGenko(xmlText);
+
+      if (docsProgressTimer) { clearInterval(docsProgressTimer); docsProgressTimer = null; }
+      const pdfBytes = await generateGenkoManuscriptPdfBytes(paragraphs, lineColorHex, (cur, total) => {
+        const pct = Math.round((cur / total) * 95);
+        if (progressBar) progressBar.style.width = pct + '%';
+        if (progressPercent) progressPercent.textContent = pct + '%';
+        if (progressStatus) progressStatus.textContent = gt.workingGenko + ' (' + cur + ' / ' + total + ')';
+      });
+
+      handleDocxPdfOutput(pdfBytes, true, baseName + gt.genkoFileSuffix + '.pdf', paperMode);
+    } catch (err) {
+      stopDocsWorkingProgress(false);
+      setDocxButtonsBusy(false);
+      showStatus('原稿用紙組版エラー: ' + err.message, 'error');
+    }
+  };
+  executeDocxLayout = window.executeDocxLayout;
+
+  window.addEventListener('DOMContentLoaded', () => {
+    applyPngAndGenkoLabels(currentLanguage);
+    syncAllGenkoRuleVisibilities();
+  });
 
 
   </script>
