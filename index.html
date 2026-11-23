@@ -347,6 +347,27 @@
       background: #e2e8f0;
     }
 
+    .btn-guide-highlight {
+      display: inline-block;
+      background: #059669;
+      color: #ffffff;
+      border: 1px solid #047857;
+      text-decoration: none;
+      font-size: 0.92rem;
+      font-weight: 700;
+      padding: 0.58rem 1.2rem;
+      border-radius: 7px;
+      white-space: nowrap;
+      box-shadow: 0 2px 6px rgba(5, 150, 105, 0.28);
+      transition: background-color 0.15s, transform 0.15s;
+    }
+
+    .btn-guide-highlight:hover {
+      background: #047857;
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+
     .policy-mini-links {
       font-size: 0.8rem;
       color: var(--text-sub);
@@ -480,7 +501,7 @@
           </ul>
           <div class="action-links">
             <a href="/linealigned/" class="btn-primary" id="la-btn-open">Web版スタジオを開く</a>
-            <a href="/linealigned/guide.html" class="btn-secondary" id="la-btn-guide">詳しい使い方・機能ガイド</a>
+            <a href="/linealigned/guide.html" class="btn-guide-highlight" id="la-btn-guide">📖 詳しい使い方・機能ガイド</a>
             <a href="https://workspace.google.com/marketplace/app/linealigned/435629186234" target="_blank" rel="noopener" class="btn-secondary">Google Workspace Marketplace</a>
             <span class="policy-mini-links">
               <a href="/linealigned/privacy.html" id="la-link-privacy">プライバシーポリシー</a>
@@ -747,7 +768,7 @@
         laF2: '<strong>四百字詰め原稿用紙（20字×20行）＆ 縦書き自動組版：</strong> 横書きの Google ドキュメント™・Word をそのまま縦書き罫線や 20×20 原稿用紙（魚尾・ルビ・行末句読点・罫線カラー対応）へ変換するほか、縦書き Word（.docx）も自動認識して組版します。',
         laF3: '<strong>左右・上下の見開きノート ＆ 全ページ PNG画像（ZIP）一括出力：</strong> 見開きノート生成や既存PDFへのノート面結合に加え、SNS共有や資料貼り付けに便利な高精細PNG（ZIP）保存に対応。Word・PDF・内蔵サンプル5種はインストール不要ですぐ試せます。',
         laBtnOpen: 'Web版スタジオを開く',
-        laBtnGuide: '詳しい使い方・機能ガイド',
+        laBtnGuide: '📖 詳しい使い方・機能ガイド',
         svTitle: 'Short Verse Studio（短歌・俳句・漢詩・世界短詩の縦型動画生成スタジオ）',
         svSub: '短歌・俳句・絶句・時調・ルバイヤートなどの短詩を、1文字ずつ筆で書き進める縦型MP4動画に自動変換',
         svP1: '自作の短歌（5・7・5・7・7）や俳句（5・7・5）、自由律俳句、漢詩（絶句）などの短い言葉をフォームに入力するだけで、和紙や四季の情景背景の上に1文字ずつ毛筆・明朝体で浮かび上がる高精細フルHD縦型動画（1080×1920 MP4）をブラウザ内で即座に生成できるスタジオです。',
@@ -858,7 +879,7 @@
         laF2: '<strong>20×20 Manuscript Paper & Vertical Typesetting:</strong> Turn horizontal Google Docs™ or Word into 400-char manuscript paper (with gyobi marks, ruby & kinsoku punctuation) or vertical ruled pages, plus native vertical Word (.docx) auto-detection.',
         laF3: '<strong>Study Spreads & Batch PNG (ZIP) Export:</strong> Create left-right/top-bottom spreads, merge note pages onto PDFs, and export high-res PNG images for social media or slides. Word, PDF, and 5 samples work instantly with no install.',
         laBtnOpen: 'Open Web Studio',
-        laBtnGuide: 'User Guide & Features',
+        laBtnGuide: '📖 User Guide & Features',
         svTitle: 'Short Verse Studio (Vertical & Multilingual Poetry Video Maker)',
         svSub: 'Turn Haiku, Tanka, Jueju, Sijo, Rubaiyat, Ghazal, and Epigrams into 1080×1920 MP4 videos',
         svP1: 'Enter your short poem and watch each character appear stroke by stroke over 16 seasonal and traditional paper backgrounds. Exports high-definition vertical MP4 videos directly in your browser.',
@@ -969,7 +990,7 @@
         laF2: '<strong>四百字稿纸（20字×20行）＆ 竖排自动转换：</strong> 将横排 Google 文档™ 或 Word 一键转为带中央鱼尾、注音栏与自定义配色的 20×20 稿纸或竖排笔记，并自动识别原生竖排 Word（.docx）。',
         laF3: '<strong>左右/上下跨页笔记 ＆ 全页 PNG（ZIP）图片导出：</strong> 支持跨页笔记、现有 PDF 拼接笔记面，以及适合社交平台分享的高清 PNG（ZIP）打包保存。Word、PDF 与 5 种内置样本免安装即用。',
         laBtnOpen: '打开网页版工作室',
-        laBtnGuide: '详细功能指南',
+        laBtnGuide: '📖 详细功能指南',
         svTitle: 'Short Verse Studio（短歌・俳句・绝句・世界短诗竖屏视频生成）',
         svSub: '将绝句、俳句、短歌、时调、鲁拜集等短诗自动转化为逐字书写的全高清 MP4 视频',
         svP1: '只需输入绝句（五言/七言）、俳句或短歌，即可在山水画、红梅、四季和纸等16种背景上生成逐字浮现的 1080×1920 竖屏 MP4 视频。',
@@ -1080,7 +1101,7 @@
         laF2: '<strong>四百字稿紙（20字×20行）＆ 直書自動轉換：</strong> 將橫書 Google 文件™ 或 Word 一鍵轉為帶中央魚尾、注音欄與自訂配色的 20×20 稿紙或直書筆記，並自動辨識原生直書 Word（.docx）。',
         laF3: '<strong>左右／上下跨頁筆記 ＆ 全頁 PNG（ZIP）圖片匯出：</strong> 支援跨頁筆記、現有 PDF 合併筆記面，以及方便社群分享的高解析 PNG（ZIP）打包下載。Word、PDF 與 5 種內建範本免安裝即可使用。',
         laBtnOpen: '開啟網頁版工作室',
-        laBtnGuide: '詳細功能指南',
+        laBtnGuide: '📖 詳細功能指南',
         svTitle: 'Short Verse Studio（短歌・俳句・絕句・世界短詩直式影片生成）',
         svSub: '將絕句、俳句、短歌、時調、魯拜集等短詩自動轉化為逐字書寫的全高清 MP4 影片',
         svP1: '只需輸入絕句（五言/七言）、俳句或短歌，即可在山水畫、紅梅、四季和紙等16種背景上生成逐字浮現的 1080×1920 直式 MP4 影片。',
@@ -1191,7 +1212,7 @@
         laF2: '<strong>400자 원고지(20자×20행) 및 세로쓰기 자동 조판:</strong> 가로 Google 문서™·Word를 어미·루비·줄 색상이 적용된 20×20 원고지나 세로 줄눈으로 변환하며, 세로쓰기 Word(.docx)도 자동 인식합니다.',
         laF3: '<strong>좌우·상하 펼침 노트 및 전 페이지 PNG(ZIP) 일괄 저장:</strong> 펼침 노트 생성과 기존 PDF 노트면 결합에 더해 SNS 공유용 고해상도 PNG(ZIP) 저장을 지원합니다. Word·PDF·샘플 5종은 무설치로 바로 체험 가능합니다.',
         laBtnOpen: '웹 스튜디오 열기',
-        laBtnGuide: '상세 사용 가이드',
+        laBtnGuide: '📖 상세 사용 가이드',
         svTitle: 'Short Verse Studio（시조·단가·하이쿠·한시 세로형 영상 스튜디오）',
         svSub: '시조, 하이쿠, 단가, 절구, 루바이야트 등 짧은 시를 한 글자씩 써 내려가는 Full HD MP4 영상으로 변환',
         svP1: '시조(초장·중장·종장), 하이쿠, 단가, 한시 등을 입력하면 한지·고려청자·사계절 배경 위에 한 글자씩 붓글씨처럼 나타나는 1080×1920 세로형 MP4 영상을 브라우저에서 즉시 생성합니다.',
