@@ -1418,6 +1418,325 @@
             </div>
           </div>
         </div>
+
+        <!-- NEW: Dual-Axis Master Reference (7 Goal-Driven Reverse Lookup + All 26 Routes / 52 Combinations) -->
+        <style>
+          .matrix-dual-wrap {
+            margin-top: 1.5rem;
+            padding-top: 1.4rem;
+            border-top: 1px dashed #cbd5e1;
+          }
+          .matrix-table-scroll {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            background: #ffffff;
+          }
+          .matrix-ref-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.84rem;
+            line-height: 1.5;
+            min-width: 640px;
+          }
+          .matrix-ref-table th {
+            background: #f1f5f9;
+            color: #0f172a;
+            font-weight: 800;
+            text-align: left;
+            padding: 9px 11px;
+            border-bottom: 2px solid #cbd5e1;
+            white-space: nowrap;
+          }
+          .matrix-ref-table td {
+            padding: 8px 11px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #1e293b;
+            vertical-align: top;
+          }
+          .matrix-ref-table tr:last-child td {
+            border-bottom: none;
+          }
+          .matrix-ref-table tr:hover td {
+            background: #f8fafc;
+          }
+          .route-badge {
+            display: inline-block;
+            font-size: 0.74rem;
+            font-weight: 800;
+            padding: 1px 7px;
+            border-radius: 999px;
+            background: #e0f2fe;
+            color: #0369a1;
+            margin: 1px 2px;
+            white-space: nowrap;
+          }
+          .route-badge.vert {
+            background: #fee2e2;
+            color: #b91c1c;
+          }
+          .route-badge.pdf {
+            background: #e0e7ff;
+            color: #4338ca;
+          }
+          .matrix-src-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            justify-content: center;
+            margin: 0.85rem 0 0.85rem;
+          }
+          .matrix-src-btn {
+            border: 1px solid #cbd5e1;
+            background: #ffffff;
+            color: #334155;
+            font-weight: 700;
+            font-size: 0.83rem;
+            padding: 7px 14px;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+          }
+          .matrix-src-btn:hover {
+            border-color: #93c5fd;
+            background: #eff6ff;
+          }
+          .matrix-src-btn.active {
+            background: #1a73e8;
+            border-color: #1a73e8;
+            color: #ffffff;
+          }
+          .matrix-src-panel {
+            display: none;
+          }
+          .matrix-src-panel.active {
+            display: block;
+          }
+        </style>
+
+        <!-- Part A: Goal-Driven Reverse Lookup (7 Goals) -->
+        <div class="matrix-dual-wrap">
+          <h3 style="font-size: 1.08rem; font-weight: 800; color: #0f172a; margin-bottom: 0.35rem; text-align: center;">
+            <span class="lang-content ja">🎯 目的から逆引き：「何を作りたいか」でわかる設定早見表（7大レシピ）</span>
+            <span class="lang-content en">🎯 Find by Goal: 7 Quick Recipes for What You Want to Create</span>
+            <span class="lang-content zh">🎯 依目的反查：7 大排版需求快速設定表</span>
+            <span class="lang-content ko">🎯 목적별 역찾기: 만들고 싶은 결과물로 보는 7가지 설정표</span>
+          </h3>
+          <p style="font-size: 0.83rem; color: var(--text-muted); text-align: center; margin-bottom: 0.85rem;">
+            <span class="lang-content ja">作りたい完成品から、どのボタンを押してどの「① 用紙・印刷形式」を選べばよいかがすぐわかります（右端の番号は下の全26ルート表と対応）。</span>
+            <span class="lang-content en">Pick what you want to make to see the exact direction &amp; format option (numbers match the 26-route table below).</span>
+            <span class="lang-content zh">從您想製作的成品，直接對照應選擇的方向與紙張項目（右側編號對應下方全 26 路徑表）。</span>
+            <span class="lang-content ko">원하는 완성 형태에 맞춰 선택할 방향과 용지 옵션을 바로 확인할 수 있습니다 (우측 번호는 아래 26개 전체 경로표와 연동).</span>
+          </p>
+
+          <div class="matrix-table-scroll">
+            <table class="matrix-ref-table">
+              <thead>
+                <tr>
+                  <th><span class="lang-content ja">やりたいこと（目的）</span><span class="lang-content en">Your Goal</span><span class="lang-content zh">製作目的</span><span class="lang-content ko">목적 (만들고 싶은 것)</span></th>
+                  <th><span class="lang-content ja">選ぶ方向 ＆ ① 用紙・印刷形式</span><span class="lang-content en">Direction &amp; Format Option</span><span class="lang-content zh">方向與 ① 紙張格式</span><span class="lang-content ko">방향 &amp; ① 용지·인쇄 형식</span></th>
+                  <th><span class="lang-content ja">対応する入力元（ルート番号）</span><span class="lang-content en">Supported Inputs (Route #)</span><span class="lang-content zh">支援輸入來源（編號）</span><span class="lang-content ko">지원 입력 파일 (경로 번호)</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>① <span class="lang-content ja">iPad（Goodnotes等）の1画面で、本文の隣・下に手書きノートを取りたい</span><span class="lang-content en">Side-by-side or top-bottom study notes on one iPad screen</span><span class="lang-content zh">在 iPad 單一畫面同時閱讀正文並手寫筆記</span><span class="lang-content ko">iPad 한 화면에서 본문 옆·아래에 손글씨 필기</span></strong></td>
+                  <td><span class="lang-content ja">横：<code>A3 横見開き（左：本文＋右：ノート）</code><br>縦：<code>A3 見開きノート（上：縦書き＋下：ノート）</code></span><span class="lang-content en">Horiz: <code>A3 Landscape Spread (Left + Right Note)</code><br>Vert: <code>A3 Top-Bottom Spread (Top + Bottom Note)</code></span><span class="lang-content zh">橫：<code>A3 橫跨頁（左正文＋右筆記）</code><br>直：<code>A3 上下跨頁（上直書＋下筆記）</code></span><span class="lang-content ko">가로: <code>A3 가로 펼침 (좌 본문+우 노트)</code><br>세로: <code>A3 상하 펼침 (상 세로+하 노트)</code></span></td>
+                  <td>Docs <span class="route-badge">02</span><span class="route-badge vert">08</span> / Word <span class="route-badge">12</span><span class="route-badge vert">17</span><span class="route-badge vert">21</span> / PDF <span class="route-badge pdf">25</span></td>
+                </tr>
+                <tr>
+                  <td><strong>② <span class="lang-content ja">家庭・コンビニで「A4両面印刷」して、綴じノート／ルーズリーフにしたい</span><span class="lang-content en">Duplex print on A4 paper for 2-ring / loose-leaf binders</span><span class="lang-content zh">家用或超商「A4 雙面列印」裝訂為對開活頁筆記</span><span class="lang-content ko">가정·편의점에서 'A4 양면 인쇄'하여 바인더 노트로 제본</span></strong></td>
+                  <td><span class="lang-content ja">横：<code>A4 見開き（裏：本文＋表：ノート）</code><br>縦：<code>A4 見開きノート（上［裏］＋下［表］）</code></span><span class="lang-content en">Horiz: <code>A4 Duplex Spread (Even Text + Odd Note)</code><br>Vert: <code>A4 Vertical Duplex Spread</code></span><span class="lang-content zh">橫：<code>A4 跨頁（偶數正文＋奇數筆記）</code><br>直：<code>A4 直書上下雙面跨頁</code></span><span class="lang-content ko">가로: <code>A4 펼침 (뒷면 본문+앞면 노트)</code><br>세로: <code>A4 세로 상하 양면 펼침</code></span></td>
+                  <td>Docs <span class="route-badge">03</span><span class="route-badge vert">09</span> / Word <span class="route-badge">13</span><span class="route-badge vert">18</span><span class="route-badge vert">22</span> / PDF <span class="route-badge pdf">26</span></td>
+                </tr>
+                <tr>
+                  <td><strong>③ <span class="lang-content ja">小説・エッセイ・小論文を「四百字詰め原稿用紙」PDFやSNS画像にしたい</span><span class="lang-content en">Convert stories/essays into 20×20 (400-char) manuscript paper PDF/PNG</span><span class="lang-content zh">將小說、散文轉為「20×20 四百字稿紙」PDF 或社群圖片</span><span class="lang-content ko">소설·수필·논술을 '400자 원고지(20×20)' PDF 및 SNS 이미지로 변환</span></strong></td>
+                  <td><span class="lang-content ja">赤い <code>縦書き</code>（縦Wordは自動）➔ <code>A4 原稿用紙 (20字×20行)</code> ➔ <code>PDF</code> / <code>PNG出力 (ZIP)</code>（<a href="#genko-steps" style="color:#dc2626;font-weight:700;">📕赤丸図解へ</a>）</span><span class="lang-content en">Red <code>Vertical</code> ➔ <code>A4 Manuscript (20×20)</code> ➔ <code>PDF</code> / <code>PNG (ZIP)</code> (<a href="#genko-steps" style="color:#dc2626;font-weight:700;">📕Visual Guide</a>)</span><span class="lang-content zh">紅色 <code>直書</code> ➔ <code>A4 稿紙 (20×20)</code> ➔ <code>PDF</code> / <code>PNG (ZIP)</code>（<a href="#genko-steps" style="color:#dc2626;font-weight:700;">📕圖解步驟</a>）</span><span class="lang-content ko">빨간 <code>세로쓰기</code> ➔ <code>A4 원고지 (20×20)</code> ➔ <code>PDF</code> / <code>PNG (ZIP)</code> (<a href="#genko-steps" style="color:#dc2626;font-weight:700;">📕그림 안내</a>)</span></td>
+                  <td>Docs <span class="route-badge vert">11</span> / Word <span class="route-badge vert">20</span><span class="route-badge vert">24</span></td>
+                </tr>
+                <tr>
+                  <td><strong>④ <span class="lang-content ja">縦書き機能がないGoogleドキュメントや横書きWordを「普通の縦書き文書（白紙 or 縦罫線）」にしたい</span><span class="lang-content en">Convert horizontal Google Docs / Word into clean vertical pages (lined or blank)</span><span class="lang-content zh">將無直書功能的 Google 文件或橫書 Word 轉為純直書單頁（白紙或直罫線）</span><span class="lang-content ko">Google 문서나 가로 Word를 깔끔한 세로쓰기 문서(백지 또는 세로 줄눈)로 변환</span></strong></td>
+                  <td><span class="lang-content ja">赤い <code>縦書き</code> ➔ <code>A4（縦書き本文のみ）</code><br>※罫線なしの白紙にしたい時は <code>② 無地</code> を選択！</span><span class="lang-content en">Red <code>Vertical</code> ➔ <code>A4 (Vertical Body Only)</code><br>*Choose <code>Blank</code> in ② for clean unruled pages!</span><span class="lang-content zh">紅色 <code>直書</code> ➔ <code>A4（僅直書正文）</code><br>※若需無格線白紙請於 ② 選取 <code>無地</code>！</span><span class="lang-content ko">빨간 <code>세로쓰기</code> ➔ <code>A4 (세로 본문만)</code><br>※줄 없는 백지를 원하면 ②에서 <code>무지</code> 선택!</span></td>
+                  <td>Docs <span class="route-badge vert">10</span> / Word <span class="route-badge vert">19</span><span class="route-badge vert">23</span></td>
+                </tr>
+                <tr>
+                  <td><strong>⑤ <span class="lang-content ja">見出し・数式・図表が切れない「6/7/8mm罫線・方眼入りのA4単票プリント」を作りたい</span><span class="lang-content en">Single-page A4 ruled/grid handouts with zero heading or figure clipping</span><span class="lang-content zh">製作標題與圖表零截斷的「6/7/8mm 格線・方格 A4 單頁講義」</span><span class="lang-content ko">제목·수식·표가 잘리지 않는 '6/7/8mm 줄눈·방안 A4 프린트' 제작</span></strong></td>
+                  <td><span class="lang-content ja">横書きのまま <code>A4（本文のみ）</code> ＋ <code>方眼 / 横罫線（6.0 / 7.0 / 8.0mm）</code></span><span class="lang-content en">Horizontal <code>A4 (Body Only)</code> + <code>6.0 / 7.0 / 8.0mm Grid or Ruled</code></span><span class="lang-content zh">維持橫書 <code>A4（僅正文）</code> ＋ <code>6.0 / 7.0 / 8.0mm 方格或橫線</code></span><span class="lang-content ko">가로 그대로 <code>A4 (본문만)</code> + <code>6.0 / 7.0 / 8.0mm 방안·줄눈</code></span></td>
+                  <td>Docs <span class="route-badge">04</span> / Word <span class="route-badge">14</span></td>
+                </tr>
+                <tr>
+                  <td><strong>⑥ <span class="lang-content ja">移動中の暗記やミニバインダー用に「コンパクトなA5サイズ」で作りたい</span><span class="lang-content en">Portable A5 loose-leaf spreads or A5 study cards</span><span class="lang-content zh">製作適合隨身背誦與小型活頁夾的「A5 尺寸」筆記</span><span class="lang-content ko">이동 중 암기나 소형 바인더용 'A5 사이즈' 노트·프린트 제작</span></strong></td>
+                  <td><code>A5 見開き（裏：組版＋表：ノート）</code> / <code>A5（本文のみ）</code></td>
+                  <td>Docs <span class="route-badge">05</span><span class="route-badge">06</span> / Word <span class="route-badge">15</span><span class="route-badge">16</span></td>
+                </tr>
+                <tr>
+                  <td><strong>⑦ <span class="lang-content ja">元のGoogleドキュメントと組版後の仕上がりを左右に並べて見比べたい</span><span class="lang-content en">Compare original Google Doc vs. typeset result side-by-side</span><span class="lang-content zh">左右並排對比原始 Google 文件與排版後效果</span><span class="lang-content ko">원본 Google 문서와 조판 결과를 좌우로 나란히 비교</span></strong></td>
+                  <td><code>A3 デモ見開き（左：原本 ＋ 右：組版）</code></td>
+                  <td>Docs <span class="route-badge">01</span><span class="route-badge vert">07</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Part B: Complete 26-Route / 52-Output Reference Table by Input Source -->
+        <div class="matrix-dual-wrap">
+          <h3 style="font-size: 1.08rem; font-weight: 800; color: #0f172a; margin-bottom: 0.35rem; text-align: center;">
+            <span class="lang-content ja">📋 入力ファイル別：全26ルート（出力掛け合わせ全52通り）完全対応表</span>
+            <span class="lang-content en">📋 Complete Reference: All 26 Layout Routes (52 Output Combinations) by File Type</span>
+            <span class="lang-content zh">📋 依輸入檔案分類：全 26 種排版路徑（52 種輸出組合）總覽表</span>
+            <span class="lang-content ko">📋 입력 파일별: 전체 26개 조판 경로 (52가지 출력 조합) 완전 대응표</span>
+          </h3>
+
+          <div class="matrix-src-tabs">
+            <button type="button" class="matrix-src-btn active" onclick="switchMatrixSrc('docs', this)">
+              <span class="lang-content ja">Google ドキュメント（01〜11）</span>
+              <span class="lang-content en">Google Docs™ (01–11)</span>
+              <span class="lang-content zh">Google 文件™（01〜11）</span>
+              <span class="lang-content ko">Google 문서™ (01~11)</span>
+            </button>
+            <button type="button" class="matrix-src-btn" onclick="switchMatrixSrc('word-h', this)">
+              <span class="lang-content ja">横書き Word（12〜20）</span>
+              <span class="lang-content en">Horizontal Word (12–20)</span>
+              <span class="lang-content zh">橫書 Word（12〜20）</span>
+              <span class="lang-content ko">가로 Word (12~20)</span>
+            </button>
+            <button type="button" class="matrix-src-btn" onclick="switchMatrixSrc('word-v', this)">
+              <span class="lang-content ja">縦書き Word［自動認識］（21〜24）</span>
+              <span class="lang-content en">Vertical Word [Auto] (21–24)</span>
+              <span class="lang-content zh">直書 Word［自動］（21〜24）</span>
+              <span class="lang-content ko">세로 Word [자동] (21~24)</span>
+            </button>
+            <button type="button" class="matrix-src-btn" onclick="switchMatrixSrc('pdf', this)">
+              <span class="lang-content ja">手元の PDF（25〜26）</span>
+              <span class="lang-content en">Existing PDF (25–26)</span>
+              <span class="lang-content zh">現有 PDF（25〜26）</span>
+              <span class="lang-content ko">기존 PDF (25~26)</span>
+            </button>
+          </div>
+
+          <!-- Tab 1: Google Docs (01-11) -->
+          <div id="matrix-src-docs" class="matrix-src-panel active">
+            <div class="matrix-table-scroll">
+              <table class="matrix-ref-table">
+                <thead>
+                  <tr>
+                    <th>No.</th>
+                    <th><span class="lang-content ja">方向操作</span><span class="lang-content en">Direction</span><span class="lang-content zh">方向切換</span><span class="lang-content ko">방향 조작</span></th>
+                    <th><span class="lang-content ja">① 用紙・印刷形式（プルダウン全項目）</span><span class="lang-content en">① Paper / Layout Option</span><span class="lang-content zh">① 紙張・列印格式</span><span class="lang-content ko">① 용지·인쇄 형식</span></th>
+                    <th><span class="lang-content ja">② 罫線・幅 ／ ③ 色</span><span class="lang-content en">② Grid/Pitch &amp; ③ Color</span><span class="lang-content zh">② 格線與 ③ 顏色</span><span class="lang-content ko">② 줄눈·폭 / ③ 색상</span></th>
+                    <th><span class="lang-content ja">出力形式</span><span class="lang-content en">Outputs</span><span class="lang-content zh">匯出格式</span><span class="lang-content ko">출력 형식</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td><span class="route-badge">01</span></td><td>横書き</td><td><code>A3 デモ見開き（左：原本 ＋ 右：組版）</code></td><td>方眼・横罫線（6/7/8mm）・無地 ＋ カラー</td><td>PDF / PNG(ZIP)</td></tr>
+                  <tr><td><span class="route-badge">02</span></td><td>横書き</td><td><code>A3 横見開き（左：組版 ＋ 右：ノート）</code></td><td>方眼・横罫線（6/7/8mm）・無地 ＋ カラー</td><td>PDF / PNG(ZIP)</td></tr>
+                  <tr><td><span class="route-badge">03</span></td><td>横書き</td><td><code>A4 見開き（裏：組版 ＋ 表：ノート）</code></td><td>方眼・横罫線（6/7/8mm）・無地 ＋ カラー</td><td>PDF / PNG(ZIP)</td></tr>
+                  <tr><td><span class="route-badge">04</span></td><td>横書き</td><td><code>A4（本文のみ）</code></td><td>方眼・横罫線（6/7/8mm）・無地 ＋ カラー</td><td>PDF / PNG(ZIP)</td></tr>
+                  <tr><td><span class="route-badge">05</span></td><td>横書き</td><td><code>A5 見開き（裏：組版 ＋ 表：ノート）</code></td><td>方眼・横罫線（6/7/8mm）・無地 ＋ カラー</td><td>PDF / PNG(ZIP)</td></tr>
+                  <tr><td><span class="route-badge">06</span></td><td>横書き</td><td><code>A5（本文のみ）</code></td><td>方眼・横罫線（6/7/8mm）・無地 ＋ カラー</td><td>PDF / PNG(ZIP)</td></tr>
+                  <tr><td><span class="route-badge vert">07</span></td><td>赤い「縦書き」を押す</td><td><code>A3 デモ見開き（左：原本 ＋ 右：組版）</code></td><td>方眼・縦罫線（6/7/8mm）・無地 ＋ カラー</td><td>PDF / PNG(ZIP)</td></tr>
+                  <tr><td><span class="route-badge vert">08</span></td><td>赤い「縦書き」を押す</td><td><code>A3 見開きノート（上：縦書き組版 ＋ 下：ノート）</code></td><td>方眼・縦罫線（6/7/8mm）・無地 ＋ カラー</td><td>PDF / PNG(ZIP)</td></tr>
+                  <tr><td><span class="route-badge vert">09</span></td><td>赤い「縦書き」を押す</td><td><code>A4 見開きノート（上［裏］：縦書き組版 ＋ 下［表］：ノート）</code></td><td>方眼・縦罫線（6/7/8mm）・無地 ＋ カラー</td><td>PDF / PNG(ZIP)</td></tr>
+                  <tr><td><span class="route-badge vert">10</span></td><td>赤い「縦書き」を押す</td><td><code>A4（縦書き本文のみ）</code></td><td>方眼・縦罫線（6/7/8mm）・無地 ＋ カラー</td><td>PDF / PNG(ZIP)</td></tr>
+                  <tr><td><span class="route-badge vert">11</span></td><td>赤い「縦書き」を押す</td><td><strong><code>A4 原稿用紙 (20字×20行)</code></strong>（<a href="#genko-steps" style="color:#dc2626;">📕図解あり</a>）</td><td>②は自動非表示 ／ ③罫線カラーのみ適用</td><td>PDF / PNG(ZIP)</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Tab 2: Horizontal Word (12-20) -->
+          <div id="matrix-src-word-h" class="matrix-src-panel">
+            <div class="matrix-table-scroll">
+              <table class="matrix-ref-table">
+                <thead>
+                  <tr>
+                    <th>No.</th>
+                    <th>方向操作</th>
+                    <th>① 用紙・印刷形式（プルダウン全項目）</th>
+                    <th>② 罫線・幅 ／ ③ 色</th>
+                    <th>出力形式</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td><span class="route-badge">12</span></td><td>横書き</td><td><code>A3 横見開き（左：組版 ＋ 右：ノート）</code></td><td>方眼・横罫線（6/7/8mm）・無地 ＋ カラー</td><td>PDF / PNG(ZIP)</td></tr>
+                  <tr><td><span class="route-badge">13</span></td><td>横書き</td><td><code>A4 見開き（裏：組版 ＋ 表：ノート）</code></td><td>方眼・横罫線（6/7/8mm）・無地 ＋ カラー</td><td>PDF / PNG(ZIP)</td></tr>
+                  <tr><td><span class="route-badge">14</span></td><td>横書き</td><td><code>A4（本文のみ）</code></td><td>方眼・横罫線（6/7/8mm）・無地 ＋ カラー</td><td>PDF / PNG(ZIP)</td></tr>
+                  <tr><td><span class="route-badge">15</span></td><td>横書き</td><td><code>A5 見開き（裏：組版 ＋ 表：ノート）</code></td><td>方眼・横罫線（6/7/8mm）・無地 ＋ カラー</td><td>PDF / PNG(ZIP)</td></tr>
+                  <tr><td><span class="route-badge">16</span></td><td>横書き</td><td><code>A5（本文のみ）</code></td><td>方眼・横罫線（6/7/8mm）・無地 ＋ カラー</td><td>PDF / PNG(ZIP)</td></tr>
+                  <tr><td><span class="route-badge vert">17</span></td><td>赤い「縦書き」を押す</td><td><code>A3 見開きノート（上：縦書き組版 ＋ 下：ノート）</code></td><td>方眼・縦罫線（6/7/8mm）・無地 ＋ カラー</td><td>PDF / PNG(ZIP)</td></tr>
+                  <tr><td><span class="route-badge vert">18</span></td><td>赤い「縦書き」を押す</td><td><code>A4 見開きノート（上［裏］：縦書き組版 ＋ 下［表］：ノート）</code></td><td>方眼・縦罫線（6/7/8mm）・無地 ＋ カラー</td><td>PDF / PNG(ZIP)</td></tr>
+                  <tr><td><span class="route-badge vert">19</span></td><td>赤い「縦書き」を押す</td><td><code>A4（縦書き本文のみ）</code></td><td>方眼・縦罫線（6/7/8mm）・無地 ＋ カラー</td><td>PDF / PNG(ZIP)</td></tr>
+                  <tr><td><span class="route-badge vert">20</span></td><td>赤い「縦書き」を押す</td><td><strong><code>A4 原稿用紙 (20字×20行)</code></strong>（<a href="#genko-steps" style="color:#dc2626;">📕図解あり</a>）</td><td>②は自動非表示 ／ ③罫線カラーのみ適用</td><td>PDF / PNG(ZIP)</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Tab 3: Vertical Word Auto-Detected (21-24) -->
+          <div id="matrix-src-word-v" class="matrix-src-panel">
+            <div class="matrix-table-scroll">
+              <table class="matrix-ref-table">
+                <thead>
+                  <tr>
+                    <th>No.</th>
+                    <th>方向操作</th>
+                    <th>① 用紙・印刷形式（プルダウン全項目）</th>
+                    <th>② 罫線・幅 ／ ③ 色</th>
+                    <th>出力形式</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td><span class="route-badge vert">21</span></td><td>自動認識（ボタン不要）</td><td><code>A3 見開きノート（上：縦書き組版 ＋ 下：ノート）</code></td><td>方眼・縦罫線（6/7/8mm）・無地 ＋ カラー</td><td>PDF / PNG(ZIP)</td></tr>
+                  <tr><td><span class="route-badge vert">22</span></td><td>自動認識（ボタン不要）</td><td><code>A4 見開きノート（上［裏］：縦書き組版 ＋ 下［表］：ノート）</code></td><td>方眼・縦罫線（6/7/8mm）・無地 ＋ カラー</td><td>PDF / PNG(ZIP)</td></tr>
+                  <tr><td><span class="route-badge vert">23</span></td><td>自動認識（ボタン不要）</td><td><code>A4（縦書き本文のみ）</code></td><td>方眼・縦罫線（6/7/8mm）・無地 ＋ カラー</td><td>PDF / PNG(ZIP)</td></tr>
+                  <tr><td><span class="route-badge vert">24</span></td><td>自動認識（ボタン不要）</td><td><strong><code>A4 原稿用紙 (20字×20行)</code></strong>（<a href="#genko-steps" style="color:#dc2626;">📕図解あり</a>）</td><td>②は自動非表示 ／ ③罫線カラーのみ適用</td><td>PDF / PNG(ZIP)</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Tab 4: Existing PDF (25-26) -->
+          <div id="matrix-src-pdf" class="matrix-src-panel">
+            <div class="matrix-table-scroll">
+              <table class="matrix-ref-table">
+                <thead>
+                  <tr>
+                    <th>No.</th>
+                    <th>対象データ</th>
+                    <th>① 用紙・印刷形式（プルダウン全項目）</th>
+                    <th>② 罫線・幅 ／ ③ 色</th>
+                    <th>ページ指定 ＆ 出力形式</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td><span class="route-badge pdf">25</span></td><td>既存PDFそのまま結合</td><td><code>A3 横見開き（左：原本 ＋ 右：ノート）</code></td><td>方眼・横罫線（6/7/8mm）・無地 ＋ カラー</td><td>範囲指定1冊 or 全頁30頁分冊 ➔ PDF</td></tr>
+                  <tr><td><span class="route-badge pdf">26</span></td><td>既存PDFそのまま結合</td><td><code>A4 見開き（裏：原本 ＋ 表：ノート）</code></td><td>方眼・横罫線（6/7/8mm）・無地 ＋ カラー</td><td>範囲指定1冊 or 全頁30頁分冊 ➔ PDF</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <script>
+            function switchMatrixSrc(srcKey, clickedBtn) {
+              document.querySelectorAll('.matrix-src-btn').forEach(function(btn) {
+                btn.classList.remove('active');
+              });
+              if (clickedBtn) {
+                clickedBtn.classList.add('active');
+              }
+              document.querySelectorAll('.matrix-src-panel').forEach(function(panel) {
+                panel.classList.remove('active');
+              });
+              var target = document.getElementById('matrix-src-' + srcKey);
+              if (target) {
+                target.classList.add('active');
+              }
+            }
+          </script>
+        </div>
       </div>
     </div>
   </section>
