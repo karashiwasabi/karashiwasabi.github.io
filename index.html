@@ -18,7 +18,7 @@
   <title>わさびとからし</title>
   <meta name="apple-mobile-web-app-title" content="わさびとからし">
   <meta name="application-name" content="わさびとからし">
-  <meta name="description" content="わさびとからし（wasabikarashi.com）：Word・Google ドキュメント™ の罫線ノート＆縦書き組版ツール「Line-aligned」、短歌・俳句・世界短詩の縦型動画生成「Short Verse Studio」、「地図と一緒によむ三国志」「地図と一緒によむ歌枕」「地図と一緒によむアーサー王物語」を公開しています。">
+  <meta name="description" content="わさびとからし（wasabikarashi.com）：Word・Google ドキュメント™ の罫線ノート＆縦書き組版ツール「Line-aligned」、短歌・俳句・世界短詩の縦型動画生成「Short Verse Studio」、「地図と一緒によむ三国志」「地図と一緒によむ歌枕」「地図と一緒によむアーサー王物語」「地図と一緒によむ八十日間世界一周」を公開しています。">
   <link rel="icon" type="image/x-icon" href="favicon.ico?v=2">
   <link rel="icon" type="image/png" sizes="48x48" href="favicon-48x48.png?v=2">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png?v=2">
@@ -38,6 +38,7 @@
       --accent-green: #15803d;
       --accent-red: #b91c1c;
       --accent-purple: #7e22ce;
+      --accent-teal: #0f766e;
     }
 
     * {
@@ -116,6 +117,7 @@
     .nav-tk { background: #15803d; }
     .nav-ut { background: #b91c1c; }
     .nav-hk { background: #7e22ce; }
+    .nav-80 { background: #0f766e; }
 
     .lang-bar {
       display: flex;
@@ -193,6 +195,7 @@
     .project-card.theme-threekingdom { border-top-color: var(--accent-green); }
     .project-card.theme-utamakura { border-top-color: var(--accent-red); }
     .project-card.theme-hyakunin { border-top-color: var(--accent-purple); }
+    .project-card.theme-80days { border-top-color: var(--accent-teal); }
 
     .project-top-row {
       display: flex;
@@ -324,6 +327,9 @@
     .theme-hyakunin .btn-primary { background: var(--accent-purple); }
     .theme-hyakunin .subpage-links li a { color: var(--accent-purple); }
     .theme-hyakunin .subpage-links li a:hover { background: #faf5ff; border-color: var(--accent-purple); }
+    .theme-80days .btn-primary { background: var(--accent-teal); }
+    .theme-80days .subpage-links li a { color: var(--accent-teal); }
+    .theme-80days .subpage-links li a:hover { background: #f0fdfa; border-color: var(--accent-teal); }
 
     .btn-primary:hover {
       opacity: 0.9;
@@ -464,6 +470,7 @@
         <a href="/threekingdom/" class="header-nav-btn nav-tk" id="nav-3k">🗺️ 地図と一緒によむ三国志</a>
         <a href="/utamakura/" class="header-nav-btn nav-ut" id="nav-uta">🗾 地図と一緒によむ歌枕</a>
         <a href="/arthur/" class="header-nav-btn nav-hk" id="nav-ar">⚔️ 地図と一緒によむアーサー王物語</a>
+        <a href="/80days/" class="header-nav-btn nav-80" id="nav-80">🌍 地図と一緒によむ八十日間世界一周</a>
       </nav>
       <div class="lang-bar" role="group" aria-label="Language">
         <button type="button" class="lang-btn active" data-lang="ja">日本語</button>
@@ -619,6 +626,12 @@
                 </a>
               </li>
               <li>
+                <a href="/threekingdom/vol44.html">
+                  <span id="tk-v44-title">巻44：蜀書・蔣琬費禕姜維伝</span>
+                  <span class="subpage-desc" id="tk-v44-desc">諸葛亮没後の蜀漢を支えた蔣琬・費禕の治世と、姜維の北伐から剣閣籠城に至る列伝</span>
+                </a>
+              </li>
+              <li>
                 <a href="/threekingdom/vol46.html">
                   <span id="tk-v46-title">巻46：呉書・孫破虜討逆伝（孫堅・孫策）</span>
                   <span class="subpage-desc" id="tk-v46-desc">孫堅の奮戦と、孫策による劇的な江東平定戦の記録</span>
@@ -640,6 +653,12 @@
                 <a href="/threekingdom/vol55.html">
                   <span id="tk-v55-title">巻55：呉書・程黄韓蔣周陳董甘凌徐潘丁伝（江表十二虎臣）</span>
                   <span class="subpage-desc" id="tk-v55-desc">程普・黄蓋・甘寧・凌統・周泰・徐盛・丁奉ら呉を支えた十二名将の列伝</span>
+                </a>
+              </li>
+              <li>
+                <a href="/threekingdom/vol56.html">
+                  <span id="tk-v56-title">巻56：呉書・朱治朱然呂範朱桓伝</span>
+                  <span class="subpage-desc" id="tk-v56-desc">江陵包囲戦を死守した朱然、濡須・石亭で曹仁・曹休を破った朱桓、朱治・呂範ら孫呉重鎮伝</span>
                 </a>
               </li>
               <li>
@@ -667,7 +686,7 @@
           <a href="/utamakura/" class="btn-primary" id="ut-btn-top">地図と一緒によむ歌枕 を開く</a>
         </div>
         <div class="project-body">
-          <p id="ut-p1">松尾芭蕉『おくのほそ道』、藤原定家撰『小倉百人一首』、『万葉集』などの名歌・名句に詠まれた日本全国の歌枕（名所・旧跡）を、共通の歴史地図・名勝写真・浮世絵・縦書き毛筆動画で一体として辿る古典リーダーです。</p>
+          <p id="ut-p1">松尾芭蕉『おくのほそ道』（全40段完結）、藤原定家撰『小倉百人一首』（全100首完結）、『万葉集 歌枕名歌選』（全100首完結）に詠まれた日本全国の歌枕（名所・旧跡）を、共通の歴史地図・名勝写真・浮世絵・縦書き毛筆動画で一体として辿る古典リーダーです。</p>
           <ul class="feature-list">
             <li id="ut-f1"><strong>全作品横断の歌枕・歌人索引と地図連動:</strong> 白河の関・松島・天の香具山・和歌の浦など、複数の古典にまたがる歌枕や歌人を五十音順・地図ピンから一体で検索できます。</li>
             <li id="ut-f2"><strong>名勝写真・浮世絵・木版歌がるた・英訳を収録:</strong> 歌枕ごとの現地名勝写真・江戸期の風景浮世絵や、全100首の木版『歌がるた』、現代語訳・英訳・出典解説を備えています。</li>
@@ -828,6 +847,67 @@
         </div>
       </article>
 
+      <!-- 6. 地図と一緒によむ八十日間世界一周 -->
+      <article id="section-80days" class="project-card theme-80days">
+        <div class="project-top-row">
+          <div class="project-header">
+            <h2 class="project-title"><a href="/80days/" id="d80-title">地図と一緒によむ八十日間世界一周</a></h2>
+            <p class="project-subtitle" id="d80-sub">ジュール・ヴェルヌ『八十日間世界一周』（1873年英訳原典・全37章完結）5言語対訳と6段階地理階層マップが連動</p>
+          </div>
+          <a href="/80days/" class="btn-primary" id="d80-btn-top">八十日間世界一周 を開く</a>
+        </div>
+        <div class="project-body">
+          <p id="d80-p1">ジュール・ヴェルヌの名作冒険小説『八十日間世界一周』（全37章・1,613段落）を英語原典＋5言語（英・日・繁・簡・韓）完全対訳で収録。ロンドン・サヴィル・ロウとリフォーム・クラブの街区から、スエズ運河・インド鉄道・香港・横浜・アメリカ大陸横断鉄道・大西洋航路まで、大陸・国・都市・街路へシームレスに切り替わる6段階地理階層マップ上でフォッグ氏一行の地球一周272地点を辿れます。</p>
+
+          <div class="subpage-box">
+            <div class="subpage-box-title" id="d80-vol-heading">全37章 一覧（クリックで直接開きます）</div>
+            <ul class="subpage-links">
+              <li><a href="/80days/vol01.html"><span id="d80-v1-t">第一章 フォッグ氏とパスパルトゥー</span></a></li>
+              <li><a href="/80days/vol02.html"><span id="d80-v2-t">第二章 パスパルトゥーの理想</span></a></li>
+              <li><a href="/80days/vol03.html"><span id="d80-v3-t">第三章 八十日間世界一周の賭け</span></a></li>
+              <li><a href="/80days/vol04.html"><span id="d80-v4-t">第四章 ロンドン出発</span></a></li>
+              <li><a href="/80days/vol05.html"><span id="d80-v5-t">第五章 ロンドンの賭け相場</span></a></li>
+              <li><a href="/80days/vol06.html"><span id="d80-v6-t">第六章 スエズ港のフィックス刑事</span></a></li>
+              <li><a href="/80days/vol07.html"><span id="d80-v7-t">第七章 スエズ領事館の旅券査証</span></a></li>
+              <li><a href="/80days/vol08.html"><span id="d80-v8-t">第八章 パスパルトゥーの不用意な会話</span></a></li>
+              <li><a href="/80days/vol09.html"><span id="d80-v9-t">第九章 紅海・インド洋の航海</span></a></li>
+              <li><a href="/80days/vol10.html"><span id="d80-v10-t">第十章 パスパルトゥー靴のまま寺院へ</span></a></li>
+              <li><a href="/80days/vol11.html"><span id="d80-v11-t">第十一章 鉄道途絶と象キウニ購入</span></a></li>
+              <li><a href="/80days/vol12.html"><span id="d80-v12-t">第十二章 ブンデルカンドの密林行</span></a></li>
+              <li><a href="/80days/vol13.html"><span id="d80-v13-t">第十三章 アウダ夫人救出</span></a></li>
+              <li><a href="/80days/vol14.html"><span id="d80-v14-t">第十四章 ガンジス渓谷・カルカッタ到着</span></a></li>
+              <li><a href="/80days/vol15.html"><span id="d80-v15-t">第十五章 カルカッタの法廷と保釈</span></a></li>
+              <li><a href="/80days/vol16.html"><span id="d80-v16-t">第十六章 アンダマン諸島・ラングーン号航海</span></a></li>
+              <li><a href="/80days/vol17.html"><span id="d80-v17-t">第十七章 マラッカ海峡・シンガポール寄港</span></a></li>
+              <li><a href="/80days/vol18.html"><span id="d80-v18-t">第十八章 南シナ海の嵐と香港到着</span></a></li>
+              <li><a href="/80days/vol19.html"><span id="d80-v19-t">第十九章 香港とフィックスの罠</span></a></li>
+              <li><a href="/80days/vol20.html"><span id="d80-v20-t">第二十章 タンカデール号チャーター</span></a></li>
+              <li><a href="/80days/vol21.html"><span id="d80-v21-t">第二十一章 台風突破と上海沖合</span></a></li>
+              <li><a href="/80days/vol22.html"><span id="d80-v22-t">第二十二章 カルナティック号航海と横浜上陸</span></a></li>
+              <li><a href="/80days/vol23.html"><span id="d80-v23-t">第二十三章 バタルカル一座と長鼻連</span></a></li>
+              <li><a href="/80days/vol24.html"><span id="d80-v24-t">第二十四章 太平洋横断と180度線</span></a></li>
+              <li><a href="/80days/vol25.html"><span id="d80-v25-t">第二十五章 サンフランシスコの選挙騒動</span></a></li>
+              <li><a href="/80days/vol26.html"><span id="d80-v26-t">第二十六章 太平洋鉄道の旅</span></a></li>
+              <li><a href="/80days/vol27.html"><span id="d80-v27-t">第二十七章 モルモン教講話と大塩湖</span></a></li>
+              <li><a href="/80days/vol28.html"><span id="d80-v28-t">第二十八章 メディシン・ボウの吊橋</span></a></li>
+              <li><a href="/80days/vol29.html"><span id="d80-v29-t">第二十九章 決闘とスー族の列車襲撃</span></a></li>
+              <li><a href="/80days/vol30.html"><span id="d80-v30-t">第三十章 カーニー砦の救出出撃</span></a></li>
+              <li><a href="/80days/vol31.html"><span id="d80-v31-t">第三十一章 氷上帆走ソリと大平原疾走</span></a></li>
+              <li><a href="/80days/vol32.html"><span id="d80-v32-t">第三十二章 不運との戦いとヘンリエッタ号</span></a></li>
+              <li><a href="/80days/vol33.html"><span id="d80-v33-t">第三十三章 大西洋横断と木造船体燃焼</span></a></li>
+              <li><a href="/80days/vol34.html"><span id="d80-v34-t">第三十四章 誤認逮捕とロンドン帰着</span></a></li>
+              <li><a href="/80days/vol35.html"><span id="d80-v35-t">第三十五章 サヴィル・ロウの静寂と求婚</span></a></li>
+              <li><a href="/80days/vol36.html"><span id="d80-v36-t">第三十六章 リフォーム・クラブの決戦</span></a></li>
+              <li><a href="/80days/vol37.html"><span id="d80-v37-t">第三十七章 東回り一日の奇跡と大団円</span></a></li>
+            </ul>
+          </div>
+
+          <div class="action-links">
+            <a href="/80days/" class="btn-primary" id="d80-btn-open">八十日間世界一周 を開く</a>
+          </div>
+        </div>
+      </article>
+
     </div>
 
     <!-- サイトの設計方針・解説コラム -->
@@ -900,6 +980,8 @@
         tkV36Desc: '関羽・張飛・馬超・黄忠・趙雲ら蜀漢を代表する五大名将の戦歴',
         tkV37Title: '巻37：蜀書・龐統法正伝',
         tkV37Desc: '「鳳雛」龐統の入蜀三策・雒城陣没と、定軍山の奇策を描いた法正の伝記',
+        tkV44Title: '巻44：蜀書・蔣琬費禕姜維伝',
+        tkV44Desc: '諸葛亮没後の蜀漢を支えた蔣琬・費禕の治世と、姜維の北伐から剣閣籠城に至る列伝',
         tkV46Title: '巻46：呉書・孫破虜討逆伝（孫堅・孫策）',
         tkV46Desc: '孫堅の奮戦と、孫策による劇的な江東平定戦の記録',
         tkV47Title: '巻47：呉書・呉主伝（孫権）',
@@ -908,12 +990,14 @@
         tkV54Desc: '赤壁の戦い・荊州分割・白衣渡江による関羽討伐まで呉の三大都督の記録',
         tkV55Title: '巻55：呉書・程黄韓蔣周陳董甘凌徐潘丁伝（江表十二虎臣）',
         tkV55Desc: '程普・黄蓋・甘寧・凌統・周泰・徐盛・丁奉ら呉を支えた十二名将の列伝',
+        tkV56Title: '巻56：呉書・朱治朱然呂範朱桓伝',
+        tkV56Desc: '江陵包囲戦を死守した朱然、濡須・石亭で曹仁・曹休を破った朱桓、朱治・呂範ら孫呉重鎮伝',
         tkV58Title: '巻58：呉書・陸遜伝（陸遜・陸抗）',
         tkV58Desc: '夷陵の戦い火攻め・石亭の戦いから陸抗と羊祜の西陵対峙に至る呉の名門親子伝',
         tkBtnOpen: '地図と一緒によむ三国志 を開く',
         utTitle: '地図と一緒によむ歌枕',
         utSub: '『おくのほそ道』『小倉百人一首』『万葉集』の名歌・名句と全国の歌枕マップ・浮世絵・縦書き動画が一体で連動',
-        utP1: '松尾芭蕉『おくのほそ道』、藤原定家撰『小倉百人一首』、『万葉集』などの名歌・名句に詠まれた日本全国の歌枕（名所・旧跡）を、共通の歴史地図・名勝写真・浮世絵・縦書き毛筆動画で一体として辿る古典リーダーです。',
+        utP1: '松尾芭蕉『おくのほそ道』（全40段完結）、藤原定家撰『小倉百人一首』（全100首完結）、『万葉集 歌枕名歌選』（全100首完結）に詠まれた日本全国の歌枕（名所・旧跡）を、共通の歴史地図・名勝写真・浮世絵・縦書き毛筆動画で一体として辿る古典リーダーです。',
         utF1: '<strong>全作品横断の歌枕・歌人索引と地図連動:</strong> 白河の関・松島・天の香具山・和歌の浦など、複数の古典にまたがる歌枕や歌人を五十音順・地図ピンから一体で検索できます。',
         utF2: '<strong>名勝写真・浮世絵・木版歌がるた・英訳を収録:</strong> 歌枕ごとの現地名勝写真・江戸期の風景浮世絵や、全100首の木版『歌がるた』、現代語訳・英訳・出典解説を備えています。',
         utF3: '<strong>和歌・俳句の縦書き毛筆動画をワンクリック再生:</strong> 各首・各句の再生ボタンを押すと、情景に合わせた専用和紙背景の上で縦書き毛筆アニメーションを鑑賞できます。',
@@ -1036,6 +1120,49 @@
         arV108T: "第七巻 第三部 第九章 アーサー王の最期とアヴァロンへの旅立ち",
         arV109T: "第七巻 第三部 第十章 ランスロット卿とグィネヴィア王妃の最期（結語付）",
         arBtnOpen: 'アーサー王物語 を開く',
+        nav80: '🌍 八十日間世界一周',
+        d80Title: '地図と一緒によむ八十日間世界一周',
+        d80Sub: 'ジュール・ヴェルヌ『八十日間世界一周』（1873年英訳原典・全37章完結）5言語対訳と6段階地理階層マップが連動',
+        d80P1: 'ジュール・ヴェルヌの名作冒険小説『八十日間世界一周』（全37章・1,613段落）を英語原典＋5言語（英・日・繁・簡・韓）完全対訳で収録。ロンドン・サヴィル・ロウとリフォーム・クラブの街区から、スエズ運河・インド鉄道・香港・横浜・アメリカ大陸横断鉄道・大西洋航路まで、大陸・国・都市・街路へシームレスに切り替わる6段階地理階層マップ上でフォッグ氏一行の地球一周272地点を辿れます。',
+        d80VolHeading: '全37章 一覧（クリックで直接開きます）',
+        d80V1T: "第一章 フォッグ氏とパスパルトゥー",
+        d80V2T: "第二章 パスパルトゥーの理想",
+        d80V3T: "第三章 八十日間世界一周の賭け",
+        d80V4T: "第四章 ロンドン出発",
+        d80V5T: "第五章 ロンドンの賭け相場",
+        d80V6T: "第六章 スエズ港のフィックス刑事",
+        d80V7T: "第七章 スエズ領事館の旅券査証",
+        d80V8T: "第八章 パスパルトゥーの不用意な会話",
+        d80V9T: "第九章 紅海・インド洋の航海",
+        d80V10T: "第十章 パスパルトゥー靴のまま寺院へ",
+        d80V11T: "第十一章 鉄道途絶と象キウニ購入",
+        d80V12T: "第十二章 ブンデルカンドの密林行",
+        d80V13T: "第十三章 アウダ夫人救出",
+        d80V14T: "第十四章 ガンジス渓谷・カルカッタ到着",
+        d80V15T: "第十五章 カルカッタの法廷と保釈",
+        d80V16T: "第十六章 アンダマン諸島・ラングーン号航海",
+        d80V17T: "第十七章 マラッカ海峡・シンガポール寄港",
+        d80V18T: "第十八章 南シナ海の嵐と香港到着",
+        d80V19T: "第十九章 香港とフィックスの罠",
+        d80V20T: "第二十章 タンカデール号チャーター",
+        d80V21T: "第二十一章 台風突破と上海沖合",
+        d80V22T: "第二十二章 カルナティック号航海と横浜上陸",
+        d80V23T: "第二十三章 バタルカル一座と長鼻連",
+        d80V24T: "第二十四章 太平洋横断と180度線",
+        d80V25T: "第二十五章 サンフランシスコの選挙騒動",
+        d80V26T: "第二十六章 太平洋鉄道の旅",
+        d80V27T: "第二十七章 モルモン教講話と大塩湖",
+        d80V28T: "第二十八章 メディシン・ボウの吊橋",
+        d80V29T: "第二十九章 決闘とスー族の列車襲撃",
+        d80V30T: "第三十章 カーニー砦の救出出撃",
+        d80V31T: "第三十一章 氷上帆走ソリと大平原疾走",
+        d80V32T: "第三十二章 不運との戦いとヘンリエッタ号",
+        d80V33T: "第三十三章 大西洋横断と木造船体燃焼",
+        d80V34T: "第三十四章 誤認逮捕とロンドン帰着",
+        d80V35T: "第三十五章 サヴィル・ロウの静寂と求婚",
+        d80V36T: "第三十六章 リフォーム・クラブの決戦",
+        d80V37T: "第三十七章 東回り一日の奇跡と大団円",
+        d80BtnOpen: '八十日間世界一周 を開く',
         edHeading: '当サイトの制作方針と特徴について',
         edH1: '1. 文字組版と読みやすさへのこだわり',
         edP1: 'デジタル画面上のテキストであっても、紙のノートや書籍のように「行間と文字の並びが整っていること」「縦書き・横書きそれぞれの美しさが保たれていること」を重視して開発しています。「Line-aligned」では実際のルーズリーフノートのミリ単位の罫線ピッチに文章を一致させる計算エンジンを搭載し、「Short Verse Studio」では句や歌の文字数に応じて全体のフォントサイズと字間を自動調整する縦書き描画エンジンを採用しています。',
@@ -1096,6 +1223,8 @@
         tkV36Desc: 'Campaigns of Shu-Han’s five renowned generals: Guan Yu, Zhang Fei, Ma Chao, Huang Zhong, and Zhao Yun',
         tkV37Title: 'Vol. 37: Biographies of Pang Tong & Fa Zheng',
         tkV37Desc: '“Young Phoenix” Pang Tong’s Sichuan strategy and Fa Zheng’s decisive victory at Mount Dingjun',
+        tkV44Title: 'Vol. 44: Biographies of Jiang Wan, Fei Yi & Jiang Wei',
+        tkV44Desc: 'Shu-Han’s statecraft after Zhuge Liang under Jiang Wan & Fei Yi, and Jiang Wei’s northern campaigns to Jiange',
         tkV46Title: 'Vol. 46: Biographies of Sun Jian & Sun Ce',
         tkV46Desc: 'Sun Jian’s battles and Sun Ce’s rapid conquest of Jiangdong (Wu)',
         tkV47Title: 'Vol. 47: Biography of the Lord of Wu (Sun Quan)',
@@ -1104,12 +1233,14 @@
         tkV54Desc: 'Battle of Red Cliffs, Jing Province diplomacy, and Lü Meng’s capture of Guan Yu',
         tkV55Title: 'Vol. 55: Twelve Tiger Generals of Jiangdong (Cheng Pu, Huang Gai, Gan Ning & Others)',
         tkV55Desc: 'Campaigns of Cheng Pu, Huang Gai, Zhou Tai, Gan Ning, Ling Tong, Xu Sheng, and Ding Feng',
+        tkV56Title: 'Vol. 56: Biographies of Zhu Zhi, Zhu Ran, Lü Fan & Zhu Huan',
+        tkV56Desc: 'Zhu Ran’s heroic defense of Jiangling, Zhu Huan’s victories at Ruxu & Shiting, alongside Zhu Zhi and Lü Fan',
         tkV58Title: 'Vol. 58: Biography of Lu Xun (Lu Xun & Lu Kang)',
         tkV58Desc: 'Fire attack at Yiling, Battle of Shiting, and Lu Kang’s defense of Xiling opposite Yang Hu',
         tkBtnOpen: 'Open Three Kingdoms Map Reader',
         utTitle: 'Reading Utamakura with Maps (地図と一緒によむ歌枕)',
         utSub: 'Oku no Hosomichi, Ogura Hyakunin Isshu & Man’yōshū united on an interactive poetic landmark map with Ukiyo-e and vertical video playback',
-        utP1: 'Explore sacred mountains, bays, barriers, and travel routes celebrated across Japanese classical literature—uniting Matsuo Basho’s Oku no Hosomichi, Fujiwara no Teika’s Ogura Hyakunin Isshu, and the Man’yōshū on one shared map.',
+        utP1: 'Explore sacred mountains, bays, barriers, and travel routes celebrated across Japanese classical literature—uniting Matsuo Basho’s Oku no Hosomichi (all 40 sections), Fujiwara no Teika’s Ogura Hyakunin Isshu (all 100 poems), and the Man’yōshū Selection (all 100 poems) on one shared map.',
         utF1: '<strong>Cross-Work Utamakura & Poet Index:</strong> Search poetic landmarks (Shirakawa Barrier, Matsushima, Mount Amanokagu, Wakanoura) and poets across works from a unified map and directory.',
         utF2: '<strong>Scenic Photos, Ukiyo-e, Woodblock Karuta & English Translations:</strong> View scenic landmark photographs, Edo-period Ukiyo-e prints, all 100 woodblock Karuta cards, and bilingual notes.',
         utF3: '<strong>One-Click Vertical Waka & Haiku Video Playback:</strong> Play vertical calligraphy animations set against custom seasonal Washi backgrounds.',
@@ -1232,6 +1363,49 @@
         arV108T: "Book VII Pt. III Ch. IX: Passing of Arthur to Avalon",
         arV109T: "Book VII Pt. III Ch. X: Passing of Launcelot & Conclusion",
         arBtnOpen: 'Open King Arthur Map Reader',
+        nav80: '🌍 Around the World in 80 Days',
+        d80Title: 'Reading Around the World in 80 Days with Maps',
+        d80Sub: 'Jules Verne’s Complete Around the World in Eighty Days (All 37 Chapters) in 5 Languages Linked with a 6-Level Hierarchical World Map',
+        d80P1: 'Read all 37 chapters (1,613 paragraphs unabridged) of Jules Verne’s classic adventure in English alongside Japanese, Traditional/Simplified Chinese, and Korean translations. Follow Phileas Fogg, Passepartout, Detective Fix, and Aouda across 272 real-world locations—from London street blocks to Suez, India, Hong Kong, Yokohama, and the American transcontinental railroad—with automatic zoom-level street map switching.',
+        d80VolHeading: 'All 37 Chapters (Click to Open Directly)',
+        d80V1T: "Chapter I: Phileas Fogg and Passepartout",
+        d80V2T: "Chapter II: Passepartout's Ideal",
+        d80V3T: "Chapter III: The Great Wager",
+        d80V4T: "Chapter IV: Departure from London",
+        d80V5T: "Chapter V: A New Species of Funds",
+        d80V6T: "Chapter VI: Detective Fix at Suez",
+        d80V7T: "Chapter VII: Passport Visa at Suez",
+        d80V8T: "Chapter VIII: Passepartout Talks Too Freely",
+        d80V9T: "Chapter IX: Red Sea & Indian Ocean",
+        d80V10T: "Chapter X: Passepartout Loses His Shoes",
+        d80V11T: "Chapter XI: Buying Kiouni the Elephant",
+        d80V12T: "Chapter XII: Through Bundelcund Forests",
+        d80V13T: "Chapter XIII: Rescuing Aouda",
+        d80V14T: "Chapter XIV: Down the Ganges to Calcutta",
+        d80V15T: "Chapter XV: Trial and Bail at Calcutta",
+        d80V16T: "Chapter XVI: The Rangoon & Andaman Islands",
+        d80V17T: "Chapter XVII: Singapore to the China Sea",
+        d80V18T: "Chapter XVIII: Storm & Arrival in Hong Kong",
+        d80V19T: "Chapter XIX: Hong Kong & Fix's Plot",
+        d80V20T: "Chapter XX: Chartering the Tankadere",
+        d80V21T: "Chapter XXI: Typhoon to Shanghai",
+        d80V22T: "Chapter XXII: The Carnatic & Yokohama",
+        d80V23T: "Chapter XXIII: Batulcar's Long Noses",
+        d80V24T: "Chapter XXIV: Crossing the Pacific Ocean",
+        d80V25T: "Chapter XXV: A Glimpse of San Francisco",
+        d80V26T: "Chapter XXVI: By the Pacific Railroad",
+        d80V27T: "Chapter XXVII: A Course of Mormon History",
+        d80V28T: "Chapter XXVIII: Medicine Bow Bridge",
+        d80V29T: "Chapter XXIX: Incidents on American Railroads",
+        d80V30T: "Chapter XXX: Phileas Fogg Does His Duty",
+        d80V31T: "Chapter XXXI: Fix Furthers Fogg’s Interests",
+        d80V32T: "Chapter XXXII: A Direct Struggle with Bad Fortune",
+        d80V33T: "Chapter XXXIII: Equal to the Occasion",
+        d80V34T: "Chapter XXXIV: Phileas Fogg Reaches London",
+        d80V35T: "Chapter XXXV: Orders to Passepartout",
+        d80V36T: "Chapter XXXVI: At a Premium on ’Change",
+        d80V37T: "Chapter XXXVII: Nothing Unless Happiness",
+        d80BtnOpen: 'Open 80 Days Map Reader',
         edHeading: 'Design Philosophy & Features',
         edH1: '1. Precision Digital Typesetting',
         edP1: 'We build web tools that bring print-grade baseline alignment and vertical/horizontal calligraphy to the browser. Line-aligned calculates millimeter-accurate ruled-line grids, while Short Verse Studio dynamically balances font sizing and character spacing across 9 poetic traditions.',
@@ -1292,6 +1466,8 @@
         tkV36Desc: '关羽、张飞、马超、黄忠、赵云五位蜀汉名将的完整战史',
         tkV37Title: '卷37：蜀书・庞统法正传',
         tkV37Desc: '“凤雏”庞统入蜀三策与雒城陨落、法正奇画定军山斩夏侯渊合传',
+        tkV44Title: '卷44：蜀书・蒋琬费祎姜维传',
+        tkV44Desc: '诸葛亮逝后支撑蜀汉的蒋琬、费祎执政始末，与姜维九伐中原至固守剑阁全传',
         tkV46Title: '卷46：吴书・孙破虏讨逆传（孙坚・孙策）',
         tkV46Desc: '孙坚讨伐董卓与孙策平定江东六郡的战役记录',
         tkV47Title: '卷47：吴书・吴主传（孙权）',
@@ -1300,12 +1476,14 @@
         tkV54Desc: '赤壁火攻、榻上策与单刀会、白衣渡江擒关羽等东吴三大都督战史',
         tkV55Title: '卷55：吴书・程黄韩蒋周陈董甘凌徐潘丁传（江表十二虎臣）',
         tkV55Desc: '程普、黄盖、甘宁、凌统、周泰、徐盛、丁奉等东吴十二位猛将合传',
+        tkV56Title: '卷56：吴书・朱治朱然吕范朱桓传',
+        tkV56Desc: '死守江陵六月的朱然、濡须与石亭大破曹仁曹休的朱桓，及朱治、吕范东吴重臣列传',
         tkV58Title: '卷58：吴书・陆逊传（陆逊・陆抗）',
         tkV58Desc: '夷陵火烧连营、石亭破曹休至陆抗镇守西陵与羊祜对峙的东吴名门父子传',
         tkBtnOpen: '打开《三国志》地图阅读器',
         utTitle: '配图共读歌枕（日本古典名胜地图阅读器）',
         utSub: '《奥之细道》《小仓百人一首》《万叶集》名歌名句与全国歌枕地图、浮世绘及竖排书法动画联动',
-        utP1: '以“歌枕（古典诗词名胜）”为轴，将松尾芭蕉《奥之细道》、藤原定家《小仓百人一首》与《万叶集》融为一体，在共同地图上结合名胜实景、浮世绘与毛笔动画跨作品品读日本古典。',
+        utP1: '以“歌枕（古典诗词名胜）”为轴，完整收录松尾芭蕉《奥之细道》（全40段完结）、藤原定家《小仓百人一首》（全100首完结）与《万叶集歌枕名歌选》（全100首完结），结合名胜实景、浮世绘与毛笔动画跨作品品读日本古典。',
         utF1: '<strong>跨作品歌枕与歌人总索引：</strong> 一键检索白河关、松岛、天香具山、和歌浦等跨越时代的古典名胜与歌人。',
         utF2: '<strong>名胜照片、浮世绘、木版歌牌与出处详解：</strong> 收录国指定名胜实景、江户风景浮世绘、木版百人一首歌牌及敕撰集词书考证。',
         utF3: '<strong>和歌与俳句竖排毛笔动画一键播放：</strong> 点击播放按钮即可在专属四季和纸背景上欣赏竖排书法动画。',
@@ -1428,6 +1606,49 @@
         arV108T: "第七卷 第三部 第九章 亚瑟王之逝与前往阿瓦隆",
         arV109T: "第七卷 第三部 第十章 兰斯洛特与桂妮薇儿之逝（附全书结语）",
         arBtnOpen: '打开《亚瑟王物语》阅读器',
+        nav80: '🌍 配图共读环游世界八十天',
+        d80Title: '配图共读环游世界八十天（六级地理层级世界地图阅读器）',
+        d80Sub: '儒勒·凡尔纳《环游世界八十天》（1873英译原典・全37章完结）五语对照与六级世界街道地图联动',
+        d80P1: '完整收录儒勒·凡尔纳经典名著《环游世界八十天》全37章（1,613段无删节）英文原典及简/繁/日/韩五语译文。从伦敦萨维尔街与改革俱乐部街区出发，经苏伊士运河、印度铁路、香港、横滨、北美横贯铁路与大西洋航线，在支持大洲至城市街区六级缩放切换的地图上完整追踪272处真实地标。',
+        d80VolHeading: '全37章目录（点击直接打开）',
+        d80V1T: "第一章 福格先生与路路通",
+        d80V2T: "第二章 路路通的理想归宿",
+        d80V3T: "第三章 八十天环游之赌",
+        d80V4T: "第四章 仓促启程离伦敦",
+        d80V5T: "第五章 伦敦赌盘新行情",
+        d80V6T: "第六章 苏伊士港的费克斯警探",
+        d80V7T: "第七章 苏伊士领事馆签证",
+        d80V8T: "第八章 路路通的失言",
+        d80V9T: "第九章 红海与印度洋航程",
+        d80V10T: "第十章 路路通误闯神庙",
+        d80V11T: "第十一章 铁路中断与买象",
+        d80V12T: "第十二章 穿越本德尔坎德丛林",
+        d80V13T: "第十三章 营救艾欧达",
+        d80V14T: "第十四章 顺恒河谷抵加尔各答",
+        d80V15T: "第十五章 加尔各答公堂交保",
+        d80V16T: "第十六章 兰贡号与安达曼群岛",
+        d80V17T: "第十七章 马六甲海峡与新加坡",
+        d80V18T: "第十八章 南中国海风暴抵香港",
+        d80V19T: "第十九章 香港与费克斯的计谋",
+        d80V20T: "第二十章 包租坦卡德尔号",
+        d80V21T: "第二十一章 穿破台风抵上海",
+        d80V22T: "第二十二章 卡纳提克号抵横滨",
+        d80V23T: "第二十三章 巴图卡尔剧团与长鼻团",
+        d80V24T: "第二十四章 横渡太平洋与180度线",
+        d80V25T: "第二十五章 旧金山选举风波",
+        d80V26T: "第二十六章 搭乘太平洋铁路",
+        d80V27T: "第二十七章 摩门教讲座与大盐湖",
+        d80V28T: "第二十八章 梅迪辛博断桥惊魂",
+        d80V29T: "第二十九章 车厢决斗与苏族劫车",
+        d80V30T: "第三十章 卡尼堡营救出击",
+        d80V31T: "第三十一章 冰原帆橇与横越北美",
+        d80V32T: "第三十二章 抗衡厄运与亨利埃塔号",
+        d80V33T: "第三十三章 横渡大西洋与拆船烧木",
+        d80V34T: "第三十四章 误捕获释与重返伦敦",
+        d80V35T: "第三十五章 萨维尔街的沉寂与求婚",
+        d80V36T: "第三十六章 改良俱乐部的最后一秒",
+        d80V37T: "第三十七章 东行赢得一日与圆满结局",
+        d80BtnOpen: '打开《环游世界八十天》阅读器',
         edHeading: '网站设计理念与特色',
         edH1: '1. 专注于数字文字排版与阅读美感',
         edP1: '无论是活页横线笔记的毫米级行距对齐，还是汉诗、俳句、短歌的竖排字距均衡，我们致力于在浏览器中重现纸质书籍与书法的整洁美感。',
@@ -1488,6 +1709,8 @@
         tkV36Desc: '關羽、張飛、馬超、黃忠、趙雲五位蜀漢名將的完整戰史',
         tkV37Title: '卷37：蜀書・龐統法正傳',
         tkV37Desc: '「鳳雛」龐統入蜀三策與雒城隕落、法正奇畫定軍山斬夏侯淵合傳',
+        tkV44Title: '卷44：蜀書・蔣琬費禕姜維傳',
+        tkV44Desc: '諸葛亮逝後支撐蜀漢的蔣琬、費禕執政始末，與姜維北伐中原至固守劍閣全傳',
         tkV46Title: '卷46：吳書・孫破虜討逆傳（孫堅・孫策）',
         tkV46Desc: '孫堅討伐董卓與孫策平定江東六郡的戰役記錄',
         tkV47Title: '卷47：吳書・吳主傳（孫權）',
@@ -1496,12 +1719,14 @@
         tkV54Desc: '赤壁火攻、榻上策與單刀會、白衣渡江擒關羽等東吳三大都督戰史',
         tkV55Title: '卷55：吳書・程黃韓蔣周陳董甘凌徐潘丁傳（江表十二虎臣）',
         tkV55Desc: '程普、黃蓋、甘寧、凌統、周泰、徐盛、丁奉等東吳十二位猛將合傳',
+        tkV56Title: '卷56：吳書・朱治朱然呂範朱桓傳',
+        tkV56Desc: '死守江陵六月的朱然、濡須與石亭大破曹仁曹休的朱桓，及朱治、呂範東吳重臣列傳',
         tkV58Title: '卷58：吳書・陸遜傳（陸遜・陸抗）',
         tkV58Desc: '夷陵火燒連營、石亭破曹休至陸抗鎮守西陵與羊祜對峙的東吳名門父子傳',
         tkBtnOpen: '開啟《三國志》地圖閱讀器',
         utTitle: '配圖共讀歌枕（日本古典名勝地圖閱讀器）',
         utSub: '《奧之細道》《小倉百人一首》《萬葉集》名歌名句與全國歌枕地圖、浮世繪及直書書法動畫連動',
-        utP1: '以「歌枕（古典詩詞名勝）」為軸，將松尾芭蕉《奧之細道》、藤原定家《小倉百人一首》與《萬葉集》融為一體，在共同地圖上結合名勝實景、浮世繪與毛筆動畫跨作品品讀日本古典。',
+        utP1: '以「歌枕（古典詩詞名勝）」為軸，完整收錄松尾芭蕉《奧之細道》（全40段完結）、藤原定家《小倉百人一首》（全100首完結）與《萬葉集歌枕名歌選》（全100首完結），結合名勝實景、浮世繪與毛筆動畫跨作品品讀日本古典。',
         utF1: '<strong>跨作品歌枕與歌人總索引：</strong> 一鍵檢索白河關、松島、天香具山、和歌浦等跨越時代的古典名勝與歌人。',
         utF2: '<strong>名勝照片、浮世繪、木版歌牌與出處詳解：</strong> 收錄國指定名勝實景、江戶風景浮世繪、木版百人一首歌牌及敕撰集詞書考證。',
         utF3: '<strong>和歌與俳句直書毛筆動畫一鍵播放：</strong> 點擊播放按鈕即可在專屬四季和紙背景上欣賞直書書法動畫。',
@@ -1624,6 +1849,49 @@
         arV108T: "第七卷 第三部 第九章 亞瑟王之逝與前往阿瓦隆",
         arV109T: "第七卷 第三部 第十章 蘭斯洛特與桂妮薇兒之逝（附全書結語）",
         arBtnOpen: '開啟《亞瑟王物語》閱讀器',
+        nav80: '🌍 配圖共讀環遊世界八十天',
+        d80Title: '配圖共讀環遊世界八十天（六級地理層級世界地圖閱讀器）',
+        d80Sub: '儒勒·凡爾納《環遊世界八十天》（1873英譯原典・全37章完結）五語對照與六級世界街道地圖連動',
+        d80P1: '完整收錄儒勒·凡爾納經典名著《環遊世界八十天》全37章（1,613段無刪節）英文原典及繁/簡/日/韓五語譯文。從倫敦薩維爾街與改革俱樂部街區出發，經蘇伊士運河、印度鐵路、香港、橫濱、北美橫貫鐵路與大西洋航線，在支援大洲至城市街區六級縮放切換的地圖上完整追蹤272處真實地標。',
+        d80VolHeading: '全37章目錄（點擊直接開啟）',
+        d80V1T: "第一章 福格先生與路路通",
+        d80V2T: "第二章 路路通的理想歸宿",
+        d80V3T: "第三章 八十天環遊之賭",
+        d80V4T: "第四章 倉促啟程離倫敦",
+        d80V5T: "第五章 倫敦賭盤新行情",
+        d80V6T: "第六章 蘇伊士港的費克斯警探",
+        d80V7T: "第七章 蘇伊士領事館簽證",
+        d80V8T: "第八章 路路通的失言",
+        d80V9T: "第九章 紅海與印度洋航程",
+        d80V10T: "第十章 路路通誤闖神廟",
+        d80V11T: "第十一章 鐵路中斷與買象",
+        d80V12T: "第十二章 穿越本德爾坎德叢林",
+        d80V13T: "第十三章 營救艾歐達",
+        d80V14T: "第十四章 順恆河谷抵加爾各答",
+        d80V15T: "第十五章 加爾各答公堂交保",
+        d80V16T: "第十六章 蘭貢號與安達曼群島",
+        d80V17T: "第十七章 麻六甲海峽與新加坡",
+        d80V18T: "第十八章 南中國海風暴抵香港",
+        d80V19T: "第十九章 香港與費克斯的計謀",
+        d80V20T: "第二十章 包租坦卡德爾號",
+        d80V21T: "第二十一章 穿破颱風抵上海",
+        d80V22T: "第二十二章 卡納提克號抵橫濱",
+        d80V23T: "第二十三章 巴圖卡爾劇團與長鼻團",
+        d80V24T: "第二十四章 橫渡太平洋與180度線",
+        d80V25T: "第二十五章 舊金山選舉風波",
+        d80V26T: "第二十六章 搭乘太平洋鐵路",
+        d80V27T: "第二十七章 摩門教講座與大鹽湖",
+        d80V28T: "第二十八章 梅迪辛博斷橋驚魂",
+        d80V29T: "第二十九章 車廂決鬥與蘇族劫車",
+        d80V30T: "第三十章 卡尼堡營救出擊",
+        d80V31T: "第三十一章 冰原帆橇與橫越北美",
+        d80V32T: "第三十二章 抗衡厄運與亨利埃塔號",
+        d80V33T: "第三十三章 橫渡大西洋與拆船燒木",
+        d80V34T: "第三十四章 誤捕獲釋與重返倫敦",
+        d80V35T: "第三十五章 薩維爾街的沉寂與求婚",
+        d80V36T: "第三十六章 改良俱樂部的最後一秒",
+        d80V37T: "第三十七章 東行贏得一日與圓滿結局",
+        d80BtnOpen: '開啟《環遊世界八十天》閱讀器',
         edHeading: '網站設計理念與特色',
         edH1: '1. 專注於數位文字排版與閱讀美感',
         edP1: '無論是活頁橫線筆記的毫米級行距對齊，還是漢詩、俳句、短歌的直書字距均衡，我們致力於在瀏覽器中重現紙本書籍與書法的整潔美感。',
@@ -1684,6 +1952,8 @@
         tkV36Desc: '관우·장비·마초·황충·조운 등 촉한 5대 명장의 전적',
         tkV37Title: '권37：촉서·방통법정전',
         tkV37Desc: '봉추 방통의 입촉삼책·낙성 전사와 정군산의 기책을 그린 법정의 열전',
+        tkV44Title: '권44：촉서·장완비의강유전',
+        tkV44Desc: '제갈량 사후 촉한을 지탱한 장완·비의의 치세와 강유의 북벌부터 검각 농성에 이르는 열전',
         tkV46Title: '권46：오서·손파로토역전 (손견·손책)',
         tkV46Desc: '손견의 분전과 손책의 극적인 강동 평정전 기록',
         tkV47Title: '권47：오서·오주전 (손권)',
@@ -1692,12 +1962,14 @@
         tkV54Desc: '적벽대전·형주 분할·백의도강과 관우 포박에 이르는 동오 3대 도독의 기록',
         tkV55Title: '권55：오서·정황한장주진동감능서반정전 (강표십이호신)',
         tkV55Desc: '정보·황개·감녕·능통·주태·서성·정봉 등 동오를 지탱한 12명장의 열전',
+        tkV56Title: '권56：오서·주치주연여범주환전',
+        tkV56Desc: '강릉 포위전을 사수한 주연, 유수·석정에서 조인·조휴를 격파한 주환 및 주치·여범 열전',
         tkV58Title: '권58：오서·육손전 (육손·육항)',
         tkV58Desc: '이릉대전 화공·석정 전투부터 육항과 양호의 서릉 대치에 이르는 동오 명문 부자전',
         tkBtnOpen: '삼국지 지도 리더 열기',
         utTitle: '지도와 함께 읽는 우타마쿠라（일본 고전 명소 지도 리더）',
         utSub: '『오쿠노 호소미치』『오구라 백인일수』『만엽집』의 명가·명구와 전국 우타마쿠라 지도·우키요에·세로쓰기 영상 연동',
-        utP1: '마쓰오 바쇼의 『오쿠노 호소미치』, 후지와라노 데이카의 『오구라 백인일수』, 『만엽집』에 읊어진 일본 전국의 명소(우타마쿠라)를 공통 지도, 현지 명승 사진, 우키요에, 세로쓰기 붓글씨 영상으로 통합 감상하는 고전 리더입니다.',
+        utP1: '마쓰오 바쇼의 『오쿠노 호소미치』(전40단 완결), 후지와라노 데이카의 『오구라 백인일수』(전100수 완결), 『만엽집 우타마쿠라 명가선』(전100수 완결)에 읊어진 일본 전국의 명소를 공통 지도, 명승 사진, 우키요에, 세로쓰기 붓글씨 영상으로 통합 감상하는 고전 리더입니다.',
         utF1: '<strong>전 작품 통합 우타마쿠라·가인 색인:</strong> 시라카와 관문, 마쓰시마, 아마노카구야마, 와카노우라 등 여러 고전에 등장하는 명소와 시인을 한눈에 검색합니다.',
         utF2: '<strong>명승 사진·우키요에·목판 카루타·출전 해설:</strong> 국가 지정 명승 사진, 에도 시대 풍경 우키요에, 목판 백인일수 카루타 및 영역·고전 해설을 수록했습니다.',
         utF3: '<strong>와카·하이쿠 세로쓰기 붓글씨 영상 원클릭 재생:</strong> 각 작품의 재생 버튼을 누르면 전용 화지 배경 위에서 세로쓰기 애니메이션을 감상할 수 있습니다.',
@@ -1820,6 +2092,49 @@
         arV108T: "제7권 제3부 제9장 아서 왕의 최후와 아발론으로의 떠남",
         arV109T: "제7권 제3부 제10장 란슬롯 경과 기네비어의 최후(전 4부작 결어 포함)",
         arBtnOpen: '아서왕 이야기 리더 열기',
+        nav80: '🌍 80일간의 세계일주',
+        d80Title: '지도와 함께 읽는 80일간의 세계일주（6단계 지리 계층 세계지도 리더）',
+        d80Sub: '쥘 베른 『80일간의 세계일주』(1873 영문 원전·전37장 완결) 5개 국어 대조 및 6단계 세계 거리 지도 연동',
+        d80P1: '쥘 베른의 명작 모험소설 『80일간의 세계일주』 전37장(1,613단락 무삭제 완역) 영문 원전과 한·일·중 5개 국어 대조 번역을 수록했습니다. 런던 새빌 로와 리폼 클럽 거리에서 수에즈 운하, 인도 철도, 홍콩, 요코하마, 대륙횡단철도, 대서양 항로까지 대륙·국가·도시·거리로 자동 전환되는 6단계 지리 계층 지도 위에서 272곳의 실제 지명을 따라갈 수 있습니다.',
+        d80VolHeading: '전37장 목록 (클릭하여 바로 열기)',
+        d80V1T: "제1장 필리어스 포그와 파스파르투",
+        d80V2T: "제2장 파스파르투의 이상",
+        d80V3T: "제3장 80일 세계일주 내기",
+        d80V4T: "제4장 런던 출발",
+        d80V5T: "제5장 런던의 내기 열풍",
+        d80V6T: "제6장 수에즈항의 픽스 형사",
+        d80V7T: "제7장 수에즈 영사관 여권 사증",
+        d80V8T: "제8장 파스파르투의 수다",
+        d80V9T: "제9장 홍해와 인도양 항해",
+        d80V10T: "제10장 파스파르투 신발을 잃다",
+        d80V11T: "제11장 철도 단절과 코끼리 구입",
+        d80V12T: "제12장 분델칸드 밀림 횡단",
+        d80V13T: "제13장 아우다 부인 구출",
+        d80V14T: "제14장 갠지스 계곡을 따라 캘커타로",
+        d80V15T: "제15장 캘커타 법정과 보석",
+        d80V16T: "제16장 랑군호와 안다만 제도",
+        d80V17T: "제17장 말라카 해협과 싱가포르",
+        d80V18T: "제18장 남중국해 폭풍과 홍콩 도착",
+        d80V19T: "제19장 홍콩과 픽스의 음모",
+        d80V20T: "제20장 탄카데르호 전세",
+        d80V21T: "제21장 태풍 돌파와 상하이 앞바다",
+        d80V22T: "제22장 카르나틱호 항해와 요코하마 상륙",
+        d80V23T: "제23장 바탈칼 극단과 긴코단",
+        d80V24T: "제24장 태평양 횡단과 180도선",
+        d80V25T: "제25장 샌프란시스코의 선거 소동",
+        d80V26T: "제26장 태평양 철도 여행",
+        d80V27T: "제27장 몰몬교 강연과 대염호",
+        d80V28T: "제28장 메디신보우의 현수교",
+        d80V29T: "제29장 결투와 수족의 열차 습격",
+        d80V30T: "제30장 포트 카니 구출 작전",
+        d80V31T: "제31장 돛단 썰매와 대평원 질주",
+        d80V32T: "제32장 불운과의 정면 승부",
+        d80V33T: "제33장 대서양 횡단과 뱃머리 돌파",
+        d80V34T: "제34장 오인 체포와 런던 귀환",
+        d80V35T: "제35장 새빌 로의 고요와 청혼",
+        d80V36T: "제36장 리폼 클럽의 마지막 카운트다운",
+        d80V37T: "제37장 동쪽 일주의 기적과 대단원",
+        d80BtnOpen: '80일간의 세계일주 리더 열기',
         edHeading: '사이트 제작 방침 및 특징',
         edH1: '1. 정밀한 디지털 조판과 가독성',
         edP1: '디지털 화면에서도 종이 공책이나 서적처럼 줄 간격과 글자 배열이 정돈된 조판을 추구합니다. Line-aligned는 실제 루즈리프 줄 간격에 맞춘 조판 엔진을, Short Verse Studio는 글자 수에 맞춰 폰트 크기와 자간을 자동 조절하는 엔진을 탑재하고 있습니다.',
@@ -1843,6 +2158,7 @@
       document.getElementById('nav-3k').textContent = d.nav3k;
       document.getElementById('nav-uta').textContent = d.navUta;
       document.getElementById('nav-ar').textContent = d.navAr;
+      document.getElementById('nav-80').textContent = d.nav80;
       document.getElementById('intro-title').textContent = d.introTitle;
       document.getElementById('intro-desc').textContent = d.introDesc;
 
@@ -1895,6 +2211,8 @@
       document.getElementById('tk-v36-desc').textContent = d.tkV36Desc;
       document.getElementById('tk-v37-title').textContent = d.tkV37Title;
       document.getElementById('tk-v37-desc').textContent = d.tkV37Desc;
+      document.getElementById('tk-v44-title').textContent = d.tkV44Title;
+      document.getElementById('tk-v44-desc').textContent = d.tkV44Desc;
       document.getElementById('tk-v46-title').textContent = d.tkV46Title;
       document.getElementById('tk-v46-desc').textContent = d.tkV46Desc;
       document.getElementById('tk-v47-title').textContent = d.tkV47Title;
@@ -1903,6 +2221,8 @@
       document.getElementById('tk-v54-desc').textContent = d.tkV54Desc;
       document.getElementById('tk-v55-title').textContent = d.tkV55Title;
       document.getElementById('tk-v55-desc').textContent = d.tkV55Desc;
+      document.getElementById('tk-v56-title').textContent = d.tkV56Title;
+      document.getElementById('tk-v56-desc').textContent = d.tkV56Desc;
       document.getElementById('tk-v58-title').textContent = d.tkV58Title;
       document.getElementById('tk-v58-desc').textContent = d.tkV58Desc;
       document.getElementById('tk-btn-top').textContent = d.tkBtnOpen;
@@ -1951,6 +2271,15 @@
       document.getElementById('ar-b4-heading').textContent = d.arB4Heading;
       for (let i = 28; i <= 109; i++) {
         document.getElementById('ar-v' + i + '-t').textContent = d['arV' + i + 'T'];
+      }
+      document.getElementById('d80-title').textContent = d.d80Title;
+      document.getElementById('d80-sub').textContent = d.d80Sub;
+      document.getElementById('d80-p1').textContent = d.d80P1;
+      document.getElementById('d80-vol-heading').textContent = d.d80VolHeading;
+      document.getElementById('d80-btn-top').textContent = d.d80BtnOpen;
+      document.getElementById('d80-btn-open').textContent = d.d80BtnOpen;
+      for (let i = 1; i <= 37; i++) {
+        document.getElementById('d80-v' + i + '-t').textContent = d['d80V' + i + 'T'];
       }
 
       document.getElementById('ed-heading').textContent = d.edHeading;
