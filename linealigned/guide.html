@@ -570,6 +570,12 @@
           <span class="lang-content zh">🔰 新手指南</span>
           <span class="lang-content ko">🔰 시작 가이드</span>
         </a>
+        <a href="#ruby-kunten-guide" class="nav-link" style="color: #047857; font-weight: 700; background: #ecfdf5; border: 1px solid #a7f3d0; padding: 4px 12px; border-radius: 16px;">
+          <span class="lang-content ja">🔖 ルビ・返り点タグ</span>
+          <span class="lang-content en">🔖 Ruby &amp; Kanbun Tags</span>
+          <span class="lang-content zh">🔖 注音・漢文標籤</span>
+          <span class="lang-content ko">🔖 루비·한문 태그</span>
+        </a>
         <a href="#workflow-matrix" class="nav-link">
           <span class="lang-content ja">対応パターン・活用法</span>
           <span class="lang-content en">Workflows &amp; Presets</span>
@@ -969,13 +975,281 @@
         }
         document.querySelectorAll('.howto-route-panel').forEach(function(panel) {
           panel.classList.remove('active');
-        });
+        }
+        );
         var target = document.getElementById('howto-panel-' + routeKey);
         if (target) {
           target.classList.add('active');
         }
       }
     </script>
+
+    <!-- INLINE RUBY & KANBUN KUNTEN TAG MANUAL -->
+    <style>
+      .tag-manual-box {
+        max-width: 1080px;
+        margin: 1.75rem auto 0;
+        background: #ffffff;
+        border: 2px solid #059669;
+        border-radius: 16px;
+        padding: 1.6rem 1.35rem;
+        box-shadow: 0 10px 28px rgba(5, 150, 105, 0.10);
+        text-align: left;
+        scroll-margin-top: 84px;
+      }
+      .tag-syntax-hero {
+        background: #f0fdf4;
+        border: 1px solid #bbf7d0;
+        border-radius: 12px;
+        padding: 1rem 1.15rem;
+        margin: 0.9rem 0 1.15rem;
+      }
+      .tag-syntax-formula {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: clamp(0.95rem, 2vw, 1.15rem);
+        font-weight: 800;
+        color: #065f46;
+        background: #ffffff;
+        border: 2px solid #34d399;
+        border-radius: 8px;
+        padding: 0.6rem 0.9rem;
+        display: inline-block;
+        margin-bottom: 0.55rem;
+      }
+      .tag-cheat-table-wrap {
+        overflow-x: auto;
+        margin: 0.85rem 0 1.15rem;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+      }
+      .tag-cheat-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.88rem;
+        background: #ffffff;
+      }
+      .tag-cheat-table th {
+        background: #0f172a;
+        color: #ffffff;
+        font-weight: 700;
+        padding: 9px 11px;
+        text-align: left;
+        white-space: nowrap;
+      }
+      .tag-cheat-table td {
+        padding: 9px 11px;
+        border-top: 1px solid #e2e8f0;
+        color: #1e293b;
+        vertical-align: top;
+        line-height: 1.55;
+      }
+      .tag-cheat-table tr:nth-child(even) td {
+        background: #f8fafc;
+      }
+      .tag-code-pill {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-weight: 700;
+        color: #b91c1c;
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        border-radius: 5px;
+        padding: 2px 6px;
+        white-space: nowrap;
+      }
+      .tag-sample-copybox {
+        background: #1e293b;
+        color: #f8fafc;
+        border-radius: 10px;
+        padding: 0.9rem 1.1rem;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.85rem;
+        line-height: 1.7;
+        overflow-x: auto;
+        margin-bottom: 1.15rem;
+      }
+    </style>
+
+    <div id="ruby-kunten-guide" class="tag-manual-box">
+      <div style="text-align: center; margin-bottom: 0.75rem;">
+        <span style="display: inline-block; background: #ecfdf5; color: #047857; font-size: 0.82rem; font-weight: 800; padding: 4px 14px; border-radius: 20px; border: 1px solid #a7f3d0; margin-bottom: 0.45rem;">
+          <span class="lang-content ja">🔖 ふりがな・返り点・送り仮名の書き方マニュアル（文書内にそのまま保存OK！）</span>
+          <span class="lang-content en">🔖 Inline Tag Guide: Furigana (Ruby) &amp; Classical Kanbun Marks</span>
+          <span class="lang-content zh">🔖 注音（振假名）・漢文返點・送假名標籤寫法指南（可隨文儲存！）</span>
+          <span class="lang-content ko">🔖 후리가나(루비)·가에리텐·오쿠리가나 태그 작성 매뉴얼 (문서 내 저장 가능!)</span>
+        </span>
+        <h2 style="font-size: clamp(1.15rem, 2.3vw, 1.45rem); font-weight: 800; color: #0f172a; margin-bottom: 0.35rem;">
+          <span class="lang-content ja">Google ドキュメント™ や Word に書いて保存できる「ルビ・漢文訓読タグ」の使い方</span>
+          <span class="lang-content en">How to Write Saveable Ruby &amp; Kanbun Tags in Google Docs™ and Word</span>
+          <span class="lang-content zh">如何在 Google 文件™ 與 Word 中編寫並儲存「注音・漢文訓讀標籤」</span>
+          <span class="lang-content ko">Google 문서™와 Word에서 저장 가능한 「루비·한문 훈독 태그」 사용법</span>
+        </h2>
+      </div>
+
+      <!-- Japanese Detailed Tag Manual -->
+      <div class="lang-content ja">
+        <p style="font-size: 0.9rem; color: #334155; line-height: 1.65; margin-bottom: 0.5rem;">
+          Google ドキュメント™ にはルビ（ふりがな）機能や漢文の返り点機能がありませんが、本文中に <strong>波括弧 <code>{ }</code> と縦棒 <code>|</code></strong> を使ったタグを書いてそのまま保存しておくだけで、<strong>縦書き罫線PDF</strong> と <strong>A4 原稿用紙（20字×20行）</strong> の両方で自動的に美しいルビ・送り仮名・返り点へ組版されます（PNG画像出力にも対応）。
+        </p>
+
+        <div class="tag-syntax-hero">
+          <div style="font-size: 0.82rem; font-weight: 800; color: #047857; margin-bottom: 0.35rem;">📌 基本の書き方（最大4枠・後ろの使わない枠は省略できます）</div>
+          <div class="tag-syntax-formula">{ 親文字 | ふりがな | 送り仮名 | 返り点 }</div>
+          <ul style="margin: 0; padding-left: 1.2rem; font-size: 0.85rem; color: #1e293b; line-height: 1.65;">
+            <li><strong>半角・全角どちらでもOK：</strong> 半角の <code>{ | }</code> でも全角の <code>｛ ｜ ｝</code> でも認識します。区切り <code>|</code> の前後にスペースを入れて <code>{不 | | | レ}</code> のように見やすく書いても自動で整形されます。</li>
+            <li><strong>後ろの空枠は省略OK：</strong> ふりがなだけなら <strong>2枠</strong> <code>{漢字|かんじ}</code>、ふりがな＋送り仮名なら <strong>3枠</strong> <code>{崩殂|ほうそ|セリ}</code> で書けます。</li>
+            <li><strong>途中の枠を空けるとき：</strong> ふりがな無しで「送り仮名」や「返り点」だけをつけるときは、<code>|</code> を続けて <code>{曰||ハク}</code> や <code>{不|||レ}</code> のように空枠を残します。</li>
+          </ul>
+        </div>
+
+        <div class="tag-cheat-table-wrap">
+          <table class="tag-cheat-table">
+            <thead>
+              <tr>
+                <th>つけたい記号</th>
+                <th>Google ドキュメントでの書き方（コピペ見本）</th>
+                <th>縦書き罫線PDFでの出力位置</th>
+                <th>A4 原稿用紙（20×20）での出力位置</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>① ふりがな（ルビ）のみ</strong></td>
+                <td><span class="tag-code-pill">{先帝|せんてい}</span><br><span style="font-size:0.79rem;color:#64748b;">※青空文庫形式 <span class="tag-code-pill">｜先帝《せんてい》</span> も可</span></td>
+                <td>親文字の右横にふりがな</td>
+                <td>親文字マスの右ルビ欄にふりがな</td>
+              </tr>
+              <tr>
+                <td><strong>② 送り仮名のみ</strong></td>
+                <td><span class="tag-code-pill">{曰||ハク}</span> ／ <span class="tag-code-pill">{此||レ}</span></td>
+                <td>親文字の右下に小さく配置</td>
+                <td>直下の次マス右半分に縦並びで配置</td>
+              </tr>
+              <tr>
+                <td><strong>③ ふりがな ＋ 送り仮名</strong></td>
+                <td><span class="tag-code-pill">{崩殂|ほうそ|セリ}</span> ／ <span class="tag-code-pill">{中道|ちゅうどう|ニ}</span></td>
+                <td>右上にふりがな、その直下（右下）に送り仮名</td>
+                <td>右ルビ欄にふりがな ＋ 次マス右半分に送り仮名</td>
+              </tr>
+              <tr>
+                <td><strong>④ 返り点のみ（レ点・一二点）</strong></td>
+                <td><span class="tag-code-pill">{不|||レ}</span> ／ <span class="tag-code-pill">{臣|||一}</span></td>
+                <td>親文字の左下に返り点</td>
+                <td>直下の次マス左半分に大きく返り点</td>
+              </tr>
+              <tr>
+                <td><strong>⑤ 送り仮名 ＋ 返り点</strong></td>
+                <td><span class="tag-code-pill">{業||ヲ|一}</span> ／ <span class="tag-code-pill">{不||ベカラズ|二}</span></td>
+                <td>右下に送り仮名、左下に返り点</td>
+                <td>次マスの左に返り点・右に送り仮名（最大4文字/マス）</td>
+              </tr>
+              <tr>
+                <td><strong>⑥ 全部入り（ふりがな＋送り＋返り）</strong></td>
+                <td><span class="tag-code-pill">{未|いま|ダ|二}</span> ／ <span class="tag-code-pill">{半|なか|バナラズシテ|一}</span></td>
+                <td>右上ふりがな・右下送り仮名・左下返り点（長い送り仮名時は自動で字間確保）</td>
+                <td>右ルビ欄にふりがな ＋ 次マス（5文字以上は自動で2マス）に返り点と送り仮名</td>
+              </tr>
+              <tr>
+                <td><strong>⑦ 合体返り点（一レ・上レ等）</strong></td>
+                <td><span class="tag-code-pill">{宜|よろ|シク|一レ}</span></td>
+                <td>左下に「一」と「レ」を上下コンパクトに結合</td>
+                <td>次マスの左に「一／レ」・右に「シク」を整列</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="font-size: 0.84rem; font-weight: 800; color: #0f172a; margin-bottom: 0.35rem;">📋 そのまま Google ドキュメントに貼り付けて試せるサンプル文（諸葛亮『前出師表』冒頭）</div>
+        <div class="tag-sample-copybox">{先帝|せんてい}{創|はじ|ムルコト|二}{業||ヲ|一}{未|いま|ダ|二}{半|なか|バナラズシテ|一}而{中道|ちゅうどう|ニ}{崩殂|ほうそ|セリ}。
+{陟罰|ちょくばつ|スルニ|二}{臧否|ぞうひ|ヲ|一}、{不||ベカラズ|二}{宜|よろ|シク|一レ}{異同|いどう|アル}。</div>
+
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.7rem 0.95rem; font-size: 0.83rem; color: #475569; line-height: 1.6; margin-bottom: 1rem;">
+          💡 <strong>誤変換を防ぐ安心仕様：</strong> ① <code>《 》</code> を使った青空文庫形式は、作品名などの強調括弧（例：<code>夏目漱石《こころ》</code>）が誤ってルビにならないよう、<strong>先頭に縦棒 <code>｜</code>（または <code>|</code>）を付けたときのみ</strong>ルビに変換されます。 ② 数学プリントの集合表記（<code>{x | x &gt; 0}</code> や <code>{a | b}</code>）は自動で数式と判別されるため、そのまま残ります。
+        </div>
+      </div>
+
+      <!-- English Tag Manual -->
+      <div class="lang-content en">
+        <p style="font-size: 0.9rem; color: #334155; line-height: 1.65; margin-bottom: 0.75rem;">
+          Even though Google Docs™ has no native ruby or classical Kanbun tool, you can write saveable plain-text tags using <strong><code>{Base | furigana | okurigana | kaeriten}</code></strong> directly in your document. They render cleanly in both <strong>Vertical Ruled PDFs</strong> and <strong>A4 20×20 Manuscript Paper</strong> (PDF &amp; PNG ZIP).
+        </p>
+        <div class="tag-cheat-table-wrap">
+          <table class="tag-cheat-table">
+            <thead>
+              <tr><th>Annotation Type</th><th>Tag Syntax Example</th><th>Output Behavior</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>1. Furigana (Ruby) Only</strong></td><td><span class="tag-code-pill">{先帝|せんてい}</span> or <span class="tag-code-pill">｜先帝《せんてい》</span></td><td>Ruby placed along the right side of the kanji</td></tr>
+              <tr><td><strong>2. Okurigana / Kaeriten Only</strong></td><td><span class="tag-code-pill">{曰||ハク}</span> / <span class="tag-code-pill">{不|||レ}</span></td><td>Bottom-right okurigana / bottom-left kaeriten (or next cell in 20×20 grid)</td></tr>
+              <tr><td><strong>3. Full Kanbun Kunten (4 Slots)</strong></td><td><span class="tag-code-pill">{未|いま|ダ|二}</span> / <span class="tag-code-pill">{宜|よろ|シク|一レ}</span></td><td>JIS X 4051 placement in Vertical PDF; split left/right in the cell below on 20×20 paper</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Chinese Tag Manual -->
+      <div class="lang-content zh">
+        <p style="font-size: 0.9rem; color: #334155; line-height: 1.65; margin-bottom: 0.75rem;">
+          Google 文件™ 雖無內建注音或漢文訓讀功能，只需在內文中輸入並儲存 <strong><code>{親文字 | ふりがな | 送り仮名 | 返り点}</code></strong> 標籤（尾端空欄可省略），即可同時於<strong>直書格線 PDF</strong> 與 <strong>A4 四百字稿紙（20×20）</strong>自動排版（亦支援匯出 PNG）。
+        </p>
+        <div class="tag-cheat-table-wrap">
+          <table class="tag-cheat-table">
+            <thead>
+              <tr><th>標記類型</th><th>Google 文件寫法範例</th><th>直書 PDF ／ 四百字稿紙排版效果</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>① 僅標注音（振假名）</strong></td><td><span class="tag-code-pill">{先帝|せんてい}</span> 或 <span class="tag-code-pill">｜先帝《せんてい》</span></td><td>配置於漢字右側注音欄</td></tr>
+              <tr><td><strong>② 僅標送假名／返點</strong></td><td><span class="tag-code-pill">{曰||ハク}</span> ／ <span class="tag-code-pill">{不|||レ}</span></td><td>直書置於右下／左下；稿紙自動配置於下一格右半／左半</td></tr>
+              <tr><td><strong>③ 完整漢文訓讀（四欄）</strong></td><td><span class="tag-code-pill">{未|いま|ダ|二}</span> ／ <span class="tag-code-pill">{宜|よろ|シク|一レ}</span></td><td>支援複合返點「一レ」與長送假名自動跨格排版</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Korean Tag Manual -->
+      <div class="lang-content ko">
+        <p style="font-size: 0.9rem; color: #334155; line-height: 1.65; margin-bottom: 0.75rem;">
+          Google 문서™ 본문에 <strong><code>{본문 | 후리가나 | 오쿠리가나 | 가에리텐}</code></strong> 형식의 태그를 적어 그대로 저장해 두면, <strong>세로 줄눈 PDF</strong>와 <strong>A4 400자 원고지(20×20)</strong> 모두에서 루비와 한문 훈독 기호가 자동 조판됩니다 (PNG 출력 지원).
+        </p>
+        <div class="tag-cheat-table-wrap">
+          <table class="tag-cheat-table">
+            <thead>
+              <tr><th>표기 종류</th><th>태그 입력 예시</th><th>세로 PDF / 400자 원고지 출력 결과</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>① 후리가나(루비)만</strong></td><td><span class="tag-code-pill">{先帝|せんてい}</span> 또는 <span class="tag-code-pill">｜先帝《せんてい》</span></td><td>한자 오른쪽 루비 칸에 배치</td></tr>
+              <tr><td><strong>② 오쿠리가나 / 가에리텐만</strong></td><td><span class="tag-code-pill">{曰||ハク}</span> ／ <span class="tag-code-pill">{不|||レ}</span></td><td>세로 PDF 우하/좌하 배치, 원고지에서는 아래 칸 좌우 분할 배치</td></tr>
+              <tr><td><strong>③ 전체 한문 훈독 (4칸)</strong></td><td><span class="tag-code-pill">{未|いま|ダ|二}</span> ／ <span class="tag-code-pill">{宜|よろ|シク|一レ}</span></td><td>복합 가에리텐(一レ) 및 긴 오쿠리가나 자동 칸 확보 지원</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Real Output Comparison Images (Shared across languages) -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px;">
+        <div class="howto-step-card">
+          <div class="howto-step-caption">
+            <span class="lang-content ja">📄 実例①：左のように Google ドキュメントへタグを書いて保存 ➔ 右の「縦書き罫線PDF」に変換（クリックで拡大）</span>
+            <span class="lang-content en">📄 Example 1: Horizontal Google Doc with saved tags (left) ➔ Vertical Ruled PDF output (right, click to zoom)</span>
+            <span class="lang-content zh">📄 實例①：左側為儲存標籤之橫書 Google 文件 ➔ 右側為「直書格線 PDF」輸出（點擊放大）</span>
+            <span class="lang-content ko">📄 예시①: 왼쪽처럼 Google 문서에 태그 저장 ➔ 오른쪽 '세로 줄눈 PDF' 변환 결과 (클릭 시 확대)</span>
+          </div>
+          <div class="howto-step-img-wrap" onclick="openImageModal('../images/v165/suishi_tags_to_vertical.jpg?v=20261124')">
+            <img src="../images/v165/suishi_tags_to_vertical.jpg?v=20261124" alt="Googleドキュメントのルビ・漢文タグ原稿から縦書き罫線PDFへの変換対照" loading="lazy" />
+          </div>
+        </div>
+        <div class="howto-step-card">
+          <div class="howto-step-caption">
+            <span class="lang-content ja">📄 実例②：まったく同じタグ原稿を「A4 原稿用紙（20字×20行）」モードで出力した結果（クリックで拡大）</span>
+            <span class="lang-content en">📄 Example 2: The exact same tagged Google Doc rendered in "A4 Manuscript Grid (20×20)" mode (click to zoom)</span>
+            <span class="lang-content zh">📄 實例②：同一份標籤原稿以「A4 四百字稿紙（20×20）」模式輸出之結果（點擊放大）</span>
+            <span class="lang-content ko">📄 예시②: 동일한 태그 원고를 「A4 400자 원고지(20×20)」 모드로 출력한 결과 (클릭 시 확대)</span>
+          </div>
+          <div class="howto-step-img-wrap" onclick="openImageModal('../images/v165/suishi_genko_20x20.png?v=20261124')">
+            <img src="../images/v165/suishi_genko_20x20.png?v=20261124" alt="四百字詰め原稿用紙モードでのルビ・返り点・送り仮名出力例" loading="lazy" />
+          </div>
+        </div>
+      </div>
+    </div>
 
 
     <!-- TOP FEATURED: 3-Panel Comparison (Original PDF vs 7mm Exact Clipped PDF vs Line-aligned 7mm Grid PDF) -->
@@ -2374,7 +2648,11 @@
             赤い切替ボタンで<strong>「縦書き」</strong>を選び、「① 用紙・印刷形式」から<strong>『A4 原稿用紙（20字×20行）』</strong>を選択するだけです（選択中は不要な「② 罫線の種類・幅」が自動で隠れ、「③ 罫線のカラー」でお好みの原稿用紙色が選べます）。さらに画面右上の<strong>「PNG出力 (ZIP)」</strong>ボタンを押すと、全ページが高精細PNG画像（ZIP）としてまとめて保存されるため、X などの SNS へそのまま貼り付けて共有できます（Word の縦書き <code>.docx</code> からの直接組版にも対応しています）。
           </div>
           <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem 1.15rem;">
-            <strong style="color: #1e3a8a;">Q5. アップロードした文書や PDF がサーバーに保存されたり、AI 学習に使われたりしませんか？</strong><br>
+            <strong style="color: #1e3a8a;">Q5. Google ドキュメント™ で漢字に「ふりがな（ルビ）」や漢文の「返り点・送り仮名」をつけるにはどうすればよいですか？</strong><br>
+            本文中にそのまま保存できるタグ <code>{親文字|ふりがな|送り仮名|返り点}</code> を書くだけで自動組版されます。ふりがなのみなら <code>{先帝|せんてい}</code>（または <code>｜先帝《せんてい》</code>）、漢文訓読なら <code>{未|いま|ダ|二}</code> や <code>{不|||レ}</code> のように記述でき、縦書き罫線PDFと四百字詰め原稿用紙（20×20）の両方で反映されます（詳しい書き方とコピペ見本は上部の <a href="#ruby-kunten-guide" style="color: #059669; font-weight: 700;">「🔖 ふりがな・返り点・送り仮名の書き方マニュアル」</a> をご覧ください）。
+          </div>
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem 1.15rem;">
+            <strong style="color: #1e3a8a;">Q6. アップロードした文書や PDF がサーバーに保存されたり、AI 学習に使われたりしませんか？</strong><br>
             一切ありません。読み込まれたファイルは PDF 組版処理の数秒間だけメモリ上で一時変換され、処理完了と同時に破棄されます。サーバーへの保存・蓄積や外部提供・AI学習利用は行いません。
           </div>
         </div>
