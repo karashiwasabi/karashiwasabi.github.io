@@ -8955,7 +8955,7 @@ async function loadSampleDocx() {
       segments.push(currentLineSegs);
 
       for (let sIdx = 0; sIdx < segments.length; sIdx++) {
-        const segList = segments[sIdx];
+        const segList = expandSegmentListInlineRubyForGenko(segments[sIdx]);
         const plainJoined = segList.map(s => s.text).join('').replace(/\r/g, '');
         if (sIdx === 0 && hasPageBreak && paragraphs.length > 0) {
           paragraphs.push({ pageBreak: true, segments: [] });
@@ -8965,7 +8965,7 @@ async function loadSampleDocx() {
           continue;
         }
         if (sIdx === 0 && firstLineIndent && !/^[\s　「『（【〔〈《“‘]/.test(plainJoined)) {
-          segList.unshift({ text: '　', ruby: '' });
+          segList.unshift({ text: '　', ruby: '', okurigana: '', kaeriten: '' });
         }
         paragraphs.push({ pageBreak: false, segments: segList });
       }
@@ -8981,6 +8981,218 @@ async function loadSampleDocx() {
       }
     }
     return paragraphs;
+  }
+
+  const GenkoInlineRubyMaxBaseChars = 30;
+  const GenkoInlineRubyMaxReadingChars = 60;
+  const GenkoInlineKuntenMaxOkuriChars = 30;
+  const GenkoInlineKuntenMaxKaeriChars = 10;
+  const GenkoInlineMaxPipeCount = 3;
+  const GenkoMaxRubyCharsPerCell = 3;                // 親文字の右ルビ欄に縮小なしで収める1マスあたりふりがな文字数
+  const GenkoMaxOkuriCharsPerKuntenCell = 4;         // 次マス（訓点マス）の右半分に収める1マスあたり送り仮名上限文字数
+  const GenkoMaxUnbreakableKuntenSpanCells = 6;      // 親文字＋訓点マス一体グループの行末追い出し対象上限マス数
+  const GenkoKuntenKaeriFontRatio = 0.33;            // 訓点マス左半分に描く返り点のマス辺長に対する文字サイズ比率
+  const GenkoKuntenKaeriMultiScale = 0.76;           // 合体返り点（一レ・上レ等）の縮小比率
+  const GenkoKuntenLeftColCenterXRatio = 0.26;       // 訓点マス内の返り点列（左半分）の中心X比率
+  const GenkoKuntenRightColCenterXRatio = 0.74;      // 訓点マス内の送り仮名列（右半分）の中心X比率
+  const GenkoKuntenTopPadRatio = 0.08;               // 訓点マス上端からの描画開始パディング比率（直上の親文字へ寄せる）
+  const GenkoKuntenBottomPadRatio = 0.06;            // 訓点マス下端の最小パディング比率
+  const GenkoKuntenTrailingSafeHeightRatio = 0.74;   // 行末句読点が同居する訓点マスでの送り仮名描画有効高さ比率
+  const GenkoKuntenKaeriMultiGapRatio = 0.04;        // 合体返り点の上下文字間実測インク間隔比率
+  const GenkoKuntenOkuriFontRatio = 0.25;            // 訓点マス右半分の送り仮名標準文字サイズ比率
+  const GenkoKuntenOkuriMaxStepRatio = 0.23;         // 送り仮名1〜3文字時の最大縦ピッチ比率（上詰め整列用）
+  const GenkoKuntenOkuriLineFitRatio = 0.92;         // 4文字格納時の縦ステップに対する文字サイズフィット比率
+  const GenkoDisallowedMathRubyRe = /[=<>≤≥≦≧∈∉;\r\n\t]/;
+  const GenkoAsciiOnlyRe = /^[\x00-\x7F]+$/;
+
+  function trimGenkoAsciiSpacesFromChars(arr) {
+    let s = 0;
+    let e = arr.length;
+    while (s < e && arr[s] === ' ') s++;
+    while (e > s && arr[e - 1] === ' ') e--;
+    return arr.slice(s, e);
+  }
+
+  function isValidGenkoInlineRubyBase(chars) {
+    if (!chars || chars.length < 1 || chars.length > GenkoInlineRubyMaxBaseChars) return false;
+    return !GenkoDisallowedMathRubyRe.test(chars.join(''));
+  }
+
+  function isValidGenkoOptionalKuntenPart(str, maxChars) {
+    const chars = Array.from(str || '');
+    if (chars.length > maxChars) return false;
+    return !GenkoDisallowedMathRubyRe.test(str);
+  }
+
+  // 1行テキストから {親文字 | ふりがな | 送り仮名 | 返り点} および ｜親文字《ふりがな》 をセグメント列へ分解
+  function parseInlineRubySegmentsForGenko(lineStr) {
+    if (!lineStr) return [];
+    if (!/[{｛《]/.test(lineStr)) {
+      return [{ text: lineStr, ruby: '', okurigana: '', kaeriten: '' }];
+    }
+    const chars = Array.from(lineStr);
+    const n = chars.length;
+    const segments = [];
+    let plainBuf = '';
+    let i = 0;
+
+    function flushPlain() {
+      if (plainBuf.length > 0) {
+        segments.push({ text: plainBuf, ruby: '', okurigana: '', kaeriten: '' });
+        plainBuf = '';
+      }
+    }
+
+    while (i < n) {
+      const ch = chars[i];
+
+      // 1. {親文字 | ふりがな | 送り仮名 | 返り点}（全角｛｜｝・前後空白トリム対応）
+      if (ch === '{' || ch === '｛') {
+        let closeIdx = -1;
+        let aborted = false;
+        const pipePositions = [];
+        for (let j = i + 1; j < n; j++) {
+          const cj = chars[j];
+          if (cj === '}' || cj === '｝') {
+            closeIdx = j;
+            break;
+          }
+          if (cj === '{' || cj === '｛' || cj === '\n' || cj === '\r' || cj === '\t') {
+            aborted = true;
+            break;
+          }
+          if (cj === '|' || cj === '｜') {
+            pipePositions.push(j);
+          }
+        }
+
+        const pipeCount = pipePositions.length;
+        if (!aborted && closeIdx > i + 1 && pipeCount >= 1 && pipeCount <= GenkoInlineMaxPipeCount) {
+          const firstPipe = pipePositions[0];
+          const rawBase = chars.slice(i + 1, firstPipe);
+          const baseHadTrailingSpace = rawBase.length > 0 && rawBase[rawBase.length - 1] === ' ';
+          const baseChars = trimGenkoAsciiSpacesFromChars(rawBase);
+
+          if (isValidGenkoInlineRubyBase(baseChars)) {
+            let partsValid = true;
+            const rawPartStrs = [];
+            const trimmedParts = [];
+            const maxLimits = [GenkoInlineRubyMaxReadingChars, GenkoInlineKuntenMaxOkuriChars, GenkoInlineKuntenMaxKaeriChars];
+            let segStart = firstPipe + 1;
+
+            for (let p = 0; p < pipeCount; p++) {
+              const segEnd = (p + 1 < pipeCount) ? pipePositions[p + 1] : closeIdx;
+              const rawPart = chars.slice(segStart, segEnd).join('');
+              const trimmed = rawPart.replace(/^ +| +$/g, '');
+              if (!isValidGenkoOptionalKuntenPart(trimmed, maxLimits[p])) {
+                partsValid = false;
+                break;
+              }
+              rawPartStrs.push(rawPart);
+              trimmedParts.push(trimmed);
+              segStart = segEnd + 1;
+            }
+
+            const baseJoined = baseChars.join('');
+            if (partsValid && pipeCount === 1 && baseHadTrailingSpace && rawPartStrs[0].startsWith(' ')) {
+              if (GenkoAsciiOnlyRe.test(baseJoined) && trimmedParts[0] && GenkoAsciiOnlyRe.test(trimmedParts[0])) {
+                partsValid = false;
+              }
+            }
+
+            const rubyStr = partsValid ? (trimmedParts[0] || '') : '';
+            const okuriStr = (partsValid && pipeCount >= 2) ? (trimmedParts[1] || '') : '';
+            const kaeriStr = (partsValid && pipeCount >= 3) ? (trimmedParts[2] || '') : '';
+            if (partsValid && !rubyStr && !okuriStr && !kaeriStr) {
+              partsValid = false;
+            }
+
+            if (partsValid) {
+              flushPlain();
+              segments.push({
+                text: baseJoined,
+                ruby: rubyStr,
+                okurigana: okuriStr,
+                kaeriten: kaeriStr
+              });
+              i = closeIdx + 1;
+              continue;
+            }
+          }
+        }
+      }
+
+      // 2. ｜親文字《ふりがな》 / |親文字《ふりがな》（開始縦棒必須）
+      if (ch === '｜' || ch === '|') {
+        let openAngleIdx = -1;
+        let closeAngleIdx = -1;
+        let aborted = false;
+        for (let j = i + 1; j < n; j++) {
+          const cj = chars[j];
+          if (cj === '《') {
+            openAngleIdx = j;
+            break;
+          }
+          if (cj === '\n' || cj === '\r' || cj === '\t' || cj === '|' || cj === '｜' || cj === '{' || cj === '｛' || cj === '}' || cj === '｝' || cj === '》') {
+            aborted = true;
+            break;
+          }
+        }
+        if (!aborted && openAngleIdx > i + 1) {
+          for (let j = openAngleIdx + 1; j < n; j++) {
+            const cj = chars[j];
+            if (cj === '》') {
+              closeAngleIdx = j;
+              break;
+            }
+            if (cj === '\n' || cj === '\r' || cj === '\t' || cj === '《') {
+              aborted = true;
+              break;
+            }
+          }
+        }
+        if (!aborted && openAngleIdx > i + 1 && closeAngleIdx > openAngleIdx + 1) {
+          const baseChars = trimGenkoAsciiSpacesFromChars(chars.slice(i + 1, openAngleIdx));
+          const rtStr = chars.slice(openAngleIdx + 1, closeAngleIdx).join('').replace(/^ +| +$/g, '');
+          if (isValidGenkoInlineRubyBase(baseChars) && rtStr.length >= 1 && isValidGenkoOptionalKuntenPart(rtStr, GenkoInlineRubyMaxReadingChars)) {
+            flushPlain();
+            segments.push({ text: baseChars.join(''), ruby: rtStr, okurigana: '', kaeriten: '' });
+            i = closeAngleIdx + 1;
+            continue;
+          }
+        }
+      }
+
+      plainBuf += ch;
+      i++;
+    }
+
+    flushPlain();
+    return segments;
+  }
+
+  function expandSegmentListInlineRubyForGenko(segList) {
+    if (!Array.isArray(segList) || segList.length === 0) return segList;
+    const out = [];
+    let plainRun = '';
+    function flushRun() {
+      if (plainRun.length > 0) {
+        const parsed = parseInlineRubySegmentsForGenko(plainRun);
+        for (let k = 0; k < parsed.length; k++) out.push(parsed[k]);
+        plainRun = '';
+      }
+    }
+    for (let i = 0; i < segList.length; i++) {
+      const s = segList[i];
+      if (!s.ruby && !s.okurigana && !s.kaeriten) {
+        plainRun += (s.text || '');
+      } else {
+        flushRun();
+        out.push(s);
+      }
+    }
+    flushRun();
+    return out;
   }
 
   // Google Docs API 生JSON から原稿用紙用の段落列を抽出
@@ -9028,17 +9240,23 @@ async function loadSampleDocx() {
 
       const subLines = rawText.split('\n');
       for (let s = 0; s < subLines.length; s++) {
-        let lineStr = subLines[s];
+        const lineStr = subLines[s];
         if (lineStr.length === 0) {
           paragraphs.push({ pageBreak: false, segments: [] });
           continue;
         }
-        if (s === 0 && indentFirst > 0 && !/^[\s　「『（【〔〈《“‘]/.test(lineStr)) {
-          lineStr = '　' + lineStr;
+        const parsedSegs = parseInlineRubySegmentsForGenko(lineStr);
+        const plainJoined = parsedSegs.map(seg => seg.text).join('');
+        if (plainJoined.length === 0) {
+          paragraphs.push({ pageBreak: false, segments: [] });
+          continue;
+        }
+        if (s === 0 && indentFirst > 0 && !/^[\s　「『（【〔〈《“‘]/.test(plainJoined)) {
+          parsedSegs.unshift({ text: '　', ruby: '', okurigana: '', kaeriten: '' });
         }
         paragraphs.push({
           pageBreak: false,
-          segments: [{ text: lineStr, ruby: '' }]
+          segments: parsedSegs
         });
       }
     }
@@ -9071,7 +9289,8 @@ async function loadSampleDocx() {
     return paragraphs;
   }
 
-  // 1段落のセグメント列を原稿用紙の1マス単位セル配列へトークナイズ（2桁半角数字は縦中横化・行跨ぎルビ分割メタデータ付与）
+  // 1段落のセグメント列を原稿用紙の1マス単位セル配列へトークナイズ
+  // （2桁半角数字は縦中横化・返り点は最終親文字マス左下・長ルビ/長送り仮名は自動で下に空マスを確保）
   let nextGenkoRubyGroupSeq = 1;
 
   function tokenizeParagraphForGenko(segments) {
@@ -9079,7 +9298,10 @@ async function loadSampleDocx() {
     for (let s = 0; s < segments.length; s++) {
       const seg = segments[s];
       const chars = Array.from(seg.text || '');
-      const rubyText = (seg.ruby || '').trim();
+      const furiganaText = (seg.ruby || '').trim();
+      const okuriText = (seg.okurigana || '').trim();
+      const kaeritenText = (seg.kaeriten || '').trim();
+      const hasKuntenBox = (okuriText.length > 0 || kaeritenText.length > 0);
       const segTokens = [];
 
       for (let i = 0; i < chars.length; i++) {
@@ -9101,6 +9323,10 @@ async function loadSampleDocx() {
             rubyFullChars: null,
             rubyCellOffset: 0,
             rubyTotalCells: 0,
+            kaeriten: '',
+            okuriSlice: '',
+            kuntenUnitStart: false,
+            kuntenUnitLen: 0,
             trailingMarks: []
           });
           i++;
@@ -9117,20 +9343,79 @@ async function loadSampleDocx() {
           rubyFullChars: null,
           rubyCellOffset: 0,
           rubyTotalCells: 0,
+          kaeriten: '',
+          okuriSlice: '',
+          kuntenUnitStart: false,
+          kuntenUnitLen: 0,
           trailingMarks: []
         });
       }
 
-      if (rubyText && segTokens.length > 0) {
+      // 1. ふりがな（読み仮名）は親文字の右ルビ欄へ割り当て（1マス3文字超過時のみ空マス補完）
+      if (furiganaText && segTokens.length > 0) {
+        const rubyFullChars = Array.from(furiganaText);
+        const neededRubyCells = Math.ceil(rubyFullChars.length / GenkoMaxRubyCharsPerCell);
+        const extraRubyPad = Math.max(0, neededRubyCells - segTokens.length);
+        for (let p = 0; p < extraRubyPad; p++) {
+          segTokens.push({
+            kind: 'kunten_pad',
+            text: '　',
+            ruby: '',
+            rubySpanCells: 0,
+            rubyGroupId: 0,
+            rubyFullChars: null,
+            rubyCellOffset: 0,
+            rubyTotalCells: 0,
+            kaeriten: '',
+            okuriSlice: '',
+            kuntenUnitStart: false,
+            kuntenUnitLen: 0,
+            trailingMarks: []
+          });
+        }
         const groupId = nextGenkoRubyGroupSeq++;
-        const rubyFullChars = Array.from(rubyText);
-        const totalCells = segTokens.length;
-        for (let k = 0; k < totalCells; k++) {
+        const rubyParentCells = segTokens.length;
+        for (let k = 0; k < rubyParentCells; k++) {
           segTokens[k].rubyGroupId = groupId;
           segTokens[k].rubyFullChars = rubyFullChars;
           segTokens[k].rubyCellOffset = k;
-          segTokens[k].rubyTotalCells = totalCells;
+          segTokens[k].rubyTotalCells = rubyParentCells;
         }
+      }
+
+      // 2. 返り点・送り仮名がある場合は、親文字直下の「次マス（kunten_box）」内に左＝返り点・右＝送り仮名（最大4文字/マス）を格納
+      if (hasKuntenBox && segTokens.length > 0) {
+        const okuriChars = Array.from(okuriText);
+        const kuntenCellCount = Math.max(1, Math.ceil(okuriChars.length / GenkoMaxOkuriCharsPerKuntenCell));
+        for (let kc = 0; kc < kuntenCellCount; kc++) {
+          const chunk = okuriChars.slice(
+            kc * GenkoMaxOkuriCharsPerKuntenCell,
+            (kc + 1) * GenkoMaxOkuriCharsPerKuntenCell
+          ).join('');
+          segTokens.push({
+            kind: 'kunten_box',
+            text: '　',
+            ruby: '',
+            rubySpanCells: 0,
+            rubyGroupId: 0,
+            rubyFullChars: null,
+            rubyCellOffset: 0,
+            rubyTotalCells: 0,
+            kaeriten: (kc === 0) ? kaeritenText : '',
+            okuriSlice: chunk,
+            kuntenUnitStart: false,
+            kuntenUnitLen: 0,
+            trailingMarks: []
+          });
+        }
+      }
+
+      // 行頭に訓点マスや空マスが単独送りされないよう、親文字＋直下訓点マスを一体グループとしてマーク
+      if (segTokens.length > 1 &&
+          (hasKuntenBox || segTokens.some(t => t.kind === 'kunten_pad')) &&
+          segTokens.length <= GenkoMaxUnbreakableKuntenSpanCells) {
+        segTokens[0].kuntenUnitStart = true;
+        segTokens[0].kuntenUnitLen = segTokens.length;
       }
 
       for (let k = 0; k < segTokens.length; k++) {
@@ -9176,7 +9461,8 @@ async function loadSampleDocx() {
     }
   }
 
-  // 段落配列を 20字×20行（400字詰め）の各ページグリッドへ割り付け（行頭句読点・閉じ括弧の20マス目同居処理＆行跨ぎルビ分割付き）
+  // 段落配列を 20字×20行（400字詰め）の各ページグリッドへ割り付け
+  // （訓点・自動空マスグループの行末分断防止 ＆ 20マス目句読点同居処理付き）
   function layoutGenkoPages(paragraphs) {
     const pages = [];
     let currentCols = [];
@@ -9221,21 +9507,34 @@ async function loadSampleDocx() {
       while (idx < tokens.length) {
         const colCells = [];
         while (colCells.length < GenkoRowsPerCol && idx < tokens.length) {
-          colCells.push(tokens[idx]);
+          const tk = tokens[idx];
+          // 親文字＋直下訓点マス（返り点・送り仮名）が行末に収まりきらない場合は、行頭に訓点マスが単独送りされないよう親文字ごと次行頭へ送る
+          if (tk.kuntenUnitStart && colCells.length > 0) {
+            const remainInCol = GenkoRowsPerCol - colCells.length;
+            if (tk.kuntenUnitLen > remainInCol && tk.kuntenUnitLen <= GenkoRowsPerCol) {
+              break;
+            }
+          }
+          colCells.push(tk);
           idx++;
         }
 
-        // 20マス目直後に句読点・閉じ括弧が続く場合は、次行頭に送らず20マス目右下に同居させる
-        if (colCells.length === GenkoRowsPerCol && idx < tokens.length) {
-          const lastCell = colCells[GenkoRowsPerCol - 1];
-          let guardCount = 0;
-          while (idx < tokens.length &&
-                 guardCount < GenkoMaxTrailingMarksPerCell &&
-                 tokens[idx].kind === 'char' &&
-                 GenkoTrailingHangableSet.has(tokens[idx].text)) {
-            lastCell.trailingMarks.push(tokens[idx].text);
-            idx++;
-            guardCount++;
+        // 行末直後に句読点・閉じ括弧が続く場合は、次行頭に送らずこの行の最終セル右下に同居させる
+        if (colCells.length > 0 && idx < tokens.length) {
+          const isColEnd = (colCells.length === GenkoRowsPerCol) ||
+                           (tokens[idx].kuntenUnitStart &&
+                            tokens[idx].kuntenUnitLen > (GenkoRowsPerCol - colCells.length));
+          if (isColEnd) {
+            const lastCell = colCells[colCells.length - 1];
+            let guardCount = 0;
+            while (idx < tokens.length &&
+                   guardCount < GenkoMaxTrailingMarksPerCell &&
+                   tokens[idx].kind === 'char' &&
+                   GenkoTrailingHangableSet.has(tokens[idx].text)) {
+              lastCell.trailingMarks.push(tokens[idx].text);
+              idx++;
+              guardCount++;
+            }
           }
         }
 
@@ -9431,7 +9730,8 @@ async function loadSampleDocx() {
     }
   }
 
-  // 1ページ分の文字レイヤーを高解像度透過PNGとしてレンダリング（縦書き約物回転・句読点右上・小書き仮名・20マス目同居対応）
+  // 1ページ分の文字レイヤーを高解像度透過PNGとしてレンダリング
+  // （縦書き約物回転・句読点右上・マス左下角返り点・右ルビ＆右下送り仮名・20マス目同居対応）
   async function renderGenkoTextLayerPngBytes(pageCols, geom) {
     const canvasW = Math.round(GenkoPaperWidthMm * GenkoCanvasPxPerMm);
     const canvasH = Math.round(GenkoPaperHeightMm * GenkoCanvasPxPerMm);
@@ -9542,6 +9842,10 @@ async function loadSampleDocx() {
       ctx.restore();
     }
 
+    const GenkoKuntenSingleKaeriYRatio = 0.20;      // 訓点マス内の単体返り点中心Y比率（送り仮名1文字目と頭揃え）
+    const GenkoKuntenMultiKaeriStartYRatio = 0.18;  // 訓点マス内の合体返り点（一レ等）1文字目中心Y比率
+    const GenkoKuntenMultiKaeriStepYRatio = 0.25;   // 訓点マス内の合体返り点の縦ピッチ比率
+
     for (let col = 0; col < pageCols.length && col < GenkoTotalColsPerPage; col++) {
       const cells = pageCols[col];
       const colLeftPx = geom.getColLeftXMm(col) * GenkoCanvasPxPerMm;
@@ -9551,19 +9855,60 @@ async function loadSampleDocx() {
         const cell = cells[row];
         const cellTopPx = (geom.innerTopMm + (row * GenkoCellSizeMm)) * GenkoCanvasPxPerMm;
         const hasTrailing = cell.trailingMarks && cell.trailingMarks.length > 0;
-        const baseCenterY = cellTopPx + (cellPx / 2.0) + (hasTrailing ? (cellPx * GenkoTrailingParentShiftY) : 0);
+        const shiftY = hasTrailing ? (cellPx * GenkoTrailingParentShiftY) : 0;
+        const glyphCenterX = colCenterX;
+        const baseCenterY = cellTopPx + (cellPx / 2.0) + shiftY;
 
-        if (cell.kind === 'tcy') {
+        if (cell.kind === 'kunten_box') {
+          // 次マス（訓点専用マス）：左半分に返り点、右半分に送り仮名（最大4文字）を上詰め配置
+          if (cell.kaeriten) {
+            const kChars = Array.from(cell.kaeriten);
+            const isMultiK = (kChars.length >= 2);
+            const kFontPx = cellPx * GenkoKuntenKaeriFontRatio * (isMultiK ? GenkoKuntenKaeriMultiScale : 1.0);
+            const kx = colLeftPx + (cellPx * GenkoKuntenLeftColCenterXRatio);
+            if (kChars.length === 1) {
+              const ky = cellTopPx + (cellPx * GenkoKuntenSingleKaeriYRatio);
+              drawInkCenteredGlyph(kChars[0], kx, ky, kFontPx, 'none');
+            } else {
+              for (let ki = 0; ki < kChars.length; ki++) {
+                const ky = cellTopPx + (cellPx * (GenkoKuntenMultiKaeriStartYRatio + (ki * GenkoKuntenMultiKaeriStepYRatio)));
+                drawInkCenteredGlyph(kChars[ki], kx, ky, kFontPx, 'none');
+              }
+            }
+          }
+
+          if (cell.okuriSlice) {
+            const oChars = Array.from(cell.okuriSlice);
+            if (oChars.length > 0) {
+              const ox = colLeftPx + (cellPx * GenkoKuntenRightColCenterXRatio);
+              const topPadPx = cellPx * GenkoKuntenTopPadRatio;
+              const availHPx = hasTrailing
+                ? (cellPx * (GenkoKuntenTrailingSafeHeightRatio - GenkoKuntenTopPadRatio))
+                : (cellPx * (1.0 - GenkoKuntenTopPadRatio - GenkoKuntenBottomPadRatio));
+              const stepY = Math.min(cellPx * GenkoKuntenOkuriMaxStepRatio, availHPx / oChars.length);
+              const okuriFontPx = Math.min(cellPx * GenkoKuntenOkuriFontRatio, stepY * GenkoKuntenOkuriLineFitRatio);
+
+              for (let oi = 0; oi < oChars.length; oi++) {
+                const oCh = oChars[oi];
+                const oy = cellTopPx + topPadPx + (stepY * (oi + 0.5));
+                const oRot = GenkoMirrorRotateSet.has(oCh)
+                  ? 'cw90_mirror'
+                  : (GenkoRotate90CharSet.has(oCh) ? 'cw90' : 'none');
+                drawInkCenteredGlyph(oCh, ox, oy, okuriFontPx, oRot);
+              }
+            }
+          }
+        } else if (cell.kind === 'tcy') {
           const tcyChars = Array.from(cell.text);
           const tcyFontPx = mainFontPx * GenkoTcyFontScale;
           if (tcyChars.length === 2) {
-            drawInkCenteredGlyph(tcyChars[0], colCenterX - (cellPx * GenkoTcyCharOffsetRatio), baseCenterY, tcyFontPx, 'none');
-            drawInkCenteredGlyph(tcyChars[1], colCenterX + (cellPx * GenkoTcyCharOffsetRatio), baseCenterY, tcyFontPx, 'none');
+            drawInkCenteredGlyph(tcyChars[0], glyphCenterX - (cellPx * GenkoTcyCharOffsetRatio), baseCenterY, tcyFontPx, 'none');
+            drawInkCenteredGlyph(tcyChars[1], glyphCenterX + (cellPx * GenkoTcyCharOffsetRatio), baseCenterY, tcyFontPx, 'none');
           } else {
-            drawInkCenteredGlyph(cell.text, colCenterX, baseCenterY, tcyFontPx, 'none');
+            drawInkCenteredGlyph(cell.text, glyphCenterX, baseCenterY, tcyFontPx, 'none');
           }
         } else {
-          drawSingleVerticalGlyph(cell.text, colLeftPx, cellTopPx, colCenterX, baseCenterY, mainFontPx);
+          drawSingleVerticalGlyph(cell.text, colLeftPx, cellTopPx, glyphCenterX, baseCenterY, mainFontPx);
         }
 
         // 20マス目の行末同居約物（句読点・閉じ括弧）を実測インク中心でマス右下へ配置
@@ -9580,16 +9925,16 @@ async function loadSampleDocx() {
           }
         }
 
-        // ルビ（ふりがな）がある場合は行右隣のルビ欄へ縦に描画（行末下枠を超えないよう厳密クランプ）
+        // 親文字のふりがな（読み仮名）を右隣のルビ欄へ描画
         if (cell.ruby) {
           const rubyChars = Array.from(cell.ruby);
           if (rubyChars.length > 0) {
             const safeSpanCells = Math.max(1, Math.min(cell.rubySpanCells || 1, GenkoRowsPerCol - row));
             const spanPx = safeSpanCells * cellPx;
-            const stepY = spanPx / rubyChars.length;
-            const rubyFontPx = Math.min(cellPx * GenkoRubyFontRatio, stepY * GenkoRubyLineFitRatio);
             const rubyAreaWidthPx = GenkoRubyGapWidthMm * GenkoCanvasPxPerMm;
             const rubyCenterX = colLeftPx + cellPx + (rubyAreaWidthPx * 0.5);
+            const stepY = spanPx / rubyChars.length;
+            const rubyFontPx = Math.min(cellPx * GenkoRubyFontRatio, stepY * GenkoRubyLineFitRatio);
             for (let rIdx = 0; rIdx < rubyChars.length; rIdx++) {
               const rCh = rubyChars[rIdx];
               const ry = cellTopPx + (stepY * (rIdx + 0.5));
