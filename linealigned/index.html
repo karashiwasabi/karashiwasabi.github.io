@@ -6,7 +6,7 @@
   <title>Line-aligned Studio - A3/A4/A5見開きノート</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&family=Noto+Serif+TC:wght@400;600&display=swap" rel="stylesheet">
   <script src="https://apis.google.com/js/api.js"></script>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script>
@@ -961,7 +961,7 @@
   <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 0.75rem;">
     <div style="font-size: 1.05rem; font-weight: 800; color: #1f1f1f;">
       <span style="color: #1a73e8; font-weight: 900;">Line-aligned</span>
-      <span style="color: #5f6368; font-size: 0.78rem; margin-left: 6px;">ver.166 (Build 20261125_1110)</span>
+      <span style="color: #5f6368; font-size: 0.78rem; margin-left: 6px;">ver.166 (Build 20261125_1255)</span>
     </div>
     <div style="display: flex; align-items: center; gap: 6px;">
       <a href="https://wasabikarashi.com/" id="uiLinkTop" style="display: inline-flex; align-items: center; gap: 3px; background: #f1f5f9; border: 1px solid #dadce0; border-radius: 8px; padding: 5px 10px; font-size: 0.75rem; font-weight: 700; color: #3c4043; text-decoration: none; white-space: nowrap;">トップ</a>
@@ -11790,9 +11790,13 @@ async function loadSampleDocx() {
       drawSosekiHeaderOrnamentOnCanvas(ctx, geom, lineColorHex, GenkoCanvasPxPerMm);
     }
 
+    const isTaiwanZhTW = (window.__currentVerticalTypesetLocale === 'zh-TW');
+    const GenkoTaiwanCenteredPunctSet = new Set(['，', '。', '、', '．', '：', '；', '！', '？', '!', '?']);
     const cellPx = cellSizeMm * GenkoCanvasPxPerMm;
     const mainFontPx = cellPx * GenkoMainFontRatio;
-    const fontStack = "'Noto Serif JP', 'BIZ UDPMincho', 'Yu Mincho', 'Hiragino Mincho ProN', 'MS Mincho', serif";
+    const fontStack = isTaiwanZhTW
+      ? "'Noto Serif TC', 'Noto Serif CJK TC', 'PMingLiU', 'DFKai-SB', 'BiauKai', serif"
+      : "'Noto Serif JP', 'BIZ UDPMincho', 'Yu Mincho', 'Hiragino Mincho ProN', 'MS Mincho', serif";
 
     ctx.fillStyle = GenkoTextColorHex;
     ctx.textAlign = 'center';
@@ -11825,6 +11829,11 @@ async function loadSampleDocx() {
 
     function drawSingleVerticalGlyph(ch, cellLeftPx, cellTopPx, centerX, centerY, fontPx) {
       if (ch === '　' || ch === ' ') return;
+      if (isTaiwanZhTW && GenkoTaiwanCenteredPunctSet.has(ch)) {
+        // 台湾教育部「重訂標點符號手冊」準拠：句号・逗號・頓號・分號・冒號・問號・驚嘆號を1マス中央に正立配置
+        drawInkCenteredGlyph(ch, centerX, centerY, fontPx, 'none');
+        return;
+      }
       if (GenkoCornerPunctSet.has(ch)) {
         ctx.save();
         ctx.font = '400 ' + fontPx.toFixed(1) + 'px ' + fontStack;
@@ -11951,7 +11960,8 @@ async function loadSampleDocx() {
             const shiftLeft = tIdx * (cellPx * 0.24);
             const tx = (colLeftPx + cellPx) - insetPx - (trailFontPx * 0.22) - shiftLeft;
             const ty = (cellTopPx + cellPx) - insetPx - (trailFontPx * 0.22);
-            const rotMode = GenkoRotate90CharSet.has(mark) ? 'cw90' : 'none';
+            const isUprightTwMark = isTaiwanZhTW && GenkoTaiwanCenteredPunctSet.has(mark);
+            const rotMode = (!isUprightTwMark && GenkoRotate90CharSet.has(mark)) ? 'cw90' : 'none';
             drawInkCenteredGlyph(mark, tx, ty, trailFontPx, rotMode);
           }
         }
@@ -13057,6 +13067,529 @@ async function loadSampleDocx() {
 
     return await outDoc.save({ useObjectStreams: true });
   };
+
+
+  // ==============================================================================
+  // 台湾繁体字直書（繁體中文：台湾標準字形 Noto Serif TC/CJK TC ＋ 中央句読点 ＋ 独立『サンプル：繁体字・直書』）
+  // ==============================================================================
+  const VerticalLocaleJapanese = 'ja';
+  const VerticalLocaleTaiwanZhTW = 'zh-TW';
+  const SAMPLE_ZHTW_DOCS_ID = '__SAMPLE_ZHTW_DOCS__';
+  window.__currentVerticalTypesetLocale = VerticalLocaleJapanese;
+
+  // 台湾教育部「重訂標點符號手冊」の行頭禁則約物を原稿用紙の行末追い込み対象にも登録
+  ['：', '；', '！', '？', '!', '?'].forEach(mark => {
+    GenkoTrailingHangableSet.add(mark);
+  });
+
+  const TAIWAN_VERTICAL_LOCALE_I18N = {
+    ja: {
+      ruleLabel: '縦書きの組版規格（字形・句読点位置）',
+      btnJa: '日本語（右上句読点）',
+      btnZhTw: '繁體中文（中央句読点・直書）',
+      sampleBtnLabel: 'サンプル：繁体字・直書',
+      sampleDocxName: 'サンプル：繁体字・直書.docx',
+      sampleLoadedMsg: 'サンプルをセットしました。',
+      fileSuffixGenkoZhTw: '_直式稿紙_20x20',
+      fileSuffixSanboZhTw: '_山葵山房稿紙_20x10'
+    },
+    en: {
+      ruleLabel: 'Vertical Typesetting Standard (Glyphs & Punctuation)',
+      btnJa: 'Japanese (Corner Punct.)',
+      btnZhTw: '繁體中文 (Taiwan Centered Punct.)',
+      sampleBtnLabel: 'Sample: Traditional Chinese (Vertical)',
+      sampleDocxName: 'Sample: Traditional Chinese (Vertical).docx',
+      sampleLoadedMsg: 'Sample loaded.',
+      fileSuffixGenkoZhTw: '_Manuscript_ZhTW_20x20',
+      fileSuffixSanboZhTw: '_WasabiSanbo_ZhTW_20x10'
+    },
+    'zh-TW': {
+      ruleLabel: '直書排版規格（字體與標點位置）',
+      btnJa: '日本語（右上標點）',
+      btnZhTw: '繁體中文（台灣直書・居中標點）',
+      sampleBtnLabel: '範例：繁體中文・直書',
+      sampleDocxName: '範例：繁體中文・直書.docx',
+      sampleLoadedMsg: '已載入繁體中文直書範例。',
+      fileSuffixGenkoZhTw: '_直式稿紙_20x20',
+      fileSuffixSanboZhTw: '_山葵山房稿紙_20x10'
+    },
+    ko: {
+      ruleLabel: '세로쓰기 조판 규격 (자형·문장부호 위치)',
+      btnJa: '일본어 (우상단 구두점)',
+      btnZhTw: '繁體中文 (대만 직서·중앙 구두점)',
+      sampleBtnLabel: '샘플: 번체자·세로쓰기',
+      sampleDocxName: '샘플: 번체자·세로쓰기.docx',
+      sampleLoadedMsg: '샘플을 설정했습니다.',
+      fileSuffixGenkoZhTw: '_직식원고지_20x20',
+      fileSuffixSanboZhTw: '_와사비산방_20x10'
+    }
+  };
+
+  function getTaiwanVerticalText(lang) {
+    return TAIWAN_VERTICAL_LOCALE_I18N[lang || currentLanguage] || TAIWAN_VERTICAL_LOCALE_I18N.ja;
+  }
+
+  // 原稿用紙Webフォント待機に Noto Serif TC も追加
+  const _prevEnsureGenkoWebFonts = ensureGenkoWebFontsReady;
+  ensureGenkoWebFontsReady = async function() {
+    await _prevEnsureGenkoWebFonts();
+    if (window.__currentVerticalTypesetLocale === VerticalLocaleTaiwanZhTW &&
+        document.fonts && typeof document.fonts.load === 'function') {
+      try {
+        await Promise.all([
+          document.fonts.load("400 16px 'Noto Serif TC'").catch(() => null),
+          document.fonts.load("600 16px 'Noto Serif TC'").catch(() => null)
+        ]);
+      } catch (_eTcFont) {}
+    }
+  };
+
+  // 1. 入力ファイル欄（緑サンプルボタン群）へ独立ボタン「サンプル：繁体字・直書」を追加
+  function mountStandaloneZhTwSampleButtons() {
+    const docsVertSampleBtn = document.getElementById('btnDocsSampleVertSelect');
+    if (docsVertSampleBtn && docsVertSampleBtn.parentElement && !document.getElementById('btnDocsSampleZhTwSelect')) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'btn-select btn-sample-green';
+      btn.id = 'btnDocsSampleZhTwSelect';
+      btn.style.width = '100%';
+      btn.style.marginBottom = '8px';
+      const sp = document.createElement('span');
+      sp.id = 'uiTextDocsSampleZhTw';
+      btn.appendChild(sp);
+      btn.onclick = () => window.loadSampleDocsZhTwVertical();
+      docsVertSampleBtn.parentElement.insertAdjacentElement('afterend', btn);
+    }
+
+    const docxV2VSampleBtn = document.getElementById('btnDocxSampleV2VSelect');
+    if (docxV2VSampleBtn && docxV2VSampleBtn.parentElement && !document.getElementById('btnDocxSampleZhTwSelect')) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'btn-select btn-sample-green';
+      btn.id = 'btnDocxSampleZhTwSelect';
+      btn.style.width = '100%';
+      btn.style.marginTop = '8px';
+      btn.style.marginBottom = '8px';
+      const sp = document.createElement('span');
+      sp.id = 'uiTextDocxSampleZhTw';
+      btn.appendChild(sp);
+      btn.onclick = () => window.loadSampleDocxZhTwVertical();
+      docxV2VSampleBtn.parentElement.insertAdjacentElement('afterend', btn);
+    }
+  }
+
+  // 2. 下の「縦書きの組版規格」設定枠は純粋な2択ボタン（日本語 / 繁體中文）のみで構成
+  function buildVerticalLocaleSelectorBox(prefix) {
+    const slotEl = document.getElementById(prefix + 'DirectionSlot');
+    if (!slotEl || document.getElementById(prefix + 'VerticalLocaleBox')) return;
+
+    const wrap = document.createElement('div');
+    wrap.id = prefix + 'VerticalLocaleBox';
+    wrap.className = 'studio-btn-panel';
+    wrap.style.marginBottom = '0.75rem';
+    wrap.style.display = 'none';
+
+    const row = document.createElement('div');
+    row.className = 'studio-btn-row';
+
+    const lbl = document.createElement('div');
+    lbl.className = 'studio-btn-sublabel';
+    lbl.id = prefix + 'VerticalLocaleLabel';
+
+    const grid = document.createElement('div');
+    grid.className = 'studio-chip-grid-2';
+
+    const btnJa = document.createElement('button');
+    btnJa.type = 'button';
+    btnJa.className = 'chip-opt-btn active';
+    btnJa.id = prefix + 'BtnVertLocale_ja';
+    btnJa.onclick = () => window.setVerticalTypesetLocale(VerticalLocaleJapanese);
+
+    const btnTw = document.createElement('button');
+    btnTw.type = 'button';
+    btnTw.className = 'chip-opt-btn';
+    btnTw.id = prefix + 'BtnVertLocale_zhtw';
+    btnTw.onclick = () => window.setVerticalTypesetLocale(VerticalLocaleTaiwanZhTW);
+
+    grid.appendChild(btnJa);
+    grid.appendChild(btnTw);
+    row.appendChild(lbl);
+    row.appendChild(grid);
+    wrap.appendChild(row);
+
+    slotEl.insertAdjacentElement('afterend', wrap);
+  }
+
+  function refreshVerticalLocaleSelectorUI() {
+    const tt = getTaiwanVerticalText(currentLanguage);
+    const isVert = (currentWritingDirection === 'vertical');
+    const isZhTw = (window.__currentVerticalTypesetLocale === VerticalLocaleTaiwanZhTW);
+
+    const docsSpan = document.getElementById('uiTextDocsSampleZhTw');
+    if (docsSpan) docsSpan.textContent = tt.sampleBtnLabel;
+    const docxSpan = document.getElementById('uiTextDocxSampleZhTw');
+    if (docxSpan) docxSpan.textContent = tt.sampleBtnLabel;
+
+    ['docs', 'docx'].forEach(prefix => {
+      const box = document.getElementById(prefix + 'VerticalLocaleBox');
+      if (!box) return;
+      box.style.display = isVert ? 'flex' : 'none';
+
+      const lbl = document.getElementById(prefix + 'VerticalLocaleLabel');
+      if (lbl) lbl.textContent = tt.ruleLabel;
+
+      const btnJa = document.getElementById(prefix + 'BtnVertLocale_ja');
+      const btnTw = document.getElementById(prefix + 'BtnVertLocale_zhtw');
+      if (btnJa) {
+        btnJa.textContent = tt.btnJa;
+        btnJa.classList.toggle('active', !isZhTw);
+      }
+      if (btnTw) {
+        btnTw.textContent = tt.btnZhTw;
+        btnTw.classList.toggle('active', isZhTw);
+      }
+    });
+
+    if (currentLoadedDocsSampleKind === 'zhtw' && selectedDocsId === SAMPLE_ZHTW_DOCS_ID) {
+      const fnEl = document.getElementById('docsSelectedFileName');
+      if (fnEl) fnEl.textContent = tt.sampleBtnLabel;
+    }
+    if (currentLoadedDocxSampleKind === 'zhtw') {
+      const fnDocxEl = document.getElementById('docxSelectedFileName');
+      if (fnDocxEl) fnDocxEl.textContent = tt.sampleDocxName;
+    }
+  }
+
+  window.setVerticalTypesetLocale = function(localeCode) {
+    window.__currentVerticalTypesetLocale = (localeCode === VerticalLocaleTaiwanZhTW)
+      ? VerticalLocaleTaiwanZhTW
+      : VerticalLocaleJapanese;
+    refreshVerticalLocaleSelectorUI();
+  };
+
+  // 3. 独立サンプル読み込み関数（DOCS / Word それぞれの専用IDとして完全に分離）
+  window.loadSampleDocsZhTwVertical = function() {
+    if (isDocsBusy) return;
+    closeDocsPreview();
+    const tt = getTaiwanVerticalText(currentLanguage);
+    const ct = getCleanStudioText(currentLanguage);
+
+    currentLoadedDocsSampleKind = 'zhtw';
+    selectedDocsId = SAMPLE_ZHTW_DOCS_ID;
+    selectedDocsName = 'Sample_ZhTW_Vertical';
+    window.__currentVerticalTypesetLocale = VerticalLocaleTaiwanZhTW;
+
+    window.switchWritingDirection('vertical');
+    forceSetWritingDirectionImmediate('vertical');
+    syncDirectionBarPlacementAndVisibility();
+
+    const fileNameEl = document.getElementById('docsSelectedFileName');
+    if (fileNameEl) {
+      fileNameEl.textContent = tt.sampleBtnLabel;
+      fileNameEl.style.color = '#137333';
+    }
+    const btnReset = document.getElementById('uiBtnResetDocsFile');
+    if (btnReset) btnReset.style.display = 'inline-block';
+    const btnViewOrig = document.getElementById('uiBtnViewDocsSampleOrig');
+    if (btnViewOrig) {
+      btnViewOrig.textContent = ct.btnViewSample;
+      btnViewOrig.style.display = 'inline-block';
+    }
+    refreshVerticalLocaleSelectorUI();
+    setDocsButtonsBusy(false);
+    showStatus(tt.sampleLoadedMsg, 'success');
+  };
+
+  window.loadSampleDocxZhTwVertical = async function() {
+    if (isDocxBusy) return;
+    closeDocxPreview();
+    const tt = getTaiwanVerticalText(currentLanguage);
+    const ct = getCleanStudioText(currentLanguage);
+
+    window.__currentVerticalTypesetLocale = VerticalLocaleTaiwanZhTW;
+    setDocxButtonsBusy(true, 'loading_docx');
+    activeVerticalPollBaseUrl = TATEGAKI_CLOUD_RUN_URL;
+    startDocsWorkingProgress('サンプルを読み込み中...');
+
+    try {
+      const docxUrl = TATEGAKI_CLOUD_RUN_URL.replace(/\/$/, '') + '/v3/sample/docx?locale=zh-TW';
+      const resp = await fetch(docxUrl, { method: 'GET' });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      const buf = await resp.arrayBuffer();
+      validateDocxBufferFormat(buf, 'Sample_ZhTW_Vertical.docx');
+
+      selectedDocxBase64 = arrayBufferToBase64(buf);
+      selectedDocxFileId = null;
+      selectedDocxName = 'Sample_ZhTW_Vertical.docx';
+      isCurrentDocxSampleLoaded = false;
+      currentLoadedDocxSampleKind = 'zhtw';
+      isCurrentDocxNativeVertical = false;
+
+      window.switchWritingDirection('vertical');
+      forceSetWritingDirectionImmediate('vertical');
+
+      const fileNameEl = document.getElementById('docxSelectedFileName');
+      if (fileNameEl) {
+        fileNameEl.textContent = tt.sampleDocxName;
+        fileNameEl.style.color = '#137333';
+      }
+      const btnReset = document.getElementById('uiBtnResetDocxFile');
+      if (btnReset) btnReset.style.display = 'inline-block';
+      const btnViewOrig = document.getElementById('uiBtnViewDocxSampleOrig');
+      if (btnViewOrig) btnViewOrig.style.display = 'none';
+      const btnDlSample = document.getElementById('uiBtnDownloadDocxSample');
+      if (btnDlSample) {
+        btnDlSample.textContent = ct.btnGetSample;
+        btnDlSample.style.display = 'inline-block';
+      }
+
+      syncDirectionBarPlacementAndVisibility();
+      refreshVerticalLocaleSelectorUI();
+      stopDocsWorkingProgress(true, '読み込み完了');
+      setDocxButtonsBusy(false);
+      showStatus(tt.sampleLoadedMsg, 'success');
+    } catch (err) {
+      stopDocsWorkingProgress(false);
+      setDocxButtonsBusy(false);
+      showStatus('サンプル読み込みエラー: ' + err.message, 'error');
+    } finally {
+      activeVerticalPollBaseUrl = '';
+    }
+  };
+
+  // 既存の日本語縦サンプル読み込み時は日本語規格へ戻し、繁体字サンプルと混ざらないように分離
+  const _prevLoadDocsVBeforeZhTw = window.loadSampleDocsVertical;
+  window.loadSampleDocsVertical = function() {
+    window.__currentVerticalTypesetLocale = (currentLanguage === 'zh-TW')
+      ? VerticalLocaleTaiwanZhTW
+      : VerticalLocaleJapanese;
+    _prevLoadDocsVBeforeZhTw();
+    refreshVerticalLocaleSelectorUI();
+  };
+
+  const _prevLoadDocxH2VBeforeZhTw = window.loadSampleDocxHorizToVert;
+  window.loadSampleDocxHorizToVert = function() {
+    window.__currentVerticalTypesetLocale = (currentLanguage === 'zh-TW')
+      ? VerticalLocaleTaiwanZhTW
+      : VerticalLocaleJapanese;
+    refreshVerticalLocaleSelectorUI();
+    return _prevLoadDocxH2VBeforeZhTw();
+  };
+
+  const _prevLoadDocxV2VBeforeZhTw = window.loadSampleDocxVertToVert;
+  window.loadSampleDocxVertToVert = function() {
+    window.__currentVerticalTypesetLocale = (currentLanguage === 'zh-TW')
+      ? VerticalLocaleTaiwanZhTW
+      : VerticalLocaleJapanese;
+    refreshVerticalLocaleSelectorUI();
+    return _prevLoadDocxV2VBeforeZhTw();
+  };
+
+  // 稼働中は独立繁体字サンプルボタンもロック
+  const _prevSetDocsBusyZhTw = setDocsButtonsBusy;
+  setDocsButtonsBusy = function(busy, activeAction) {
+    _prevSetDocsBusyZhTw(busy, activeAction);
+    const b = document.getElementById('btnDocsSampleZhTwSelect');
+    if (b) b.disabled = !!busy;
+  };
+  window.setDocsButtonsBusy = setDocsButtonsBusy;
+
+  const _prevSetDocxBusyZhTw = setDocxButtonsBusy;
+  setDocxButtonsBusy = function(busy, activeAction) {
+    _prevSetDocxBusyZhTw(busy, activeAction);
+    const b = document.getElementById('btnDocxSampleZhTwSelect');
+    if (b) b.disabled = !!busy;
+  };
+  window.setDocxButtonsBusy = setDocxButtonsBusy;
+
+  // UI言語切替連動
+  const _prevSwitchLangBeforeTwVert = window.switchLanguage;
+  window.switchLanguage = function(lang) {
+    _prevSwitchLangBeforeTwVert(lang);
+    if (currentLanguage === 'zh-TW') {
+      window.__currentVerticalTypesetLocale = VerticalLocaleTaiwanZhTW;
+    }
+    refreshVerticalLocaleSelectorUI();
+  };
+  switchLanguage = window.switchLanguage;
+
+  const _prevSwitchDirBeforeTwVert = window.switchWritingDirection;
+  window.switchWritingDirection = function(dir) {
+    _prevSwitchDirBeforeTwVert(dir);
+    refreshVerticalLocaleSelectorUI();
+  };
+
+  // 「サンプルを見る」は SAMPLE_ZHTW_DOCS_ID 選択時のみ ?locale=zh-TW を開く
+  const _prevOpenSampleOrigBeforeTw = window.openSampleOriginalView;
+  window.openSampleOriginalView = function() {
+    if (selectedDocsId === SAMPLE_ZHTW_DOCS_ID || currentLoadedDocsSampleKind === 'zhtw') {
+      window.open(TATEGAKI_CLOUD_RUN_URL.replace(/\/$/, '') + '/v3/sample/view?locale=zh-TW', '_blank', 'noopener,noreferrer');
+      return;
+    }
+    return _prevOpenSampleOrigBeforeTw();
+  };
+  openSampleOriginalView = window.openSampleOriginalView;
+
+  // 4. SAMPLE_ZHTW_DOCS_ID 選択時の組版実行（通常縦書き・見開きノート・A4原稿用紙・PNG出力 すべて対応）
+  const _prevExecDocsBeforeZhTwSample = window.executeDocsLayout;
+  window.executeDocsLayout = async function(isExportPdf) {
+    if (selectedDocsId !== SAMPLE_ZHTW_DOCS_ID) {
+      return _prevExecDocsBeforeZhTwSample(isExportPdf);
+    }
+    if (isDocsBusy) return;
+
+    activeRenderTabPrefix = 'docs';
+    const paperSel = document.getElementById('docsPaperProfileSelect');
+    const paperMode = paperSel ? paperSel.value : '';
+    const lineColorHex = (document.getElementById('docsLineColorPicker') ? document.getElementById('docsLineColorPicker').value : GenkoDefaultLineColorHex) || GenkoDefaultLineColorHex;
+    const gt = getGenkoPngText(currentLanguage);
+
+    try {
+      // A. 原稿用紙（20×20 / 山葵山房 20×10 / クラシック 20×20）モード
+      if (currentWritingDirection === 'vertical' && paperMode === GenkoModeValue) {
+        setDocsButtonsBusy(true, 'export');
+        startDocsWorkingProgress(gt.workingGenko);
+        const resp = await fetch(TATEGAKI_CLOUD_RUN_URL.replace(/\/$/, '') + '/v3/sample/docx?locale=zh-TW', { method: 'GET' });
+        if (!resp.ok) throw new Error('サンプル取得エラー (HTTP ' + resp.status + ')');
+        const rawBytes = new Uint8Array(await resp.arrayBuffer());
+        const xmlText = await extractDocxMainDocumentXml(rawBytes);
+        const paragraphs = parseParagraphsFromDocxXmlForGenko(xmlText);
+
+        if (docsProgressTimer) { clearInterval(docsProgressTimer); docsProgressTimer = null; }
+        const pdfBytes = await generateGenkoManuscriptPdfBytes(paragraphs, lineColorHex, (cur, total) => {
+          const pct = Math.round((cur / total) * 95);
+          if (progressBar) progressBar.style.width = pct + '%';
+          if (progressPercent) progressPercent.textContent = pct + '%';
+          if (progressStatus) progressStatus.textContent = gt.workingGenko + ' (' + cur + ' / ' + total + ')';
+        });
+        handleDocsPdfOutput(pdfBytes, true, 'Sample_ZhTW' + gt.genkoFileSuffix + '.pdf', paperMode);
+        return;
+      }
+
+      // B. 通常の縦書き・上下見開きノート・デモ見開きモード
+      setDocsButtonsBusy(true, 'export');
+      const docsJobId = createRenderJobId();
+      activeVerticalPollBaseUrl = TATEGAKI_CLOUD_RUN_URL;
+      startDocsWorkingProgress('今：縦書き組版エンジンへ送信中...', docsJobId);
+
+      const { pitchMm, drawH, drawV } = readSplitRuleParams('docs', true);
+      const isLandscapeNote = (paperMode === 'v-a3-goodnotes' || paperMode === 'v-a4-spread');
+      const v3Config = {
+        paperWidthMm: isLandscapeNote ? VerticalLandscapeWidthMm : VerticalPortraitWidthMm,
+        paperHeightMm: isLandscapeNote ? VerticalLandscapeHeightMm : VerticalPortraitHeightMm,
+        gutterMarginMm: VerticalGutterRightMm,
+        outerMarginMm: VerticalOuterLeftMm,
+        marginTopMm: VerticalMarginTopMm,
+        marginBottomMm: VerticalMarginBottomMm,
+        linePitchMm: pitchMm,
+        ruledLineWidthPt: (drawH || drawV) ? DefaultRuleStrokePt : 0.0,
+        ruledLineColorHex: (drawH || drawV) ? lineColorHex : '#FFFFFF',
+        orientation: isLandscapeNote ? 'landscape' : 'portrait',
+        typesetLocale: window.__currentVerticalTypesetLocale || VerticalLocaleTaiwanZhTW
+      };
+      applyV166BodyConfigOverride(v3Config, 'docs', true);
+
+      const sampleUrl = TATEGAKI_CLOUD_RUN_URL.replace(/\/$/, '') + '/v3/sample/docs-render-pdf?locale=zh-TW';
+      const sampleResp = await fetch(sampleUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          jobId: docsJobId,
+          typesetLocale: v3Config.typesetLocale,
+          config: v3Config
+        })
+      });
+      if (!sampleResp.ok) throw new Error('HTTP ' + sampleResp.status);
+      const typesetBytes = new Uint8Array(await sampleResp.arrayBuffer());
+
+      let origBytes = null;
+      if (paperMode === 'v-a3-compare') {
+        const origUrl = TATEGAKI_CLOUD_RUN_URL.replace(/\/$/, '') + '/v3/sample/docs-original-pdf?locale=zh-TW';
+        const origResp = await fetch(origUrl, { method: 'GET' });
+        if (!origResp.ok) throw new Error('HTTP ' + origResp.status);
+        origBytes = new Uint8Array(await origResp.arrayBuffer());
+      }
+
+      const composed = await composeVerticalOutputPdf(typesetBytes, origBytes, paperMode, pitchMm, drawH, drawV, lineColorHex, 'Sample_ZhTW_Vertical');
+      handleDocsPdfOutput(composed.bytes, true, composed.fileName, paperMode);
+    } catch (err) {
+      stopDocsWorkingProgress(false);
+      setDocsButtonsBusy(false);
+      showStatus('組版エラー: ' + err.message, 'error');
+    } finally {
+      activeVerticalPollBaseUrl = '';
+      activeRenderTabPrefix = '';
+    }
+  };
+  executeDocsLayout = window.executeDocsLayout;
+
+  // DOCX タブで zhtw サンプルが選ばれているときも縦書き方向を維持
+  const _prevExecuteDocxZhTwGuard = window.executeDocxLayout;
+  window.executeDocxLayout = async function(isExportPdf) {
+    if (currentLoadedDocxSampleKind === 'zhtw' && currentWritingDirection !== 'vertical') {
+      forceSetWritingDirectionImmediate('vertical');
+    }
+    return _prevExecuteDocxZhTwGuard(isExportPdf);
+  };
+  executeDocxLayout = window.executeDocxLayout;
+
+  // 5. ユーザー自身のドキュメント等での縦書き組版リクエストへ typesetLocale を自動付与
+  const _prevWindowFetchBeforeTwVert = window.fetch.bind(window);
+  window.fetch = function(input, init) {
+    try {
+      const urlStr = (typeof input === 'string') ? input : (input && input.url ? input.url : '');
+      const isZhTw = (window.__currentVerticalTypesetLocale === VerticalLocaleTaiwanZhTW);
+      const isVertEngineUrl = (urlStr.indexOf(TATEGAKI_CLOUD_RUN_URL) === 0 || urlStr.indexOf(TATETATE_CLOUD_RUN_URL) === 0);
+
+      if (isZhTw && isVertEngineUrl && init && init.method && String(init.method).toUpperCase() === 'POST' && typeof init.body === 'string') {
+        const parsed = JSON.parse(init.body);
+        if (parsed) {
+          if (!parsed.typesetLocale) parsed.typesetLocale = VerticalLocaleTaiwanZhTW;
+          if (parsed.config && !parsed.config.typesetLocale) {
+            parsed.config.typesetLocale = VerticalLocaleTaiwanZhTW;
+          }
+          init = Object.assign({}, init, { body: JSON.stringify(parsed) });
+        }
+      }
+    } catch (_eTwFetch) {}
+    return _prevWindowFetchBeforeTwVert(input, init);
+  };
+
+  const _prevCallGasRpcBeforeTwVert = callGasRpc;
+  callGasRpc = function(method, params) {
+    if (
+      window.__currentVerticalTypesetLocale === VerticalLocaleTaiwanZhTW &&
+      params &&
+      (method === 'renderTategakiDocsV3PdfBase64' || method === 'renderTategakiDocxV3PdfBase64')
+    ) {
+      params.typesetLocale = VerticalLocaleTaiwanZhTW;
+      if (params.config) {
+        params.config.typesetLocale = VerticalLocaleTaiwanZhTW;
+      }
+    }
+    return _prevCallGasRpcBeforeTwVert(method, params);
+  };
+
+  // 繁体字直書時の原稿用紙ダウンロードファイル名サフィックス調整
+  const _prevHandleDocsPdfForTwName = handleDocsPdfOutput;
+  handleDocsPdfOutput = function(bytes, isExportPdf, defaultFileName, paperMode) {
+    let effName = defaultFileName;
+    if (paperMode === GenkoModeValue && window.__currentVerticalTypesetLocale === VerticalLocaleTaiwanZhTW && typeof effName === 'string') {
+      const gt = getGenkoPngText(currentLanguage);
+      const vt = getV166Text(currentLanguage);
+      const tt = getTaiwanVerticalText(currentLanguage);
+      effName = effName.replace(vt.sosekiFileSuffix, tt.fileSuffixSanboZhTw).replace(gt.genkoFileSuffix, tt.fileSuffixGenkoZhTw);
+    }
+    return _prevHandleDocsPdfForTwName(bytes, isExportPdf, effName, paperMode);
+  };
+  window.handleDocsPdfOutput = handleDocsPdfOutput;
+
+  window.addEventListener('DOMContentLoaded', () => {
+    mountStandaloneZhTwSampleButtons();
+    buildVerticalLocaleSelectorBox('docs');
+    buildVerticalLocaleSelectorBox('docx');
+    refreshVerticalLocaleSelectorUI();
+  });
 
 
   </script>
