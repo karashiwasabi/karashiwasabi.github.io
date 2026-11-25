@@ -745,6 +745,175 @@
     }
 
 
+    /* ==========================================================
+       ver.166: 1列動線レイアウト ＆ モード連動ボタンパネル定義
+       ========================================================== */
+    :root {
+      --v166-stack-gap: 12px;
+      --v166-panel-bg: #f8fafd;
+      --v166-panel-border: #dbe4f0;
+      --v166-panel-radius: 12px;
+      --v166-panel-padding: 12px;
+      --v166-row-gap: 10px;
+      --v166-btn-gap: 6px;
+      --v166-btn-radius: 8px;
+      --v166-btn-padding-y: 8px;
+      --v166-btn-padding-x: 8px;
+      --v166-btn-min-height: 36px;
+      --v166-btn-font-size: 0.82rem;
+      --v166-sublabel-font-size: 0.75rem;
+      --v166-cream-swatch: #faf5e8;
+      --v166-cream-border: #d6cbb5;
+    }
+    .settings-grid {
+      grid-template-columns: minmax(0, 1fr) !important;
+      gap: var(--v166-stack-gap) !important;
+    }
+    .studio-btn-panel {
+      display: flex;
+      flex-direction: column;
+      gap: var(--v166-row-gap);
+      background: var(--v166-panel-bg);
+      border: 1px solid var(--v166-panel-border);
+      border-radius: var(--v166-panel-radius);
+      padding: var(--v166-panel-padding);
+      margin-top: 4px;
+    }
+    .studio-btn-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .studio-btn-sublabel {
+      font-size: var(--v166-sublabel-font-size);
+      font-weight: 700;
+      color: var(--text-muted);
+      line-height: 1.3;
+    }
+    .studio-chip-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--v166-btn-gap);
+    }
+    .studio-chip-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--v166-btn-gap);
+    }
+    .studio-chip-grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: var(--v166-btn-gap);
+    }
+    @media (max-width: 460px) {
+      .studio-chip-grid-4 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    .chip-opt-btn {
+      appearance: none;
+      background: #ffffff;
+      color: #3c4043;
+      border: 1px solid #cbd5e1;
+      border-radius: var(--v166-btn-radius);
+      padding: var(--v166-btn-padding-y) var(--v166-btn-padding-x);
+      min-height: var(--v166-btn-min-height);
+      font-size: var(--v166-btn-font-size);
+      font-weight: 700;
+      line-height: 1.25;
+      text-align: center;
+      cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+    .chip-opt-btn:hover:not(:disabled):not(.active) {
+      background: #eef4ff;
+      border-color: #8ab4f8;
+      color: #1a73e8;
+    }
+    .chip-opt-btn.active {
+      background: #1a73e8;
+      color: #ffffff;
+      border-color: #1a73e8;
+      box-shadow: 0 2px 6px rgba(26, 115, 232, 0.26);
+    }
+    .chip-opt-btn:disabled {
+      opacity: 0.48;
+      cursor: not-allowed;
+    }
+    .chip-paper-dot {
+      display: inline-block;
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .chip-paper-dot-white {
+      background: #ffffff;
+      border: 1px solid #94a3b8;
+    }
+    .chip-paper-dot-cream {
+      background: var(--v166-cream-swatch);
+      border: 1px solid var(--v166-cream-border);
+    }
+    .setting-item-dimmed,
+    .studio-row-dimmed {
+      opacity: 0.42;
+      pointer-events: none;
+    }
+    /* 漱石山房ボタン用のパブリックドメイン説明ポップアップ（ホバー＆選択時フロート表示） */
+    .chip-tooltip-anchor {
+      position: relative;
+      display: flex;
+      min-width: 0;
+    }
+    .chip-tooltip-anchor > .chip-opt-btn {
+      width: 100%;
+    }
+    .pd-popup-bubble {
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%) translateY(4px);
+      width: max-content;
+      max-width: 280px;
+      background: #1e293b;
+      color: #ffffff;
+      font-size: 0.73rem;
+      font-weight: 600;
+      line-height: 1.45;
+      padding: 7px 11px;
+      border-radius: 8px;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.25);
+      text-align: center;
+      white-space: normal;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s ease;
+      z-index: 50;
+    }
+    .pd-popup-bubble::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 6px;
+      border-style: solid;
+      border-color: #1e293b transparent transparent transparent;
+    }
+    .chip-tooltip-anchor:hover .pd-popup-bubble,
+    .chip-tooltip-anchor.show-pd-popup .pd-popup-bubble {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(0);
+    }
+
+
   </style>
   <!-- Google tag (gtag.js) for Line-aligned Studio -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-310XSTTWSM"></script>
@@ -792,7 +961,7 @@
   <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 0.75rem;">
     <div style="font-size: 1.05rem; font-weight: 800; color: #1f1f1f;">
       <span style="color: #1a73e8; font-weight: 900;">Line-aligned</span>
-      <span style="color: #5f6368; font-size: 0.78rem; margin-left: 6px;">ver.165 (Build 20261123_1216)</span>
+      <span style="color: #5f6368; font-size: 0.78rem; margin-left: 6px;">ver.166 (Build 20261125_1028)</span>
     </div>
     <div style="display: flex; align-items: center; gap: 6px;">
       <a href="https://wasabikarashi.com/" id="uiLinkTop" style="display: inline-flex; align-items: center; gap: 3px; background: #f1f5f9; border: 1px solid #dadce0; border-radius: 8px; padding: 5px 10px; font-size: 0.75rem; font-weight: 700; color: #3c4043; text-decoration: none; white-space: nowrap;">トップ</a>
@@ -10134,6 +10303,2750 @@ async function loadSampleDocx() {
     applyPngAndGenkoLabels(currentLanguage);
     syncAllGenkoRuleVisibilities();
   });
+
+
+  // ==============================================================================
+  // UI動線刷新 ＆ 原稿用紙・本文/ノート罫線独立制御モジュール (ver.166):
+  //   1. 「① 用紙・印刷形式」から A5 を廃止し1列全幅化。「A4 原稿用紙」へ名称統一。
+  //   2. 通常・見開きノートの動線を自然な順序へ統一:
+  //      [本文の罫線: あり・なし] ➔ [ノートの罫線: あり・なし（見開き時）] ➔ [罫線の種類: 横/縦罫線・方眼] ➔ [行幅: 6.0/7.0/8.0mm]
+  //      ※本文・ノートともに「なし」の時は「罫線の種類」と「罫線カラー」を自動で選択不可（グレーアウト＆非アクティブ表示）化
+  //   3. 原稿用紙デザイン:
+  //      - 標準（20×20）・クラシック（20×20）・漱石山房（20×10・A4縦置き片面ペラ）
+  //      - 『漱石山房』（夏目漱石・橋口五葉意匠、著作権保護期間満了パブリックドメイン）の上部アーチ額縁・「房山石漱」・左右瑞獣唐草・両側櫛歯飾り縁・鶯色罫線を忠実再現し、パブリックドメインポップアップを表示
+  // ==============================================================================
+
+  // --- カラー・線幅・原稿用紙定数（マジックナンバー厳禁・単位明記） ---
+  const GenkoPaperWhiteHex = '#FFFFFF';              // 白紙背景カラー
+  const GenkoPaperCreamHex = '#FAF5E8';              // 独自開発のクリーム紙背景カラー（温白色）
+  const SosekiPaperAntiqueCreamHex = '#F6F0DF';      // 漱石山房様式向けの生成りクリーム紙背景カラー
+  const GenkoPresetOliveHex = '#848F52';             // 漱石山房原稿用紙の伝統鶯色（オリーブグリーン）
+  const GenkoPresetVermilionHex = '#B5493A';         // 朱色カラー
+  const GenkoPresetClassicSepiaHex = '#D2B48C';      // クラシック様式のセピアカラー
+  const GenkoPresetStandardHex = '#D0D0D0';          // 標準様式のライトグレーカラー
+
+  const GenkoClassicOuterFrameGapMm = 1.65;          // クラシック20×20：二重外枠の間隔 (mm)
+  const GenkoClassicOuterStrokePt = 1.35;            // クラシック20×20：外側太枠線幅 (pt)
+  const GenkoGyobiSolidBorderPt = 0.2;               // 黒魚尾の輪郭線幅 (pt)
+  const GenkoGyobiHollowBorderPt = 0.72;             // 白魚尾（二重枠中抜き）の外輪郭線幅 (pt)
+  const GenkoGyobiHollowInnerStrokePt = 0.30;        // 白魚尾・花魚尾の内側二重輪郭線幅 (pt)
+  const GenkoGyobiHollowInsetMm = 0.55;              // 白魚尾の内側輪郭インセット量 (mm)
+  const GenkoFloralGyobiHalfWidthMm = 4.25;          // 花魚尾（豪華装飾）の半幅 (mm)
+  const GenkoFloralGyobiBodyHeightMm = 3.55;         // 花魚尾（豪華装飾）の上下高さ (mm)
+  const GenkoFloralGyobiNotchDepthMm = 1.32;         // 花魚尾（豪華装飾）の燕尾切れ込み深さ (mm)
+  const GenkoFloralGyobiInsetMm = 0.58;              // 花魚尾の二重飾り枠インセット量 (mm)
+  const GenkoFloralDoubleLineHalfGapMm = 0.38;       // 花魚尾の中央柱二重飾り線の半間隔 (mm)
+  const GenkoFloralMidRow = 10;                      // 花魚尾の中央花菱メダリオン基準行インデックス（10マス目境界）
+  const GenkoFloralMedallionHalfSpanMm = 3.4;        // 中央花菱メダリオン前後の縦線クリアランス半幅 (mm)
+  const GenkoFloralPillarCapOffsetMm = 2.2;          // 花魚尾の中央柱上下飾り界線オフセット (mm)
+  const GenkoFloralPillarCapGapMm = 0.65;            // 花魚尾の中央柱上下二重界線間隔 (mm)
+  const BodyNoRuleStrokePt = 0.0;                    // 本文罫線なし時の線幅 (pt)
+  const BodyNoRuleColorHex = '#FFFFFF';              // 本文罫線なし時のフォールバック色
+  const PdPopupAutoHideDurationMs = 4500;            // クリック・タップ時のパブリックドメイン吹き出し自動表示時間 (ms)
+
+  // --- 特製『山葵山房』（A4縦置き・20字×10行・パブリックドメイン明治文豪意匠オマージュ）幾何学定数 ---
+  const SosekiPaperWidthMm = 210.0;                  // A4縦置き 用紙幅 (mm)
+  const SosekiPaperHeightMm = 297.0;                 // A4縦置き 用紙高さ (mm)
+  const SosekiColsPerPage = 10;                      // 1ページの行数（10行・中央柱なし）
+  const SosekiRowsPerCol = 20;                       // 1行あたりの縦マス数（20字）
+  const SosekiCellSizeMm = 9.4;                      // 1マスの辺長 (9.4mm × 20マス = 縦188.0mm)
+  const SosekiRubyGapWidthMm = 3.8;                  // 各行右隣のルビ欄幅 (3.8mm -> 1行周期13.2mm × 10行 = 幅132.0mm)
+  const SosekiGridTopMm = 60.0;                      // グリッド内枠上端の天からの距離 (mm)
+  const SosekiOuterSideGapMm = 1.6;                  // 内枠左右から外縦枠までの間隔 (mm)
+  const SosekiFriezeBandHeightMm = 2.6;              // グリッド直上の横帯（縦刻み目帯）の高さ (mm)
+  const SosekiFriezeTickStepMm = 1.2;                // 横帯内の縦刻み目のピッチ (mm)
+  const SosekiSideCombWidthMm = 2.1;                 // 左右両外側の櫛歯（横刻み）飾り縁の長さ (mm)
+  const SosekiSideCombStepMm = 1.25;                 // 左右櫛歯飾り縁の縦ピッチ (mm)
+  const SosekiArchShoulderHeightMm = 19.5;           // 横帯上端からアーチ両肩までの立ち上がり高さ (mm)
+  const SosekiArchCrownRiseMm = 7.2;                 // アーチ両肩から中央頂点までの反り上がり高さ (mm)
+  const SosekiArchInnerInsetMm = 1.35;               // アーチ二重外枠の内側線インセット量 (mm)
+  const SosekiOuterFrameStrokePt = 0.95;             // 山葵山房の外枠線幅 (pt)
+  const SosekiInnerGridStrokePt = 0.52;              // 山葵山房の縦罫線・内枠線幅 (pt)
+  const SosekiCellDividerStrokePt = 0.32;            // 山葵山房のマス横区切り線幅 (pt)
+  const SosekiCombTickStrokePt = 0.38;               // 櫛歯飾り縁の線幅 (pt)
+  const SosekiPageNumBottomOffsetMm = 14.0;          // 下部ページ番号の下端からの高さ (mm)
+  const SosekiTitleFontSizeMm = 9.2;                 // 額縁中央「房山葵山」基準文字サイズ (mm)
+  const SosekiTitleScaleX = 0.72;                    // 「房山葵山」縦長篆書・装飾体風の横圧縮比率
+  const SosekiTitleScaleY = 1.24;                    // 「房山葵山」縦長装飾体風の縦伸長比率
+  const SosekiTitleCharSpacingMm = 9.6;              // 「房山葵山」4文字の中心間隔 (mm)
+
+  const IsDevStudioEnvironment = (STUDIO_CLOUD_RUN_URL.indexOf('-dev-') !== -1);
+
+  const V166_BUTTON_UI_I18N = {
+    ja: {
+      pageTitle: 'Line-aligned Studio - A3/A4見開きノート・原稿用紙',
+      paperGenkoUnified: 'A4 原稿用紙',
+      sectionRuleTitle: '② 罫線・行幅',
+      sectionPdfRuleTitle: '② ノートの罫線・幅',
+      sectionGenkoTitle: '② 原稿用紙デザイン',
+      subBodyRule: '本文の罫線',
+      subNoteRule: 'ノートの罫線',
+      ruleOn: 'あり',
+      ruleOff: 'なし',
+      subKind: '罫線の種類',
+      subPitch: '行幅・間隔',
+      subGenkoStyle: '様式',
+      genkoStyleStandard: '標準 (20×20)',
+      genkoStyleSoseki: '山葵山房 (20×10)',
+      genkoStyleClassic: 'クラシック (20×20)',
+      sosekiPdTooltip: '明治期文豪の原稿用紙意匠（著作権保護期間満了のパブリックドメインです）へのオマージュ・Line-aligned 特製『山葵山房』',
+      subGenkoPaper: '用紙の色',
+      genkoPaperWhite: '白',
+      genkoPaperCream: 'クリーム紙',
+      subGenkoGyobi: '魚尾（中央マーク）',
+      genkoGyobiSolid: '黒魚尾',
+      genkoGyobiHollow: '白魚尾',
+      genkoGyobiFloral: '花魚尾',
+      genkoGyobiNone: 'なし',
+      chipOlive: '鶯色',
+      chipVermilion: '朱色',
+      sosekiFileSuffix: '_山葵山房原稿用紙_20x10'
+    },
+    en: {
+      pageTitle: 'Line-aligned Studio - A3/A4 Spread & Manuscript',
+      paperGenkoUnified: 'A4 Manuscript Paper',
+      sectionRuleTitle: '② Ruling & Spacing',
+      sectionPdfRuleTitle: '② Note Ruling & Spacing',
+      sectionGenkoTitle: '② Manuscript Design',
+      subBodyRule: 'Body Lines',
+      subNoteRule: 'Note Lines',
+      ruleOn: 'On',
+      ruleOff: 'Off',
+      subKind: 'Line Type',
+      subPitch: 'Line Spacing',
+      subGenkoStyle: 'Style',
+      genkoStyleStandard: 'Standard (20×20)',
+      genkoStyleSoseki: 'Wasabi Sanbo (20×10)',
+      genkoStyleClassic: 'Classic (20×20)',
+      sosekiPdTooltip: 'Line-aligned original "Wasabi Sanbo" — homage to Meiji literary manuscript design (Public Domain — copyright expired)',
+      subGenkoPaper: 'Paper Color',
+      genkoPaperWhite: 'White',
+      genkoPaperCream: 'Cream Paper',
+      subGenkoGyobi: 'Center Mark (Gyobi)',
+      genkoGyobiSolid: 'Solid',
+      genkoGyobiHollow: 'Hollow',
+      genkoGyobiFloral: 'Floral Ornate',
+      genkoGyobiNone: 'None',
+      chipOlive: 'Olive Green',
+      chipVermilion: 'Vermilion',
+      sosekiFileSuffix: '_WasabiSanbo_20x10'
+    },
+    'zh-TW': {
+      pageTitle: 'Line-aligned Studio - A3/A4跨頁筆記・稿紙',
+      paperGenkoUnified: 'A4 稿紙',
+      sectionRuleTitle: '② 格線與行距',
+      sectionPdfRuleTitle: '② 筆記格線與間距',
+      sectionGenkoTitle: '② 稿紙設計',
+      subBodyRule: '內文格線',
+      subNoteRule: '筆記格線',
+      ruleOn: '有',
+      ruleOff: '無',
+      subKind: '格線種類',
+      subPitch: '行距・間距',
+      subGenkoStyle: '樣式',
+      genkoStyleStandard: '標準 (20×20)',
+      genkoStyleSoseki: '山葵山房 (20×10)',
+      genkoStyleClassic: '經典 (20×20)',
+      sosekiPdTooltip: '向明治文豪書齋稿紙設計（著作權保護期間屆滿之公有領域）致敬・Line-aligned 特製「山葵山房」',
+      subGenkoPaper: '紙張顏色',
+      genkoPaperWhite: '白紙',
+      genkoPaperCream: '米色紙',
+      subGenkoGyobi: '魚尾（中央標記）',
+      genkoGyobiSolid: '黑魚尾',
+      genkoGyobiHollow: '白魚尾',
+      genkoGyobiFloral: '花魚尾',
+      genkoGyobiNone: '無',
+      chipOlive: '鶯綠',
+      chipVermilion: '朱紅',
+      sosekiFileSuffix: '_山葵山房稿紙_20x10'
+    },
+    ko: {
+      pageTitle: 'Line-aligned Studio - A3/A4 펼침 노트・원고지',
+      paperGenkoUnified: 'A4 원고지',
+      sectionRuleTitle: '② 줄눈 및 간격',
+      sectionPdfRuleTitle: '② 노트 줄눈 및 간격',
+      sectionGenkoTitle: '② 원고지 디자인',
+      subBodyRule: '본문 줄눈',
+      subNoteRule: '노트 줄눈',
+      ruleOn: '있음',
+      ruleOff: '없음',
+      subKind: '줄눈 종류',
+      subPitch: '줄 간격',
+      subGenkoStyle: '양식',
+      genkoStyleStandard: '표준 (20×20)',
+      genkoStyleSoseki: '와사비 산보 (20×10)',
+      genkoStyleClassic: '클래식 (20×20)',
+      sosekiPdTooltip: '메이지 문호 원고지 디자인(저작권 보호기간 만료 퍼블릭 도메인입니다) 오마주 · Line-aligned 특제 「와사비 산보」',
+      subGenkoPaper: '용지 색상',
+      genkoPaperWhite: '백색',
+      genkoPaperCream: '크림색 용지',
+      subGenkoGyobi: '어미 (중앙 표식)',
+      genkoGyobiSolid: '흑어미',
+      genkoGyobiHollow: '백어미',
+      genkoGyobiFloral: '화어미(장식)',
+      genkoGyobiNone: '없음',
+      chipOlive: '올리브그린',
+      chipVermilion: '주홍',
+      sosekiFileSuffix: '_와사비산보_원고지_20x10'
+    }
+  };
+
+  function getV166Text(lang) {
+    return V166_BUTTON_UI_I18N[lang || currentLanguage] || V166_BUTTON_UI_I18N.ja;
+  }
+
+  // 1. 全言語辞書から A5 を除外し、A3 デモ見開きは本番では非表示・DEV環境でのみ末尾配置（初期値＝A3見開きノートへ統一）
+  Object.keys(UNIFIED_UI_I18N).forEach(langKey => {
+    const ut = UNIFIED_UI_I18N[langKey];
+    const vt = getV166Text(langKey);
+    if (ut && Array.isArray(ut.paperHorizontal)) {
+      const filteredH = ut.paperHorizontal.filter(
+        item => item.value !== 'a5-spread' && item.value !== 'a5-single'
+      );
+      const nonCompareH = filteredH.filter(item => item.value !== 'a3-compare');
+      const compareH = filteredH.filter(item => item.value === 'a3-compare');
+      ut.paperHorizontal = IsDevStudioEnvironment ? nonCompareH.concat(compareH) : nonCompareH;
+    }
+    if (ut && Array.isArray(ut.paperVertical)) {
+      ut.paperVertical.forEach(item => {
+        if (item.value === GenkoModeValue) {
+          item.label = vt.paperGenkoUnified;
+        }
+      });
+      const nonCompareV = ut.paperVertical.filter(item => item.value !== 'v-a3-compare');
+      const compareV = ut.paperVertical.filter(item => item.value === 'v-a3-compare');
+      ut.paperVertical = IsDevStudioEnvironment ? nonCompareV.concat(compareV) : nonCompareV;
+    }
+    if (ut) {
+      ut.labelRuleKindPitch = vt.sectionRuleTitle;
+    }
+    if (GENKO_AND_PNG_I18N[langKey]) {
+      GENKO_AND_PNG_I18N[langKey].paperGenko = vt.paperGenkoUnified;
+    }
+  });
+
+  if (typeof I18N_TEXTS === 'object' && I18N_TEXTS) {
+    Object.keys(I18N_TEXTS).forEach(langKey => {
+      const entry = I18N_TEXTS[langKey];
+      if (entry && entry.docsOptions) {
+        delete entry.docsOptions['a5-spread'];
+        delete entry.docsOptions['a5-single'];
+        if (!IsDevStudioEnvironment) {
+          delete entry.docsOptions['a3-compare'];
+        }
+      }
+    });
+  }
+
+  function pruneA5OptionsFromInitialSelects() {
+    ['docsPaperProfileSelect', 'docxPaperProfileSelect', 'paperProfileSelect'].forEach(selId => {
+      const sel = document.getElementById(selId);
+      if (!sel) return;
+      let compareOpt = null;
+      for (let i = sel.options.length - 1; i >= 0; i--) {
+        const val = sel.options[i].value;
+        if (val === 'a5-spread' || val === 'a5-single') {
+          sel.remove(i);
+        } else if (val === 'a3-compare') {
+          if (!IsDevStudioEnvironment) {
+            sel.remove(i);
+          } else {
+            compareOpt = sel.options[i];
+          }
+        }
+      }
+      if (compareOpt && IsDevStudioEnvironment) {
+        compareOpt.selected = false;
+        sel.appendChild(compareOpt);
+      }
+      if (sel.options.length > 0 && sel.selectedIndex < 0) {
+        sel.options[0].selected = true;
+      }
+    });
+  }
+  pruneA5OptionsFromInitialSelects();
+
+  // 2. 各タブの状態管理（本文の罫線ON/OFF・ノートの罫線ON/OFF・罫線種類・原稿用紙様式）
+  const v166RuleUiState = {
+    docs: {
+      bodyRuleOn: true,
+      noteRuleOn: true,
+      lineKind: 'grid',       // 'ruled' | 'grid'
+      genkoStyle: 'standard', // 'standard' | 'soseki' | 'classic'
+      genkoPaper: 'white',    // 'white' | 'cream'
+      genkoGyobi: 'solid'     // 'solid' | 'hollow' | 'none'
+    },
+    docx: {
+      bodyRuleOn: true,
+      noteRuleOn: true,
+      lineKind: 'grid',
+      genkoStyle: 'standard',
+      genkoPaper: 'white',
+      genkoGyobi: 'solid'
+    },
+    pdf: {
+      noteRuleOn: true,
+      lineKind: 'grid'
+    }
+  };
+
+  let activeRenderTabPrefix = '';
+  const pdPopupTimers = { docs: null, docx: null };
+
+  function triggerSosekiPdPopup(prefix) {
+    const anchor = document.getElementById(prefix + 'SosekiTooltipAnchor');
+    if (!anchor) return;
+    anchor.classList.add('show-pd-popup');
+    if (pdPopupTimers[prefix]) {
+      clearTimeout(pdPopupTimers[prefix]);
+    }
+    pdPopupTimers[prefix] = setTimeout(() => {
+      anchor.classList.remove('show-pd-popup');
+      pdPopupTimers[prefix] = null;
+    }, PdPopupAutoHideDurationMs);
+  }
+
+  function isSpreadWithCompanionNoteMode(paperMode) {
+    return (
+      paperMode === 'a3-goodnotes' ||
+      paperMode === 'a4-spread' ||
+      paperMode === 'v-a3-goodnotes' ||
+      paperMode === 'v-a4-spread'
+    );
+  }
+
+  function getSelectedLineColorForPrefix(prefix) {
+    const pickerId = (prefix === 'docx') ? 'docxLineColorPicker' : 'docsLineColorPicker';
+    const picker = document.getElementById(pickerId);
+    return (picker && picker.value) ? picker.value : GenkoDefaultLineColorHex;
+  }
+
+  function applyProgrammaticLineColor(prefix, colorHex) {
+    const upperHex = colorHex.toUpperCase();
+    if (prefix === 'docx') {
+      const chips = document.querySelectorAll('.btn-docx-color-chip');
+      let matchedBtn = null;
+      chips.forEach(btn => {
+        if ((btn.getAttribute('data-color-hex') || '').toUpperCase() === upperHex) {
+          matchedBtn = btn;
+        }
+      });
+      if (matchedBtn) {
+        selectDocxLineColor(upperHex, matchedBtn);
+      } else {
+        const picker = document.getElementById('docxLineColorPicker');
+        if (picker) picker.value = upperHex;
+        onDocxCustomColorChanged(upperHex);
+      }
+    } else {
+      const chips = document.querySelectorAll('.btn-color-chip');
+      let matchedBtn = null;
+      chips.forEach(btn => {
+        if ((btn.getAttribute('data-color-hex') || '').toUpperCase() === upperHex) {
+          matchedBtn = btn;
+        }
+      });
+      if (matchedBtn) {
+        selectLineColor(upperHex, matchedBtn);
+      } else {
+        const picker = document.getElementById('docsLineColorPicker');
+        if (picker) picker.value = upperHex;
+        onCustomColorChanged(upperHex);
+      }
+    }
+  }
+
+  // カラーチップに「鶯色（漱石山房）」「朱色」を追加
+  function enhanceColorChipsWithLiteraryPresets() {
+    const docsChipMap = [
+      { id: 'chipGray', hex: '#D0D0D0' },
+      { id: 'chipBlue', hex: '#A0C4FF' },
+      { id: 'chipSepia', hex: '#D2B48C' },
+      { id: 'chipCharcoal', hex: '#64748B' }
+    ];
+    docsChipMap.forEach(item => {
+      const el = document.getElementById(item.id);
+      if (el) el.setAttribute('data-color-hex', item.hex);
+    });
+
+    const docxChipMap = [
+      { id: 'docxChipGray', hex: '#D0D0D0' },
+      { id: 'docxChipBlue', hex: '#A0C4FF' },
+      { id: 'docxChipSepia', hex: '#D2B48C' },
+      { id: 'docxChipCharcoal', hex: '#64748B' }
+    ];
+    docxChipMap.forEach(item => {
+      const el = document.getElementById(item.id);
+      if (el) el.setAttribute('data-color-hex', item.hex);
+    });
+
+    const vt = getV166Text(currentLanguage);
+
+    const docsCharcoal = document.getElementById('chipCharcoal');
+    if (docsCharcoal && docsCharcoal.parentElement && !document.getElementById('chipOlive')) {
+      const btnOlive = document.createElement('button');
+      btnOlive.type = 'button';
+      btnOlive.className = 'btn-color-chip';
+      btnOlive.id = 'chipOlive';
+      btnOlive.setAttribute('data-color-hex', GenkoPresetOliveHex);
+      btnOlive.style.cssText = 'background: ' + GenkoPresetOliveHex + '; color: #ffffff; border: 2px solid transparent; border-radius: 6px; padding: 4px 10px; font-size: 0.75rem; font-weight: 700; cursor: pointer;';
+      btnOlive.textContent = vt.chipOlive;
+      btnOlive.onclick = function() { selectLineColor(GenkoPresetOliveHex, btnOlive); };
+
+      const btnVerm = document.createElement('button');
+      btnVerm.type = 'button';
+      btnVerm.className = 'btn-color-chip';
+      btnVerm.id = 'chipVermilion';
+      btnVerm.setAttribute('data-color-hex', GenkoPresetVermilionHex);
+      btnVerm.style.cssText = 'background: ' + GenkoPresetVermilionHex + '; color: #ffffff; border: 2px solid transparent; border-radius: 6px; padding: 4px 10px; font-size: 0.75rem; font-weight: 700; cursor: pointer;';
+      btnVerm.textContent = vt.chipVermilion;
+      btnVerm.onclick = function() { selectLineColor(GenkoPresetVermilionHex, btnVerm); };
+
+      docsCharcoal.parentElement.insertBefore(btnOlive, docsCharcoal);
+      docsCharcoal.parentElement.insertBefore(btnVerm, docsCharcoal);
+    }
+
+    const docxCharcoal = document.getElementById('docxChipCharcoal');
+    if (docxCharcoal && docxCharcoal.parentElement && !document.getElementById('docxChipOlive')) {
+      const btnOlive = document.createElement('button');
+      btnOlive.type = 'button';
+      btnOlive.className = 'btn-docx-color-chip';
+      btnOlive.id = 'docxChipOlive';
+      btnOlive.setAttribute('data-color-hex', GenkoPresetOliveHex);
+      btnOlive.style.cssText = 'background: ' + GenkoPresetOliveHex + '; color: #ffffff; border: 2px solid transparent; border-radius: 6px; padding: 4px 10px; font-size: 0.75rem; font-weight: 700; cursor: pointer;';
+      btnOlive.textContent = vt.chipOlive;
+      btnOlive.onclick = function() { selectDocxLineColor(GenkoPresetOliveHex, btnOlive); };
+
+      const btnVerm = document.createElement('button');
+      btnVerm.type = 'button';
+      btnVerm.className = 'btn-docx-color-chip';
+      btnVerm.id = 'docxChipVermilion';
+      btnVerm.setAttribute('data-color-hex', GenkoPresetVermilionHex);
+      btnVerm.style.cssText = 'background: ' + GenkoPresetVermilionHex + '; color: #ffffff; border: 2px solid transparent; border-radius: 6px; padding: 4px 10px; font-size: 0.75rem; font-weight: 700; cursor: pointer;';
+      btnVerm.textContent = vt.chipVermilion;
+      btnVerm.onclick = function() { selectDocxLineColor(GenkoPresetVermilionHex, btnVerm); };
+
+      docxCharcoal.parentElement.insertBefore(btnOlive, docxCharcoal);
+      docxCharcoal.parentElement.insertBefore(btnVerm, docxCharcoal);
+    }
+  }
+
+  // 隠し select を v166RuleUiState から同期
+  function syncHiddenSelectsFromV166State(prefix) {
+    const st = v166RuleUiState[prefix];
+    if (!st) return;
+    const isPdf = (prefix === 'pdf');
+    const kindSel = document.getElementById(prefix + 'RuleKindSelect');
+    if (kindSel) {
+      if (isPdf) {
+        kindSel.value = st.noteRuleOn ? st.lineKind : 'blank';
+      } else {
+        kindSel.value = st.lineKind;
+      }
+    }
+    if (isPdf) {
+      syncPdfCombinedGridSelect();
+    } else {
+      syncCombinedGridSelect(prefix);
+    }
+  }
+
+  // 3. DOCS / DOCX / PDF 用のボタンパネル生成（順序：本文の罫線 ➔ ノートの罫線 ➔ 罫線の種類 ➔ 行幅・間隔）
+  function buildButtonRulePanelForPrefix(prefix) {
+    const isPdf = (prefix === 'pdf');
+    const legacySelId = isPdf ? 'gridTypeSelect' : (prefix + 'GridTypeSelect');
+    const legacySel = document.getElementById(legacySelId);
+    if (!legacySel) return;
+    const settingItem = legacySel.closest('.setting-item');
+    if (!settingItem || document.getElementById(prefix + 'NormalBtnPanel')) return;
+
+    const kindSel = document.getElementById(prefix + 'RuleKindSelect');
+    if (kindSel && kindSel.parentElement && kindSel.parentElement !== settingItem) {
+      kindSel.parentElement.style.display = 'none';
+    }
+    legacySel.style.display = 'none';
+
+    const onTriggerChange = () => {
+      syncHiddenSelectsFromV166State(prefix);
+      if (!isPdf) {
+        if (prefix === 'docs' && typeof window.onDocsSettingChanged === 'function') {
+          window.onDocsSettingChanged();
+        } else if (prefix === 'docx' && typeof window.onDocxSettingChanged === 'function') {
+          window.onDocxSettingChanged();
+        }
+      }
+      refreshV166PanelVisualState(prefix);
+    };
+
+    // --- A. 通常・見開きノート用ボタンパネル ---
+    const normalPanel = document.createElement('div');
+    normalPanel.id = prefix + 'NormalBtnPanel';
+    normalPanel.className = 'studio-btn-panel';
+
+    // A-1. 本文の罫線（あり / なし）※DOCS・DOCXの1段目
+    if (!isPdf) {
+      const bodyRow = document.createElement('div');
+      bodyRow.className = 'studio-btn-row';
+      bodyRow.id = prefix + 'RowBodyRule';
+      const bodyLbl = document.createElement('div');
+      bodyLbl.className = 'studio-btn-sublabel';
+      bodyLbl.id = prefix + 'SubLabelBodyRule';
+      const bodyGrid = document.createElement('div');
+      bodyGrid.className = 'studio-chip-grid-2';
+
+      [
+        { key: 'on', boolVal: true },
+        { key: 'off', boolVal: false }
+      ].forEach(item => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'chip-opt-btn';
+        btn.id = prefix + 'BtnBodyRule_' + item.key;
+        btn.onclick = () => {
+          v166RuleUiState[prefix].bodyRuleOn = item.boolVal;
+          onTriggerChange();
+        };
+        bodyGrid.appendChild(btn);
+      });
+      bodyRow.appendChild(bodyLbl);
+      bodyRow.appendChild(bodyGrid);
+      normalPanel.appendChild(bodyRow);
+    }
+
+    // A-2. ノートの罫線（あり / なし）※DOCS・DOCXの見開きノート選択時、およびPDFタブの1段目
+    const noteRow = document.createElement('div');
+    noteRow.className = 'studio-btn-row';
+    noteRow.id = prefix + 'RowNoteRule';
+    const noteLbl = document.createElement('div');
+    noteLbl.className = 'studio-btn-sublabel';
+    noteLbl.id = prefix + 'SubLabelNoteRule';
+    const noteGrid = document.createElement('div');
+    noteGrid.className = 'studio-chip-grid-2';
+
+    [
+      { key: 'on', boolVal: true },
+      { key: 'off', boolVal: false }
+    ].forEach(item => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'chip-opt-btn';
+      btn.id = prefix + 'BtnNoteRule_' + item.key;
+      btn.onclick = () => {
+        v166RuleUiState[prefix].noteRuleOn = item.boolVal;
+        onTriggerChange();
+      };
+      noteGrid.appendChild(btn);
+    });
+    noteRow.appendChild(noteLbl);
+    noteRow.appendChild(noteGrid);
+    normalPanel.appendChild(noteRow);
+
+    // A-3. 罫線の種類（横/縦罫線・方眼 の2択。本文・ノートが両方なしの時は選択不可へ自動連動）
+    const kindRow = document.createElement('div');
+    kindRow.className = 'studio-btn-row';
+    kindRow.id = prefix + 'RowKind';
+    const kindLbl = document.createElement('div');
+    kindLbl.className = 'studio-btn-sublabel';
+    kindLbl.id = prefix + 'SubLabelKind';
+    const kindGrid = document.createElement('div');
+    kindGrid.className = 'studio-chip-grid-2';
+
+    ['ruled', 'grid'].forEach(kVal => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'chip-opt-btn';
+      btn.id = prefix + 'BtnKind_' + kVal;
+      btn.setAttribute('data-val', kVal);
+      btn.onclick = () => {
+        v166RuleUiState[prefix].lineKind = kVal;
+        onTriggerChange();
+      };
+      kindGrid.appendChild(btn);
+    });
+    kindRow.appendChild(kindLbl);
+    kindRow.appendChild(kindGrid);
+    normalPanel.appendChild(kindRow);
+
+    // A-4. 行幅・間隔（6.0mm / 7.0mm / 8.0mm）
+    const pitchRow = document.createElement('div');
+    pitchRow.className = 'studio-btn-row';
+    pitchRow.id = prefix + 'RowPitch';
+    const pitchLbl = document.createElement('div');
+    pitchLbl.className = 'studio-btn-sublabel';
+    pitchLbl.id = prefix + 'SubLabelPitch';
+    const pitchGrid = document.createElement('div');
+    pitchGrid.className = 'studio-chip-grid-3';
+
+    RULE_PITCH_OPTIONS.forEach(pOpt => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'chip-opt-btn';
+      btn.id = prefix + 'BtnPitch_' + pOpt.value;
+      btn.setAttribute('data-val', pOpt.value);
+      btn.textContent = pOpt.label;
+      btn.onclick = () => {
+        const ps = document.getElementById(prefix + 'RulePitchSelect');
+        if (ps) ps.value = pOpt.value;
+        onTriggerChange();
+      };
+      pitchGrid.appendChild(btn);
+    });
+    pitchRow.appendChild(pitchLbl);
+    pitchRow.appendChild(pitchGrid);
+    normalPanel.appendChild(pitchRow);
+
+    settingItem.appendChild(normalPanel);
+
+    // --- B. 原稿用紙デザイン専用ボタンパネル（DOCS・DOCXのみ） ---
+    if (!isPdf) {
+      const genkoPanel = document.createElement('div');
+      genkoPanel.id = prefix + 'GenkoBtnPanel';
+      genkoPanel.className = 'studio-btn-panel';
+      genkoPanel.style.display = 'none';
+
+      // B-1. 様式（標準 20×20 / 漱石山房 20×10［PDポップアップ付］ / クラシック 20×20）
+      const styleRow = document.createElement('div');
+      styleRow.className = 'studio-btn-row';
+      const styleLbl = document.createElement('div');
+      styleLbl.className = 'studio-btn-sublabel';
+      styleLbl.id = prefix + 'SubLabelGenkoStyle';
+      const styleGrid = document.createElement('div');
+      styleGrid.className = 'studio-chip-grid-3';
+
+      ['standard', 'soseki', 'classic'].forEach(sVal => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'chip-opt-btn';
+        btn.id = prefix + 'BtnGenkoStyle_' + sVal;
+        btn.onclick = () => {
+          const st = v166RuleUiState[prefix];
+          st.genkoStyle = sVal;
+          if (sVal === 'soseki') {
+            st.genkoPaper = 'cream';
+            st.genkoGyobi = 'none';
+            applyProgrammaticLineColor(prefix, GenkoPresetOliveHex);
+            triggerSosekiPdPopup(prefix);
+          } else if (sVal === 'classic') {
+            st.genkoPaper = 'cream';
+            st.genkoGyobi = 'solid';
+            applyProgrammaticLineColor(prefix, GenkoPresetClassicSepiaHex);
+          } else {
+            st.genkoPaper = 'white';
+            st.genkoGyobi = 'solid';
+            applyProgrammaticLineColor(prefix, GenkoPresetStandardHex);
+          }
+          refreshV166PanelVisualState(prefix);
+        };
+
+        if (sVal === 'soseki') {
+          const anchor = document.createElement('div');
+          anchor.className = 'chip-tooltip-anchor';
+          anchor.id = prefix + 'SosekiTooltipAnchor';
+          const bubble = document.createElement('div');
+          bubble.className = 'pd-popup-bubble';
+          bubble.id = prefix + 'SosekiPdBubble';
+          anchor.appendChild(btn);
+          anchor.appendChild(bubble);
+          styleGrid.appendChild(anchor);
+        } else {
+          styleGrid.appendChild(btn);
+        }
+      });
+      styleRow.appendChild(styleLbl);
+      styleRow.appendChild(styleGrid);
+      genkoPanel.appendChild(styleRow);
+
+      // B-2. 用紙の色（白 / クリーム紙）
+      const paperRow = document.createElement('div');
+      paperRow.className = 'studio-btn-row';
+      const paperLbl = document.createElement('div');
+      paperLbl.className = 'studio-btn-sublabel';
+      paperLbl.id = prefix + 'SubLabelGenkoPaper';
+      const paperGrid = document.createElement('div');
+      paperGrid.className = 'studio-chip-grid-2';
+
+      ['white', 'cream'].forEach(pVal => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'chip-opt-btn';
+        btn.id = prefix + 'BtnGenkoPaper_' + pVal;
+        const dot = document.createElement('span');
+        dot.className = 'chip-paper-dot ' + (pVal === 'cream' ? 'chip-paper-dot-cream' : 'chip-paper-dot-white');
+        const txtSpan = document.createElement('span');
+        txtSpan.id = prefix + 'TxtGenkoPaper_' + pVal;
+        btn.appendChild(dot);
+        btn.appendChild(txtSpan);
+        btn.onclick = () => {
+          v166RuleUiState[prefix].genkoPaper = pVal;
+          onTriggerChange();
+        };
+        paperGrid.appendChild(btn);
+      });
+      paperRow.appendChild(paperLbl);
+      paperRow.appendChild(paperGrid);
+      genkoPanel.appendChild(paperRow);
+
+      // B-3. 魚尾（黒魚尾 / 白魚尾 / なし）※漱石山房（20×10片面）選択時は中央柱がないため自動非表示
+      const gyobiRow = document.createElement('div');
+      gyobiRow.className = 'studio-btn-row';
+      gyobiRow.id = prefix + 'RowGenkoGyobi';
+      const gyobiLbl = document.createElement('div');
+      gyobiLbl.className = 'studio-btn-sublabel';
+      gyobiLbl.id = prefix + 'SubLabelGenkoGyobi';
+      const gyobiGrid = document.createElement('div');
+      gyobiGrid.className = 'studio-chip-grid-3';
+
+      ['solid', 'hollow', 'none'].forEach(gVal => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'chip-opt-btn';
+        btn.id = prefix + 'BtnGenkoGyobi_' + gVal;
+        btn.onclick = () => {
+          v166RuleUiState[prefix].genkoGyobi = gVal;
+          onTriggerChange();
+        };
+        gyobiGrid.appendChild(btn);
+      });
+      gyobiRow.appendChild(gyobiLbl);
+      gyobiRow.appendChild(gyobiGrid);
+      genkoPanel.appendChild(gyobiRow);
+
+      settingItem.appendChild(genkoPanel);
+    }
+  }
+
+  function refreshV166PanelVisualState(prefix) {
+    const isPdf = (prefix === 'pdf');
+    const vt = getV166Text(currentLanguage);
+    const ut = getUnifiedUiText(currentLanguage);
+    const dir = isPdf ? 'horizontal' : currentWritingDirection;
+    const st = v166RuleUiState[prefix];
+    if (!st) return;
+
+    const paperSelId = isPdf ? 'paperProfileSelect' : (prefix + 'PaperProfileSelect');
+    const paperSel = document.getElementById(paperSelId);
+    const paperMode = paperSel ? paperSel.value : '';
+    const isGenko = (!isPdf && dir === 'vertical' && paperMode === GenkoModeValue);
+    const isSpreadNote = isPdf ? true : isSpreadWithCompanionNoteMode(paperMode);
+
+    const headerLabelId = isPdf
+      ? 'uiLabelPdfGrid'
+      : (prefix === 'docx' ? 'uiLabelDocxGridType' : 'uiLabelGridType');
+    const headerEl = document.getElementById(headerLabelId);
+    if (headerEl) {
+      headerEl.textContent = isPdf
+        ? vt.sectionPdfRuleTitle
+        : (isGenko ? vt.sectionGenkoTitle : vt.sectionRuleTitle);
+    }
+
+    const normalPanel = document.getElementById(prefix + 'NormalBtnPanel');
+    const genkoPanel = document.getElementById(prefix + 'GenkoBtnPanel');
+    if (normalPanel) normalPanel.style.display = isGenko ? 'none' : 'flex';
+    if (genkoPanel) genkoPanel.style.display = isGenko ? 'flex' : 'none';
+
+    const setTxt = (id, text) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = text;
+    };
+
+    // 1. 本文の罫線（DOCS / DOCX）
+    if (!isPdf) {
+      setTxt(prefix + 'SubLabelBodyRule', vt.subBodyRule);
+      setTxt(prefix + 'BtnBodyRule_on', vt.ruleOn);
+      setTxt(prefix + 'BtnBodyRule_off', vt.ruleOff);
+      const btnBodyOn = document.getElementById(prefix + 'BtnBodyRule_on');
+      const btnBodyOff = document.getElementById(prefix + 'BtnBodyRule_off');
+      if (btnBodyOn) btnBodyOn.classList.toggle('active', !!st.bodyRuleOn);
+      if (btnBodyOff) btnBodyOff.classList.toggle('active', !st.bodyRuleOn);
+    }
+
+    // 2. ノートの罫線（見開きノート時のみ表示、PDFタブは常時表示）
+    const noteRow = document.getElementById(prefix + 'RowNoteRule');
+    if (noteRow) {
+      noteRow.style.display = isSpreadNote ? 'flex' : 'none';
+    }
+    setTxt(prefix + 'SubLabelNoteRule', vt.subNoteRule);
+    setTxt(prefix + 'BtnNoteRule_on', vt.ruleOn);
+    setTxt(prefix + 'BtnNoteRule_off', vt.ruleOff);
+    const btnNoteOn = document.getElementById(prefix + 'BtnNoteRule_on');
+    const btnNoteOff = document.getElementById(prefix + 'BtnNoteRule_off');
+    if (btnNoteOn) btnNoteOn.classList.toggle('active', !!st.noteRuleOn);
+    if (btnNoteOff) btnNoteOff.classList.toggle('active', !st.noteRuleOn);
+
+    // 3. 罫線の種類（本文・ノートのどちらか1つでも「あり」の時のみ選択可、両方「なし」なら選択不可＆非点灯）
+    const anyRuleActive = isPdf
+      ? !!st.noteRuleOn
+      : (!!st.bodyRuleOn || (isSpreadNote && !!st.noteRuleOn));
+
+    setTxt(prefix + 'SubLabelKind', vt.subKind);
+    setTxt(prefix + 'BtnKind_ruled', (dir === 'vertical') ? ut.ruleKindVertical : ut.ruleKindHorizontal);
+    setTxt(prefix + 'BtnKind_grid', ut.ruleKindGrid);
+
+    const kindRow = document.getElementById(prefix + 'RowKind');
+    if (kindRow) {
+      kindRow.classList.toggle('studio-row-dimmed', !anyRuleActive);
+    }
+    ['ruled', 'grid'].forEach(kVal => {
+      const b = document.getElementById(prefix + 'BtnKind_' + kVal);
+      if (b) {
+        b.disabled = !anyRuleActive;
+        b.classList.toggle('active', anyRuleActive && st.lineKind === kVal);
+      }
+    });
+
+    // 4. 行幅・間隔
+    setTxt(prefix + 'SubLabelPitch', vt.subPitch);
+    const pitchSel = document.getElementById(prefix + 'RulePitchSelect');
+    const curPitch = pitchSel ? pitchSel.value : '70';
+    const pitchRow = document.getElementById(prefix + 'RowPitch');
+    if (pitchRow && isPdf) {
+      pitchRow.classList.toggle('studio-row-dimmed', !anyRuleActive);
+    }
+    RULE_PITCH_OPTIONS.forEach(pOpt => {
+      const b = document.getElementById(prefix + 'BtnPitch_' + pOpt.value);
+      if (b) {
+        if (isPdf) {
+          b.disabled = !anyRuleActive;
+          b.classList.toggle('active', anyRuleActive && curPitch === pOpt.value);
+        } else {
+          b.disabled = false;
+          b.classList.toggle('active', curPitch === pOpt.value);
+        }
+      }
+    });
+
+    // 5. 原稿用紙パネル（DOCS / DOCX）＆ 罫線カラー有効/無効同期
+    if (!isPdf) {
+      setTxt(prefix + 'SubLabelGenkoStyle', vt.subGenkoStyle);
+      setTxt(prefix + 'BtnGenkoStyle_standard', vt.genkoStyleStandard);
+      setTxt(prefix + 'BtnGenkoStyle_soseki', vt.genkoStyleSoseki);
+      setTxt(prefix + 'BtnGenkoStyle_classic', vt.genkoStyleClassic);
+      setTxt(prefix + 'SosekiPdBubble', vt.sosekiPdTooltip);
+
+      const sosekiBtn = document.getElementById(prefix + 'BtnGenkoStyle_soseki');
+      if (sosekiBtn) sosekiBtn.title = vt.sosekiPdTooltip;
+
+      setTxt(prefix + 'SubLabelGenkoPaper', vt.subGenkoPaper);
+      setTxt(prefix + 'TxtGenkoPaper_white', vt.genkoPaperWhite);
+      setTxt(prefix + 'TxtGenkoPaper_cream', vt.genkoPaperCream);
+
+      setTxt(prefix + 'SubLabelGenkoGyobi', vt.subGenkoGyobi);
+      setTxt(prefix + 'BtnGenkoGyobi_solid', vt.genkoGyobiSolid);
+      setTxt(prefix + 'BtnGenkoGyobi_hollow', vt.genkoGyobiHollow);
+      setTxt(prefix + 'BtnGenkoGyobi_none', vt.genkoGyobiNone);
+
+      ['standard', 'soseki', 'classic'].forEach(sVal => {
+        const b = document.getElementById(prefix + 'BtnGenkoStyle_' + sVal);
+        if (b) b.classList.toggle('active', st.genkoStyle === sVal);
+      });
+      ['white', 'cream'].forEach(pVal => {
+        const b = document.getElementById(prefix + 'BtnGenkoPaper_' + pVal);
+        if (b) b.classList.toggle('active', st.genkoPaper === pVal);
+      });
+      ['solid', 'hollow', 'none'].forEach(gVal => {
+        const b = document.getElementById(prefix + 'BtnGenkoGyobi_' + gVal);
+        if (b) b.classList.toggle('active', st.genkoGyobi === gVal);
+      });
+
+      // 漱石山房（20×10片面）選択時は中央折り柱・魚尾が存在しないため魚尾設定行を隠す
+      const gyobiRow = document.getElementById(prefix + 'RowGenkoGyobi');
+      if (gyobiRow) {
+        gyobiRow.style.display = (st.genkoStyle === 'soseki') ? 'none' : 'flex';
+      }
+
+      const colorLabelId = (prefix === 'docx') ? 'uiLabelDocxLineColor' : 'uiLabelLineColor';
+      const colorLabelEl = document.getElementById(colorLabelId);
+      const colorSettingItem = colorLabelEl ? colorLabelEl.closest('.setting-item') : null;
+      if (colorSettingItem) {
+        const colorEnabled = isGenko || anyRuleActive;
+        colorSettingItem.classList.toggle('setting-item-dimmed', !colorEnabled);
+      }
+    }
+
+    syncHiddenSelectsFromV166State(prefix);
+  }
+
+  function refreshAllV166Panels() {
+    const vt = getV166Text(currentLanguage);
+    document.title = vt.pageTitle;
+    const setChipTxt = (id, txt) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = txt;
+    };
+    setChipTxt('chipOlive', vt.chipOlive);
+    setChipTxt('chipVermilion', vt.chipVermilion);
+    setChipTxt('docxChipOlive', vt.chipOlive);
+    setChipTxt('docxChipVermilion', vt.chipVermilion);
+
+    refreshV166PanelVisualState('docs');
+    refreshV166PanelVisualState('docx');
+    refreshV166PanelVisualState('pdf');
+  }
+
+  syncRuleVisibilityForGenkoMode = function(prefix) {
+    const legacyGridSel = document.getElementById(prefix + 'GridTypeSelect');
+    if (legacyGridSel) {
+      const ruleSettingItem = legacyGridSel.closest('.setting-item');
+      if (ruleSettingItem) ruleSettingItem.style.display = '';
+    }
+    refreshV166PanelVisualState(prefix);
+  };
+
+  const _prevSwitchLangBeforeV166 = window.switchLanguage;
+  window.switchLanguage = function(lang) {
+    _prevSwitchLangBeforeV166(lang);
+    refreshAllV166Panels();
+  };
+  switchLanguage = window.switchLanguage;
+
+  const _prevSwitchDirBeforeV166 = window.switchWritingDirection;
+  window.switchWritingDirection = function(dir) {
+    _prevSwitchDirBeforeV166(dir);
+    refreshAllV166Panels();
+  };
+
+  function setContainerOptButtonsDisabled(containerId, prefix, busy) {
+    const box = document.getElementById(containerId);
+    if (!box) return;
+    if (busy) {
+      box.querySelectorAll('.chip-opt-btn').forEach(btn => {
+        btn.disabled = true;
+      });
+    } else {
+      box.querySelectorAll('.chip-opt-btn').forEach(btn => {
+        btn.disabled = false;
+      });
+      refreshV166PanelVisualState(prefix);
+    }
+  }
+
+  const _prevSetDocsBusyBeforeV166 = setDocsButtonsBusy;
+  setDocsButtonsBusy = function(busy, activeAction) {
+    _prevSetDocsBusyBeforeV166(busy, activeAction);
+    setContainerOptButtonsDisabled('docsMenuContainer', 'docs', busy);
+  };
+  window.setDocsButtonsBusy = setDocsButtonsBusy;
+
+  const _prevSetDocxBusyBeforeV166 = setDocxButtonsBusy;
+  setDocxButtonsBusy = function(busy, activeAction) {
+    _prevSetDocxBusyBeforeV166(busy, activeAction);
+    setContainerOptButtonsDisabled('docxMenuContainer', 'docx', busy);
+  };
+  window.setDocxButtonsBusy = setDocxButtonsBusy;
+
+  // 4. 本文罫線とノート罫線の独立制御（横書き・縦書き全ルート対応）
+  function computeRuleFlagsFromKind(lineKind, isVert) {
+    if (lineKind === 'grid') {
+      return { drawH: true, drawV: true };
+    }
+    return isVert ? { drawH: false, drawV: true } : { drawH: true, drawV: false };
+  }
+
+  function applyV166BodyConfigOverride(cfgObj, prefix, isVert) {
+    if (!cfgObj || (prefix !== 'docs' && prefix !== 'docx')) return;
+    const st = v166RuleUiState[prefix];
+    const { pitchMm } = readSplitRuleParams(prefix, isVert);
+    const lineColorHex = getSelectedLineColorForPrefix(prefix);
+    const shouldDrawBodyRule = !!(st && st.bodyRuleOn);
+
+    cfgObj.linePitchMm = pitchMm;
+    cfgObj.ruledLineWidthPt = shouldDrawBodyRule ? DefaultRuleStrokePt : BodyNoRuleStrokePt;
+    cfgObj.ruledLineColorHex = shouldDrawBodyRule ? lineColorHex : BodyNoRuleColorHex;
+    cfgObj.noRuledLines = !shouldDrawBodyRule;
+  }
+
+  const _origWindowFetchBeforeV166 = window.fetch.bind(window);
+  window.fetch = function(input, init) {
+    try {
+      const urlStr = (typeof input === 'string') ? input : (input && input.url ? input.url : '');
+      if (
+        activeRenderTabPrefix &&
+        init &&
+        init.method &&
+        String(init.method).toUpperCase() === 'POST' &&
+        typeof init.body === 'string' &&
+        /\/v3\/(?:render-pdf|render-docx-pdf|sample\/docs-render-pdf)(?:\?|$)/.test(urlStr)
+      ) {
+        const parsed = JSON.parse(init.body);
+        if (parsed && parsed.config) {
+          const isVertUrl = (urlStr.indexOf(TATEGAKI_CLOUD_RUN_URL) === 0 || urlStr.indexOf(TATETATE_CLOUD_RUN_URL) === 0);
+          applyV166BodyConfigOverride(parsed.config, activeRenderTabPrefix, isVertUrl);
+          init = Object.assign({}, init, { body: JSON.stringify(parsed) });
+        }
+      }
+    } catch (_eFetchHook) {}
+    return _origWindowFetchBeforeV166(input, init);
+  };
+
+  const _prevCallGasRpcBeforeV166 = callGasRpc;
+  callGasRpc = function(method, params) {
+    if (
+      activeRenderTabPrefix &&
+      params &&
+      params.config &&
+      (method === 'renderV3PdfBase64' || method === 'renderTategakiDocsV3PdfBase64' || method === 'renderTategakiDocxV3PdfBase64')
+    ) {
+      const isVertMethod = (method !== 'renderV3PdfBase64');
+      applyV166BodyConfigOverride(params.config, activeRenderTabPrefix, isVertMethod);
+    }
+    return _prevCallGasRpcBeforeV166(method, params);
+  };
+
+  // 横書きノート面の独立描画（noteRuleOn === false ならノート面は白紙、true なら lineKind で描画）
+  const _origDrawCustomNoteLines = drawCustomNoteLines;
+  drawCustomNoteLines = function(page, leftX, rightX, bottomY, topY, pitchMm, drawH, drawV, colorHex) {
+    if (activeRenderTabPrefix === 'docs' || activeRenderTabPrefix === 'docx') {
+      const st = v166RuleUiState[activeRenderTabPrefix];
+      if (!st || !st.noteRuleOn) return;
+      const { pitchMm: effPitchMm } = readSplitRuleParams(activeRenderTabPrefix, false);
+      const flags = computeRuleFlagsFromKind(st.lineKind, false);
+      const effectiveColor = getSelectedLineColorForPrefix(activeRenderTabPrefix);
+      return _origDrawCustomNoteLines(
+        page,
+        leftX,
+        rightX,
+        bottomY,
+        topY,
+        effPitchMm,
+        flags.drawH,
+        flags.drawV,
+        effectiveColor
+      );
+    }
+    return _origDrawCustomNoteLines(page, leftX, rightX, bottomY, topY, pitchMm, drawH, drawV, colorHex);
+  };
+
+  // 縦書きノート面の独立描画（noteRuleOn === false ならノート面は白紙、true なら lineKind で描画）
+  const _origDrawVerticalAlignedNoteLines = drawVerticalAlignedNoteLines;
+  drawVerticalAlignedNoteLines = function(page, outerLeftPt, gutterRightPt, bottomY, topY, pitchMm, drawH, drawV, colorHex) {
+    if (activeRenderTabPrefix === 'docs' || activeRenderTabPrefix === 'docx') {
+      const st = v166RuleUiState[activeRenderTabPrefix];
+      if (!st || !st.noteRuleOn) return;
+      const { pitchMm: effPitchMm } = readSplitRuleParams(activeRenderTabPrefix, true);
+      const flags = computeRuleFlagsFromKind(st.lineKind, true);
+      const effectiveColor = getSelectedLineColorForPrefix(activeRenderTabPrefix);
+      return _origDrawVerticalAlignedNoteLines(
+        page,
+        outerLeftPt,
+        gutterRightPt,
+        bottomY,
+        topY,
+        effPitchMm,
+        flags.drawH,
+        flags.drawV,
+        effectiveColor
+      );
+    }
+    return _origDrawVerticalAlignedNoteLines(page, outerLeftPt, gutterRightPt, bottomY, topY, pitchMm, drawH, drawV, colorHex);
+  };
+
+  // 5. 原稿用紙ページ割り付け（20行版・漱石山房10行版 共通対応）
+  function layoutGenkoPagesForColumns(paragraphs, colsPerPage) {
+    const pages = [];
+    let currentCols = [];
+
+    function flushPage() {
+      if (currentCols.length > 0) {
+        pages.push(currentCols);
+        currentCols = [];
+      }
+    }
+
+    function pushColumn(cells) {
+      assignColumnSegmentedRubies(cells);
+      currentCols.push(cells);
+      if (currentCols.length >= colsPerPage) {
+        flushPage();
+      }
+    }
+
+    for (let pIdx = 0; pIdx < paragraphs.length; pIdx++) {
+      const para = paragraphs[pIdx];
+      if (para.pageBreak) {
+        flushPage();
+        continue;
+      }
+      if (!para.segments || para.segments.length === 0) {
+        if (currentCols.length > 0) pushColumn([]);
+        continue;
+      }
+      const tokens = tokenizeParagraphForGenko(para.segments);
+      if (tokens.length === 0) {
+        if (currentCols.length > 0) pushColumn([]);
+        continue;
+      }
+
+      let idx = 0;
+      while (idx < tokens.length) {
+        const colCells = [];
+        while (colCells.length < GenkoRowsPerCol && idx < tokens.length) {
+          const tk = tokens[idx];
+          if (tk.kuntenUnitStart && colCells.length > 0) {
+            const remainInCol = GenkoRowsPerCol - colCells.length;
+            if (tk.kuntenUnitLen > remainInCol && tk.kuntenUnitLen <= GenkoRowsPerCol) {
+              break;
+            }
+          }
+          colCells.push(tk);
+          idx++;
+        }
+
+        if (colCells.length > 0 && idx < tokens.length) {
+          const isColEnd = (colCells.length === GenkoRowsPerCol) ||
+                           (tokens[idx].kuntenUnitStart &&
+                            tokens[idx].kuntenUnitLen > (GenkoRowsPerCol - colCells.length));
+          if (isColEnd) {
+            const lastCell = colCells[colCells.length - 1];
+            let guardCount = 0;
+            while (idx < tokens.length &&
+                   guardCount < GenkoMaxTrailingMarksPerCell &&
+                   tokens[idx].kind === 'char' &&
+                   GenkoTrailingHangableSet.has(tokens[idx].text)) {
+              lastCell.trailingMarks.push(tokens[idx].text);
+              idx++;
+              guardCount++;
+            }
+          }
+        }
+        pushColumn(colCells);
+      }
+    }
+
+    flushPage();
+    if (pages.length === 0) pages.push([]);
+    return pages;
+  }
+
+  // 『漱石山房』（A4縦・20字×10行）幾何計算
+  function computeSosekiSanboGeometryMm() {
+    const stepMm = SosekiCellSizeMm + SosekiRubyGapWidthMm;
+    const totalInnerWidthMm = SosekiColsPerPage * stepMm;
+    const innerLeftMm = (SosekiPaperWidthMm - totalInnerWidthMm) / 2.0;
+    const innerRightMm = innerLeftMm + totalInnerWidthMm;
+    const innerTopMm = SosekiGridTopMm;
+    const innerHeightMm = SosekiRowsPerCol * SosekiCellSizeMm;
+    const innerBottomMm = innerTopMm + innerHeightMm;
+    const outerLeftMm = innerLeftMm - SosekiOuterSideGapMm;
+    const outerRightMm = innerRightMm + SosekiOuterSideGapMm;
+    const friezeTopMm = innerTopMm - SosekiFriezeBandHeightMm;
+    const archShoulderYMm = friezeTopMm - SosekiArchShoulderHeightMm;
+    const archCrownYMm = archShoulderYMm - SosekiArchCrownRiseMm;
+    const centerXMm = SosekiPaperWidthMm / 2.0;
+
+    function getColLeftXMm(colIndex) {
+      return innerRightMm - stepMm - (colIndex * stepMm);
+    }
+
+    return {
+      paperWidthMm: SosekiPaperWidthMm,
+      paperHeightMm: SosekiPaperHeightMm,
+      colsPerPage: SosekiColsPerPage,
+      cellSizeMm: SosekiCellSizeMm,
+      rubyGapWidthMm: SosekiRubyGapWidthMm,
+      totalInnerWidthMm,
+      innerLeftMm,
+      innerRightMm,
+      innerTopMm,
+      innerHeightMm,
+      innerBottomMm,
+      outerLeftMm,
+      outerRightMm,
+      friezeTopMm,
+      archShoulderYMm,
+      archCrownYMm,
+      centerXMm,
+      getColLeftXMm
+    };
+  }
+
+  // 『漱石山房』ベクター罫線・上部アーチ冠枠・横刻み目帯・左右櫛歯飾り縁を pdf-lib 上へ描画
+  function drawSosekiSanboVectorFrameOnPdfPage(pdfPage, geom, lineColorHex, pageNumber, totalPages, pageFont) {
+    const strokeColor = hexToRgbPdfLib(lineColorHex || GenkoPresetOliveHex);
+    const pageH = geom.paperHeightMm;
+    const toPdfY = (topDownYMm) => (pageH - topDownYMm) * MmToPt;
+    const toPdfX = (xMm) => xMm * MmToPt;
+
+    // 1. マス目内枠本体
+    pdfPage.drawRectangle({
+      x: toPdfX(geom.innerLeftMm),
+      y: toPdfY(geom.innerBottomMm),
+      width: geom.totalInnerWidthMm * MmToPt,
+      height: geom.innerHeightMm * MmToPt,
+      borderColor: strokeColor,
+      borderWidth: SosekiInnerGridStrokePt
+    });
+
+    // 2. 全10行の縦罫線・ルビ欄線と19本のマス横区切り線
+    for (let col = 0; col < geom.colsPerPage; col++) {
+      const colLeftMm = geom.getColLeftXMm(col);
+      const colRightMm = colLeftMm + geom.cellSizeMm;
+
+      if (col !== geom.colsPerPage - 1) {
+        pdfPage.drawLine({
+          start: { x: toPdfX(colLeftMm), y: toPdfY(geom.innerTopMm) },
+          end: { x: toPdfX(colLeftMm), y: toPdfY(geom.innerBottomMm) },
+          thickness: SosekiInnerGridStrokePt,
+          color: strokeColor
+        });
+      }
+
+      pdfPage.drawLine({
+        start: { x: toPdfX(colRightMm), y: toPdfY(geom.innerTopMm) },
+        end: { x: toPdfX(colRightMm), y: toPdfY(geom.innerBottomMm) },
+        thickness: SosekiInnerGridStrokePt,
+        color: strokeColor
+      });
+
+      for (let r = 1; r < SosekiRowsPerCol; r++) {
+        const yMm = geom.innerTopMm + (r * geom.cellSizeMm);
+        pdfPage.drawLine({
+          start: { x: toPdfX(colLeftMm), y: toPdfY(yMm) },
+          end: { x: toPdfX(colRightMm), y: toPdfY(yMm) },
+          thickness: SosekiCellDividerStrokePt,
+          color: strokeColor
+        });
+      }
+    }
+
+    // 3. 左右外縦枠線（アーチ両肩から最下端まで）＋ 下端外横線
+    pdfPage.drawLine({
+      start: { x: toPdfX(geom.outerLeftMm), y: toPdfY(geom.archShoulderYMm) },
+      end: { x: toPdfX(geom.outerLeftMm), y: toPdfY(geom.innerBottomMm + SosekiOuterSideGapMm) },
+      thickness: SosekiOuterFrameStrokePt,
+      color: strokeColor
+    });
+    pdfPage.drawLine({
+      start: { x: toPdfX(geom.outerRightMm), y: toPdfY(geom.archShoulderYMm) },
+      end: { x: toPdfX(geom.outerRightMm), y: toPdfY(geom.innerBottomMm + SosekiOuterSideGapMm) },
+      thickness: SosekiOuterFrameStrokePt,
+      color: strokeColor
+    });
+    pdfPage.drawLine({
+      start: { x: toPdfX(geom.outerLeftMm), y: toPdfY(geom.innerBottomMm + SosekiOuterSideGapMm) },
+      end: { x: toPdfX(geom.outerRightMm), y: toPdfY(geom.innerBottomMm + SosekiOuterSideGapMm) },
+      thickness: SosekiOuterFrameStrokePt,
+      color: strokeColor
+    });
+
+    // 4. グリッド直上の横帯（フリーズ帯）と帯内の縦刻み目列
+    pdfPage.drawLine({
+      start: { x: toPdfX(geom.innerLeftMm), y: toPdfY(geom.friezeTopMm) },
+      end: { x: toPdfX(geom.innerRightMm), y: toPdfY(geom.friezeTopMm) },
+      thickness: SosekiInnerGridStrokePt,
+      color: strokeColor
+    });
+    for (let tx = geom.innerLeftMm + SosekiFriezeTickStepMm; tx < geom.innerRightMm - 0.3; tx += SosekiFriezeTickStepMm) {
+      pdfPage.drawLine({
+        start: { x: toPdfX(tx), y: toPdfY(geom.friezeTopMm + 0.35) },
+        end: { x: toPdfX(tx), y: toPdfY(geom.innerTopMm - 0.35) },
+        thickness: SosekiCombTickStrokePt,
+        color: strokeColor
+      });
+    }
+
+    // 5. アーチ額縁の内側左右縦線（肩からフリーズ上端まで）
+    pdfPage.drawLine({
+      start: { x: toPdfX(geom.innerLeftMm), y: toPdfY(geom.archShoulderYMm + 1.1) },
+      end: { x: toPdfX(geom.innerLeftMm), y: toPdfY(geom.friezeTopMm) },
+      thickness: SosekiInnerGridStrokePt,
+      color: strokeColor
+    });
+    pdfPage.drawLine({
+      start: { x: toPdfX(geom.innerRightMm), y: toPdfY(geom.archShoulderYMm + 1.1) },
+      end: { x: toPdfX(geom.innerRightMm), y: toPdfY(geom.friezeTopMm) },
+      thickness: SosekiInnerGridStrokePt,
+      color: strokeColor
+    });
+
+    // 6. 左右両外側の櫛歯（細かい横刻み目）飾り縁（実物の特徴的な外縁装飾）
+    const combBottomMm = geom.innerBottomMm + SosekiOuterSideGapMm;
+    for (let cy = geom.archShoulderYMm; cy <= combBottomMm + 0.05; cy += SosekiSideCombStepMm) {
+      pdfPage.drawLine({
+        start: { x: toPdfX(geom.outerLeftMm - SosekiSideCombWidthMm), y: toPdfY(cy) },
+        end: { x: toPdfX(geom.outerLeftMm), y: toPdfY(cy) },
+        thickness: SosekiCombTickStrokePt,
+        color: strokeColor
+      });
+      pdfPage.drawLine({
+        start: { x: toPdfX(geom.outerRightMm), y: toPdfY(cy) },
+        end: { x: toPdfX(geom.outerRightMm + SosekiSideCombWidthMm), y: toPdfY(cy) },
+        thickness: SosekiCombTickStrokePt,
+        color: strokeColor
+      });
+    }
+
+    // 7. 下部ページ番号（複数ページ時も見やすい控えめ中央表記）
+    if (pageFont) {
+      const label = String(pageNumber) + ' / ' + String(totalPages);
+      const textWidth = pageFont.widthOfTextAtSize(label, GenkoPageNumFontSizePt);
+      pdfPage.drawText(label, {
+        x: toPdfX(geom.centerXMm) - (textWidth / 2.0),
+        y: SosekiPageNumBottomOffsetMm * MmToPt,
+        size: GenkoPageNumFontSizePt,
+        font: pageFont,
+        color: strokeColor
+      });
+    }
+  }
+
+  // Canvas 上へ『漱石山房』（橋口五葉意匠パブリックドメイン）の上部アーチ二重冠線・如意雲飾り・「房山石漱」・左右対称瑞獣唐草を描画
+  function drawSosekiHeaderOrnamentOnCanvas(ctx, geom, lineColorHex, pxPerMm) {
+    const color = lineColorHex || GenkoPresetOliveHex;
+    const toPx = (mm) => mm * pxPerMm;
+    const cx = toPx(geom.centerXMm);
+    const outL = toPx(geom.outerLeftMm);
+    const outR = toPx(geom.outerRightMm);
+    const inL = toPx(geom.innerLeftMm);
+    const inR = toPx(geom.innerRightMm);
+    const shoulderY = toPx(geom.archShoulderYMm);
+    const crownY = toPx(geom.archCrownYMm);
+    const friezeY = toPx(geom.friezeTopMm);
+    const halfSpan = (outR - outL) / 2.0;
+
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    // 1. 天のなだらかなアーチ二重冠枠（中央がわずかに盛り上がる橋口五葉特有の曲線）
+    ctx.lineWidth = toPx(0.38);
+    ctx.beginPath();
+    ctx.moveTo(outL, shoulderY);
+    ctx.bezierCurveTo(
+      outL + halfSpan * 0.22, crownY + toPx(2.4),
+      cx - toPx(16.0), crownY + toPx(1.2),
+      cx - toPx(9.5), crownY + toPx(0.8)
+    );
+    ctx.quadraticCurveTo(cx, crownY - toPx(1.8), cx + toPx(9.5), crownY + toPx(0.8));
+    ctx.bezierCurveTo(
+      cx + toPx(16.0), crownY + toPx(1.2),
+      outR - halfSpan * 0.22, crownY + toPx(2.4),
+      outR, shoulderY
+    );
+    ctx.stroke();
+
+    // 内側アーチ線
+    const insetPx = toPx(SosekiArchInnerInsetMm);
+    ctx.lineWidth = toPx(0.24);
+    ctx.beginPath();
+    ctx.moveTo(inL, shoulderY + toPx(1.1));
+    ctx.bezierCurveTo(
+      inL + halfSpan * 0.22, crownY + insetPx + toPx(2.4),
+      cx - toPx(15.0), crownY + insetPx + toPx(1.2),
+      cx - toPx(8.8), crownY + insetPx + toPx(0.9)
+    );
+    ctx.quadraticCurveTo(cx, crownY + insetPx - toPx(1.4), cx + toPx(8.8), crownY + insetPx + toPx(0.9));
+    ctx.bezierCurveTo(
+      cx + toPx(15.0), crownY + insetPx + toPx(1.2),
+      inR - halfSpan * 0.22, crownY + insetPx + toPx(2.4),
+      inR, shoulderY + toPx(1.1)
+    );
+    ctx.stroke();
+
+    // 2. 中央頂点直下の双渦巻（如意雲モチーフ）装飾
+    const crestY = crownY + insetPx + toPx(2.2);
+    [-1, 1].forEach(dirSign => {
+      ctx.save();
+      ctx.translate(cx, crestY);
+      ctx.scale(dirSign, 1);
+      ctx.lineWidth = toPx(0.24);
+      ctx.beginPath();
+      ctx.moveTo(0, -toPx(0.8));
+      ctx.bezierCurveTo(toPx(2.8), -toPx(2.0), toPx(6.5), toPx(0.4), toPx(4.2), toPx(2.3));
+      ctx.bezierCurveTo(toPx(2.4), toPx(3.4), toPx(0.9), toPx(2.0), toPx(2.0), toPx(1.0));
+      ctx.stroke();
+
+      // 左右へ流れる天蓋飾り蔓
+      ctx.beginPath();
+      ctx.moveTo(toPx(5.2), toPx(1.4));
+      ctx.bezierCurveTo(toPx(12.0), toPx(0.2), toPx(18.5), toPx(2.6), toPx(24.0), toPx(1.5));
+      ctx.stroke();
+      ctx.restore();
+    });
+
+    // 3. 中央4文字「房 山 石 漱」（右から左へ「漱石山房」・縦長袋文字レリーフ調）
+    const titleCharsRtoL = ['漱', '石', '山', '房'];
+    const titleCenterY = (crownY + insetPx + toPx(3.6) + friezeY) / 2.0 + toPx(0.5);
+    const titleBaseFontPx = toPx(SosekiTitleFontSizeMm);
+    const titleFontSpec = "600 " + titleBaseFontPx.toFixed(1) + "px 'Noto Serif JP', 'Yu Mincho', serif";
+
+    for (let i = 0; i < titleCharsRtoL.length; i++) {
+      // i=0(漱): 右端 (+1.5), i=1(石): (+0.5), i=2(山): (-0.5), i=3(房): 左端 (-1.5)
+      const offsetUnits = 1.5 - i;
+      const charX = cx + toPx(offsetUnits * SosekiTitleCharSpacingMm);
+      ctx.save();
+      ctx.translate(charX, titleCenterY);
+      ctx.scale(SosekiTitleScaleX, SosekiTitleScaleY);
+      ctx.font = titleFontSpec;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.lineWidth = toPx(0.32);
+      ctx.strokeText(titleCharsRtoL[i], 0, 0);
+      ctx.globalAlpha = 0.22;
+      ctx.fillText(titleCharsRtoL[i], 0, 0);
+      ctx.restore();
+    }
+
+    // 4. 左右対称・中央の「房山石漱」へ向かい合う橋口五葉風の有翼瑞獣（龍頭・翼・唐草）レリーフ線画
+    const motifBaseY = friezeY - toPx(1.2);
+    [-1, 1].forEach(sideSign => {
+      // sideSign = -1: 左側（右＝中央を向く）, sideSign = +1: 右側（左＝中央を向く）
+      ctx.save();
+      ctx.translate(cx, motifBaseY);
+      ctx.scale(sideSign, 1);
+
+      // 内側x: 21mm（文字脇） 〜 外側x: 64mm（アーチ肩際）、上方向y: 0 〜 -15.5mm
+      ctx.lineWidth = toPx(0.30);
+
+      // 瑞獣の頭部・口吻・顎（中央側 x=21.5mm へ向かう横顔シルエット）
+      ctx.beginPath();
+      ctx.moveTo(toPx(29.0), -toPx(9.6));
+      ctx.bezierCurveTo(toPx(25.0), -toPx(10.8), toPx(21.5), -toPx(9.0), toPx(21.2), -toPx(6.8));
+      ctx.bezierCurveTo(toPx(21.0), -toPx(5.2), toPx(23.8), -toPx(4.8), toPx(26.2), -toPx(5.5));
+      ctx.stroke();
+
+      // 下顎と宝珠/巻雲飾り
+      ctx.beginPath();
+      ctx.moveTo(toPx(26.0), -toPx(4.2));
+      ctx.bezierCurveTo(toPx(22.8), -toPx(3.6), toPx(21.4), -toPx(2.0), toPx(23.2), -toPx(0.8));
+      ctx.bezierCurveTo(toPx(25.2), toPx(0.2), toPx(28.5), -toPx(0.8), toPx(30.2), -toPx(2.6));
+      ctx.stroke();
+
+      // 瑞獣の目と後方へ伸びる角（冠羽）
+      ctx.beginPath();
+      ctx.arc(toPx(26.2), -toPx(7.6), toPx(0.75), 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(toPx(28.2), -toPx(9.5));
+      ctx.bezierCurveTo(toPx(33.0), -toPx(13.6), toPx(39.5), -toPx(14.5), toPx(43.2), -toPx(12.2));
+      ctx.stroke();
+
+      // 胴体と外側へ大きく広がる三段の装飾翼・渦巻尾（x=30mm〜63mm）
+      ctx.beginPath();
+      ctx.moveTo(toPx(30.2), -toPx(2.6));
+      ctx.bezierCurveTo(toPx(36.0), -toPx(0.4), toPx(46.5), -toPx(0.4), toPx(54.5), -toPx(2.4));
+      ctx.bezierCurveTo(toPx(60.5), -toPx(4.0), toPx(63.5), -toPx(8.2), toPx(61.2), -toPx(12.0));
+      ctx.bezierCurveTo(toPx(59.0), -toPx(14.8), toPx(54.2), -toPx(14.2), toPx(53.0), -toPx(11.0));
+      ctx.bezierCurveTo(toPx(52.2), -toPx(8.8), toPx(54.8), -toPx(7.2), toPx(56.8), -toPx(8.6));
+      ctx.stroke();
+
+      // 翼の羽根ライン（3本の流麗なアーチ羽根）
+      const wingCurves = [
+        { sx: 33.5, sy: -6.8, cx1: 40.0, cy1: -11.8, cx2: 48.0, cy2: -12.6, ex: 53.5, ey: -9.8 },
+        { sx: 34.5, sy: -5.0, cx1: 41.5, cy1: -8.8,  cx2: 49.0, cy2: -9.4,  ex: 55.2, ey: -6.6 },
+        { sx: 35.5, sy: -3.2, cx1: 42.5, cy1: -5.8,  cx2: 50.0, cy2: -6.0,  ex: 56.5, ey: -3.8 }
+      ];
+      ctx.lineWidth = toPx(0.23);
+      for (let w = 0; w < wingCurves.length; w++) {
+        const wc = wingCurves[w];
+        ctx.beginPath();
+        ctx.moveTo(toPx(wc.sx), toPx(wc.sy));
+        ctx.bezierCurveTo(toPx(wc.cx1), toPx(wc.cy1), toPx(wc.cx2), toPx(wc.cy2), toPx(wc.ex), toPx(wc.ey));
+        ctx.stroke();
+      }
+
+      // 前脚の唐草スクロール
+      ctx.beginPath();
+      ctx.moveTo(toPx(31.5), -toPx(3.6));
+      ctx.bezierCurveTo(toPx(33.2), -toPx(1.0), toPx(37.2), -toPx(0.6), toPx(38.5), -toPx(2.5));
+      ctx.stroke();
+
+      ctx.restore();
+    });
+
+    ctx.restore();
+  }
+
+  // 任意の原稿用紙ジオメトリ（20×20横置き／漱石山房20×10縦置き）に対応した文字＋ヘッダー装飾レイヤー描画
+  async function renderUniversalGenkoLayerPngBytes(pageCols, geom, isSosekiMode, lineColorHex) {
+    const paperWMm = geom.paperWidthMm || GenkoPaperWidthMm;
+    const paperHMm = geom.paperHeightMm || GenkoPaperHeightMm;
+    const cellSizeMm = geom.cellSizeMm || GenkoCellSizeMm;
+    const rubyGapMm = geom.rubyGapWidthMm || GenkoRubyGapWidthMm;
+    const maxCols = geom.colsPerPage || GenkoTotalColsPerPage;
+
+    const canvasW = Math.round(paperWMm * GenkoCanvasPxPerMm);
+    const canvasH = Math.round(paperHMm * GenkoCanvasPxPerMm);
+    const canvas = document.createElement('canvas');
+    canvas.width = canvasW;
+    canvas.height = canvasH;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvasW, canvasH);
+
+    // 漱石山房モード時は上部アーチ冠枠・「房山石漱」・左右瑞獣装飾を罫線カラーで高精細描画
+    if (isSosekiMode) {
+      drawSosekiHeaderOrnamentOnCanvas(ctx, geom, lineColorHex, GenkoCanvasPxPerMm);
+    }
+
+    const cellPx = cellSizeMm * GenkoCanvasPxPerMm;
+    const mainFontPx = cellPx * GenkoMainFontRatio;
+    const fontStack = "'Noto Serif JP', 'BIZ UDPMincho', 'Yu Mincho', 'Hiragino Mincho ProN', 'MS Mincho', serif";
+
+    ctx.fillStyle = GenkoTextColorHex;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    function drawInkCenteredGlyph(ch, targetInkCenterX, targetInkCenterY, fontPx, rotateMode) {
+      ctx.save();
+      ctx.font = '400 ' + fontPx.toFixed(1) + 'px ' + fontStack;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      const m = ctx.measureText(ch);
+      const hasBox = (typeof m.actualBoundingBoxLeft === 'number' &&
+                      typeof m.actualBoundingBoxRight === 'number' &&
+                      typeof m.actualBoundingBoxAscent === 'number' &&
+                      typeof m.actualBoundingBoxDescent === 'number' &&
+                      (m.actualBoundingBoxLeft + m.actualBoundingBoxRight) > 0);
+      const inkCx = hasBox ? (m.actualBoundingBoxRight - m.actualBoundingBoxLeft) / 2.0 : 0;
+      const inkCy = hasBox ? (m.actualBoundingBoxDescent - m.actualBoundingBoxAscent) / 2.0 : 0;
+
+      ctx.translate(targetInkCenterX, targetInkCenterY);
+      if (rotateMode === 'cw90_mirror') {
+        ctx.rotate(GenkoRotationQuarterTurnRad);
+        ctx.scale(1, -1);
+      } else if (rotateMode === 'cw90') {
+        ctx.rotate(GenkoRotationQuarterTurnRad);
+      }
+      ctx.fillText(ch, -inkCx, -inkCy);
+      ctx.restore();
+    }
+
+    function drawSingleVerticalGlyph(ch, cellLeftPx, cellTopPx, centerX, centerY, fontPx) {
+      if (ch === '　' || ch === ' ') return;
+      if (GenkoCornerPunctSet.has(ch)) {
+        ctx.save();
+        ctx.font = '400 ' + fontPx.toFixed(1) + 'px ' + fontStack;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        const m = ctx.measureText(ch);
+        const inkW = (typeof m.actualBoundingBoxLeft === 'number') ? (m.actualBoundingBoxLeft + m.actualBoundingBoxRight) : (fontPx * 0.25);
+        const inkH = (typeof m.actualBoundingBoxAscent === 'number') ? (m.actualBoundingBoxAscent + m.actualBoundingBoxDescent) : (fontPx * 0.25);
+        const insetPx = cellPx * GenkoPunctCornerInsetRatio;
+        const targetCx = (cellLeftPx + cellPx) - insetPx - (inkW / 2.0);
+        const targetCy = cellTopPx + insetPx + (inkH / 2.0);
+        ctx.restore();
+        drawInkCenteredGlyph(ch, targetCx, targetCy, fontPx, 'none');
+        return;
+      }
+      if (GenkoSmallKanaSet.has(ch)) {
+        drawInkCenteredGlyph(
+          ch,
+          centerX + (cellPx * GenkoSmallKanaShiftXRatio),
+          centerY + (cellPx * GenkoSmallKanaShiftYRatio),
+          fontPx * GenkoSmallKanaScale,
+          'none'
+        );
+        return;
+      }
+      if (GenkoMirrorRotateSet.has(ch)) {
+        drawInkCenteredGlyph(ch, centerX, centerY, fontPx, 'cw90_mirror');
+        return;
+      }
+      if (GenkoOpeningBracketSet.has(ch)) {
+        const isCornerQuote = (ch === '「' || ch === '『');
+        const shiftX = isCornerQuote ? (cellPx * GenkoCornerBracketXShiftRatio) : 0;
+        drawInkCenteredGlyph(ch, centerX + shiftX, centerY + (cellPx * GenkoBracketHalfShiftRatio), fontPx, 'cw90');
+        return;
+      }
+      if (GenkoClosingBracketSet.has(ch)) {
+        const isCornerQuote = (ch === '」' || ch === '』');
+        const shiftX = isCornerQuote ? (-cellPx * GenkoCornerBracketXShiftRatio) : 0;
+        drawInkCenteredGlyph(ch, centerX + shiftX, centerY - (cellPx * GenkoBracketHalfShiftRatio), fontPx, 'cw90');
+        return;
+      }
+      if (GenkoRotate90CharSet.has(ch)) {
+        drawInkCenteredGlyph(ch, centerX, centerY, fontPx, 'cw90');
+        return;
+      }
+      ctx.save();
+      ctx.font = '400 ' + fontPx.toFixed(1) + 'px ' + fontStack;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(ch, centerX, centerY);
+      ctx.restore();
+    }
+
+    const GenkoKuntenSingleKaeriYRatio = 0.20;
+    const GenkoKuntenMultiKaeriStartYRatio = 0.18;
+    const GenkoKuntenMultiKaeriStepYRatio = 0.25;
+
+    for (let col = 0; col < pageCols.length && col < maxCols; col++) {
+      const cells = pageCols[col];
+      const colLeftPx = geom.getColLeftXMm(col) * GenkoCanvasPxPerMm;
+      const colCenterX = colLeftPx + (cellPx / 2.0);
+
+      for (let row = 0; row < cells.length && row < GenkoRowsPerCol; row++) {
+        const cell = cells[row];
+        const cellTopPx = (geom.innerTopMm + (row * cellSizeMm)) * GenkoCanvasPxPerMm;
+        const hasTrailing = cell.trailingMarks && cell.trailingMarks.length > 0;
+        const shiftY = hasTrailing ? (cellPx * GenkoTrailingParentShiftY) : 0;
+        const glyphCenterX = colCenterX;
+        const baseCenterY = cellTopPx + (cellPx / 2.0) + shiftY;
+
+        if (cell.kind === 'kunten_box') {
+          if (cell.kaeriten) {
+            const kChars = Array.from(cell.kaeriten);
+            const isMultiK = (kChars.length >= 2);
+            const kFontPx = cellPx * GenkoKuntenKaeriFontRatio * (isMultiK ? GenkoKuntenKaeriMultiScale : 1.0);
+            const kx = colLeftPx + (cellPx * GenkoKuntenLeftColCenterXRatio);
+            if (kChars.length === 1) {
+              drawInkCenteredGlyph(kChars[0], kx, cellTopPx + (cellPx * GenkoKuntenSingleKaeriYRatio), kFontPx, 'none');
+            } else {
+              for (let ki = 0; ki < kChars.length; ki++) {
+                const ky = cellTopPx + (cellPx * (GenkoKuntenMultiKaeriStartYRatio + (ki * GenkoKuntenMultiKaeriStepYRatio)));
+                drawInkCenteredGlyph(kChars[ki], kx, ky, kFontPx, 'none');
+              }
+            }
+          }
+          if (cell.okuriSlice) {
+            const oChars = Array.from(cell.okuriSlice);
+            if (oChars.length > 0) {
+              const ox = colLeftPx + (cellPx * GenkoKuntenRightColCenterXRatio);
+              const topPadPx = cellPx * GenkoKuntenTopPadRatio;
+              const availHPx = hasTrailing
+                ? (cellPx * (GenkoKuntenTrailingSafeHeightRatio - GenkoKuntenTopPadRatio))
+                : (cellPx * (1.0 - GenkoKuntenTopPadRatio - GenkoKuntenBottomPadRatio));
+              const stepY = Math.min(cellPx * GenkoKuntenOkuriMaxStepRatio, availHPx / oChars.length);
+              const okuriFontPx = Math.min(cellPx * GenkoKuntenOkuriFontRatio, stepY * GenkoKuntenOkuriLineFitRatio);
+              for (let oi = 0; oi < oChars.length; oi++) {
+                const oCh = oChars[oi];
+                const oy = cellTopPx + topPadPx + (stepY * (oi + 0.5));
+                const oRot = GenkoMirrorRotateSet.has(oCh)
+                  ? 'cw90_mirror'
+                  : (GenkoRotate90CharSet.has(oCh) ? 'cw90' : 'none');
+                drawInkCenteredGlyph(oCh, ox, oy, okuriFontPx, oRot);
+              }
+            }
+          }
+        } else if (cell.kind === 'tcy') {
+          const tcyChars = Array.from(cell.text);
+          const tcyFontPx = mainFontPx * GenkoTcyFontScale;
+          if (tcyChars.length === 2) {
+            drawInkCenteredGlyph(tcyChars[0], glyphCenterX - (cellPx * GenkoTcyCharOffsetRatio), baseCenterY, tcyFontPx, 'none');
+            drawInkCenteredGlyph(tcyChars[1], glyphCenterX + (cellPx * GenkoTcyCharOffsetRatio), baseCenterY, tcyFontPx, 'none');
+          } else {
+            drawInkCenteredGlyph(cell.text, glyphCenterX, baseCenterY, tcyFontPx, 'none');
+          }
+        } else {
+          drawSingleVerticalGlyph(cell.text, colLeftPx, cellTopPx, glyphCenterX, baseCenterY, mainFontPx);
+        }
+
+        if (hasTrailing) {
+          const trailFontPx = mainFontPx * GenkoTrailingMarkScale;
+          const insetPx = cellPx * GenkoTrailingCornerInsetRatio;
+          for (let tIdx = 0; tIdx < cell.trailingMarks.length; tIdx++) {
+            const mark = cell.trailingMarks[tIdx];
+            const shiftLeft = tIdx * (cellPx * 0.24);
+            const tx = (colLeftPx + cellPx) - insetPx - (trailFontPx * 0.22) - shiftLeft;
+            const ty = (cellTopPx + cellPx) - insetPx - (trailFontPx * 0.22);
+            const rotMode = GenkoRotate90CharSet.has(mark) ? 'cw90' : 'none';
+            drawInkCenteredGlyph(mark, tx, ty, trailFontPx, rotMode);
+          }
+        }
+
+        if (cell.ruby) {
+          const rubyChars = Array.from(cell.ruby);
+          if (rubyChars.length > 0) {
+            const safeSpanCells = Math.max(1, Math.min(cell.rubySpanCells || 1, GenkoRowsPerCol - row));
+            const spanPx = safeSpanCells * cellPx;
+            const rubyAreaWidthPx = rubyGapMm * GenkoCanvasPxPerMm;
+            const rubyCenterX = colLeftPx + cellPx + (rubyAreaWidthPx * 0.5);
+            const stepY = spanPx / rubyChars.length;
+            const rubyFontPx = Math.min(cellPx * GenkoRubyFontRatio, stepY * GenkoRubyLineFitRatio);
+            for (let rIdx = 0; rIdx < rubyChars.length; rIdx++) {
+              const rCh = rubyChars[rIdx];
+              const ry = cellTopPx + (stepY * (rIdx + 0.5));
+              const rRot = GenkoMirrorRotateSet.has(rCh)
+                ? 'cw90_mirror'
+                : (GenkoRotate90CharSet.has(rCh) ? 'cw90' : 'none');
+              drawInkCenteredGlyph(rCh, rubyCenterX, ry, rubyFontPx, rRot);
+            }
+          }
+        }
+      }
+    }
+
+    const pngBytes = await canvasToPngBytes(canvas);
+    canvas.width = 1;
+    canvas.height = 1;
+    return pngBytes;
+  }
+
+  // 20×20 横置き原稿用紙（標準 / クラシック）ベクター枠線＆魚尾（黒 / 白 / なし）描画
+  drawGenkoVectorGridOnPdfPage = function(pdfPage, geom, lineColorHex, pageNumber, totalPages, pageFont, genkoDesignOpts) {
+    const opts = genkoDesignOpts || { style: 'standard', paper: 'white', gyobi: 'solid' };
+    const styleMode = opts.style || 'standard';
+    const paperMode = opts.paper || 'white';
+    const gyobiMode = opts.gyobi || 'solid';
+
+    const paperBgHex = (paperMode === 'cream') ? GenkoPaperCreamHex : GenkoPaperWhiteHex;
+    const paperBgColor = hexToRgbPdfLib(paperBgHex);
+    const strokeColor = hexToRgbPdfLib(lineColorHex || GenkoDefaultLineColorHex);
+    const pageH = GenkoPaperHeightMm;
+    const toPdfY = (topDownYMm) => (pageH - topDownYMm) * MmToPt;
+    const toPdfX = (xMm) => xMm * MmToPt;
+
+    const gapMm = (styleMode === 'classic') ? GenkoClassicOuterFrameGapMm : GenkoOuterFrameGapMm;
+    const outerStrokePt = (styleMode === 'classic') ? GenkoClassicOuterStrokePt : GenkoOuterStrokePt;
+    const outerLeft = geom.innerLeftMm - gapMm;
+    const outerTop = geom.innerTopMm - gapMm;
+    const outerW = geom.totalInnerWidthMm + (gapMm * 2.0);
+    const outerH = geom.innerHeightMm + (gapMm * 2.0);
+
+    pdfPage.drawRectangle({
+      x: toPdfX(outerLeft),
+      y: toPdfY(outerTop + outerH),
+      width: outerW * MmToPt,
+      height: outerH * MmToPt,
+      borderColor: strokeColor,
+      borderWidth: outerStrokePt
+    });
+
+    pdfPage.drawRectangle({
+      x: toPdfX(geom.innerLeftMm),
+      y: toPdfY(geom.innerBottomMm),
+      width: geom.totalInnerWidthMm * MmToPt,
+      height: geom.innerHeightMm * MmToPt,
+      borderColor: strokeColor,
+      borderWidth: GenkoInnerStrokePt
+    });
+
+    pdfPage.drawLine({
+      start: { x: toPdfX(geom.leftHalfRightMm), y: toPdfY(geom.innerTopMm) },
+      end: { x: toPdfX(geom.leftHalfRightMm), y: toPdfY(geom.innerBottomMm) },
+      thickness: GenkoInnerStrokePt,
+      color: strokeColor
+    });
+    pdfPage.drawLine({
+      start: { x: toPdfX(geom.rightHalfLeftMm), y: toPdfY(geom.innerTopMm) },
+      end: { x: toPdfX(geom.rightHalfLeftMm), y: toPdfY(geom.innerBottomMm) },
+      thickness: GenkoInnerStrokePt,
+      color: strokeColor
+    });
+
+    for (let col = 0; col < GenkoTotalColsPerPage; col++) {
+      const colLeftMm = geom.getColLeftXMm(col);
+      const colRightMm = colLeftMm + GenkoCellSizeMm;
+
+      if (col !== GenkoColsPerHalf - 1 && col !== GenkoTotalColsPerPage - 1) {
+        pdfPage.drawLine({
+          start: { x: toPdfX(colLeftMm), y: toPdfY(geom.innerTopMm) },
+          end: { x: toPdfX(colLeftMm), y: toPdfY(geom.innerBottomMm) },
+          thickness: GenkoInnerStrokePt,
+          color: strokeColor
+        });
+      }
+
+      pdfPage.drawLine({
+        start: { x: toPdfX(colRightMm), y: toPdfY(geom.innerTopMm) },
+        end: { x: toPdfX(colRightMm), y: toPdfY(geom.innerBottomMm) },
+        thickness: GenkoInnerStrokePt,
+        color: strokeColor
+      });
+
+      for (let r = 1; r < GenkoRowsPerCol; r++) {
+        const yMm = geom.innerTopMm + (r * GenkoCellSizeMm);
+        pdfPage.drawLine({
+          start: { x: toPdfX(colLeftMm), y: toPdfY(yMm) },
+          end: { x: toPdfX(colRightMm), y: toPdfY(yMm) },
+          thickness: GenkoCellDividerStrokePt,
+          color: strokeColor
+        });
+      }
+    }
+
+    const cxMm = geom.pillarCenterXMm;
+    if (gyobiMode !== 'none') {
+      const upperGyobiYMm = geom.innerTopMm + (GenkoGyobiUpperRow * GenkoCellSizeMm);
+      const lowerGyobiYMm = geom.innerTopMm + (GenkoGyobiLowerRow * GenkoCellSizeMm);
+      const hwPt = GenkoGyobiHalfWidthMm * MmToPt;
+      const bhPt = GenkoGyobiBodyHeightMm * MmToPt;
+      const ndPt = GenkoGyobiNotchDepthMm * MmToPt;
+      const isHollow = (gyobiMode === 'hollow');
+      const gyobiFill = isHollow ? paperBgColor : strokeColor;
+      const gyobiBorderW = isHollow ? GenkoGyobiHollowBorderPt : GenkoGyobiSolidBorderPt;
+
+      const upperSvgPath =
+        'M ' + (-hwPt).toFixed(2) + ' 0 ' +
+        'L ' + hwPt.toFixed(2) + ' 0 ' +
+        'L ' + hwPt.toFixed(2) + ' ' + bhPt.toFixed(2) + ' ' +
+        'L 0 ' + (bhPt - ndPt).toFixed(2) + ' ' +
+        'L ' + (-hwPt).toFixed(2) + ' ' + bhPt.toFixed(2) + ' Z';
+      pdfPage.drawSvgPath(upperSvgPath, {
+        x: toPdfX(cxMm),
+        y: toPdfY(upperGyobiYMm - GenkoGyobiBodyHeightMm * 0.5),
+        color: gyobiFill,
+        borderColor: strokeColor,
+        borderWidth: gyobiBorderW
+      });
+
+      const lowerSvgPath =
+        'M ' + (-hwPt).toFixed(2) + ' ' + bhPt.toFixed(2) + ' ' +
+        'L ' + hwPt.toFixed(2) + ' ' + bhPt.toFixed(2) + ' ' +
+        'L ' + hwPt.toFixed(2) + ' 0 ' +
+        'L 0 ' + ndPt.toFixed(2) + ' ' +
+        'L ' + (-hwPt).toFixed(2) + ' 0 Z';
+      pdfPage.drawSvgPath(lowerSvgPath, {
+        x: toPdfX(cxMm),
+        y: toPdfY(lowerGyobiYMm - GenkoGyobiBodyHeightMm * 0.5),
+        color: gyobiFill,
+        borderColor: strokeColor,
+        borderWidth: gyobiBorderW
+      });
+
+      const lineStartYMm = upperGyobiYMm + GenkoGyobiBodyHeightMm * 0.5 + GenkoPillarLineGapMm;
+      const lineEndYMm = lowerGyobiYMm - GenkoGyobiBodyHeightMm * 0.5 - GenkoPillarLineGapMm;
+      if (lineEndYMm > lineStartYMm) {
+        pdfPage.drawLine({
+          start: { x: toPdfX(cxMm), y: toPdfY(lineStartYMm) },
+          end: { x: toPdfX(cxMm), y: toPdfY(lineEndYMm) },
+          thickness: GenkoCellDividerStrokePt,
+          color: strokeColor
+        });
+      }
+    }
+
+    if (pageFont) {
+      const label = String(pageNumber) + ' / ' + String(totalPages);
+      const textWidth = pageFont.widthOfTextAtSize(label, GenkoPageNumFontSizePt);
+      pdfPage.drawText(label, {
+        x: toPdfX(cxMm) - (textWidth / 2.0),
+        y: GenkoPageNumBottomOffsetMm * MmToPt,
+        size: GenkoPageNumFontSizePt,
+        font: pageFont,
+        color: strokeColor
+      });
+    }
+  };
+
+  generateGenkoManuscriptPdfBytes = async function(paragraphs, lineColorHex, onPageProgress) {
+    await ensureGenkoWebFontsReady();
+
+    const activePrefix = (activeRenderTabPrefix === 'docx') ? 'docx' : 'docs';
+    const st = v166RuleUiState[activePrefix] || v166RuleUiState.docs;
+    const isSosekiMode = (st.genkoStyle === 'soseki');
+    const designOpts = {
+      style: st.genkoStyle || 'standard',
+      paper: st.genkoPaper || 'white',
+      gyobi: st.genkoGyobi || 'solid'
+    };
+
+    const colsPerPage = isSosekiMode ? SosekiColsPerPage : GenkoTotalColsPerPage;
+    const pagesGrid = layoutGenkoPagesForColumns(paragraphs, colsPerPage);
+    const totalPages = pagesGrid.length;
+    const geom = isSosekiMode ? computeSosekiSanboGeometryMm() : computeGenkoGeometryMm();
+
+    const paperBgHex = (designOpts.paper === 'cream')
+      ? (isSosekiMode ? SosekiPaperAntiqueCreamHex : GenkoPaperCreamHex)
+      : GenkoPaperWhiteHex;
+    const paperBgRgb = hexToRgbPdfLib(paperBgHex);
+
+    const outDoc = await PDFLib.PDFDocument.create();
+    try {
+      const vpDict = outDoc.context.obj({ Direction: PDFLib.PDFName.of('R2L') });
+      outDoc.catalog.set(PDFLib.PDFName.of('ViewerPreferences'), vpDict);
+    } catch (_eR2L) {}
+
+    let pageFont = null;
+    try {
+      pageFont = await outDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+    } catch (_eFontEmbed) {}
+
+    const pageWPt = (isSosekiMode ? SosekiPaperWidthMm : GenkoPaperWidthMm) * MmToPt;
+    const pageHPt = (isSosekiMode ? SosekiPaperHeightMm : GenkoPaperHeightMm) * MmToPt;
+
+    for (let pIdx = 0; pIdx < totalPages; pIdx++) {
+      if (typeof onPageProgress === 'function') {
+        onPageProgress(pIdx + 1, totalPages);
+      }
+      const pdfPage = outDoc.addPage([pageWPt, pageHPt]);
+
+      if (designOpts.paper === 'cream') {
+        pdfPage.drawRectangle({
+          x: 0,
+          y: 0,
+          width: pageWPt,
+          height: pageHPt,
+          color: paperBgRgb
+        });
+      }
+
+      if (isSosekiMode) {
+        drawSosekiSanboVectorFrameOnPdfPage(pdfPage, geom, lineColorHex, pIdx + 1, totalPages, pageFont);
+      } else {
+        drawGenkoVectorGridOnPdfPage(pdfPage, geom, lineColorHex, pIdx + 1, totalPages, pageFont, designOpts);
+      }
+
+      const cols = pagesGrid[pIdx] || [];
+      if (isSosekiMode || cols.length > 0) {
+        const layerPngBytes = await renderUniversalGenkoLayerPngBytes(cols, geom, isSosekiMode, lineColorHex);
+        const pngImage = await outDoc.embedPng(layerPngBytes);
+        pdfPage.drawImage(pngImage, {
+          x: 0,
+          y: 0,
+          width: pageWPt,
+          height: pageHPt
+        });
+      }
+      await new Promise(r => setTimeout(r, 0));
+    }
+
+    return await outDoc.save({ useObjectStreams: true });
+  };
+
+  // 漱石山房選択時はダウンロードファイル名サフィックスも「_漱石山房原稿用紙_20x10」に追従
+  const _prevHandleDocsPdfForSosekiName = handleDocsPdfOutput;
+  handleDocsPdfOutput = function(bytes, isExportPdf, defaultFileName, paperMode) {
+    let effName = defaultFileName;
+    if (paperMode === GenkoModeValue && v166RuleUiState.docs.genkoStyle === 'soseki' && typeof effName === 'string') {
+      const gt = getGenkoPngText(currentLanguage);
+      const vt = getV166Text(currentLanguage);
+      effName = effName.replace(gt.genkoFileSuffix, vt.sosekiFileSuffix);
+    }
+    return _prevHandleDocsPdfForSosekiName(bytes, isExportPdf, effName, paperMode);
+  };
+  window.handleDocsPdfOutput = handleDocsPdfOutput;
+
+  const _prevHandleDocxPdfForSosekiName = handleDocxPdfOutput;
+  handleDocxPdfOutput = function(bytes, isExportPdf, defaultFileName, paperMode) {
+    let effName = defaultFileName;
+    if (paperMode === GenkoModeValue && v166RuleUiState.docx.genkoStyle === 'soseki' && typeof effName === 'string') {
+      const gt = getGenkoPngText(currentLanguage);
+      const vt = getV166Text(currentLanguage);
+      effName = effName.replace(gt.genkoFileSuffix, vt.sosekiFileSuffix);
+    }
+    return _prevHandleDocxPdfForSosekiName(bytes, isExportPdf, effName, paperMode);
+  };
+  window.handleDocxPdfOutput = handleDocxPdfOutput;
+
+  // 6. DOCS / DOCX 実行ラッパー
+  const _prevExecDocsBeforeV166 = window.executeDocsLayout;
+  window.executeDocsLayout = async function(isExportPdf) {
+    activeRenderTabPrefix = 'docs';
+    try {
+      return await _prevExecDocsBeforeV166(isExportPdf);
+    } finally {
+      activeRenderTabPrefix = '';
+    }
+  };
+  executeDocsLayout = window.executeDocsLayout;
+
+  const _prevExecDocxBeforeV166 = window.executeDocxLayout;
+  window.executeDocxLayout = async function(isExportPdf) {
+    activeRenderTabPrefix = 'docx';
+    try {
+      if (currentWritingDirection !== 'vertical' && !selectedDocxBase64 && selectedDocxFileId && !isDocxBusy) {
+        const dlRes = await callGasRpc('getDriveDocxBase64ForBrowser', { fileId: selectedDocxFileId });
+        if (dlRes && dlRes.success && dlRes.docxBase64) {
+          selectedDocxBase64 = dlRes.docxBase64;
+        }
+      }
+      return await _prevExecDocxBeforeV166(isExportPdf);
+    } finally {
+      activeRenderTabPrefix = '';
+    }
+  };
+  executeDocxLayout = window.executeDocxLayout;
+
+  // 7. 初期マウント
+  window.addEventListener('DOMContentLoaded', () => {
+    pruneA5OptionsFromInitialSelects();
+    enhanceColorChipsWithLiteraryPresets();
+    buildButtonRulePanelForPrefix('docs');
+    buildButtonRulePanelForPrefix('docx');
+    buildButtonRulePanelForPrefix('pdf');
+    rebuildPaperAndRuleOptionsForDirection(currentWritingDirection, false);
+    refreshAllV166Panels();
+  });
+
+
+  // ==============================================================================
+  // 『山葵山房』（房山葵山＋山葵葉クレスト）＆ 4種魚尾（黒魚尾・二重白魚尾・豪華花魚尾・なし）統合仕上げ
+  // ==============================================================================
+  buildButtonRulePanelForPrefix = function(prefix) {
+    const isPdf = (prefix === 'pdf');
+    const legacySelId = isPdf ? 'gridTypeSelect' : (prefix + 'GridTypeSelect');
+    const legacySel = document.getElementById(legacySelId);
+    if (!legacySel) return;
+    const settingItem = legacySel.closest('.setting-item');
+    if (!settingItem || document.getElementById(prefix + 'NormalBtnPanel')) return;
+
+    const kindSel = document.getElementById(prefix + 'RuleKindSelect');
+    if (kindSel && kindSel.parentElement && kindSel.parentElement !== settingItem) {
+      kindSel.parentElement.style.display = 'none';
+    }
+    legacySel.style.display = 'none';
+
+    const onTriggerChange = () => {
+      syncHiddenSelectsFromV166State(prefix);
+      if (!isPdf) {
+        if (prefix === 'docs' && typeof window.onDocsSettingChanged === 'function') {
+          window.onDocsSettingChanged();
+        } else if (prefix === 'docx' && typeof window.onDocxSettingChanged === 'function') {
+          window.onDocxSettingChanged();
+        }
+      }
+      refreshV166PanelVisualState(prefix);
+    };
+
+    const normalPanel = document.createElement('div');
+    normalPanel.id = prefix + 'NormalBtnPanel';
+    normalPanel.className = 'studio-btn-panel';
+
+    if (!isPdf) {
+      const bodyRow = document.createElement('div');
+      bodyRow.className = 'studio-btn-row';
+      bodyRow.id = prefix + 'RowBodyRule';
+      const bodyLbl = document.createElement('div');
+      bodyLbl.className = 'studio-btn-sublabel';
+      bodyLbl.id = prefix + 'SubLabelBodyRule';
+      const bodyGrid = document.createElement('div');
+      bodyGrid.className = 'studio-chip-grid-2';
+
+      [
+        { key: 'on', boolVal: true },
+        { key: 'off', boolVal: false }
+      ].forEach(item => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'chip-opt-btn';
+        btn.id = prefix + 'BtnBodyRule_' + item.key;
+        btn.onclick = () => {
+          v166RuleUiState[prefix].bodyRuleOn = item.boolVal;
+          onTriggerChange();
+        };
+        bodyGrid.appendChild(btn);
+      });
+      bodyRow.appendChild(bodyLbl);
+      bodyRow.appendChild(bodyGrid);
+      normalPanel.appendChild(bodyRow);
+    }
+
+    const noteRow = document.createElement('div');
+    noteRow.className = 'studio-btn-row';
+    noteRow.id = prefix + 'RowNoteRule';
+    const noteLbl = document.createElement('div');
+    noteLbl.className = 'studio-btn-sublabel';
+    noteLbl.id = prefix + 'SubLabelNoteRule';
+    const noteGrid = document.createElement('div');
+    noteGrid.className = 'studio-chip-grid-2';
+
+    [
+      { key: 'on', boolVal: true },
+      { key: 'off', boolVal: false }
+    ].forEach(item => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'chip-opt-btn';
+      btn.id = prefix + 'BtnNoteRule_' + item.key;
+      btn.onclick = () => {
+        v166RuleUiState[prefix].noteRuleOn = item.boolVal;
+        onTriggerChange();
+      };
+      noteGrid.appendChild(btn);
+    });
+    noteRow.appendChild(noteLbl);
+    noteRow.appendChild(noteGrid);
+    normalPanel.appendChild(noteRow);
+
+    const kindRow = document.createElement('div');
+    kindRow.className = 'studio-btn-row';
+    kindRow.id = prefix + 'RowKind';
+    const kindLbl = document.createElement('div');
+    kindLbl.className = 'studio-btn-sublabel';
+    kindLbl.id = prefix + 'SubLabelKind';
+    const kindGrid = document.createElement('div');
+    kindGrid.className = 'studio-chip-grid-2';
+
+    ['ruled', 'grid'].forEach(kVal => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'chip-opt-btn';
+      btn.id = prefix + 'BtnKind_' + kVal;
+      btn.setAttribute('data-val', kVal);
+      btn.onclick = () => {
+        v166RuleUiState[prefix].lineKind = kVal;
+        onTriggerChange();
+      };
+      kindGrid.appendChild(btn);
+    });
+    kindRow.appendChild(kindLbl);
+    kindRow.appendChild(kindGrid);
+    normalPanel.appendChild(kindRow);
+
+    const pitchRow = document.createElement('div');
+    pitchRow.className = 'studio-btn-row';
+    pitchRow.id = prefix + 'RowPitch';
+    const pitchLbl = document.createElement('div');
+    pitchLbl.className = 'studio-btn-sublabel';
+    pitchLbl.id = prefix + 'SubLabelPitch';
+    const pitchGrid = document.createElement('div');
+    pitchGrid.className = 'studio-chip-grid-3';
+
+    RULE_PITCH_OPTIONS.forEach(pOpt => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'chip-opt-btn';
+      btn.id = prefix + 'BtnPitch_' + pOpt.value;
+      btn.setAttribute('data-val', pOpt.value);
+      btn.textContent = pOpt.label;
+      btn.onclick = () => {
+        const ps = document.getElementById(prefix + 'RulePitchSelect');
+        if (ps) ps.value = pOpt.value;
+        onTriggerChange();
+      };
+      pitchGrid.appendChild(btn);
+    });
+    pitchRow.appendChild(pitchLbl);
+    pitchRow.appendChild(pitchGrid);
+    normalPanel.appendChild(pitchRow);
+
+    settingItem.appendChild(normalPanel);
+
+    if (!isPdf) {
+      const genkoPanel = document.createElement('div');
+      genkoPanel.id = prefix + 'GenkoBtnPanel';
+      genkoPanel.className = 'studio-btn-panel';
+      genkoPanel.style.display = 'none';
+
+      // B-1. 様式（標準 20×20 / 山葵山房 20×10 / クラシック 20×20）
+      const styleRow = document.createElement('div');
+      styleRow.className = 'studio-btn-row';
+      const styleLbl = document.createElement('div');
+      styleLbl.className = 'studio-btn-sublabel';
+      styleLbl.id = prefix + 'SubLabelGenkoStyle';
+      const styleGrid = document.createElement('div');
+      styleGrid.className = 'studio-chip-grid-3';
+
+      ['standard', 'soseki', 'classic'].forEach(sVal => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'chip-opt-btn';
+        btn.id = prefix + 'BtnGenkoStyle_' + sVal;
+        btn.onclick = () => {
+          const st = v166RuleUiState[prefix];
+          st.genkoStyle = sVal;
+          if (sVal === 'soseki') {
+            st.genkoPaper = 'cream';
+            st.genkoGyobi = 'none';
+            applyProgrammaticLineColor(prefix, GenkoPresetOliveHex);
+            triggerSosekiPdPopup(prefix);
+          } else if (sVal === 'classic') {
+            st.genkoPaper = 'cream';
+            st.genkoGyobi = 'floral';
+            applyProgrammaticLineColor(prefix, GenkoPresetClassicSepiaHex);
+          } else {
+            st.genkoPaper = 'white';
+            st.genkoGyobi = 'solid';
+            applyProgrammaticLineColor(prefix, GenkoPresetStandardHex);
+          }
+          refreshV166PanelVisualState(prefix);
+        };
+
+        if (sVal === 'soseki') {
+          const anchor = document.createElement('div');
+          anchor.className = 'chip-tooltip-anchor';
+          anchor.id = prefix + 'SosekiTooltipAnchor';
+          const bubble = document.createElement('div');
+          bubble.className = 'pd-popup-bubble';
+          bubble.id = prefix + 'SosekiPdBubble';
+          anchor.appendChild(btn);
+          anchor.appendChild(bubble);
+          styleGrid.appendChild(anchor);
+        } else {
+          styleGrid.appendChild(btn);
+        }
+      });
+      styleRow.appendChild(styleLbl);
+      styleRow.appendChild(styleGrid);
+      genkoPanel.appendChild(styleRow);
+
+      // B-2. 用紙の色（白 / クリーム紙）
+      const paperRow = document.createElement('div');
+      paperRow.className = 'studio-btn-row';
+      const paperLbl = document.createElement('div');
+      paperLbl.className = 'studio-btn-sublabel';
+      paperLbl.id = prefix + 'SubLabelGenkoPaper';
+      const paperGrid = document.createElement('div');
+      paperGrid.className = 'studio-chip-grid-2';
+
+      ['white', 'cream'].forEach(pVal => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'chip-opt-btn';
+        btn.id = prefix + 'BtnGenkoPaper_' + pVal;
+        const dot = document.createElement('span');
+        dot.className = 'chip-paper-dot ' + (pVal === 'cream' ? 'chip-paper-dot-cream' : 'chip-paper-dot-white');
+        const txtSpan = document.createElement('span');
+        txtSpan.id = prefix + 'TxtGenkoPaper_' + pVal;
+        btn.appendChild(dot);
+        btn.appendChild(txtSpan);
+        btn.onclick = () => {
+          v166RuleUiState[prefix].genkoPaper = pVal;
+          onTriggerChange();
+        };
+        paperGrid.appendChild(btn);
+      });
+      paperRow.appendChild(paperLbl);
+      paperRow.appendChild(paperGrid);
+      genkoPanel.appendChild(paperRow);
+
+      // B-3. 魚尾 4種類（黒魚尾 / 白魚尾 / 花魚尾 / なし）
+      const gyobiRow = document.createElement('div');
+      gyobiRow.className = 'studio-btn-row';
+      gyobiRow.id = prefix + 'RowGenkoGyobi';
+      const gyobiLbl = document.createElement('div');
+      gyobiLbl.className = 'studio-btn-sublabel';
+      gyobiLbl.id = prefix + 'SubLabelGenkoGyobi';
+      const gyobiGrid = document.createElement('div');
+      gyobiGrid.className = 'studio-chip-grid-4';
+
+      ['solid', 'hollow', 'floral', 'none'].forEach(gVal => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'chip-opt-btn';
+        btn.id = prefix + 'BtnGenkoGyobi_' + gVal;
+        btn.onclick = () => {
+          v166RuleUiState[prefix].genkoGyobi = gVal;
+          onTriggerChange();
+        };
+        gyobiGrid.appendChild(btn);
+      });
+      gyobiRow.appendChild(gyobiLbl);
+      gyobiRow.appendChild(gyobiGrid);
+      genkoPanel.appendChild(gyobiRow);
+
+      settingItem.appendChild(genkoPanel);
+    }
+  };
+
+  const _baseRefreshV166Panel = refreshV166PanelVisualState;
+  refreshV166PanelVisualState = function(prefix) {
+    _baseRefreshV166Panel(prefix);
+    if (prefix === 'pdf') return;
+    const vt = getV166Text(currentLanguage);
+    const st = v166RuleUiState[prefix];
+    const btnFloral = document.getElementById(prefix + 'BtnGenkoGyobi_floral');
+    if (btnFloral && st) {
+      btnFloral.textContent = vt.genkoGyobiFloral;
+      btnFloral.classList.toggle('active', st.genkoGyobi === 'floral');
+    }
+  };
+
+  // 『山葵山房』ヘッダー描画：中央「房 山 葵 山」（右→左＝山葵山房）＋ 頂点山葵葉クレスト ＋ 左右瑞獣唐草
+  drawSosekiHeaderOrnamentOnCanvas = function(ctx, geom, lineColorHex, pxPerMm) {
+    const color = lineColorHex || GenkoPresetOliveHex;
+    const toPx = (mm) => mm * pxPerMm;
+    const cx = toPx(geom.centerXMm);
+    const outL = toPx(geom.outerLeftMm);
+    const outR = toPx(geom.outerRightMm);
+    const inL = toPx(geom.innerLeftMm);
+    const inR = toPx(geom.innerRightMm);
+    const shoulderY = toPx(geom.archShoulderYMm);
+    const crownY = toPx(geom.archCrownYMm);
+    const friezeY = toPx(geom.friezeTopMm);
+    const halfSpan = (outR - outL) / 2.0;
+
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    // 1. アーチ二重冠枠
+    ctx.lineWidth = toPx(0.38);
+    ctx.beginPath();
+    ctx.moveTo(outL, shoulderY);
+    ctx.bezierCurveTo(
+      outL + halfSpan * 0.22, crownY + toPx(2.4),
+      cx - toPx(16.0), crownY + toPx(1.2),
+      cx - toPx(9.5), crownY + toPx(0.8)
+    );
+    ctx.quadraticCurveTo(cx, crownY - toPx(1.8), cx + toPx(9.5), crownY + toPx(0.8));
+    ctx.bezierCurveTo(
+      cx + toPx(16.0), crownY + toPx(1.2),
+      outR - halfSpan * 0.22, crownY + toPx(2.4),
+      outR, shoulderY
+    );
+    ctx.stroke();
+
+    const insetPx = toPx(SosekiArchInnerInsetMm);
+    ctx.lineWidth = toPx(0.24);
+    ctx.beginPath();
+    ctx.moveTo(inL, shoulderY + toPx(1.1));
+    ctx.bezierCurveTo(
+      inL + halfSpan * 0.22, crownY + insetPx + toPx(2.4),
+      cx - toPx(15.0), crownY + insetPx + toPx(1.2),
+      cx - toPx(8.8), crownY + insetPx + toPx(0.9)
+    );
+    ctx.quadraticCurveTo(cx, crownY + insetPx - toPx(1.4), cx + toPx(8.8), crownY + insetPx + toPx(0.9));
+    ctx.bezierCurveTo(
+      cx + toPx(15.0), crownY + insetPx + toPx(1.2),
+      inR - halfSpan * 0.22, crownY + insetPx + toPx(2.4),
+      inR, shoulderY + toPx(1.1)
+    );
+    ctx.stroke();
+
+    // 2. 頂点中央の山葵の葉（ハート葉脈クレスト）＋ 双渦巻如意雲
+    const leafTopY = crownY + insetPx + toPx(0.5);
+    ctx.save();
+    ctx.translate(cx, leafTopY);
+    ctx.lineWidth = toPx(0.24);
+    ctx.beginPath();
+    ctx.moveTo(0, toPx(2.4));
+    ctx.bezierCurveTo(-toPx(2.4), toPx(1.5), -toPx(2.3), -toPx(0.6), 0, toPx(0.3));
+    ctx.bezierCurveTo(toPx(2.3), -toPx(0.6), toPx(2.4), toPx(1.5), 0, toPx(2.4));
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(0, toPx(0.4));
+    ctx.lineTo(0, toPx(2.7));
+    ctx.stroke();
+    ctx.restore();
+
+    const crestY = crownY + insetPx + toPx(2.3);
+    [-1, 1].forEach(dirSign => {
+      ctx.save();
+      ctx.translate(cx, crestY);
+      ctx.scale(dirSign, 1);
+      ctx.lineWidth = toPx(0.24);
+      ctx.beginPath();
+      ctx.moveTo(toPx(1.8), -toPx(0.3));
+      ctx.bezierCurveTo(toPx(4.2), -toPx(1.5), toPx(7.0), toPx(0.4), toPx(4.6), toPx(2.2));
+      ctx.bezierCurveTo(toPx(2.9), toPx(3.2), toPx(1.6), toPx(1.9), toPx(2.5), toPx(1.0));
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(toPx(5.5), toPx(1.4));
+      ctx.bezierCurveTo(toPx(12.2), toPx(0.2), toPx(18.5), toPx(2.6), toPx(24.0), toPx(1.5));
+      ctx.stroke();
+      ctx.restore();
+    });
+
+    // 3. 中央4文字「房 山 葵 山」（右から左へ「山葵山房」・縦長袋文字レリーフ調）
+    const titleCharsRtoL = ['山', '葵', '山', '房'];
+    const titleCenterY = (crownY + insetPx + toPx(3.8) + friezeY) / 2.0 + toPx(0.5);
+    const titleBaseFontPx = toPx(SosekiTitleFontSizeMm);
+    const titleFontSpec = "600 " + titleBaseFontPx.toFixed(1) + "px 'Noto Serif JP', 'Yu Mincho', serif";
+
+    for (let i = 0; i < titleCharsRtoL.length; i++) {
+      const offsetUnits = 1.5 - i;
+      const charX = cx + toPx(offsetUnits * SosekiTitleCharSpacingMm);
+      ctx.save();
+      ctx.translate(charX, titleCenterY);
+      ctx.scale(SosekiTitleScaleX, SosekiTitleScaleY);
+      ctx.font = titleFontSpec;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.lineWidth = toPx(0.32);
+      ctx.strokeText(titleCharsRtoL[i], 0, 0);
+      ctx.globalAlpha = 0.22;
+      ctx.fillText(titleCharsRtoL[i], 0, 0);
+      ctx.restore();
+    }
+
+    // 4. 左右対称・向かい合う有翼瑞獣唐草レリーフ
+    const motifBaseY = friezeY - toPx(1.2);
+    [-1, 1].forEach(sideSign => {
+      ctx.save();
+      ctx.translate(cx, motifBaseY);
+      ctx.scale(sideSign, 1);
+      ctx.lineWidth = toPx(0.30);
+
+      ctx.beginPath();
+      ctx.moveTo(toPx(29.0), -toPx(9.6));
+      ctx.bezierCurveTo(toPx(25.0), -toPx(10.8), toPx(21.5), -toPx(9.0), toPx(21.2), -toPx(6.8));
+      ctx.bezierCurveTo(toPx(21.0), -toPx(5.2), toPx(23.8), -toPx(4.8), toPx(26.2), -toPx(5.5));
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(toPx(26.0), -toPx(4.2));
+      ctx.bezierCurveTo(toPx(22.8), -toPx(3.6), toPx(21.4), -toPx(2.0), toPx(23.2), -toPx(0.8));
+      ctx.bezierCurveTo(toPx(25.2), toPx(0.2), toPx(28.5), -toPx(0.8), toPx(30.2), -toPx(2.6));
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(toPx(26.2), -toPx(7.6), toPx(0.75), 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(toPx(28.2), -toPx(9.5));
+      ctx.bezierCurveTo(toPx(33.0), -toPx(13.6), toPx(39.5), -toPx(14.5), toPx(43.2), -toPx(12.2));
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(toPx(30.2), -toPx(2.6));
+      ctx.bezierCurveTo(toPx(36.0), -toPx(0.4), toPx(46.5), -toPx(0.4), toPx(54.5), -toPx(2.4));
+      ctx.bezierCurveTo(toPx(60.5), -toPx(4.0), toPx(63.5), -toPx(8.2), toPx(61.2), -toPx(12.0));
+      ctx.bezierCurveTo(toPx(59.0), -toPx(14.8), toPx(54.2), -toPx(14.2), toPx(53.0), -toPx(11.0));
+      ctx.bezierCurveTo(toPx(52.2), -toPx(8.8), toPx(54.8), -toPx(7.2), toPx(56.8), -toPx(8.6));
+      ctx.stroke();
+
+      const wingCurves = [
+        { sx: 33.5, sy: -6.8, cx1: 40.0, cy1: -11.8, cx2: 48.0, cy2: -12.6, ex: 53.5, ey: -9.8 },
+        { sx: 34.5, sy: -5.0, cx1: 41.5, cy1: -8.8,  cx2: 49.0, cy2: -9.4,  ex: 55.2, ey: -6.6 },
+        { sx: 35.5, sy: -3.2, cx1: 42.5, cy1: -5.8,  cx2: 50.0, cy2: -6.0,  ex: 56.5, ey: -3.8 }
+      ];
+      ctx.lineWidth = toPx(0.23);
+      for (let w = 0; w < wingCurves.length; w++) {
+        const wc = wingCurves[w];
+        ctx.beginPath();
+        ctx.moveTo(toPx(wc.sx), toPx(wc.sy));
+        ctx.bezierCurveTo(toPx(wc.cx1), toPx(wc.cy1), toPx(wc.cx2), toPx(wc.cy2), toPx(wc.ex), toPx(wc.ey));
+        ctx.stroke();
+      }
+
+      ctx.beginPath();
+      ctx.moveTo(toPx(31.5), -toPx(3.6));
+      ctx.bezierCurveTo(toPx(33.2), -toPx(1.0), toPx(37.2), -toPx(0.6), toPx(38.5), -toPx(2.5));
+      ctx.stroke();
+
+      ctx.restore();
+    });
+
+    ctx.restore();
+  };
+
+  // 20×20『花魚尾（豪華装飾魚尾）』用：上下魚尾内部の草花唐草文様 ＋ 中央柱の花菱メダリオンを Canvas に高精細描画
+  function drawFloralGyobiOrnamentOnCanvas(ctx, geom, lineColorHex, pxPerMm) {
+    const color = lineColorHex || GenkoDefaultLineColorHex;
+    const toPx = (mm) => mm * pxPerMm;
+    const cx = toPx(geom.pillarCenterXMm);
+    const upperYMm = geom.innerTopMm + (GenkoGyobiUpperRow * GenkoCellSizeMm);
+    const lowerYMm = geom.innerTopMm + (GenkoGyobiLowerRow * GenkoCellSizeMm);
+    const midYMm = geom.innerTopMm + (GenkoFloralMidRow * GenkoCellSizeMm);
+
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    // 1. 上下魚尾内部の三弁花＆双葉アラベスク（dirY = +1: 上魚尾, -1: 下魚尾）
+    [
+      { cyMm: upperYMm - 0.35, dirY: 1 },
+      { cyMm: lowerYMm + 0.35, dirY: -1 }
+    ].forEach(item => {
+      ctx.save();
+      ctx.translate(cx, toPx(item.cyMm));
+      ctx.scale(1, item.dirY);
+      ctx.lineWidth = toPx(0.22);
+
+      // 中央花芯小円
+      ctx.beginPath();
+      ctx.arc(0, -toPx(0.35), toPx(0.38), 0, Math.PI * 2);
+      ctx.stroke();
+
+      // 中央上向きの花弁ティアドロップ
+      ctx.beginPath();
+      ctx.moveTo(0, -toPx(0.75));
+      ctx.bezierCurveTo(-toPx(0.75), -toPx(1.45), 0, -toPx(1.85), 0, -toPx(1.85));
+      ctx.bezierCurveTo(0, -toPx(1.85), toPx(0.75), -toPx(1.45), 0, -toPx(0.75));
+      ctx.stroke();
+
+      // 左右に広がる唐草双葉カール
+      [-1, 1].forEach(sx => {
+        ctx.save();
+        ctx.scale(sx, 1);
+        ctx.beginPath();
+        ctx.moveTo(toPx(0.42), -toPx(0.35));
+        ctx.bezierCurveTo(toPx(1.65), -toPx(1.35), toPx(3.15), -toPx(1.10), toPx(2.85), -toPx(0.05));
+        ctx.bezierCurveTo(toPx(2.65), toPx(0.55), toPx(1.70), toPx(0.45), toPx(1.95), -toPx(0.15));
+        ctx.stroke();
+        ctx.restore();
+      });
+
+      ctx.restore();
+    });
+
+    // 2. 中央柱ど真ん中（10マス目位置）の古典『花菱（はなびし）』四弁メダリオン＋上下つぼみ飾り
+    ctx.save();
+    ctx.translate(cx, toPx(midYMm));
+    ctx.lineWidth = toPx(0.26);
+
+    // 外側花菱ダイヤ枠
+    const dW = toPx(2.55);
+    const dH = toPx(2.85);
+    ctx.beginPath();
+    ctx.moveTo(0, -dH);
+    ctx.quadraticCurveTo(dW * 0.45, -dH * 0.45, dW, 0);
+    ctx.quadraticCurveTo(dW * 0.45, dH * 0.45, 0, dH);
+    ctx.quadraticCurveTo(-dW * 0.45, dH * 0.45, -dW, 0);
+    ctx.quadraticCurveTo(-dW * 0.45, -dH * 0.45, 0, -dH);
+    ctx.stroke();
+
+    // 内側四弁花（上下左右4枚の葉弁）
+    for (let k = 0; k < 4; k++) {
+      ctx.save();
+      ctx.rotate((Math.PI / 2.0) * k);
+      ctx.lineWidth = toPx(0.20);
+      ctx.beginPath();
+      ctx.moveTo(0, -toPx(0.32));
+      ctx.bezierCurveTo(-toPx(0.62), -toPx(1.15), 0, -toPx(1.95), 0, -toPx(1.95));
+      ctx.bezierCurveTo(0, -toPx(1.95), toPx(0.62), -toPx(1.15), 0, -toPx(0.32));
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // 中心ドット
+    ctx.beginPath();
+    ctx.arc(0, 0, toPx(0.26), 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore();
+    ctx.restore();
+  }
+
+  // 白魚尾（二重輪郭線）および花魚尾（二重豪華枠＋柱頭柱脚界線＋花菱分割二重柱線）に対応したベクター描画
+  const _baseDrawGenkoVectorV166 = drawGenkoVectorGridOnPdfPage;
+  drawGenkoVectorGridOnPdfPage = function(pdfPage, geom, lineColorHex, pageNumber, totalPages, pageFont, genkoDesignOpts) {
+    const opts = genkoDesignOpts || { style: 'standard', paper: 'white', gyobi: 'solid' };
+    if (opts.gyobi !== 'hollow' && opts.gyobi !== 'floral') {
+      return _baseDrawGenkoVectorV166(pdfPage, geom, lineColorHex, pageNumber, totalPages, pageFont, opts);
+    }
+
+    // まず魚尾なし（gyobi: 'none'）として外枠・20行マス目・ページ番号を描画
+    _baseDrawGenkoVectorV166(
+      pdfPage,
+      geom,
+      lineColorHex,
+      pageNumber,
+      totalPages,
+      pageFont,
+      { style: opts.style, paper: opts.paper, gyobi: 'none' }
+    );
+
+    const paperBgHex = (opts.paper === 'cream') ? GenkoPaperCreamHex : GenkoPaperWhiteHex;
+    const paperBgColor = hexToRgbPdfLib(paperBgHex);
+    const strokeColor = hexToRgbPdfLib(lineColorHex || GenkoDefaultLineColorHex);
+    const pageH = GenkoPaperHeightMm;
+    const toPdfY = (topDownYMm) => (pageH - topDownYMm) * MmToPt;
+    const toPdfX = (xMm) => xMm * MmToPt;
+    const cxMm = geom.pillarCenterXMm;
+
+    const isFloral = (opts.gyobi === 'floral');
+    const halfW = isFloral ? GenkoFloralGyobiHalfWidthMm : GenkoGyobiHalfWidthMm;
+    const bodyH = isFloral ? GenkoFloralGyobiBodyHeightMm : GenkoGyobiBodyHeightMm;
+    const notchD = isFloral ? GenkoFloralGyobiNotchDepthMm : GenkoGyobiNotchDepthMm;
+    const insetMm = isFloral ? GenkoFloralGyobiInsetMm : GenkoGyobiHollowInsetMm;
+
+    const upperYMm = geom.innerTopMm + (GenkoGyobiUpperRow * GenkoCellSizeMm);
+    const lowerYMm = geom.innerTopMm + (GenkoGyobiLowerRow * GenkoCellSizeMm);
+
+    function buildUpperSwallowtailSvg(hwMm, bhMm, ndMm) {
+      const hw = hwMm * MmToPt;
+      const bh = bhMm * MmToPt;
+      const nd = ndMm * MmToPt;
+      return (
+        'M ' + (-hw).toFixed(2) + ' 0 ' +
+        'L ' + hw.toFixed(2) + ' 0 ' +
+        'L ' + hw.toFixed(2) + ' ' + bh.toFixed(2) + ' ' +
+        'L 0 ' + (bh - nd).toFixed(2) + ' ' +
+        'L ' + (-hw).toFixed(2) + ' ' + bh.toFixed(2) + ' Z'
+      );
+    }
+
+    function buildLowerSwallowtailSvg(hwMm, bhMm, ndMm) {
+      const hw = hwMm * MmToPt;
+      const bh = bhMm * MmToPt;
+      const nd = ndMm * MmToPt;
+      return (
+        'M ' + (-hw).toFixed(2) + ' ' + bh.toFixed(2) + ' ' +
+        'L ' + hw.toFixed(2) + ' ' + bh.toFixed(2) + ' ' +
+        'L ' + hw.toFixed(2) + ' 0 ' +
+        'L 0 ' + nd.toFixed(2) + ' ' +
+        'L ' + (-hw).toFixed(2) + ' 0 Z'
+      );
+    }
+
+    // 外側魚尾枠
+    pdfPage.drawSvgPath(buildUpperSwallowtailSvg(halfW, bodyH, notchD), {
+      x: toPdfX(cxMm),
+      y: toPdfY(upperYMm - bodyH * 0.5),
+      color: paperBgColor,
+      borderColor: strokeColor,
+      borderWidth: GenkoGyobiHollowBorderPt
+    });
+    pdfPage.drawSvgPath(buildLowerSwallowtailSvg(halfW, bodyH, notchD), {
+      x: toPdfX(cxMm),
+      y: toPdfY(lowerYMm - bodyH * 0.5),
+      color: paperBgColor,
+      borderColor: strokeColor,
+      borderWidth: GenkoGyobiHollowBorderPt
+    });
+
+    // 内側二重飾り輪郭線（白魚尾・花魚尾共通の上品な二重燕尾）
+    const inHalfW = Math.max(1.2, halfW - insetMm);
+    const inBodyH = Math.max(1.0, bodyH - insetMm * 1.15);
+    const inNotchD = Math.max(0.45, notchD - insetMm * 0.35);
+    pdfPage.drawSvgPath(buildUpperSwallowtailSvg(inHalfW, inBodyH, inNotchD), {
+      x: toPdfX(cxMm),
+      y: toPdfY(upperYMm - bodyH * 0.5 + insetMm * 0.52),
+      borderColor: strokeColor,
+      borderWidth: GenkoGyobiHollowInnerStrokePt
+    });
+    pdfPage.drawSvgPath(buildLowerSwallowtailSvg(inHalfW, inBodyH, inNotchD), {
+      x: toPdfX(cxMm),
+      y: toPdfY(lowerYMm - bodyH * 0.5 + insetMm * 0.63),
+      borderColor: strokeColor,
+      borderWidth: GenkoGyobiHollowInnerStrokePt
+    });
+
+    // 中央柱の飾り線
+    const lineStartYMm = upperYMm + bodyH * 0.5 + GenkoPillarLineGapMm;
+    const lineEndYMm = lowerYMm - bodyH * 0.5 - GenkoPillarLineGapMm;
+    if (isFloral) {
+      // 花魚尾：柱頭・柱脚の古典二重界線 ＋ 花菱メダリオン上下の二重縦飾り線
+      const capYList = [
+        geom.innerTopMm + GenkoFloralPillarCapOffsetMm,
+        geom.innerTopMm + GenkoFloralPillarCapOffsetMm + GenkoFloralPillarCapGapMm,
+        geom.innerBottomMm - GenkoFloralPillarCapOffsetMm,
+        geom.innerBottomMm - GenkoFloralPillarCapOffsetMm - GenkoFloralPillarCapGapMm
+      ];
+      for (let i = 0; i < capYList.length; i++) {
+        pdfPage.drawLine({
+          start: { x: toPdfX(geom.leftHalfRightMm), y: toPdfY(capYList[i]) },
+          end: { x: toPdfX(geom.rightHalfLeftMm), y: toPdfY(capYList[i]) },
+          thickness: GenkoGyobiHollowInnerStrokePt,
+          color: strokeColor
+        });
+      }
+
+      const midYMm = geom.innerTopMm + (GenkoFloralMidRow * GenkoCellSizeMm);
+      const upperSegEnd = midYMm - GenkoFloralMedallionHalfSpanMm;
+      const lowerSegStart = midYMm + GenkoFloralMedallionHalfSpanMm;
+      [-GenkoFloralDoubleLineHalfGapMm, GenkoFloralDoubleLineHalfGapMm].forEach(dxMm => {
+        if (upperSegEnd > lineStartYMm) {
+          pdfPage.drawLine({
+            start: { x: toPdfX(cxMm + dxMm), y: toPdfY(lineStartYMm) },
+            end: { x: toPdfX(cxMm + dxMm), y: toPdfY(upperSegEnd) },
+            thickness: GenkoCellDividerStrokePt,
+            color: strokeColor
+          });
+        }
+        if (lineEndYMm > lowerSegStart) {
+          pdfPage.drawLine({
+            start: { x: toPdfX(cxMm + dxMm), y: toPdfY(lowerSegStart) },
+            end: { x: toPdfX(cxMm + dxMm), y: toPdfY(lineEndYMm) },
+            thickness: GenkoCellDividerStrokePt,
+            color: strokeColor
+          });
+        }
+      });
+    } else if (lineEndYMm > lineStartYMm) {
+      pdfPage.drawLine({
+        start: { x: toPdfX(cxMm), y: toPdfY(lineStartYMm) },
+        end: { x: toPdfX(cxMm), y: toPdfY(lineEndYMm) },
+        thickness: GenkoCellDividerStrokePt,
+        color: strokeColor
+      });
+    }
+  };
+
+  // 花魚尾選択時は空ページも含めて魚尾内の花唐草・中央花菱メダリオンを透過PNGレイヤーへ合成
+  const _baseRenderUniversalLayer = renderUniversalGenkoLayerPngBytes;
+  renderUniversalGenkoLayerPngBytes = async function(pageCols, geom, isSosekiMode, lineColorHex, isFloralGyobi) {
+    if (!isFloralGyobi || isSosekiMode) {
+      return _baseRenderUniversalLayer(pageCols, geom, isSosekiMode, lineColorHex);
+    }
+    const basePng = await _baseRenderUniversalLayer(pageCols, geom, false, lineColorHex);
+    const canvasW = Math.round(GenkoPaperWidthMm * GenkoCanvasPxPerMm);
+    const canvasH = Math.round(GenkoPaperHeightMm * GenkoCanvasPxPerMm);
+    const canvas = document.createElement('canvas');
+    canvas.width = canvasW;
+    canvas.height = canvasH;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvasW, canvasH);
+
+    drawFloralGyobiOrnamentOnCanvas(ctx, geom, lineColorHex, GenkoCanvasPxPerMm);
+
+    const blob = new Blob([basePng], { type: 'image/png' });
+    const bmp = await createImageBitmap(blob);
+    ctx.drawImage(bmp, 0, 0, canvasW, canvasH);
+    if (typeof bmp.close === 'function') bmp.close();
+
+    const mergedBytes = await canvasToPngBytes(canvas);
+    canvas.width = 1;
+    canvas.height = 1;
+    return mergedBytes;
+  };
+
+  generateGenkoManuscriptPdfBytes = async function(paragraphs, lineColorHex, onPageProgress) {
+    await ensureGenkoWebFontsReady();
+
+    const activePrefix = (activeRenderTabPrefix === 'docx') ? 'docx' : 'docs';
+    const st = v166RuleUiState[activePrefix] || v166RuleUiState.docs;
+    const isSosekiMode = (st.genkoStyle === 'soseki');
+    const isFloralGyobi = (!isSosekiMode && st.genkoGyobi === 'floral');
+    const designOpts = {
+      style: st.genkoStyle || 'standard',
+      paper: st.genkoPaper || 'white',
+      gyobi: st.genkoGyobi || 'solid'
+    };
+
+    const colsPerPage = isSosekiMode ? SosekiColsPerPage : GenkoTotalColsPerPage;
+    const pagesGrid = layoutGenkoPagesForColumns(paragraphs, colsPerPage);
+    const totalPages = pagesGrid.length;
+    const geom = isSosekiMode ? computeSosekiSanboGeometryMm() : computeGenkoGeometryMm();
+
+    const paperBgHex = (designOpts.paper === 'cream')
+      ? (isSosekiMode ? SosekiPaperAntiqueCreamHex : GenkoPaperCreamHex)
+      : GenkoPaperWhiteHex;
+    const paperBgRgb = hexToRgbPdfLib(paperBgHex);
+
+    const outDoc = await PDFLib.PDFDocument.create();
+    try {
+      const vpDict = outDoc.context.obj({ Direction: PDFLib.PDFName.of('R2L') });
+      outDoc.catalog.set(PDFLib.PDFName.of('ViewerPreferences'), vpDict);
+    } catch (_eR2L) {}
+
+    let pageFont = null;
+    try {
+      pageFont = await outDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+    } catch (_eFontEmbed) {}
+
+    const pageWPt = (isSosekiMode ? SosekiPaperWidthMm : GenkoPaperWidthMm) * MmToPt;
+    const pageHPt = (isSosekiMode ? SosekiPaperHeightMm : GenkoPaperHeightMm) * MmToPt;
+
+    for (let pIdx = 0; pIdx < totalPages; pIdx++) {
+      if (typeof onPageProgress === 'function') {
+        onPageProgress(pIdx + 1, totalPages);
+      }
+      const pdfPage = outDoc.addPage([pageWPt, pageHPt]);
+
+      if (designOpts.paper === 'cream') {
+        pdfPage.drawRectangle({
+          x: 0,
+          y: 0,
+          width: pageWPt,
+          height: pageHPt,
+          color: paperBgRgb
+        });
+      }
+
+      if (isSosekiMode) {
+        drawSosekiSanboVectorFrameOnPdfPage(pdfPage, geom, lineColorHex, pIdx + 1, totalPages, pageFont);
+      } else {
+        drawGenkoVectorGridOnPdfPage(pdfPage, geom, lineColorHex, pIdx + 1, totalPages, pageFont, designOpts);
+      }
+
+      const cols = pagesGrid[pIdx] || [];
+      if (isSosekiMode || isFloralGyobi || cols.length > 0) {
+        const layerPngBytes = await renderUniversalGenkoLayerPngBytes(cols, geom, isSosekiMode, lineColorHex, isFloralGyobi);
+        const pngImage = await outDoc.embedPng(layerPngBytes);
+        pdfPage.drawImage(pngImage, {
+          x: 0,
+          y: 0,
+          width: pageWPt,
+          height: pageHPt
+        });
+      }
+      await new Promise(r => setTimeout(r, 0));
+    }
+
+    return await outDoc.save({ useObjectStreams: true });
+  };
 
 
   </script>
