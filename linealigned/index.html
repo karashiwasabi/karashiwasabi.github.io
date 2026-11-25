@@ -961,7 +961,7 @@
   <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 0.75rem;">
     <div style="font-size: 1.05rem; font-weight: 800; color: #1f1f1f;">
       <span style="color: #1a73e8; font-weight: 900;">Line-aligned</span>
-      <span style="color: #5f6368; font-size: 0.78rem; margin-left: 6px;">ver.166 (Build 20261125_1255)</span>
+      <span style="color: #5f6368; font-size: 0.78rem; margin-left: 6px;">ver.166 (Build 20261125_1430)</span>
     </div>
     <div style="display: flex; align-items: center; gap: 6px;">
       <a href="https://wasabikarashi.com/" id="uiLinkTop" style="display: inline-flex; align-items: center; gap: 3px; background: #f1f5f9; border: 1px solid #dadce0; border-radius: 8px; padding: 5px 10px; font-size: 0.75rem; font-weight: 700; color: #3c4043; text-decoration: none; white-space: nowrap;">トップ</a>
@@ -1010,7 +1010,6 @@
       <div class="docs-selected-file-box" id="docsFileBox" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; min-width: 0; width: 100%; overflow: hidden;">
         <span id="docsSelectedFileName" style="white-space: normal; word-break: break-word; overflow-wrap: anywhere; max-width: 100%; min-width: 0; flex: 1 1 auto;">ファイル未選択</span>
         <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
-          <button type="button" class="btn-change-file" id="uiBtnViewDocsSampleOrig" onclick="openSampleOriginalView()" style="display: none; border-color: #1a73e8; color: #1a73e8; background: #ffffff; font-weight: 700;">サンプルを見る</button>
           <button type="button" class="btn-change-file" id="uiBtnResetDocsFile" onclick="resetDocsFile()" style="display: none;">別のファイルを選ぶ</button>
         </div>
       </div>
@@ -1033,8 +1032,7 @@
       <div class="setting-item">
         <div class="setting-label" id="uiLabelPaperProfile">① 用紙・印刷形式</div>
         <select id="docsPaperProfileSelect" onchange="onDocsSettingChanged()">
-          <option value="a3-compare" selected>A3 デモ見開き（左：原本 ＋ 右：組版）</option>
-          <option value="a3-goodnotes">A3 横見開き（左：組版 ＋ 右：ノート）</option>
+          <option value="a3-goodnotes" selected>A3 横見開き（左：組版 ＋ 右：ノート）</option>
           <option value="a4-spread">A4 見開き（裏：組版 ＋ 表：ノート）</option>
           <option value="a4-single">A4（本文のみ）</option>
           <option value="a5-spread">A5 見開き（裏：組版 ＋ 表：ノート）</option>
@@ -10505,17 +10503,14 @@ async function loadSampleDocx() {
     return V166_BUTTON_UI_I18N[lang || currentLanguage] || V166_BUTTON_UI_I18N.ja;
   }
 
-  // 1. 全言語辞書から A5 を除外し、A3 デモ見開きは本番では非表示・DEV環境でのみ末尾配置（初期値＝A3見開きノートへ統一）
+  // 1. 全言語辞書から A5 および A3 デモ見開き（擬似原本PDF比較）を全環境（PROD/DEV共通）で除外
   Object.keys(UNIFIED_UI_I18N).forEach(langKey => {
     const ut = UNIFIED_UI_I18N[langKey];
     const vt = getV166Text(langKey);
     if (ut && Array.isArray(ut.paperHorizontal)) {
-      const filteredH = ut.paperHorizontal.filter(
-        item => item.value !== 'a5-spread' && item.value !== 'a5-single'
+      ut.paperHorizontal = ut.paperHorizontal.filter(
+        item => item.value !== 'a5-spread' && item.value !== 'a5-single' && item.value !== 'a3-compare'
       );
-      const nonCompareH = filteredH.filter(item => item.value !== 'a3-compare');
-      const compareH = filteredH.filter(item => item.value === 'a3-compare');
-      ut.paperHorizontal = IsDevStudioEnvironment ? nonCompareH.concat(compareH) : nonCompareH;
     }
     if (ut && Array.isArray(ut.paperVertical)) {
       ut.paperVertical.forEach(item => {
@@ -10523,9 +10518,7 @@ async function loadSampleDocx() {
           item.label = vt.paperGenkoUnified;
         }
       });
-      const nonCompareV = ut.paperVertical.filter(item => item.value !== 'v-a3-compare');
-      const compareV = ut.paperVertical.filter(item => item.value === 'v-a3-compare');
-      ut.paperVertical = IsDevStudioEnvironment ? nonCompareV.concat(compareV) : nonCompareV;
+      ut.paperVertical = ut.paperVertical.filter(item => item.value !== 'v-a3-compare');
     }
     if (ut) {
       ut.labelRuleKindPitch = vt.sectionRuleTitle;
@@ -10541,9 +10534,7 @@ async function loadSampleDocx() {
       if (entry && entry.docsOptions) {
         delete entry.docsOptions['a5-spread'];
         delete entry.docsOptions['a5-single'];
-        if (!IsDevStudioEnvironment) {
-          delete entry.docsOptions['a3-compare'];
-        }
+        delete entry.docsOptions['a3-compare'];
       }
     });
   }
@@ -10552,22 +10543,11 @@ async function loadSampleDocx() {
     ['docsPaperProfileSelect', 'docxPaperProfileSelect', 'paperProfileSelect'].forEach(selId => {
       const sel = document.getElementById(selId);
       if (!sel) return;
-      let compareOpt = null;
       for (let i = sel.options.length - 1; i >= 0; i--) {
         const val = sel.options[i].value;
-        if (val === 'a5-spread' || val === 'a5-single') {
+        if (val === 'a5-spread' || val === 'a5-single' || val === 'a3-compare' || val === 'v-a3-compare') {
           sel.remove(i);
-        } else if (val === 'a3-compare') {
-          if (!IsDevStudioEnvironment) {
-            sel.remove(i);
-          } else {
-            compareOpt = sel.options[i];
-          }
         }
-      }
-      if (compareOpt && IsDevStudioEnvironment) {
-        compareOpt.selected = false;
-        sel.appendChild(compareOpt);
       }
       if (sel.options.length > 0 && sel.selectedIndex < 0) {
         sel.options[0].selected = true;
@@ -13081,6 +13061,10 @@ async function loadSampleDocx() {
   ['：', '；', '！', '？', '!', '?'].forEach(mark => {
     GenkoTrailingHangableSet.add(mark);
   });
+  // 日本語規格（右上句読点）選択時に全角カンマ・ピリオドも右上角へ配置されるよう登録
+  ['，', '．'].forEach(mark => {
+    GenkoCornerPunctSet.add(mark);
+  });
 
   const TAIWAN_VERTICAL_LOCALE_I18N = {
     ja: {
@@ -13267,16 +13251,15 @@ async function loadSampleDocx() {
     refreshVerticalLocaleSelectorUI();
   };
 
-  // 3. 独立サンプル読み込み関数（DOCS / Word それぞれの専用IDとして完全に分離）
+  // 3. 独立サンプル読み込み関数（サンプル本文選択と組版規格スイッチを分離：読込時は対応規格を初期選択し、その後の手動切替も100%反映）
   window.loadSampleDocsZhTwVertical = function() {
     if (isDocsBusy) return;
     closeDocsPreview();
     const tt = getTaiwanVerticalText(currentLanguage);
-    const ct = getCleanStudioText(currentLanguage);
 
     currentLoadedDocsSampleKind = 'zhtw';
     selectedDocsId = SAMPLE_ZHTW_DOCS_ID;
-    selectedDocsName = 'Sample_ZhTW_Vertical';
+    selectedDocsName = 'Sample_Suishi_ZhTW';
     window.__currentVerticalTypesetLocale = VerticalLocaleTaiwanZhTW;
 
     window.switchWritingDirection('vertical');
@@ -13291,10 +13274,8 @@ async function loadSampleDocx() {
     const btnReset = document.getElementById('uiBtnResetDocsFile');
     if (btnReset) btnReset.style.display = 'inline-block';
     const btnViewOrig = document.getElementById('uiBtnViewDocsSampleOrig');
-    if (btnViewOrig) {
-      btnViewOrig.textContent = ct.btnViewSample;
-      btnViewOrig.style.display = 'inline-block';
-    }
+    if (btnViewOrig) btnViewOrig.style.display = 'none';
+
     refreshVerticalLocaleSelectorUI();
     setDocsButtonsBusy(false);
     showStatus(tt.sampleLoadedMsg, 'success');
@@ -13312,15 +13293,15 @@ async function loadSampleDocx() {
     startDocsWorkingProgress('サンプルを読み込み中...');
 
     try {
-      const docxUrl = TATEGAKI_CLOUD_RUN_URL.replace(/\/$/, '') + '/v3/sample/docx?locale=zh-TW';
+      const docxUrl = TATEGAKI_CLOUD_RUN_URL.replace(/\/$/, '') + '/v3/sample/docx?sample=zh-TW';
       const resp = await fetch(docxUrl, { method: 'GET' });
       if (!resp.ok) throw new Error('HTTP ' + resp.status);
       const buf = await resp.arrayBuffer();
-      validateDocxBufferFormat(buf, 'Sample_ZhTW_Vertical.docx');
+      validateDocxBufferFormat(buf, 'Sample_Suishi_ZhTW.docx');
 
       selectedDocxBase64 = arrayBufferToBase64(buf);
       selectedDocxFileId = null;
-      selectedDocxName = 'Sample_ZhTW_Vertical.docx';
+      selectedDocxName = 'Sample_Suishi_ZhTW.docx';
       isCurrentDocxSampleLoaded = false;
       currentLoadedDocxSampleKind = 'zhtw';
       isCurrentDocxNativeVertical = false;
@@ -13357,30 +13338,35 @@ async function loadSampleDocx() {
     }
   };
 
-  // 既存の日本語縦サンプル読み込み時は日本語規格へ戻し、繁体字サンプルと混ざらないように分離
+  // Word「サンプル入手」フォールバックも繁体字サンプル選択時は sample=zh-TW を取得
+  const _prevDownloadSampleDocxBeforeTw = window.downloadSampleDocxFile;
+  window.downloadSampleDocxFile = function() {
+    if (!selectedDocxBase64 && currentLoadedDocxSampleKind === 'zhtw') {
+      window.open(TATEGAKI_CLOUD_RUN_URL.replace(/\/$/, '') + '/v3/sample/docx?sample=zh-TW', '_blank', 'noopener,noreferrer');
+      return;
+    }
+    return _prevDownloadSampleDocxBeforeTw();
+  };
+  downloadSampleDocxFile = window.downloadSampleDocxFile;
+
+  // 日本語縦サンプル読み込み時は日本語規格を初期選択（その後ユーザーが繁體中文へ切り替えることも可能）
   const _prevLoadDocsVBeforeZhTw = window.loadSampleDocsVertical;
   window.loadSampleDocsVertical = function() {
-    window.__currentVerticalTypesetLocale = (currentLanguage === 'zh-TW')
-      ? VerticalLocaleTaiwanZhTW
-      : VerticalLocaleJapanese;
+    window.__currentVerticalTypesetLocale = VerticalLocaleJapanese;
     _prevLoadDocsVBeforeZhTw();
     refreshVerticalLocaleSelectorUI();
   };
 
   const _prevLoadDocxH2VBeforeZhTw = window.loadSampleDocxHorizToVert;
   window.loadSampleDocxHorizToVert = function() {
-    window.__currentVerticalTypesetLocale = (currentLanguage === 'zh-TW')
-      ? VerticalLocaleTaiwanZhTW
-      : VerticalLocaleJapanese;
+    window.__currentVerticalTypesetLocale = VerticalLocaleJapanese;
     refreshVerticalLocaleSelectorUI();
     return _prevLoadDocxH2VBeforeZhTw();
   };
 
   const _prevLoadDocxV2VBeforeZhTw = window.loadSampleDocxVertToVert;
   window.loadSampleDocxVertToVert = function() {
-    window.__currentVerticalTypesetLocale = (currentLanguage === 'zh-TW')
-      ? VerticalLocaleTaiwanZhTW
-      : VerticalLocaleJapanese;
+    window.__currentVerticalTypesetLocale = VerticalLocaleJapanese;
     refreshVerticalLocaleSelectorUI();
     return _prevLoadDocxV2VBeforeZhTw();
   };
@@ -13402,11 +13388,11 @@ async function loadSampleDocx() {
   };
   window.setDocxButtonsBusy = setDocxButtonsBusy;
 
-  // UI言語切替連動
+  // UI言語切替連動（既にサンプルを読み込み済みの場合は現在の規格選択を維持）
   const _prevSwitchLangBeforeTwVert = window.switchLanguage;
   window.switchLanguage = function(lang) {
     _prevSwitchLangBeforeTwVert(lang);
-    if (currentLanguage === 'zh-TW') {
+    if (currentLanguage === 'zh-TW' && !currentLoadedDocsSampleKind && !currentLoadedDocxSampleKind) {
       window.__currentVerticalTypesetLocale = VerticalLocaleTaiwanZhTW;
     }
     refreshVerticalLocaleSelectorUI();
@@ -13419,18 +13405,7 @@ async function loadSampleDocx() {
     refreshVerticalLocaleSelectorUI();
   };
 
-  // 「サンプルを見る」は SAMPLE_ZHTW_DOCS_ID 選択時のみ ?locale=zh-TW を開く
-  const _prevOpenSampleOrigBeforeTw = window.openSampleOriginalView;
-  window.openSampleOriginalView = function() {
-    if (selectedDocsId === SAMPLE_ZHTW_DOCS_ID || currentLoadedDocsSampleKind === 'zhtw') {
-      window.open(TATEGAKI_CLOUD_RUN_URL.replace(/\/$/, '') + '/v3/sample/view?locale=zh-TW', '_blank', 'noopener,noreferrer');
-      return;
-    }
-    return _prevOpenSampleOrigBeforeTw();
-  };
-  openSampleOriginalView = window.openSampleOriginalView;
-
-  // 4. SAMPLE_ZHTW_DOCS_ID 選択時の組版実行（通常縦書き・見開きノート・A4原稿用紙・PNG出力 すべて対応）
+  // 4. SAMPLE_ZHTW_DOCS_ID 選択時の組版実行（サンプル本文は sample=zh-TW、組版規格は画面選択の typesetLocale を忠実送信）
   const _prevExecDocsBeforeZhTwSample = window.executeDocsLayout;
   window.executeDocsLayout = async function(isExportPdf) {
     if (selectedDocsId !== SAMPLE_ZHTW_DOCS_ID) {
@@ -13443,13 +13418,16 @@ async function loadSampleDocx() {
     const paperMode = paperSel ? paperSel.value : '';
     const lineColorHex = (document.getElementById('docsLineColorPicker') ? document.getElementById('docsLineColorPicker').value : GenkoDefaultLineColorHex) || GenkoDefaultLineColorHex;
     const gt = getGenkoPngText(currentLanguage);
+    const chosenLocale = (window.__currentVerticalTypesetLocale === VerticalLocaleTaiwanZhTW)
+      ? VerticalLocaleTaiwanZhTW
+      : VerticalLocaleJapanese;
 
     try {
       // A. 原稿用紙（20×20 / 山葵山房 20×10 / クラシック 20×20）モード
       if (currentWritingDirection === 'vertical' && paperMode === GenkoModeValue) {
         setDocsButtonsBusy(true, 'export');
         startDocsWorkingProgress(gt.workingGenko);
-        const resp = await fetch(TATEGAKI_CLOUD_RUN_URL.replace(/\/$/, '') + '/v3/sample/docx?locale=zh-TW', { method: 'GET' });
+        const resp = await fetch(TATEGAKI_CLOUD_RUN_URL.replace(/\/$/, '') + '/v3/sample/docx?sample=zh-TW', { method: 'GET' });
         if (!resp.ok) throw new Error('サンプル取得エラー (HTTP ' + resp.status + ')');
         const rawBytes = new Uint8Array(await resp.arrayBuffer());
         const xmlText = await extractDocxMainDocumentXml(rawBytes);
@@ -13462,11 +13440,11 @@ async function loadSampleDocx() {
           if (progressPercent) progressPercent.textContent = pct + '%';
           if (progressStatus) progressStatus.textContent = gt.workingGenko + ' (' + cur + ' / ' + total + ')';
         });
-        handleDocsPdfOutput(pdfBytes, true, 'Sample_ZhTW' + gt.genkoFileSuffix + '.pdf', paperMode);
+        handleDocsPdfOutput(pdfBytes, true, 'Sample_Suishi_ZhTW' + gt.genkoFileSuffix + '.pdf', paperMode);
         return;
       }
 
-      // B. 通常の縦書き・上下見開きノート・デモ見開きモード
+      // B. 通常の縦書き・上下見開きノートモード
       setDocsButtonsBusy(true, 'export');
       const docsJobId = createRenderJobId();
       activeVerticalPollBaseUrl = TATEGAKI_CLOUD_RUN_URL;
@@ -13485,32 +13463,24 @@ async function loadSampleDocx() {
         ruledLineWidthPt: (drawH || drawV) ? DefaultRuleStrokePt : 0.0,
         ruledLineColorHex: (drawH || drawV) ? lineColorHex : '#FFFFFF',
         orientation: isLandscapeNote ? 'landscape' : 'portrait',
-        typesetLocale: window.__currentVerticalTypesetLocale || VerticalLocaleTaiwanZhTW
+        typesetLocale: chosenLocale
       };
       applyV166BodyConfigOverride(v3Config, 'docs', true);
 
-      const sampleUrl = TATEGAKI_CLOUD_RUN_URL.replace(/\/$/, '') + '/v3/sample/docs-render-pdf?locale=zh-TW';
+      const sampleUrl = TATEGAKI_CLOUD_RUN_URL.replace(/\/$/, '') + '/v3/sample/docs-render-pdf?sample=zh-TW';
       const sampleResp = await fetch(sampleUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           jobId: docsJobId,
-          typesetLocale: v3Config.typesetLocale,
+          typesetLocale: chosenLocale,
           config: v3Config
         })
       });
       if (!sampleResp.ok) throw new Error('HTTP ' + sampleResp.status);
       const typesetBytes = new Uint8Array(await sampleResp.arrayBuffer());
 
-      let origBytes = null;
-      if (paperMode === 'v-a3-compare') {
-        const origUrl = TATEGAKI_CLOUD_RUN_URL.replace(/\/$/, '') + '/v3/sample/docs-original-pdf?locale=zh-TW';
-        const origResp = await fetch(origUrl, { method: 'GET' });
-        if (!origResp.ok) throw new Error('HTTP ' + origResp.status);
-        origBytes = new Uint8Array(await origResp.arrayBuffer());
-      }
-
-      const composed = await composeVerticalOutputPdf(typesetBytes, origBytes, paperMode, pitchMm, drawH, drawV, lineColorHex, 'Sample_ZhTW_Vertical');
+      const composed = await composeVerticalOutputPdf(typesetBytes, null, paperMode, pitchMm, drawH, drawV, lineColorHex, 'Sample_Suishi_ZhTW');
       handleDocsPdfOutput(composed.bytes, true, composed.fileName, paperMode);
     } catch (err) {
       stopDocsWorkingProgress(false);
@@ -13533,20 +13503,22 @@ async function loadSampleDocx() {
   };
   executeDocxLayout = window.executeDocxLayout;
 
-  // 5. ユーザー自身のドキュメント等での縦書き組版リクエストへ typesetLocale を自動付与
+  // 5. 縦書きエンジンへの全 POST リクエストへ現在選択中の typesetLocale ("ja" / "zh-TW") を明示付与
   const _prevWindowFetchBeforeTwVert = window.fetch.bind(window);
   window.fetch = function(input, init) {
     try {
       const urlStr = (typeof input === 'string') ? input : (input && input.url ? input.url : '');
-      const isZhTw = (window.__currentVerticalTypesetLocale === VerticalLocaleTaiwanZhTW);
+      const chosenLocale = (window.__currentVerticalTypesetLocale === VerticalLocaleTaiwanZhTW)
+        ? VerticalLocaleTaiwanZhTW
+        : VerticalLocaleJapanese;
       const isVertEngineUrl = (urlStr.indexOf(TATEGAKI_CLOUD_RUN_URL) === 0 || urlStr.indexOf(TATETATE_CLOUD_RUN_URL) === 0);
 
-      if (isZhTw && isVertEngineUrl && init && init.method && String(init.method).toUpperCase() === 'POST' && typeof init.body === 'string') {
+      if (isVertEngineUrl && init && init.method && String(init.method).toUpperCase() === 'POST' && typeof init.body === 'string') {
         const parsed = JSON.parse(init.body);
         if (parsed) {
-          if (!parsed.typesetLocale) parsed.typesetLocale = VerticalLocaleTaiwanZhTW;
-          if (parsed.config && !parsed.config.typesetLocale) {
-            parsed.config.typesetLocale = VerticalLocaleTaiwanZhTW;
+          parsed.typesetLocale = chosenLocale;
+          if (parsed.config) {
+            parsed.config.typesetLocale = chosenLocale;
           }
           init = Object.assign({}, init, { body: JSON.stringify(parsed) });
         }
@@ -13558,13 +13530,15 @@ async function loadSampleDocx() {
   const _prevCallGasRpcBeforeTwVert = callGasRpc;
   callGasRpc = function(method, params) {
     if (
-      window.__currentVerticalTypesetLocale === VerticalLocaleTaiwanZhTW &&
       params &&
       (method === 'renderTategakiDocsV3PdfBase64' || method === 'renderTategakiDocxV3PdfBase64')
     ) {
-      params.typesetLocale = VerticalLocaleTaiwanZhTW;
+      const chosenLocale = (window.__currentVerticalTypesetLocale === VerticalLocaleTaiwanZhTW)
+        ? VerticalLocaleTaiwanZhTW
+        : VerticalLocaleJapanese;
+      params.typesetLocale = chosenLocale;
       if (params.config) {
-        params.config.typesetLocale = VerticalLocaleTaiwanZhTW;
+        params.config.typesetLocale = chosenLocale;
       }
     }
     return _prevCallGasRpcBeforeTwVert(method, params);
