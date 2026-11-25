@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta name="google-adsense-account" content="ca-pub-4382223240782332">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-310XSTTWSM"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-310XSTTWSM');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="google-site-verification" content="XTUyp1ouHdnj1jkzypNTPJRBj4YpdgQYlUPgpsipJKk" />
+  <title>スマホでGoogle ドキュメント™から縦書きPDF・原稿用紙をつくる方法 | Line-aligned</title>
+  <meta name="description" content="スマートフォン1台で完結！スマホ版「Google ドキュメント」アプリで書いた横書き原稿（ルビ・漢文タグ対応）を、四百字詰め原稿用紙（標準・山葵山房・クラシック・花魚尾・クリーム紙）や縦書き見開きノートPDF・高精細PNG画像（ZIP）へ変換する画像付き手順ガイド。">
+  <link rel="canonical" href="https://wasabikarashi.com/linealigned/smartphone.html">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://wasabikarashi.com/linealigned/smartphone.html">
+  <meta property="og:title" content="スマホ1台でGoogle ドキュメント™から縦書きPDF・原稿用紙をつくる方法 | Line-aligned">
+  <meta property="og:description" content="PC不要！スマホのGoogle ドキュメントアプリで書いた横書き文章を、四百字詰め原稿用紙・山葵山房・縦書きノートPDFやSNS投稿用PNG画像へワンタップ変換する全手順ガイド。">
+  <link rel="icon" type="image/x-icon" href="../favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+  <meta property="og:image" content="https://wasabikarashi.com/images/v164/marketplace_02_vertical_typesetting.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://wasabikarashi.com/images/v164/marketplace_02_vertical_typesetting.png">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "スマホでGoogle ドキュメントから縦書きPDF・四百字詰め原稿用紙をつくる方法",
+    "description": "スマートフォンのGoogle ドキュメントアプリで書いた横書き原稿を、Line-alignedで縦書きPDF・原稿用紙・PNG画像（ZIP）に変換する手順。",
+    "step": [
+      { "@type": "HowToStep", "name": "Google ドキュメントアプリで横書き原稿を書く", "text": "スマホのGoogle ドキュメントアプリで新規作成し、横書きで本文（{漢字|ふりがな}タグ対応）を入力します。" },
+      { "@type": "HowToStep", "name": "初回のみGoogle Workspace Marketplaceから無料連携", "text": "インストール画面のアクセス権限で「すべて選択」にチェックを入れて次へ進み、完了で閉じます。" },
+      { "@type": "HowToStep", "name": "スタジオを開いて縦書き・原稿用紙PDF/PNG出力", "text": "ブラウザでLine-alignedスタジオを開き、Googleドライブから原稿を選んで縦書き・原稿用紙PDFやPNG（ZIP）を出力します。" }
+    ]
+  }
+  </script>
+  <style>
+    :root {
+      --primary: #1a73e8;
+      --primary-hover: #1557b0;
+      --primary-light: #e8f0fe;
+      --emerald: #059669;
+      --emerald-hover: #047857;
+      --emerald-light: #ecfdf5;
+      --danger: #dc2626;
+      --danger-light: #fef2f2;
+      --amber: #d97706;
+      --amber-light: #fffbeb;
+      --text: #1e293b;
+      --text-muted: #5f6368;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --border: #dbe2ea;
+      --card-shadow: 0 6px 20px rgba(15, 23, 42, 0.06);
+      --transition: all 0.2s ease;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "BIZ UDPGothic", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+      color: var(--text);
+      line-height: 1.65;
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Multi-language Dynamic Visibility */
+    .lang-content { display: none; }
+    body.lang-ja .lang-content.ja { display: block; }
+    body.lang-en .lang-content.en { display: block; }
+    body.lang-zh .lang-content.zh { display: block; }
+    body.lang-ko .lang-content.ko { display: block; }
+
+    span.lang-content { display: none; }
+    body.lang-ja span.lang-content.ja { display: inline; }
+    body.lang-en span.lang-content.en { display: inline; }
+    body.lang-zh span.lang-content.zh { display: inline; }
+    body.lang-ko span.lang-content.ko { display: inline; }
+
+    header {
+      position: sticky;
+      top: 0;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.75rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .logo-text {
+      font-size: 1.18rem;
+      font-weight: 800;
+      letter-spacing: -0.4px;
+    }
+
+    .nav-group {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .nav-pill {
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 999px;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .lang-switcher {
+      display: flex;
+      background: #f1f5f9;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 3px;
+      gap: 2px;
+    }
+
+    .lang-btn {
+      border: none;
+      background: transparent;
+      padding: 4px 10px;
+      border-radius: 16px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .lang-btn.active {
+      background: #ffffff;
+      color: var(--primary);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+    }
+
+    .hero {
+      background: linear-gradient(180deg, #eff6ff 0%, #ffffff 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 2.4rem 1.2rem 2rem;
+      text-align: center;
+    }
+
+    .hero-inner {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #dbeafe;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+      padding: 5px 14px;
+      border-radius: 999px;
+      font-size: 0.84rem;
+      font-weight: 800;
+      margin-bottom: 0.9rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(1.45rem, 3.8vw, 2.25rem);
+      font-weight: 800;
+      line-height: 1.35;
+      color: #0f172a;
+      margin-bottom: 0.85rem;
+      letter-spacing: -0.3px;
+    }
+
+    .hero-lead {
+      font-size: clamp(0.95rem, 2vw, 1.08rem);
+      color: #475569;
+      max-width: 780px;
+      margin: 0 auto 1.4rem;
+    }
+
+    .quick-launch-card {
+      background: #ffffff;
+      border: 2px solid #cbd5e1;
+      border-radius: 16px;
+      padding: 1.15rem;
+      max-width: 860px;
+      margin: 0 auto 1.25rem;
+      box-shadow: var(--card-shadow);
+    }
+
+    .quick-launch-title {
+      font-size: 0.86rem;
+      font-weight: 800;
+      color: #334155;
+      margin-bottom: 0.75rem;
+    }
+
+    .cta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 10px;
+    }
+
+    .cta-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 13px 16px;
+      border-radius: 10px;
+      font-size: 0.93rem;
+      font-weight: 800;
+      text-decoration: none;
+      line-height: 1.35;
+      transition: var(--transition);
+    }
+
+    .cta-btn-emerald {
+      background: var(--emerald);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
+    }
+    .cta-btn-emerald:hover { background: var(--emerald-hover); }
+
+    .cta-btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(26, 115, 232, 0.25);
+    }
+    .cta-btn-primary:hover { background: var(--primary-hover); }
+
+    .cta-btn-outline {
+      background: #f8fafc;
+      color: #1e293b;
+      border: 1.5px solid #94a3b8;
+    }
+    .cta-btn-outline:hover { background: #f1f5f9; border-color: #64748b; }
+
+    .step-jump-nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 0.5rem;
+    }
+
+    .step-jump-link {
+      text-decoration: none;
+      background: #ffffff;
+      color: #1e293b;
+      border: 1px solid #cbd5e1;
+      padding: 7px 14px;
+      border-radius: 999px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      transition: var(--transition);
+    }
+    .step-jump-link:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: #eff6ff;
+    }
+
+    .container {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 1.75rem 1.1rem 3rem;
+    }
+
+    .phase-section {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 1.6rem 1.35rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--card-shadow);
+      scroll-margin-top: 84px;
+    }
+
+    .phase-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 1rem;
+      padding-bottom: 0.9rem;
+      border-bottom: 2px solid #f1f5f9;
+    }
+
+    .phase-badge {
+      flex-shrink: 0;
+      background: var(--primary);
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 0.85rem;
+      padding: 5px 12px;
+      border-radius: 8px;
+      letter-spacing: 0.3px;
+    }
+
+    .phase-badge.step2 { background: #dc2626; }
+    .phase-badge.step3 { background: #059669; }
+
+    .phase-title {
+      font-size: clamp(1.18rem, 2.6vw, 1.45rem);
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.35;
+    }
+
+    .phase-desc {
+      font-size: 0.94rem;
+      color: #475569;
+      margin-bottom: 1.2rem;
+    }
+
+    .alert-box {
+      border-radius: 12px;
+      padding: 1rem 1.15rem;
+      margin-bottom: 1.25rem;
+      font-size: 0.92rem;
+      line-height: 1.65;
+    }
+
+    .alert-danger {
+      background: var(--danger-light);
+      border: 2px solid #fca5a5;
+      color: #7f1d1d;
+    }
+
+    .alert-emerald {
+      background: var(--emerald-light);
+      border: 1.5px solid #6ee7b7;
+      color: #064e3b;
+    }
+
+    .alert-amber {
+      background: var(--amber-light);
+      border: 1.5px solid #fcd34d;
+      color: #78350f;
+    }
+
+    .phone-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .phone-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      transition: var(--transition);
+    }
+
+    .phone-card.highlight-critical {
+      background: #fff1f2;
+      border: 2px solid #ef4444;
+      box-shadow: 0 6px 18px rgba(220, 38, 38, 0.12);
+    }
+
+    .phone-step-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .phone-step-num {
+      background: #1e293b;
+      color: #ffffff;
+      font-size: 0.78rem;
+      font-weight: 800;
+      padding: 2px 9px;
+      border-radius: 999px;
+      flex-shrink: 0;
+    }
+
+    .phone-card.highlight-critical .phone-step-num {
+      background: #dc2626;
+    }
+
+    .phone-step-title {
+      font-size: 0.94rem;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.3;
+    }
+
+    .phone-img-wrap {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: zoom-in;
+      margin-bottom: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .phone-img-wrap img {
+      width: 100%;
+      max-width: 290px;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .phone-step-caption {
+      font-size: 0.85rem;
+      color: #334155;
+      line-height: 1.55;
+    }
+
+    .phone-step-caption code {
+      background: #e2e8f0;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 0.83rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .step3-layout {
+      display: grid;
+      grid-template-columns: 290px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .recipe-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .recipe-card {
+      background: #f8fafc;
+      border: 1px solid #dbe2ea;
+      border-radius: 12px;
+      padding: 1rem 1.15rem;
+    }
+
+    .recipe-card h3 {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 0.4rem;
+    }
+
+    .recipe-card p {
+      font-size: 0.89rem;
+      color: #334155;
+      line-height: 1.6;
+    }
+
+    /* Lightbox Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.86);
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      cursor: zoom-out;
+    }
+
+    .modal img {
+      max-width: 96vw;
+      max-height: 92vh;
+      border-radius: 10px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.45);
+      background: #ffffff;
+    }
+
+    footer {
+      background: #ffffff;
+      border-top: 1px solid var(--border);
+      padding: 2rem 1.2rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.86rem;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1.1rem;
+      margin-bottom: 1rem;
+    }
+
+    .footer-links a {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .footer-links a:hover { color: var(--primary); }
+
+    @media (max-width: 860px) {
+      .phone-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .step3-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 580px) {
+      header {
+        flex-direction: column;
+        padding: 0.65rem 0.9rem;
+      }
+      .phone-grid {
+        grid-template-columns: 1fr;
+      }
+      .phone-img-wrap img {
+        max-width: 260px;
+      }
+      .phase-section {
+        padding: 1.25rem 1rem;
+      }
+    }
+  </style>
+</head>
+<body class="lang-ja">
+
+  <!-- Sticky Header -->
+  <header>
+    <div style="display: flex; align-items: center; gap: 0.7rem;">
+      <a href="/" class="nav-pill" style="background: #f1f5f9; border: 1px solid var(--border); color: var(--text);">
+        🏠 <span class="lang-content ja">トップ</span><span class="lang-content en">Home</span><span class="lang-content zh">首頁</span><span class="lang-content ko">홈</span>
+      </a>
+      <a href="/linealigned/" class="brand">
+        <img src="/favicon-32x32.png" alt="Line-aligned" style="width: 28px; height: 28px; border-radius: 6px;" />
+        <div class="logo-text">Line-aligned</div>
+      </a>
+    </div>
+    <div class="nav-group">
+      <a href="guide.html" class="nav-pill" style="background: var(--primary-light); color: var(--primary);">
+        📖 <span class="lang-content ja">総合機能ガイド</span><span class="lang-content en">Full Guide</span><span class="lang-content zh">完整功能指南</span><span class="lang-content ko">전체 기능 가이드</span>
+      </a>
+      <a href="/linealigned/" class="nav-pill" style="background: var(--emerald-light); color: var(--emerald-hover); border: 1px solid #a7f3d0;">
+        🚀 <span class="lang-content ja">スタジオを開く</span><span class="lang-content en">Open Studio</span><span class="lang-content zh">開啟工作室</span><span class="lang-content ko">스튜디오 열기</span>
+      </a>
+      <div class="lang-switcher">
+        <button class="lang-btn active" onclick="setLang('ja')">日本語</button>
+        <button class="lang-btn" onclick="setLang('en')">English</button>
+        <button class="lang-btn" onclick="setLang('zh')">中文</button>
+        <button class="lang-btn" onclick="setLang('ko')">한국어</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero & Quick Launch -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-badge">
+        📱 <span class="lang-content ja">スマートフォン完全対応ガイド（iPhone / Android・PC不要）</span>
+        <span class="lang-content en">Smartphone Step-by-Step Guide (iPhone / Android — No PC Needed)</span>
+        <span class="lang-content zh">智慧型手機完整操作指南（iPhone / Android・免電腦）</span>
+        <span class="lang-content ko">스마트폰 완벽 가이드 (iPhone / Android · PC 불필요)</span>
+      </div>
+
+      <h1>
+        <span class="lang-content ja">スマホ1台で「Google ドキュメント™」から<br>縦書きPDF・四百字詰め原稿用紙をつくる方法</span>
+        <span class="lang-content en">Create Vertical PDFs &amp; 20×20 Manuscript Paper<br>from Google Docs™ on Your Smartphone</span>
+        <span class="lang-content zh">只用一支手機！從「Google 文件™」一鍵生成<br>直書 PDF 與四百字稿紙的完整步驟</span>
+        <span class="lang-content ko">스마트폰 하나로 「Google 문서™」에서<br>세로쓰기 PDF·400자 원고지 만드는 법</span>
+      </h1>
+
+      <p class="hero-lead">
+        <span class="lang-content ja">移動中やベッドの中で、スマホの無料アプリ<strong>「Google ドキュメント」</strong>に普段通りの横書き（<code>{漢字|ふりがな}</code> ルビ対応）で文章を書くだけ。パソコンを開かなくても、<strong>原稿用紙（標準／山葵山房／クラシック・花魚尾・クリーム紙）</strong>や<strong>縦書き見開きノート</strong>、SNS投稿用の高精細<strong>PNG画像（ZIP）</strong>へそのまま変換できます。</span>
+        <span class="lang-content en">Simply write horizontal text (with <code>{Kanji|ruby}</code> tags) in the free <strong>Google Docs</strong> mobile app anywhere. Without needing a PC, convert your draft into <strong>Manuscript Paper (Standard 20×20, Wasabi Sanbo 20×10, Classic, Flower Gyobi, Cream Paper)</strong>, <strong>Vertical Spread Notes</strong>, or high-res <strong>PNG images (ZIP)</strong> for social media.</span>
+        <span class="lang-content zh">通勤或睡前只需用手機免費 App<strong>「Google 文件」</strong>平常橫書輸入（支援 <code>{漢字|注音}</code> 標籤）。完全不需電腦，即可直接轉為<strong>稿紙（標準／山葵山房／經典・花魚尾・奶油紙）</strong>、<strong>直書跨頁筆記</strong>或社群分享用高解析 <strong>PNG 圖片（ZIP）</strong>。</span>
+        <span class="lang-content ko">이동 중이나 침대 위에서 무료 <strong>「Google 문서」</strong> 앱에 평소처럼 가로쓰기(<code>{한자|루비}</code> 태그 지원)로 글을 쓰기만 하면 끝! PC 없이도 <strong>원고지(표준·와사비산방·클래식·꽃어미·크림지)</strong>, <strong>세로 펼침 노트</strong>, SNS 공유용 고해상도 <strong>PNG 이미지(ZIP)</strong>로 바로 변환할 수 있습니다.</span>
+      </p>
+
+      <!-- Quick Launch Box -->
+      <div class="quick-launch-card">
+        <div class="quick-launch-title">
+          <span class="lang-content ja">⚡ すぐ使いたい方・連携済みの方はこちら（ブックマーク推奨）</span>
+          <span class="lang-content en">⚡ Quick Launch Links (Bookmark Recommended After Install)</span>
+          <span class="lang-content zh">⚡ 快速啟動連結（完成連動後建議加入書籤）</span>
+          <span class="lang-content ko">⚡ 바로 실행 링크 (연동 완료 후 북마크 권장)</span>
+        </div>
+        <div class="cta-grid">
+          <a href="https://script.google.com/macros/s/AKfycbwmzKUscmWw5_Ku5PdxZpuy8wFdvv4D1QSQJaPpvdhKOX-sh3DkUQaFXnGfIyxfPZA6/exec" target="_blank" rel="noopener noreferrer" class="cta-btn cta-btn-emerald">
+            <span>🚀</span>
+            <span class="lang-content ja">連携済みの方：Google連携スタジオを開く</span>
+            <span class="lang-content en">Already Installed: Open Google-Linked Studio</span>
+            <span class="lang-content zh">已安裝用戶：直接開啟 Google 連動工作室</span>
+            <span class="lang-content ko">설치 완료자: Google 연동 스튜디오 열기</span>
+          </a>
+          <a href="https://workspace.google.com/marketplace/app/linealigned/435629186234?hl=ja" target="_blank" rel="noopener noreferrer" class="cta-btn cta-btn-primary">
+            <span>➕</span>
+            <span class="lang-content ja">初回の方：Marketplace 無料インストール</span>
+            <span class="lang-content en">First Time: Free Marketplace Install</span>
+            <span class="lang-content zh">首次使用：Marketplace 免費安裝</span>
+            <span class="lang-content ko">처음 이용자: Marketplace 무료 설치</span>
+          </a>
+          <a href="/linealigned/" class="cta-btn cta-btn-outline">
+            <span>📝</span>
+            <span class="lang-content ja">登録不要で試す（Word・PDF・サンプル5種）</span>
+            <span class="lang-content en">Try Without Install (Word, PDF &amp; 5 Samples)</span>
+            <span class="lang-content zh">免安裝試用（Word・PDF・5種範本）</span>
+            <span class="lang-content ko">설치 없이 체험 (Word·PDF·5종 샘플)</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Step Jump Pills -->
+      <div class="step-jump-nav">
+        <a href="#step1-write" class="step-jump-link">
+          <span class="lang-content ja">① スマホで原稿を書く</span>
+          <span class="lang-content en">1. Write in Docs App</span>
+          <span class="lang-content zh">① 用手機寫原稿</span>
+          <span class="lang-content ko">① 앱에서 원고 작성</span>
+        </a>
+        <a href="#step2-install" class="step-jump-link" style="border-color: #fca5a5; color: #b91c1c; background: #fff1f2;">
+          <span class="lang-content ja">② 初回1分の無料連携（※重要チェックあり）</span>
+          <span class="lang-content en">2. One-Time Free Link (*Key Checkbox)</span>
+          <span class="lang-content zh">② 首次 1 分鐘免費連動（※含重要勾選）</span>
+          <span class="lang-content ko">② 최초 1분 무료 연동 (※필수 체크 안내)</span>
+        </a>
+        <a href="#step3-export" class="step-jump-link">
+          <span class="lang-content ja">③ 縦書き・原稿用紙PDF／PNG出力</span>
+          <span class="lang-content en">3. Export Vertical PDF / PNG</span>
+          <span class="lang-content zh">③ 匯出直書・稿紙 PDF／PNG</span>
+          <span class="lang-content ko">③ 세로·원고지 PDF/PNG 저장</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="container">
+
+    <!-- STEP 1: Write in Google Docs Mobile App -->
+    <section id="step1-write" class="phase-section">
+      <div class="phase-header">
+        <span class="phase-badge">STEP 1</span>
+        <div>
+          <h2 class="phase-title">
+            <span class="lang-content ja">スマホの「Google ドキュメント」アプリで横書き原稿を書く</span>
+            <span class="lang-content en">Write Your Draft Horizontally in the Google Docs Mobile App</span>
+            <span class="lang-content zh">在手機「Google 文件」App 中以橫書撰寫原稿</span>
+            <span class="lang-content ko">스마트폰 「Google 문서」 앱에서 가로쓰기로 원고 작성</span>
+          </h2>
+        </div>
+      </div>
+
+      <p class="phase-desc">
+        <span class="lang-content ja">スマホの Google ドキュメントに「縦書き表示機能」はなくても大丈夫です。普段通りの<strong>横書き</strong>で入力するだけで、あとから『Line-aligned』が自動で縦書き・原稿用紙に組版します。（※画像はタップで拡大できます）</span>
+        <span class="lang-content en">Even though the Google Docs mobile app has no vertical writing mode, simply type horizontally as usual—Line-aligned converts your document into vertical typesetting or manuscript paper automatically. (*Tap any screenshot to zoom)</span>
+        <span class="lang-content zh">手機版 Google 文件沒有直書功能也沒關係！只需像平常一樣<strong>橫書輸入</strong>，之後『Line-aligned』會自動為您轉換為直書或四百字稿紙。（※點擊圖片可放大）</span>
+        <span class="lang-content ko">모바일 Google 문서 앱에 세로쓰기 기능이 없어도 괜찮습니다. 평소처럼 <strong>가로쓰기</strong>로 입력하기만 하면 Line-aligned가 자동으로 세로쓰기·원고지로 조판합니다. (*이미지를 탭하면 확대됩니다)</span>
+      </p>
+
+      <div class="phone-grid">
+        <!-- 1-1 -->
+        <div class="phone-card">
+          <div class="phone-step-head">
+            <span class="phone-step-num">1-1</span>
+            <div class="phone-step-title">
+              <span class="lang-content ja">「Google ドキュメント」を開く</span>
+              <span class="lang-content en">Open the Google Docs App</span>
+              <span class="lang-content zh">開啟「Google 文件」App</span>
+              <span class="lang-content ko">「Google 문서」 앱 열기</span>
+            </div>
+          </div>
+          <div class="phone-img-wrap" onclick="openImageModal('../images/v166/smartphone/01_docs_app.jpg')">
+            <img src="../images/v166/smartphone/01_docs_app.jpg" alt="Google ドキュメント アプリを開く" loading="lazy" />
+          </div>
+          <div class="phone-step-caption">
+            <span class="lang-content ja">App Store / Google Play から無料の<strong>「Google ドキュメント」</strong>アプリを入れて<strong>「開く」</strong>をタップします。</span>
+            <span class="lang-content en">Install the free <strong>Google Docs</strong> app from the App Store or Google Play and tap <strong>Open</strong>.</span>
+            <span class="lang-content zh">從 App Store / Google Play 安裝免費的<strong>「Google 文件」</strong>App 並點擊<strong>「開啟」</strong>。</span>
+            <span class="lang-content ko">App Store / Google Play에서 무료 <strong>「Google 문서」</strong> 앱을 설치하고 <strong>「열기」</strong>를 탭합니다.</span>
+          </div>
+        </div>
+
+        <!-- 1-2 -->
+        <div class="phone-card">
+          <div class="phone-step-head">
+            <span class="phone-step-num">1-2</span>
+            <div class="phone-step-title">
+              <span class="lang-content ja">右下の「＋」で新規作成</span>
+              <span class="lang-content en">Tap "+" to Create a Document</span>
+              <span class="lang-content zh">點擊右下角「＋」新增文件</span>
+              <span class="lang-content ko">우측 하단 「＋」로 새 문서 작성</span>
+            </div>
+          </div>
+          <div class="phone-img-wrap" onclick="openImageModal('../images/v166/smartphone/02_docs_list.jpg')">
+            <img src="../images/v166/smartphone/02_docs_list.jpg" alt="Google ドキュメント右下の＋ボタンで新規作成" loading="lazy" />
+          </div>
+          <div class="phone-step-caption">
+            <span class="lang-content ja">画面右下の<strong>「＋」ボタン</strong>をタップして新しい文書を作ります。書いた内容は自動で Google ドライブに保存されます。</span>
+            <span class="lang-content en">Tap the <strong>"+" button</strong> at the bottom right to start a new doc. Changes save automatically to Google Drive.</span>
+            <span class="lang-content zh">點擊畫面右下角的<strong>「＋」按鈕</strong>建立新文件，輸入內容會自動儲存至 Google 雲端硬碟。</span>
+            <span class="lang-content ko">우측 하단의 <strong>「＋」 버튼</strong>을 탭해 새 문서를 만듭니다. 작성한 내용은 Google 드라이브에 자동 저장됩니다.</span>
+          </div>
+        </div>
+
+        <!-- 1-3 -->
+        <div class="phone-card">
+          <div class="phone-step-head">
+            <span class="phone-step-num">1-3</span>
+            <div class="phone-step-title">
+              <span class="lang-content ja">横書きで入力（ルビタグもOK！）</span>
+              <span class="lang-content en">Type Horizontally (Ruby Tags Supported!)</span>
+              <span class="lang-content zh">橫書輸入本文（支援注音標籤！）</span>
+              <span class="lang-content ko">가로쓰기 입력 (루비 태그 지원!)</span>
+            </div>
+          </div>
+          <div class="phone-img-wrap" onclick="openImageModal('../images/v166/smartphone/03_docs_write.jpg')">
+            <img src="../images/v166/smartphone/03_docs_write.jpg" alt="スマホからルビタグ付きで原稿を入力" loading="lazy" />
+          </div>
+          <div class="phone-step-caption">
+            <span class="lang-content ja">ふりがなを振りたい漢字は <code>{原稿|げんこう}</code> のように入力しておくと、縦書き・原稿用紙にした際に自動で美しいルビになります（<a href="guide.html#ruby-kunten-guide" style="color: var(--primary); font-weight: 700;">傍点・漢文返り点タグ</a>にも対応）。</span>
+            <span class="lang-content en">Write furigana inline like <code>{原稿|げんこう}</code> to render crisp vertical ruby automatically (<a href="guide.html#ruby-kunten-guide" style="color: var(--primary); font-weight: 700;">emphasis dots &amp; Kanbun tags</a> also supported).</span>
+            <span class="lang-content zh">需要標註讀音處可輸入 <code>{原稿|げんこう}</code>，轉換為直書或稿紙時會自動生成精美右側注音（亦支援<a href="guide.html#ruby-kunten-guide" style="color: var(--primary); font-weight: 700;">旁點與漢文訓讀標籤</a>）。</span>
+            <span class="lang-content ko">루비(후리가나)가 필요한 곳은 <code>{原稿|げんこう}</code>처럼 입력하면 세로·원고지 변환 시 자동으로 루비가 붙습니다 (<a href="guide.html#ruby-kunten-guide" style="color: var(--primary); font-weight: 700;">강조점·한문 태그</a>도 지원).</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP 2: One-Time Free Marketplace Install -->
+    <section id="step2-install" class="phase-section" style="border-color: #fca5a5;">
+      <div class="phase-header">
+        <span class="phase-badge step2">STEP 2</span>
+        <div>
+          <h2 class="phase-title">
+            <span class="lang-content ja">【初回のみ約1分】Google ドライブ連携を無料インストールする</span>
+            <span class="lang-content en">[One-Time ~1 Min] Free Google Workspace Marketplace Install</span>
+            <span class="lang-content zh">【僅限首次約 1 分鐘】免費安裝 Google 雲端硬碟連動</span>
+            <span class="lang-content ko">[최초 1회 약 1분] Google 드라이브 연동 무료 설치</span>
+          </h2>
+        </div>
+      </div>
+
+      <div class="alert-box alert-danger">
+        <div class="lang-content ja">
+          <strong>⚠️ スマホで迷わないための重要ポイント2点（ここだけご注意ください！）</strong><br>
+          ① <strong>手順 2-4「アクセスを求めています」の画面では、最初チェックが空欄になっています。必ず『☑ すべて選択』をタップしてチェックを入れてください！</strong>（チェックを入れないとドライブから原稿を開けません）<br>
+          ② <strong>手順 2-6 の完了画面に出る「9つの点アイコン（アプリランチャー）」のイラストはパソコン画面向けの案内です。</strong>スマホでは探す必要はありませんので、そのまま<strong>「完了」</strong>を押して閉じてください。
+        </div>
+        <div class="lang-content en">
+          <strong>⚠️ Two Essential Mobile Tips (Don't Miss These!)</strong><br>
+          1. In <strong>Step 2-4 ("wants access to your Google Account")</strong>, checkboxes start unchecked—<strong>be sure to tap "☑ Select all"</strong> so Line-aligned can read your Google Docs!<br>
+          2. In <strong>Step 2-6</strong>, Google shows an illustration of the PC "9-dots App Launcher"—<strong>ignore that on mobile</strong> and simply tap <strong>Done</strong> to close!
+        </div>
+        <div class="lang-content zh">
+          <strong>⚠️ 手機操作不迷路的 2 個關鍵重點！</strong><br>
+          ① 在<strong>步驟 2-4「要求存取您的 Google 帳戶」畫面中，預設未勾選任何項目，請務必點擊勾選『☑ 全選』！</strong>（未勾選將無法讀取雲端原稿）<br>
+          ② <strong>步驟 2-6 完成畫面中的「9 個點圖示」為電腦版說明</strong>，在手機上無須尋找，直接點擊<strong>「完成」</strong>關閉即可。
+        </div>
+        <div class="lang-content ko">
+          <strong>⚠️ 스마트폰에서 헤매지 않기 위한 핵심 포인트 2가지!</strong><br>
+          ① <strong>단계 2-4 「액세스 요청」 화면에서는 처음에 체크박스가 비어 있습니다. 반드시 『☑ 모두 선택』을 탭하여 체크해 주세요!</strong> (체크하지 않으면 드라이브 원고를 불러올 수 없습니다)<br>
+          ② <strong>단계 2-6 완료 화면에 나오는 「점 9개 아이콘(앱 런처)」 그림은 PC용 안내입니다.</strong> 스마트폰에서는 찾을 필요 없이 그대로 <strong>「완료」</strong>를 눌러 닫으시면 됩니다.
+        </div>
+      </div>
+
+      <div style="margin-bottom: 1.2rem; text-align: center;">
+        <a href="https://workspace.google.com/marketplace/app/linealigned/435629186234?hl=ja" target="_blank" rel="noopener noreferrer" class="cta-btn cta-btn-primary" style="display: inline-flex; max-width: 460px; width: 100%;">
+          <span>🚀</span>
+          <span class="lang-content ja">Google Workspace Marketplace を開く（無料）</span>
+          <span class="lang-content en">Open Google Workspace Marketplace (Free)</span>
+          <span class="lang-content zh">開啟 Google Workspace Marketplace（免費）</span>
+          <span class="lang-content ko">Google Workspace Marketplace 열기 (무료)</span>
+        </a>
+      </div>
+
+      <div class="phone-grid">
+        <!-- 2-1 -->
+        <div class="phone-card">
+          <div class="phone-step-head">
+            <span class="phone-step-num">2-1</span>
+            <div class="phone-step-title">
+              <span class="lang-content ja">「インストール」をタップ</span>
+              <span class="lang-content en">Tap "Install"</span>
+              <span class="lang-content zh">點擊「安裝」</span>
+              <span class="lang-content ko">「설치」 탭하기</span>
+            </div>
+          </div>
+          <div class="phone-img-wrap" onclick="openImageModal('../images/v166/smartphone/04_mp_install.jpg')">
+            <img src="../images/v166/smartphone/04_mp_install.jpg" alt="Marketplaceでインストールをタップ" loading="lazy" />
+          </div>
+          <div class="phone-step-caption">
+            <span class="lang-content ja">Marketplace の『Line-aligned』ページを開き、青い<strong>「インストール」</strong>ボタンをタップします（料金は一切かかりません）。</span>
+            <span class="lang-content en">On the Line-aligned Marketplace page, tap the blue <strong>Install</strong> button (100% free).</span>
+            <span class="lang-content zh">開啟 Marketplace 的『Line-aligned』頁面，點擊藍色<strong>「安裝」</strong>按鈕（完全免費）。</span>
+            <span class="lang-content ko">Marketplace의 『Line-aligned』 페이지에서 파란색 <strong>「설치」</strong> 버튼을 탭합니다 (완전 무료).</span>
+          </div>
+        </div>
+
+        <!-- 2-2 -->
+        <div class="phone-card">
+          <div class="phone-step-head">
+            <span class="phone-step-num">2-2</span>
+            <div class="phone-step-title">
+              <span class="lang-content ja">準備画面で「続行」をタップ</span>
+              <span class="lang-content en">Tap "Continue"</span>
+              <span class="lang-content zh">點擊「繼續」</span>
+              <span class="lang-content ko">「계속」 탭하기</span>
+            </div>
+          </div>
+          <div class="phone-img-wrap" onclick="openImageModal('../images/v166/smartphone/05_mp_continue.jpg')">
+            <img src="../images/v166/smartphone/05_mp_continue.jpg" alt="インストールの準備で続行をタップ" loading="lazy" />
+          </div>
+          <div class="phone-step-caption">
+            <span class="lang-content ja">「インストールの準備」が表示されたら、右下の<strong>「続行」</strong>をタップします。</span>
+            <span class="lang-content en">When the "Get ready to install" dialog appears, tap <strong>Continue</strong>.</span>
+            <span class="lang-content zh">出現「準備安裝」視窗時，點擊右下角的<strong>「繼續」</strong>。</span>
+            <span class="lang-content ko">「설치 준비」 창이 나타나면 우측 하단의 <strong>「계속」</strong>을 탭합니다.</span>
+          </div>
+        </div>
+
+        <!-- 2-3 -->
+        <div class="phone-card">
+          <div class="phone-step-head">
+            <span class="phone-step-num">2-3</span>
+            <div class="phone-step-title">
+              <span class="lang-content ja">同じアカウントで「次へ」</span>
+              <span class="lang-content en">Sign In &amp; Tap "Next"</span>
+              <span class="lang-content zh">選擇相同帳戶並點「下一步」</span>
+              <span class="lang-content ko">동일 계정 선택 후 「다음」</span>
+            </div>
+          </div>
+          <div class="phone-img-wrap" onclick="openImageModal('../images/v166/smartphone/06_account_login.jpg')">
+            <img src="../images/v166/smartphone/06_account_login.jpg" alt="Googleアカウントを選んで次へをタップ" loading="lazy" />
+          </div>
+          <div class="phone-step-caption">
+            <span class="lang-content ja">STEP 1 のドキュメントアプリで使っているのと同じ Google アカウント（<code>@gmail.com</code>）を選び、<strong>「次へ」</strong>をタップします。</span>
+            <span class="lang-content en">Select the same Google account (<code>@gmail.com</code>) used in your Docs app and tap <strong>Next</strong>.</span>
+            <span class="lang-content zh">選擇與步驟 1 文件 App 相同的 Google 帳戶（<code>@gmail.com</code>），點擊<strong>「下一步」</strong>。</span>
+            <span class="lang-content ko">STEP 1 문서 앱과 동일한 Google 계정(<code>@gmail.com</code>)을 선택하고 <strong>「다음」</strong>을 탭합니다.</span>
+          </div>
+        </div>
+
+        <!-- 2-4 CRITICAL -->
+        <div class="phone-card highlight-critical">
+          <div class="phone-step-head">
+            <span class="phone-step-num">2-4 最重要</span>
+            <div class="phone-step-title" style="color: #b91c1c;">
+              <span class="lang-content ja">「☑ すべて選択」にチェック！</span>
+              <span class="lang-content en">Check "☑ Select all"!</span>
+              <span class="lang-content zh">務必勾選「☑ 全選」！</span>
+              <span class="lang-content ko">반드시 「☑ 모두 선택」 체크!</span>
+            </div>
+          </div>
+          <div class="phone-img-wrap" onclick="openImageModal('../images/v166/smartphone/07_check_select_all.jpg')" style="border-color: #f87171;">
+            <img src="../images/v166/smartphone/07_check_select_all.jpg" alt="すべて選択に必ずチェックを入れる" loading="lazy" />
+          </div>
+          <div class="phone-step-caption" style="color: #7f1d1d; font-weight: 700;">
+            <span class="lang-content ja">ここが一番のポイントです！必ず<strong>「☑ すべて選択」</strong>をタップして青いチェックを入れてから、画面を下へスクロールしてください。</span>
+            <span class="lang-content en">Crucial step! Tap <strong>"☑ Select all"</strong> so the blue checkmarks appear, then scroll down to the bottom.</span>
+            <span class="lang-content zh">最關鍵一步！請務必點擊<strong>「☑ 全選」</strong>確認出現藍色勾號後，再往下滑動到底部。</span>
+            <span class="lang-content ko">가장 중요한 단계입니다! 반드시 <strong>「☑ 모두 선택」</strong>을 탭해 파란 체크를 넣은 뒤 아래로 스크롤하세요.</span>
+          </div>
+        </div>
+
+        <!-- 2-5 -->
+        <div class="phone-card">
+          <div class="phone-step-head">
+            <span class="phone-step-num">2-5</span>
+            <div class="phone-step-title">
+              <span class="lang-content ja">一番下までスクロールして「次へ」</span>
+              <span class="lang-content en">Scroll Down &amp; Tap "Next"</span>
+              <span class="lang-content zh">滑到底部點擊「下一步」</span>
+              <span class="lang-content ko">맨 아래로 스크롤 후 「다음」</span>
+            </div>
+          </div>
+          <div class="phone-img-wrap" onclick="openImageModal('../images/v166/smartphone/08_scroll_next.jpg')">
+            <img src="../images/v166/smartphone/08_scroll_next.jpg" alt="下までスクロールして次へをタップ" loading="lazy" />
+          </div>
+          <div class="phone-step-caption">
+            <span class="lang-content ja">チェックが入った状態で一番下までスクロールし、右下の<strong>「次へ」</strong>をタップします。</span>
+            <span class="lang-content en">With all boxes checked, scroll to the bottom and tap <strong>Next</strong>.</span>
+            <span class="lang-content zh">確認勾選後滑至畫面最下方，點擊右下角的<strong>「下一步」</strong>。</span>
+            <span class="lang-content ko">체크된 상태에서 맨 아래까지 스크롤하여 우측 하단의 <strong>「다음」</strong>을 탭합니다.</span>
+          </div>
+        </div>
+
+        <!-- 2-6 -->
+        <div class="phone-card">
+          <div class="phone-step-head">
+            <span class="phone-step-num">2-6</span>
+            <div class="phone-step-title">
+              <span class="lang-content ja">「完了」で閉じる（準備完了！）</span>
+              <span class="lang-content en">Tap "Done" to Finish!</span>
+              <span class="lang-content zh">點擊「完成」關閉視窗！</span>
+              <span class="lang-content ko">「완료」를 눌러 닫기!</span>
+            </div>
+          </div>
+          <div class="phone-img-wrap" onclick="openImageModal('../images/v166/smartphone/09_install_done.jpg')">
+            <img src="../images/v166/smartphone/09_install_done.jpg" alt="インストール完了画面で完了をタップ" loading="lazy" />
+          </div>
+          <div class="phone-step-caption">
+            <span class="lang-content ja"><strong>「完了」</strong>をタップして閉じます（※中央の「9つの点アイコン」の図はPC用なのでスマホでは無視してOKです！2回目以降このSTEP 2は不要です）。</span>
+            <span class="lang-content en">Tap <strong>Done</strong> to close (*ignore the PC 9-dots icon illustration on mobile! You never need to repeat Step 2 again).</span>
+            <span class="lang-content zh">點擊<strong>「完成」</strong>關閉（※中間的 9 個點圖示為電腦版說明，手機上直接略過即可！今後無須重複步驟 2）。</span>
+            <span class="lang-content ko"><strong>「완료」</strong>를 탭해 닫습니다 (※가운데 점 9개 아이콘 그림은 PC용이므로 무시하셔도 됩니다! 2회차부터는 이 과정이 필요 없습니다).</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP 3: Open Studio & Output PDF / PNG -->
+    <section id="step3-export" class="phase-section" style="border-color: #6ee7b7;">
+      <div class="phase-header">
+        <span class="phase-badge step3">STEP 3</span>
+        <div>
+          <h2 class="phase-title">
+            <span class="lang-content ja">スタジオを開いて、原稿用紙・縦書きPDF／PNG画像に出力する</span>
+            <span class="lang-content en">Open Studio &amp; Export as Manuscript Paper, Vertical PDF, or PNG (ZIP)</span>
+            <span class="lang-content zh">開啟工作室，一鍵輸出四百字稿紙・直書 PDF／PNG 圖片</span>
+            <span class="lang-content ko">스튜디오를 열어 원고지·세로쓰기 PDF / PNG 이미지로 출력</span>
+          </h2>
+        </div>
+      </div>
+
+      <div class="alert-box alert-emerald">
+        <div class="lang-content ja">
+          <strong>💡 iPhone（Safari）等で「インストールしたのに Marketplace 案内ポップアップが出る」ときは？</strong><br>
+          スマホブラウザのプライバシー保護（サードパーティCookie制限）により、公式ページ（<code>wasabikarashi.com/linealigned/</code>）上で連携状態が自動判定できない場合があります。<br>
+          その場合はポップアップ内の緑色ボタン<strong>『✅ インストール済みの方はこちら（Google連携スタジオを開く）』</strong>（または下の直通ボタン）をタップしてください。<strong>開いたページをブックマーク（またはホーム画面に追加）</strong>しておくと、次回から1タップで快適に使えます！
+        </div>
+        <div class="lang-content en">
+          <strong>💡 Seeing the Marketplace Popup Again on iPhone (Safari)?</strong><br>
+          Mobile browser privacy settings (ITP) can prevent <code>wasabikarashi.com/linealigned/</code> from detecting your session inside an iframe. Simply tap the green <strong>"✅ Already Installed: Open Google-Linked Studio"</strong> button in the popup (or the button below) and <strong>bookmark that page</strong> for 1-tap access next time!
+        </div>
+        <div class="lang-content zh">
+          <strong>💡 在 iPhone（Safari）等瀏覽器「明明已安裝卻又跳出 Marketplace 視窗」時？</strong><br>
+          因手機瀏覽器的跨網站追蹤保護限制，有時無法在官網內自動判定登入狀態。只需點擊彈出視窗內的綠色按鈕<strong>『✅ 已安裝用戶請點此（直接開啟 Google 連動工作室）』</strong>（或下方直達按鈕），並<strong>將該頁加入書籤或主畫面</strong>，下次即可一鍵開啟！
+        </div>
+        <div class="lang-content ko">
+          <strong>💡 iPhone(Safari) 등에서 「설치했는데도 Marketplace 안내 창이 다시 뜰 때」는?</strong><br>
+          모바일 브라우저의 개인정보 보호(쿠키 제한) 기능 때문일 수 있습니다. 팝업 안의 초록색 <strong>『✅ 이미 설치하신 분은 여기로 (Google 연동 스튜디오 열기)』</strong> 버튼(또는 아래 직통 버튼)을 탭하시고, <strong>열린 페이지를 북마크(또는 홈 화면에 추가)</strong>해 두시면 다음부터 원탭으로 바로 열립니다!
+        </div>
+      </div>
+
+      <div style="margin-bottom: 1.4rem; text-align: center;">
+        <a href="https://script.google.com/macros/s/AKfycbwmzKUscmWw5_Ku5PdxZpuy8wFdvv4D1QSQJaPpvdhKOX-sh3DkUQaFXnGfIyxfPZA6/exec" target="_blank" rel="noopener noreferrer" class="cta-btn cta-btn-emerald" style="display: inline-flex; max-width: 500px; width: 100%;">
+          <span>🚀</span>
+          <span class="lang-content ja">Google連携スタジオを直接開く（ブックマーク推奨）</span>
+          <span class="lang-content en">Open Google-Linked Studio Directly (Bookmark This!)</span>
+          <span class="lang-content zh">直接開啟 Google 連動工作室（建議加入書籤）</span>
+          <span class="lang-content ko">Google 연동 스튜디오 바로 열기 (북마크 권장)</span>
+        </a>
+      </div>
+
+      <div class="step3-layout">
+        <!-- Screenshot 10 -->
+        <div class="phone-card">
+          <div class="phone-step-head">
+            <span class="phone-step-num">3-1</span>
+            <div class="phone-step-title">
+              <span class="lang-content ja">「Web版スタジオを開く」</span>
+              <span class="lang-content en">Open Web Studio</span>
+              <span class="lang-content zh">開啟網頁版工作室</span>
+              <span class="lang-content ko">웹 스튜디오 열기</span>
+            </div>
+          </div>
+          <div class="phone-img-wrap" onclick="openImageModal('../images/v166/smartphone/10_open_studio.jpg')">
+            <img src="../images/v166/smartphone/10_open_studio.jpg" alt="わさびとからし公式ページからWeb版スタジオを開く" loading="lazy" />
+          </div>
+          <div class="phone-step-caption">
+            <span class="lang-content ja">総合ポータル（<code>wasabikarashi.com</code>）の<strong>「Web版スタジオを開く」</strong>または上の緑色ボタンからスタジオを起動します。</span>
+            <span class="lang-content en">Open Studio from <code>wasabikarashi.com</code> or via the green direct button above.</span>
+            <span class="lang-content zh">從官方首頁（<code>wasabikarashi.com</code>）點擊<strong>「Web版スタジオを開く」</strong>或上方綠色直達按鈕啟動工作室。</span>
+            <span class="lang-content ko">포털(<code>wasabikarashi.com</code>)의 <strong>「Web版スタジオを開く」</strong> 또는 위 초록색 버튼으로 스튜디오를 엽니다.</span>
+          </div>
+        </div>
+
+        <!-- Recipes -->
+        <div class="recipe-list">
+          <div class="recipe-card">
+            <h3>
+              <span class="lang-content ja">📂 3-2. 「Googleドライブから選択」でスマホで書いた原稿を選ぶ</span>
+              <span class="lang-content en">📂 3-2. Tap "Select from Google Drive" &amp; Pick Your Draft</span>
+              <span class="lang-content zh">📂 3-2. 點擊「從 Google 雲端硬碟選取」選擇剛寫好的原稿</span>
+              <span class="lang-content ko">📂 3-2. 「Google 드라이브에서 선택」으로 방금 쓴 원고 선택</span>
+            </h3>
+            <p>
+              <span class="lang-content ja">青い<strong>「Googleドライブから選択」</strong>ボタンを押すと、STEP 1 でスマホのドキュメントアプリから書いた原稿（例：<code>スマホから原稿</code>）が一番上に表示されるのでタップして選びます。</span>
+              <span class="lang-content en">Tap the blue <strong>Select from Google Drive</strong> button—the draft you just wrote in the Google Docs mobile app appears right at the top!</span>
+              <span class="lang-content zh">點擊藍色的<strong>「從 Google 雲端硬碟選取」</strong>按鈕，步驟 1 在手機 App 撰寫的原稿會顯示在最上方，點選即可載入。</span>
+              <span class="lang-content ko">파란색 <strong>「Google 드라이브에서 선택」</strong> 버튼을 누르면 STEP 1에서 작성한 원고가 맨 위에 표시됩니다.</span>
+            </p>
+          </div>
+
+          <div class="recipe-card" style="border-left: 4px solid #b45309; background: #fffbeb;">
+            <h3>
+              <span class="lang-content ja">📜 おすすめ設定①：『A4 原稿用紙』（標準 ／ 山葵山房 ／ クラシック）</span>
+              <span class="lang-content en">📜 Preset A: "A4 Manuscript Paper" (Standard / Wasabi Sanbo / Classic)</span>
+              <span class="lang-content zh">📜 推薦設定①：『A4 稿紙』（標準 ／ 山葵山房 ／ 經典）</span>
+              <span class="lang-content ko">📜 추천 설정①: 『A4 원고지』 (표준 / 와사비산방 / 클래식)</span>
+            </h3>
+            <p>
+              <span class="lang-content ja">赤い切替ボタンで<strong>「縦書き」</strong>➔「① 用紙・印刷形式」で<strong>『A4 原稿用紙』</strong>を選択！<br>・<strong>標準 (20×20)</strong>／<strong>クラシック (20×20)</strong>では、用紙の色<strong>［白 ／ クリーム紙］</strong>、中央の魚尾<strong>［黒魚尾 ／ 白魚尾 ／ 花魚尾 ／ なし］</strong>、罫線カラー（セピア・鶯色・朱色など）をボタンで自在に組み合わせられます。<br>・<strong>山葵山房 (20×10)</strong>を選ぶと、明治期の文豪特製十行原稿用紙をモチーフにした飾りアーチ枠・20字×10行の格調高い一枚物が完成します。</span>
+              <span class="lang-content en">Switch to <strong>Vertical</strong> ➔ choose <strong>A4 Manuscript Paper</strong>! Pick <strong>Standard (20×20)</strong> or <strong>Classic (20×20)</strong> with <strong>White / Cream Paper</strong>, <strong>Solid / Hollow / Floral Gyobi / None</strong>, and olive/vermilion/sepia ink—or choose <strong>Wasabi Sanbo (20×10)</strong> for an ornate Meiji-literary arched 10-column leaf.</span>
+              <span class="lang-content zh">切換為<strong>「直書」</strong>➔ 於「① 紙張・列印格式」選擇<strong>『A4 稿紙』</strong>！可自由搭配<strong>［標準 (20×20) ／ 經典 (20×20)］</strong>、紙色<strong>［白 ／ 奶油紙］</strong>、魚尾<strong>［黑魚尾 ／ 白魚尾 ／ 花魚尾 ／ 無］</strong>與鶯色／朱色／復古棕格線；或選擇明治文豪風格裝飾拱框的<strong>『山葵山房 (20×10)』</strong>。</span>
+              <span class="lang-content ko"><strong>「세로쓰기」</strong> ➔ 「① 용지·인쇄 형식」에서 <strong>『A4 원고지』</strong> 선택! <strong>표준(20×20)·클래식(20×20)</strong>에서 <strong>[백색 / 크림지]</strong>, <strong>[흑어미 / 백어미 / 꽃어미 / 없음]</strong>, 줄 색상을 조합하거나, 메이지 문호풍 장식 아치 프레임의 <strong>『와사비산방(20×10)』</strong>을 선택할 수 있습니다.</span>
+            </p>
+          </div>
+
+          <div class="recipe-card" style="border-left: 4px solid #1a73e8;">
+            <h3>
+              <span class="lang-content ja">📖 おすすめ設定②：『本文の罫線：なし ＋ ノートの罫線：あり』見開きノート</span>
+              <span class="lang-content en">📖 Preset B: Clean Unruled Body + Ruled Study Note Spread</span>
+              <span class="lang-content zh">📖 推薦設定②：『內文格線：無 ＋ 筆記格線：有』跨頁筆記</span>
+              <span class="lang-content ko">📖 추천 설정②: 『본문 줄눈: 없음 + 노트 줄눈: 있음』 펼침 노트</span>
+            </h3>
+            <p>
+              <span class="lang-content ja">『A3 / A4 見開きノート』を選び、<strong>「本文の罫線：なし」＋「ノートの罫線：あり（縦罫線／方眼）」</strong>にすると、本文ページは小説本のようにすっきり無地で組まれ、対向ページだけ手書きしやすい罫線・方眼ノートになります（iPad Goodnotes 等での学習・推敲にも最適！）。</span>
+              <span class="lang-content en">Choose <strong>A3/A4 Spread Note</strong> with <strong>Body Lines: Off + Note Lines: On (Ruled / Grid)</strong> to get a clean book-like reading page paired with a ruled/grid handwriting note page—ideal for iPad Goodnotes or binder printing!</span>
+              <span class="lang-content zh">選擇『A3 / A4 跨頁筆記』並設定<strong>「內文格線：無」＋「筆記格線：有（格線／方格）」</strong>，即可讓內文如文庫本般清爽無框線，同時保留對頁的手寫格線筆記區（最適合 iPad Goodnotes 讀書與改稿！）。</span>
+              <span class="lang-content ko">『A3 / A4 펼침 노트』에서 <strong>「본문 줄눈: 없음」 + 「노트 줄눈: 있음(세로줄/방안)」</strong>을 선택하면 본문은 단행본처럼 깔끔한 무지로, 맞은편은 필기하기 좋은 줄·방안 노트로 완성됩니다.</span>
+            </p>
+          </div>
+
+          <div class="recipe-card" style="border-left: 4px solid #059669;">
+            <h3>
+              <span class="lang-content ja">🖼️ 3-3. SNS投稿には青い『PNG出力 (ZIP)』、印刷・保管には緑の『PDF出力』！</span>
+              <span class="lang-content en">🖼️ 3-3. Tap "Export PNG (ZIP)" for Social Media or "Export PDF" for Printing!</span>
+              <span class="lang-content zh">🖼️ 3-3. 社群發佈點藍色『匯出 PNG (ZIP)』，列印保存點綠色『匯出 PDF』！</span>
+              <span class="lang-content ko">🖼️ 3-3. SNS 공유는 파란색 『PNG 저장 (ZIP)』, 인쇄·보관은 초록색 『PDF 출력』!</span>
+            </h3>
+            <p>
+              <span class="lang-content ja">スマホで<strong>「PNG出力 (ZIP)」</strong>をタップすると、全ページが高精細PNG画像としてまとまってダウンロードされます。iPhone「ファイル」アプリや Android でタップして展開すれば、そのまま写真として<strong>X（旧Twitter）などのSNSへ劣化なしで投稿</strong>できます！自宅プリンターやコンビニのネットプリントで印刷したいときは<strong>「PDF出力 / 印刷」</strong>をお使いください。</span>
+              <span class="lang-content en">Tap <strong>Export PNG (ZIP)</strong> on your phone to save crisp 216 dpi PNG images of every page—unzip in iOS Files or Android with one tap to post directly on X / social media! Use <strong>Export PDF / Print</strong> for printing or tablet annotation.</span>
+              <span class="lang-content zh">在手機上點擊<strong>「匯出 PNG (ZIP)」</strong>即可下載全頁高解析 PNG 圖片，於 iPhone「檔案」App 或 Android 點擊解壓縮後，就能直接將原稿圖片清晰發佈至 <strong>X（Twitter）等社群平台</strong>！若需超商列印或平板閱讀請點<strong>「匯出 PDF / 列印」</strong>。</span>
+              <span class="lang-content ko">스마트폰에서 <strong>「PNG 저장 (ZIP)」</strong>을 탭하면 전 페이지가 고해상도 PNG 이미지로 저장되어 압축 해제 후 <strong>X(트위터) 등 SNS에 선명한 이미지로 바로 게시</strong>할 수 있습니다! 인쇄나 태블릿 보관 시에는 <strong>「PDF 출력 / 인쇄」</strong>를 이용해 주세요.</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Lightbox Modal -->
+  <div id="imageModal" class="modal" onclick="closeModal()">
+    <img id="modalImg" src="" alt="拡大プレビュー" />
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div style="margin-bottom: 1.2rem;">
+      <a href="https://x.com/karashiwasabi41" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 8px; color: #1e293b; background: #f8fafc; border: 1px solid var(--border); padding: 8px 18px; border-radius: 999px; text-decoration: none; font-size: 0.9rem; font-weight: 700;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+        </svg>
+        <span class="lang-content ja">開発・最新情報は X（@karashiwasabi41）</span>
+        <span class="lang-content en">Updates on X (@karashiwasabi41)</span>
+        <span class="lang-content zh">最新動態請關注 X (@karashiwasabi41)</span>
+        <span class="lang-content ko">최신 소식은 X (@karashiwasabi41)</span>
+      </a>
+    </div>
+
+    <div class="footer-links">
+      <a href="/">わさびとからし 総合トップ</a>
+      <a href="/linealigned/">Line-aligned Studio（Web版）</a>
+      <a href="guide.html">Line-aligned 総合機能ガイド</a>
+      <a href="terms.html">利用規約 / Terms</a>
+      <a href="privacy.html">プライバシーポリシー / Privacy</a>
+    </div>
+
+    <p style="margin-bottom: 0.4rem;">
+      <span class="lang-content ja">※ Google ドキュメント™（Google Docs™）および Google Workspace™ は Google LLC の商標です。</span>
+      <span class="lang-content en">* Google Docs™ and Google Workspace™ are trademarks of Google LLC.</span>
+      <span class="lang-content zh">※ Google 文件™（Google Docs™）及 Google Workspace™ 為 Google LLC 之商標。</span>
+      <span class="lang-content ko">※ Google 문서™(Google Docs™) 및 Google Workspace™는 Google LLC의 상표입니다.</span>
+    </p>
+    <p>&copy; 2026 Line-aligned. All rights reserved.</p>
+  </footer>
+
+  <script>
+    function setLang(lang) {
+      document.body.className = 'lang-' + lang;
+      const langs = ['ja', 'en', 'zh', 'ko'];
+      document.querySelectorAll('.lang-btn').forEach((btn, idx) => {
+        btn.classList.toggle('active', langs[idx] === lang);
+      });
+    }
+
+    function openImageModal(src) {
+      const modal = document.getElementById('imageModal');
+      const modalImg = document.getElementById('modalImg');
+      modalImg.src = src;
+      modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('imageModal').style.display = 'none';
+    }
+
+    (function initLang() {
+      const browserLang = (navigator.language || navigator.userLanguage || 'ja').toLowerCase();
+      if (browserLang.startsWith('en')) setLang('en');
+      else if (browserLang.startsWith('zh')) setLang('zh');
+      else if (browserLang.startsWith('ko')) setLang('ko');
+      else setLang('ja');
+    })();
+  </script>
+</body>
+</html>

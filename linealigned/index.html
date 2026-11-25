@@ -961,7 +961,7 @@
   <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 0.75rem;">
     <div style="font-size: 1.05rem; font-weight: 800; color: #1f1f1f;">
       <span style="color: #1a73e8; font-weight: 900;">Line-aligned</span>
-      <span style="color: #5f6368; font-size: 0.78rem; margin-left: 6px;">ver.166 (Build 20261125_1028)</span>
+      <span style="color: #5f6368; font-size: 0.78rem; margin-left: 6px;">ver.166 (Build 20261125_1110)</span>
     </div>
     <div style="display: flex; align-items: center; gap: 6px;">
       <a href="https://wasabikarashi.com/" id="uiLinkTop" style="display: inline-flex; align-items: center; gap: 3px; background: #f1f5f9; border: 1px solid #dadce0; border-radius: 8px; padding: 5px 10px; font-size: 0.75rem; font-weight: 700; color: #3c4043; text-decoration: none; white-space: nowrap;">トップ</a>
@@ -6248,27 +6248,35 @@ async function loadSampleDocx() {
     let modal = document.getElementById('marketplaceInstallModal');
     const i18nModal = {
       ja: {
-        title: '📄 Google ドキュメント連携にはインストールが必要です',
-        desc: 'Google ドライブ内のドキュメントを選択・組版するには、Google Workspace Marketplace からアドオン（無料）をインストールしてください。<br><span style="color:#5f6368;font-size:0.82rem;">※「サンプル」や、PDF・ローカルWord (.docx) の組版はインストール不要でそのままお使いいただけます。</span>',
-        btnInstall: '🚀 Google Workspace Marketplace を開く',
+        title: '📄 Google ドキュメント連携のご案内',
+        desc: 'Google ドライブ内のドキュメントを選択・組版するには、初回のみ Google Workspace Marketplace から無料インストールしてください。<br><span style="color:#5f6368;font-size:0.82rem;">※スマホ（iPhone / Android）等で<strong>すでにインストール済みの方</strong>は、下の緑ボタンから直接連携スタジオを開けます（ブックマーク推奨）。サンプル・PDF・ローカルWord (.docx) はこのまま登録不要で使えます。</span>',
+        btnInstalled: '✅ インストール済みの方はこちら（Google連携スタジオを開く）',
+        btnInstall: '🚀 初回の方：Google Workspace Marketplace を開く（無料）',
+        linkGuide: '📱 スマホでの詳しい連携・使い方手順（画像ガイド）を見る',
         btnClose: '閉じる'
       },
       en: {
-        title: '📄 Add-on Installation Required for Google Drive',
-        desc: 'To select and typeset documents from your Google Drive, please install the free add-on from Google Workspace Marketplace.<br><span style="color:#5f6368;font-size:0.82rem;">* Sample files, PDFs, and local Word (.docx) files work immediately without installation.</span>',
-        btnInstall: '🚀 Open Google Workspace Marketplace',
+        title: '📄 Google Drive Integration',
+        desc: 'To select and typeset documents from Google Drive, install the free add-on once from Google Workspace Marketplace.<br><span style="color:#5f6368;font-size:0.82rem;">* If you have <strong>already installed</strong> it (e.g. on iPhone/Android), tap the green button below to open the linked Studio directly. Samples, PDFs, and local Word (.docx) work without installation.</span>',
+        btnInstalled: '✅ Already Installed: Open Google-Linked Studio',
+        btnInstall: '🚀 First Time: Open Google Workspace Marketplace (Free)',
+        linkGuide: '📱 View Step-by-Step Smartphone Guide (with Screenshots)',
         btnClose: 'Close'
       },
       'zh-TW': {
-        title: '📄 連結 Google 雲端硬碟需先安裝附加元件',
-        desc: '若要從 Google 雲端硬碟選取文件進行排版，請先至 Google Workspace Marketplace 免費安裝外掛程式。<br><span style="color:#5f6368;font-size:0.82rem;">※「範例」、PDF 與本機 Word (.docx) 排版無需安裝即可直接使用。</span>',
-        btnInstall: '🚀 開啟 Google Workspace Marketplace',
+        title: '📄 Google 雲端硬碟連動說明',
+        desc: '若要從 Google 雲端硬碟選取文件排版，首次請先至 Google Workspace Marketplace 免費安裝。<br><span style="color:#5f6368;font-size:0.82rem;">※若您<strong>已完成安裝</strong>（例如於手機瀏覽器），請直接點擊下方綠色按鈕開啟連動版 Studio（建議加入書籤）。範例、PDF 與本機 Word (.docx) 免安裝即可使用。</span>',
+        btnInstalled: '✅ 已安裝用戶：直接開啟 Google 連動版 Studio',
+        btnInstall: '🚀 首次使用：開啟 Google Workspace Marketplace（免費）',
+        linkGuide: '📱 查看手機版完整圖解教學步驟',
         btnClose: '關閉'
       },
       ko: {
-        title: '📄 Google 드라이브 연동에는 부가기능 설치가 필요합니다',
-        desc: 'Google 드라이브의 문서를 선택하여 조판하려면 Google Workspace Marketplace에서 무료 부가기능을 설치해 주세요.<br><span style="color:#5f6368;font-size:0.82rem;">※ "샘플", PDF 및 로컬 Word (.docx) 조판은 설치 없이 바로 이용하실 수 있습니다.</span>',
-        btnInstall: '🚀 Google Workspace Marketplace 열기',
+        title: '📄 Google 드라이브 연동 안내',
+        desc: 'Google 드라이브 문서를 선택해 조판하려면 최초 1회 Google Workspace Marketplace에서 무료 설치해 주세요.<br><span style="color:#5f6368;font-size:0.82rem;">※ 스마트폰 등에서 <strong>이미 설치하신 분</strong>은 아래 초록색 버튼으로 연동 Studio를 바로 여실 수 있습니다(북마크 권장). 샘플·PDF·로컬 Word(.docx)는 설치 없이 이용 가능합니다.</span>',
+        btnInstalled: '✅ 이미 설치하신 분: Google 연동 Studio 바로 열기',
+        btnInstall: '🚀 최초 설치: Google Workspace Marketplace 열기 (무료)',
+        linkGuide: '📱 스마트폰 상세 사용법 가이드(스크린샷) 보기',
         btnClose: '닫기'
       }
     };
@@ -6282,12 +6290,14 @@ async function loadSampleDocx() {
     }
 
     modal.innerHTML =
-      '<div style="position:relative;overflow:hidden;background:#ffffff;border:1px solid #dadce0;border-radius:16px;max-width:480px;width:100%;padding:28px 24px 24px;box-shadow:0 20px 40px rgba(0,0,0,0.2);color:#1f1f1f;font-family:sans-serif;">' +
+      '<div style="position:relative;overflow:hidden;background:#ffffff;border:1px solid #dadce0;border-radius:16px;max-width:480px;width:100%;padding:28px 24px 22px;box-shadow:0 20px 40px rgba(0,0,0,0.2);color:#1f1f1f;font-family:sans-serif;">' +
         '<div style="position:absolute;top:0;left:0;right:0;height:6px;background:linear-gradient(90deg,#4285f4 0%,#4285f4 25%,#ea4335 25%,#ea4335 50%,#fbbc04 50%,#fbbc04 75%,#34a853 75%,#34a853 100%);"></div>' +
-        '<div style="font-size:1.08rem;font-weight:800;color:#1a73e8;margin-bottom:12px;">' + mt.title + '</div>' +
-        '<div style="font-size:0.92rem;line-height:1.65;color:#3c4043;margin-bottom:20px;">' + mt.desc + '</div>' +
+        '<div style="font-size:1.06rem;font-weight:800;color:#1a73e8;margin-bottom:10px;">' + mt.title + '</div>' +
+        '<div style="font-size:0.89rem;line-height:1.62;color:#3c4043;margin-bottom:16px;">' + mt.desc + '</div>' +
         '<div style="display:flex;flex-direction:column;gap:10px;">' +
-          '<a href="' + MARKETPLACE_INSTALL_URL + '" target="_blank" rel="noopener noreferrer" onclick="document.getElementById(\'marketplaceInstallModal\').style.display=\'none\';" style="display:block;text-align:center;background:linear-gradient(135deg,#1a73e8,#2563eb);color:#ffffff;text-decoration:none;padding:13px 18px;border-radius:10px;font-weight:700;font-size:0.95rem;box-shadow:0 4px 12px rgba(26,115,232,0.3);">' + mt.btnInstall + '</a>' +
+          '<a href="' + GAS_EXEC_URL + '" target="_top" onclick="document.getElementById(\'marketplaceInstallModal\').style.display=\'none\';" style="display:block;text-align:center;background:linear-gradient(135deg,#059669,#047857);color:#ffffff;text-decoration:none;padding:13px 16px;border-radius:10px;font-weight:700;font-size:0.92rem;box-shadow:0 4px 12px rgba(5,150,105,0.28);">' + mt.btnInstalled + '</a>' +
+          '<a href="' + MARKETPLACE_INSTALL_URL + '" target="_blank" rel="noopener noreferrer" onclick="document.getElementById(\'marketplaceInstallModal\').style.display=\'none\';" style="display:block;text-align:center;background:linear-gradient(135deg,#1a73e8,#2563eb);color:#ffffff;text-decoration:none;padding:12px 16px;border-radius:10px;font-weight:700;font-size:0.9rem;box-shadow:0 4px 12px rgba(26,115,232,0.26);">' + mt.btnInstall + '</a>' +
+          '<a href="https://wasabikarashi.com/linealigned/smartphone.html" target="_blank" rel="noopener noreferrer" style="display:block;text-align:center;color:#1a73e8;font-size:0.82rem;font-weight:700;text-decoration:underline;padding:4px 0;">' + mt.linkGuide + '</a>' +
           '<button type="button" onclick="document.getElementById(\'marketplaceInstallModal\').style.display=\'none\';" style="background:#f8f9fa;border:1px solid #dadce0;color:#3c4043;padding:10px 16px;border-radius:10px;font-weight:600;cursor:pointer;">' + mt.btnClose + '</button>' +
         '</div>' +
       '</div>';
