@@ -2175,7 +2175,7 @@
   <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 0.75rem;">
     <div style="font-size: 1.05rem; font-weight: 800; color: #1f1f1f;">
       <span style="color: #1a73e8; font-weight: 900;">Line-aligned</span>
-      <span style="color: #5f6368; font-size: 0.78rem; margin-left: 6px;">ver.166 (Build 20261127_2044)</span>
+      <span style="color: #5f6368; font-size: 0.78rem; margin-left: 6px;">ver.166 (Build 20261127_2110)</span>
     </div>
     <div style="display: flex; align-items: center; gap: 6px;">
       <a href="https://wasabikarashi.com/" id="uiLinkTop" style="display: inline-flex; align-items: center; gap: 3px; background: #f1f5f9; border: 1px solid #dadce0; border-radius: 8px; padding: 5px 10px; font-size: 0.75rem; font-weight: 700; color: #3c4043; text-decoration: none; white-space: nowrap;">トップ</a>
@@ -19334,12 +19334,12 @@ var loadSampleDocx;
   window.openTategakiDrivePickerFromEditor = openTategakiDrivePickerFromEditor;
 
   async function openTategakiEditorModal() {
-    // PC等で auth_bridge が開通している場合は wasabikarashi.com 上からでも案内モーダルを出さずそのまま直開きする。
-    // 未インストール、または iPad Safari ITP 等で隠しブリッジが遮断されている場合のみ案内モーダル（緑ボタンで ?open=tategaki 直行）を出す。
+    // 非GAS環境（wasabikarashi.com）で裏ブリッジが通らない場合（タブレット Safari 等）も、
+    // 2択モーダルは一切出さず直接 GAS 本番の縦書きエディタ (?open=tategaki) を開く
     if (!isGasEnvironment()) {
       const cfg = await ensureGasAuthConfig();
       if (!cfg || !cfg.token) {
-        showMarketplaceInstallModal('tategaki');
+        window.top.location.href = GAS_EXEC_URL + '?open=tategaki';
         return;
       }
     }
