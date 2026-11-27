@@ -570,6 +570,7 @@
           <span class="lang-content zh">🔰 新手指南</span>
           <span class="lang-content ko">🔰 시작 가이드</span>
         </a>
+        <a href="#tategaki-editor-guide" class="nav-link lang-content ja" style="color: #b91c1c; font-weight: 700; background: #fef2f2; border: 1px solid #fecaca; padding: 4px 12px; border-radius: 16px;">📝 縦書きエディタ</a>
         <a href="#ruby-kunten-guide" class="nav-link" style="color: #047857; font-weight: 700; background: #ecfdf5; border: 1px solid #a7f3d0; padding: 4px 12px; border-radius: 16px;">
           <span class="lang-content ja">🔖 ルビ・返り点タグ</span>
           <span class="lang-content en">🔖 Ruby &amp; Kanbun Tags</span>
@@ -649,10 +650,10 @@
     <div style="display: flex; justify-content: center; align-items: center; gap: 1rem; flex-wrap: wrap; margin-top: 2rem;">
       <a href="/linealigned/" style="display: inline-flex; align-items: center; gap: 10px; background: #059669; color: #ffffff; padding: 0 26px; height: 54px; border-radius: 8px; font-weight: 700; text-decoration: none; font-size: 1.02rem; box-shadow: 0 4px 14px rgba(5,150,105,0.32); transition: var(--transition);">
         <span>📝</span>
-        <span class="lang-content ja">今すぐ試す（Word・PDF・全5種サンプルはインストール不要）</span>
-        <span class="lang-content en">Try Now in Browser (No Install for Word, PDF &amp; 5 Samples)</span>
-        <span class="lang-content zh">立即試用（Word・PDF・5種範本免安裝）</span>
-        <span class="lang-content ko">바로 체험하기 (Word·PDF·5종 샘플 설치 불필요)</span>
+        <span class="lang-content ja">今すぐ試す（Word・PDFはインストール不要）</span>
+        <span class="lang-content en">Try Now in Browser (No Install for Word &amp; PDF)</span>
+        <span class="lang-content zh">立即試用（Word・PDF 免安裝）</span>
+        <span class="lang-content ko">바로 체험하기 (Word·PDF 설치 불필요)</span>
       </a>
       <a href="https://workspace.google.com/marketplace/app/linealigned/435629186234?flow_type=2" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 10px; background: var(--primary); color: #ffffff; padding: 0 24px; height: 54px; border-radius: 8px; font-weight: 700; text-decoration: none; font-size: 1rem; box-shadow: 0 4px 14px rgba(26,115,232,0.3); transition: var(--transition);">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -987,6 +988,203 @@
         var target = document.getElementById('howto-panel-' + routeKey);
         if (target) {
           target.classList.add('active');
+        }
+      }
+    </script>
+
+
+    <!-- TATEGAKI EDITOR VISUAL GUIDE & COPYABLE SAMPLES (Japanese UI Exclusive) -->
+    <style>
+      .tategaki-guide-box {
+        max-width: 1080px;
+        margin: 1.75rem auto 0;
+        background: #ffffff;
+        border: 2px solid #dc2626;
+        border-radius: 16px;
+        padding: 1.6rem 1.35rem;
+        box-shadow: 0 12px 30px rgba(185, 28, 28, 0.10);
+        text-align: left;
+        scroll-margin-top: 84px;
+      }
+      .tategaki-sample-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+        margin-top: 1rem;
+      }
+      .tategaki-sample-card {
+        background: #0f172a;
+        border: 1px solid #334155;
+        border-radius: 12px;
+        padding: 1rem 1.1rem;
+        color: #f8fafc;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .tategaki-sample-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .tategaki-copy-btn {
+        background: #10b981;
+        color: #ffffff;
+        border: none;
+        border-radius: 6px;
+        padding: 5px 12px;
+        font-size: 0.78rem;
+        font-weight: 800;
+        cursor: pointer;
+        transition: background 0.15s ease;
+        white-space: nowrap;
+      }
+      .tategaki-copy-btn:hover {
+        background: #059669;
+      }
+      .tategaki-sample-pre {
+        margin: 0;
+        background: #1e293b;
+        border: 1px solid #334155;
+        border-radius: 8px;
+        padding: 0.75rem 0.9rem;
+        font-family: "BIZ UDPMincho", "Noto Serif JP", serif;
+        font-size: 0.86rem;
+        line-height: 1.75;
+        color: #f1f5f9;
+        white-space: pre-wrap;
+        word-break: break-all;
+      }
+      @media (max-width: 820px) {
+        .tategaki-sample-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+
+    <div id="tategaki-editor-guide" class="tategaki-guide-box lang-content ja">
+      <div style="text-align: center; margin-bottom: 0.9rem;">
+        <span style="display: inline-block; background: #fef2f2; color: #b91c1c; font-size: 0.82rem; font-weight: 800; padding: 4px 14px; border-radius: 20px; border: 1px solid #fecaca; margin-bottom: 0.45rem;">
+          🆕 📝 縦書きエディタ（A4横・37列シート／日本語組版専用）
+        </span>
+        <h2 style="font-size: clamp(1.15rem, 2.3vw, 1.48rem); font-weight: 800; color: #0f172a; margin-bottom: 0.35rem;">
+          Google ドキュメント™ を「縦書きのまま」書き、ルビ・返り点を付けて原稿用紙・見開きノートへ
+        </h2>
+        <p style="font-size: 0.9rem; color: #475569; max-width: 880px; margin: 0 auto; line-height: 1.65;">
+          これまで横書きでしか書けなかった Google ドキュメント™ を、本番PDFと同じ<strong>37列の縦書きシート</strong>上で直接執筆・編集できます。保存時は元のドキュメントを一切書き換えず、<strong>「元の名前_日時」の新しいコピー</strong>としてマイドライブへ安全に保存されます（PC・タブレット横画面推奨）。
+        </p>
+      </div>
+
+      <!-- 4画面でわかる操作ステップ（2x2グリッド） -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 14px; margin-bottom: 1.15rem;">
+        <div class="howto-step-card">
+          <div class="howto-step-caption">
+            ❶ 入口：「Google ドキュメント」タブの「📝 縦書きエディタを開く（A4横）」を押す（先に文書を選んでおくと直接開きます）
+          </div>
+          <div class="howto-step-img-wrap" onclick="openImageModal('../images/v166_editor/guide_01_launcher_entry.png?v=20261127')">
+            <img src="../images/v166_editor/guide_01_launcher_entry.png?v=20261127" alt="ランチャーの縦書きエディタ起動ボタン" loading="lazy" />
+          </div>
+        </div>
+
+        <div class="howto-step-card">
+          <div class="howto-step-caption">
+            ❷ 開始画面：ドライブ内の既存ドキュメントを選ぶか、名前を入れてマイドライブに新規作成して開く
+          </div>
+          <div class="howto-step-img-wrap" onclick="openImageModal('../images/v166_editor/guide_02_editor_start.png?v=20261127')">
+            <img src="../images/v166_editor/guide_02_editor_start.png?v=20261127" alt="縦書きエディタの文書選択・新規作成画面" loading="lazy" />
+          </div>
+        </div>
+
+        <div class="howto-step-card">
+          <div class="howto-step-caption">
+            ❸ 小説・随筆の執筆：大見出し（自動で2列幅確保）・ふりがな・会話文の「<code>「…」括弧下げ</code>」も縦書きのまま直感操作
+          </div>
+          <div class="howto-step-img-wrap" onclick="openImageModal('../images/v166_editor/guide_03_editor_novel_kusamakura.png?v=20261127')">
+            <img src="../images/v166_editor/guide_03_editor_novel_kusamakura.png?v=20261127" alt="縦書きエディタでの小説『草枕』執筆・括弧下げ表示" loading="lazy" />
+          </div>
+        </div>
+
+        <div class="howto-step-card">
+          <div class="howto-step-caption">
+            ❹ 教材・漢文訓読と安全保存：「🎯 ルビ・訓点」バーで送り仮名・返り点をワンクリック付与 ➔「💾 コピーを保存」➔「🖨️ 組版・印刷へ」
+          </div>
+          <div class="howto-step-img-wrap" onclick="openImageModal('../images/v166_editor/guide_04_editor_kanbun_suishi.png?v=20261127')">
+            <img src="../images/v166_editor/guide_04_editor_kanbun_suishi.png?v=20261127" alt="漢文訓読・返り点付与とコピー保存完了表示" loading="lazy" />
+          </div>
+        </div>
+      </div>
+
+      <!-- 実出力PDF完成イメージ（2列） -->
+      <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 12px; padding: 1rem 1.1rem; margin-bottom: 1.15rem;">
+        <div style="font-size: 0.9rem; font-weight: 800; color: #0f172a; margin-bottom: 0.65rem;">
+          🖨️ 「組版・印刷へ」を押してそのまま出力した完成PDF見本（クリックで拡大）
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px;">
+          <div class="howto-step-card" style="background: #ffffff;">
+            <div class="howto-step-caption">
+              📄 出力例①：A3 見開きノート（上：エディタそのままの漢文訓読・マーカー・囲み枠組版 ＋ 下：7.0mm 方眼ノート）
+            </div>
+            <div class="howto-step-img-wrap" onclick="openImageModal('../images/v166_editor/guide_05_output_vertical_note_spread.png?v=20261127')">
+              <img src="../images/v166_editor/guide_05_output_vertical_note_spread.png?v=20261127" alt="縦書きエディタから出力したA3上下見開きノートPDF" loading="lazy" />
+            </div>
+          </div>
+          <div class="howto-step-card" style="background: #ffffff;">
+            <div class="howto-step-caption">
+              📄 出力例②：A4 原稿用紙・特製『山葵山房 (20×10)』（生成りクリーム紙・鶯色飾り枠・ふりがな付き作品シート）
+            </div>
+            <div class="howto-step-img-wrap" onclick="openImageModal('../images/v166_editor/guide_06_output_wasabi_sanbo_genko.png?v=20261127')">
+              <img src="../images/v166_editor/guide_06_output_wasabi_sanbo_genko.png?v=20261127" alt="特製『山葵山房』20×10原稿用紙PDF出力例" loading="lazy" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- コピペ用お試しサンプル原稿2種 -->
+      <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 12px; padding: 1rem 1.1rem;">
+        <div style="font-size: 0.9rem; font-weight: 800; color: #92400e; margin-bottom: 0.3rem;">
+          📋 すぐ試せる「お試しサンプル原稿」（コピーして Google ドキュメントや縦書きエディタへ貼り付けられます）
+        </div>
+        <div style="font-size: 0.82rem; color: #78350f; line-height: 1.55;">
+          縦書きエディタで「📄 新規作成」して開いたシート（または通常の横書き Google ドキュメント）にそのまま貼り付けるだけで、上の出力見本と同じ組版をすぐ体験できます。
+        </div>
+        <div class="tategaki-sample-grid">
+          <div class="tategaki-sample-card">
+            <div class="tategaki-sample-header">
+              <span style="font-size: 0.84rem; font-weight: 800; color: #fde68a;">📘 見本A：小説・随筆（夏目漱石『草枕』冒頭）</span>
+              <button type="button" class="tategaki-copy-btn" onclick="copyGuideSampleText('guideSampleNovel', this)">📋 コピーする</button>
+            </div>
+            <pre id="guideSampleNovel" class="tategaki-sample-pre">草枕　夏目漱石
+　{山路|やまみち}を登りながら、こう考えた。{智|ち}に働けば{角|かど}が立つ。{情|じょう}に{棹|さお}させば流される。{意地|いじ}を通せば{窮屈|きゅうくつ}だ。{兎角|とかく}に人の世は住みにくい。
+　住みにくさが高じると、安い所へ引き越したくなる。どこへ越しても住みにくいと{悟|さと}った時、詩が生れて、画が出来る。
+「人の世を作ったものは神でもなければ鬼でもない。やはり向う三軒両隣りにちらちらするただの人である。ただの人が作った人の世が住みにくいからとて、越す国はあるまい」</pre>
+          </div>
+
+          <div class="tategaki-sample-card">
+            <div class="tategaki-sample-header">
+              <span style="font-size: 0.84rem; font-weight: 800; color: #6ee7b7;">📗 見本B：古典・漢文訓読（諸葛亮『前出師表』冒頭）</span>
+              <button type="button" class="tategaki-copy-btn" onclick="copyGuideSampleText('guideSampleKanbun', this)">📋 コピーする</button>
+            </div>
+            <pre id="guideSampleKanbun" class="tategaki-sample-pre">前出師表　諸葛亮
+　{臣|しん}{亮|りょう}{言||ス}。{先帝|せんてい}{創業|そうぎょう}{未|いま|ダ|二}{半|なか|バナラズシテ|一}、{中道|ちゅうどう}ニシテ{崩殂|ほうそ}ス。{今|いま}{天下|てんか}{三分|さんぶん}シ、{益州|えきしゅう}{疲弊|ひへい}ス。{此|こ}れ{誠|まこと}ニ{危急存亡|ききゅうそんぼう}ノ{秋|とき}ナリ。
+　{誠|まこと}ニ宜シク聖聴ヲ開張スベシ。</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function copyGuideSampleText(preId, btnEl) {
+        var el = document.getElementById(preId);
+        if (!el) return;
+        var text = el.textContent || '';
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function() {
+            var orig = btnEl.textContent;
+            btnEl.textContent = '✅ コピーしました！';
+            setTimeout(function() { btnEl.textContent = orig; }, 1800);
+          });
         }
       }
     </script>
@@ -2640,7 +2838,7 @@
         <div style="display: grid; gap: 0.9rem; font-size: 0.92rem; line-height: 1.7;">
           <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem 1.15rem;">
             <strong style="color: #1e3a8a;">Q1. 料金はかかりますか？会員登録やインストールは必要ですか？</strong><br>
-            すべて<strong>完全無料</strong>でご利用いただけます。手元の Word（.docx）・PDF ファイルや内蔵サンプル5種は、会員登録もインストールも不要でブラウザ（<code>/linealigned/</code>）からすぐ使えます。Google ドキュメント™ をドライブから直接読み込む場合のみ、Google Workspace Marketplace からの無料インストールが必要です。
+            すべて<strong>完全無料</strong>でご利用いただけます。手元の Word（.docx）・PDF ファイルは、会員登録もインストールも不要でブラウザ（<code>/linealigned/</code>）からすぐ使えます。Google ドキュメント™ をドライブから読み込む場合（および縦書きエディタを使う場合）のみ、Google Workspace Marketplace からの無料インストールが必要です。
           </div>
           <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem 1.15rem;">
             <strong style="color: #1e3a8a;">Q2. Word ファイルが「横書き」か「縦書き」かは、自分で切り替える必要がありますか？</strong><br>
@@ -2656,7 +2854,7 @@
           </div>
           <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem 1.15rem;">
             <strong style="color: #1e3a8a;">Q5. Google ドキュメント™ で漢字に「ふりがな（ルビ）」や漢文の「返り点・送り仮名」をつけるにはどうすればよいですか？</strong><br>
-            本文中にそのまま保存できるタグ <code>{親文字|ふりがな|送り仮名|返り点}</code> を書くだけで自動組版されます。ふりがなのみなら <code>{先帝|せんてい}</code>（または <code>｜先帝《せんてい》</code>）、漢文訓読なら <code>{未|いま|ダ|二}</code> や <code>{不|||レ}</code> のように記述でき、縦書き罫線PDFと四百字詰め原稿用紙（20×20）の両方で反映されます（詳しい書き方とコピペ見本は上部の <a href="#ruby-kunten-guide" style="color: #059669; font-weight: 700;">「🔖 ふりがな・返り点・送り仮名の書き方マニュアル」</a> をご覧ください）。
+            <a href="#tategaki-editor-guide" style="color: #b91c1c; font-weight: 700;">「📝 縦書きエディタ」</a> の <code>🎯 ルビ・訓点</code> ボタンを使えば、文字を選んでワンクリックでふりがな・送り仮名・返り点を付けられます。また通常の横書き Google ドキュメント™ 上でも、本文中にタグ <code>{親文字|ふりがな|送り仮名|返り点}</code>（例：<code>{先帝|せんてい}</code>、<code>{未|いま|ダ|二}</code>、<code>{不|||レ}</code>）を書いて保存するだけで、縦書き罫線PDFと原稿用紙の両方で自動組版されます（詳しくは上部の <a href="#ruby-kunten-guide" style="color: #059669; font-weight: 700;">「🔖 ふりがな・返り点・送り仮名の書き方マニュアル」</a> をご覧ください）。
           </div>
           <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem 1.15rem;">
             <strong style="color: #1e3a8a;">Q6. アップロードした文書や PDF がサーバーに保存されたり、AI 学習に使われたりしませんか？</strong><br>
@@ -2670,7 +2868,7 @@
         <div style="display: grid; gap: 0.9rem; font-size: 0.92rem; line-height: 1.7;">
           <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem 1.15rem;">
             <strong style="color: #1e3a8a;">Q1. Is Line-aligned completely free? Do I need an account or installation?</strong><br>
-            Yes—100% free. Local Word (<code>.docx</code>), PDFs, and all 5 built-in samples run directly in your browser with zero login or installation. Only direct Google Docs™ / Drive loading requires a free one-time Google Workspace Marketplace install.
+            Yes—100% free. Local Word (<code>.docx</code>) and PDF files run directly in your browser with zero login or installation. Only direct Google Docs™ / Drive loading requires a free one-time Google Workspace Marketplace install.
           </div>
           <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem 1.15rem;">
             <strong style="color: #1e3a8a;">Q2. How do I convert a Google Doc™ or Word file into 20×20 Manuscript Paper or export PNG images?</strong><br>
@@ -2692,7 +2890,7 @@
         <div style="display: grid; gap: 0.9rem; font-size: 0.92rem; line-height: 1.7;">
           <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem 1.15rem;">
             <strong style="color: #1e3a8a;">Q1. 使用需要付費、註冊或安裝嗎？</strong><br>
-            完全免費。本機 Word（<code>.docx</code>）、PDF 與內建 5 種範本皆免註冊、免安裝，直接在瀏覽器即可使用；僅在需要直接讀取雲端 Google 文件™ 時，才需免費安裝 Marketplace 應用程式。
+            完全免費。本機 Word（<code>.docx</code>）與 PDF 檔案皆免註冊、免安裝，直接在瀏覽器即可使用；僅在需要直接讀取雲端 Google 文件™ 時，才需免費安裝 Marketplace 應用程式。
           </div>
           <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem 1.15rem;">
             <strong style="color: #1e3a8a;">Q2. 如何將 Google 文件™ 或 Word 轉換為「四百字稿紙（20字×20行）」或匯出 PNG 圖片？</strong><br>
@@ -2714,7 +2912,7 @@
         <div style="display: grid; gap: 0.9rem; font-size: 0.92rem; line-height: 1.7;">
           <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem 1.15rem;">
             <strong style="color: #1e3a8a;">Q1. 무료인가요? 회원가입이나 설치가 필요한가요?</strong><br>
-            전 기능 완전 무료입니다. 내 기기의 Word(<code>.docx</code>), PDF 및 5종 샘플은 가입·설치 없이 브라우저에서 즉시 사용할 수 있으며, Google 문서™ 연동 시에만 Marketplace 무료 설치가 필요합니다.
+            전 기능 완전 무료입니다. 내 기기의 Word(<code>.docx</code>) 및 PDF 파일은 가입·설치 없이 브라우저에서 즉시 사용할 수 있으며, Google 문서™ 연동 시에만 Marketplace 무료 설치가 필요합니다.
           </div>
           <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem 1.15rem;">
             <strong style="color: #1e3a8a;">Q2. Google 문서™나 Word 글을 「400자 원고지(20자×20행)」나 「PNG 이미지」로 저장하려면 어떻게 하나요?</strong><br>
@@ -2750,6 +2948,35 @@
       </p>
 
       <div class="timeline">
+        <!-- 2026-11-27 (ver.166 Vertical Editor, Wasabi Sanbo 20x10 & Taiwan Traditional Chinese Vertical Rule) -->
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background: #dc2626; box-shadow: 0 0 0 4px #fecaca;"></div>
+          <div class="timeline-date">2026.11.27 (ver.166)</div>
+          <div class="timeline-content">
+            <h3>
+              <span class="lang-content ja">Google ドキュメント™ 直結「縦書きエディタ（A4横・37列シート）」・特製『山葵山房 (20×10)』原稿用紙・台湾繁体字直書規格を追加しました</span>
+              <span class="lang-content en">Added "Wasabi Sanbo (20×10)" Manuscript Style, Cream Paper, Floral Gyobi &amp; Traditional Chinese Vertical Punctuation Rules</span>
+              <span class="lang-content zh">新增特製『山葵山房 (20×10)』稿紙、花魚尾、奶油紙與台灣繁體中文直書（居中標點）排版規格</span>
+              <span class="lang-content ko">특제 『와사비산방 (20×10)』 원고지·꽃어미·크림지 및 번체중문 세로쓰기 규격 추가</span>
+            </h3>
+            <ul class="lang-content ja">
+              <li><strong>縦書きエディタ（日本語組版専用）を新搭載：</strong> 本番PDFと同じ37列の縦書きシート上で直接執筆・見出し・会話括弧下げ・リスト・マーカー・囲み枠・<code>🎯 ルビ・訓点</code>（ふりがな／送り仮名／JIS・JLReq準拠返り点）を編集し、原本無傷の「<code>💾 コピーを保存（原本名＋日時）</code>」からワンクリックで「<code>🖨️ 組版・印刷へ</code>」進めるようになりました。</li>
+              <li><strong>特製『山葵山房 (20×10)』・花魚尾・クリーム紙 ＆ 本文/ノート罫線独立ON/OFF：</strong> A4原稿用紙に『山葵山房 (20×10)』と『クラシック (20×20)』、用紙色（白／クリーム紙）、魚尾4種を追加。また縦書きの組版規格切替（日本語：右上句読点 ／ 繁體中文：中央句読点・直書）に対応しました。</li>
+            </ul>
+            <ul class="lang-content en">
+              <li><strong>New Manuscript Styles &amp; Independent Ruling Toggles:</strong> Added "Wasabi Sanbo (20×10)" and "Classic (20×20)" A4 manuscript styles, Cream Paper option, 4 Gyobi mark styles, and independent Body/Note ruling ON/OFF switches.</li>
+              <li><strong>Traditional Chinese Vertical Punctuation Rule:</strong> Added a dedicated switch between Japanese vertical rules (top-right punctuation) and Traditional Chinese vertical rules (centered punctuation &amp; TC serif glyphs).</li>
+            </ul>
+            <ul class="lang-content zh">
+              <li><strong>支援台灣繁體中文直書規格（居中標點）：</strong> 於直書模式新增「繁體中文（中央句読点・直書）」規格切換，精準呈現居中標點符號與繁體標準字形。</li>
+              <li><strong>新增『山葵山房 (20×10)』稿紙・花魚尾・奶油紙與內文／筆記格線獨立開關：</strong> 擴充三種稿紙樣式、紙張底色（白／奶油紙）與四款魚尾設計。</li>
+            </ul>
+            <ul class="lang-content ko">
+              <li><strong>『와사비산방 (20×10)』 원고지·꽃어미·크림지 및 본문/노트 줄눈 개별 ON/OFF:</strong> A4 원고지 3종 양식과 용지 색상(백색/크림지), 어미 4종 및 번체중문 세로쓰기(중앙 문장부호) 규격을 추가했습니다.</li>
+            </ul>
+          </div>
+        </div>
+
         <!-- 2026-11-24 (Inline Ruby & Kanbun Kunten Notation for Vertical PDF & 20x20 Manuscript Paper) -->
         <div class="timeline-item">
           <div class="timeline-dot" style="background: #059669; box-shadow: 0 0 0 4px #a7f3d0;"></div>
