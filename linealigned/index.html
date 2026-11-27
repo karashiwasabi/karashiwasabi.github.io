@@ -1092,29 +1092,49 @@
       text-decoration: underline;
       margin-left: 6px;
     }
-    /* 外側ステージ（横スクロール領域・右端＝1枚目からスタート） */
+    /* 外側ステージ（横スクロール領域・右端＝1枚目からスタート / タブレット等の小高さ画面でも上端が見切れないよう safe 配置） */
+    :root {
+      --tategaki-stage-pad-y-px: 20px;
+      --tategaki-stage-pad-x-px: 36px;
+      --tategaki-stage-pad-y-compact-px: 12px;
+      --tategaki-stage-pad-x-compact-px: 16px;
+    }
     .tategaki-editor-stage {
-      flex: 1 1 auto;
+      flex: 1 1 0%;
+      min-height: 0;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: flex-start;
       direction: rtl;
-      padding: 20px 36px;
+      padding: 0 var(--tategaki-stage-pad-x-px);
       overflow-x: auto;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
       background: #334155;
     }
-    /* Line-aligned (line-tategaki /v3/render-layout) のパラグラフ単位データを各A4横シート（右余白18mm＋37列259mm＋左余白20mm＝297mm）ごとに展開するホスト */
+    /* Line-aligned (line-tategaki /v3/render-layout) のパラグラフ単位データを各A4横シート（右余白18mm＋37列259mm＋左余白20mm＝297mm）ごとに展開するホスト
+       margin-top/bottom: auto によりPC大画面では上下中央、ステージより用紙が高いタブレット等では 0 に収束して上端見切れを防ぐ */
     .tategaki-engine-pages-host {
       position: relative;
       display: flex;
       flex-direction: row-reverse;
-      align-items: center;
+      align-items: flex-start;
+      margin-top: auto;
+      margin-bottom: auto;
       direction: ltr;
       gap: 16px;
       flex-shrink: 0;
       background: transparent;
-      padding: 0;
+      padding: var(--tategaki-stage-pad-y-px) 0;
+    }
+    @media (max-width: 1180px), (max-height: 860px) {
+      .tategaki-editor-stage {
+        padding: 0 var(--tategaki-stage-pad-x-compact-px);
+      }
+      .tategaki-engine-pages-host {
+        padding: var(--tategaki-stage-pad-y-compact-px) 0;
+      }
     }
     .tategaki-engine-pages-host .page-container {
       margin: 0 !important;
@@ -2135,7 +2155,7 @@
   <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 0.75rem;">
     <div style="font-size: 1.05rem; font-weight: 800; color: #1f1f1f;">
       <span style="color: #1a73e8; font-weight: 900;">Line-aligned</span>
-      <span style="color: #5f6368; font-size: 0.78rem; margin-left: 6px;">ver.166 (Build 20261127_1635)</span>
+      <span style="color: #5f6368; font-size: 0.78rem; margin-left: 6px;">ver.166 (Build 20261127_2031)</span>
     </div>
     <div style="display: flex; align-items: center; gap: 6px;">
       <a href="https://wasabikarashi.com/" id="uiLinkTop" style="display: inline-flex; align-items: center; gap: 3px; background: #f1f5f9; border: 1px solid #dadce0; border-radius: 8px; padding: 5px 10px; font-size: 0.75rem; font-weight: 700; color: #3c4043; text-decoration: none; white-space: nowrap;">トップ</a>
@@ -19279,7 +19299,10 @@ var loadSampleDocx;
     if (saveStatusEl) saveStatusEl.style.display = 'none';
     overlay.style.display = 'flex';
     host.style.display = 'flex';
-    if (stage) stage.scrollLeft = 0;
+    if (stage) {
+      stage.scrollLeft = 0;
+      stage.scrollTop = 0;
+    }
 
     if (isRealUserGoogleDocId(selectedDocsId)) {
       await loadRealGoogleDocIntoTategakiEditor(selectedDocsId, selectedDocsName || 'Google ドキュメント', false);
