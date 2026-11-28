@@ -4112,7 +4112,7 @@
     const previewContent = document.getElementById('docsPreviewContent');
     if (previewContent) previewContent.innerHTML = '';
     if (selectedDocsId) {
-      showStatus('設定を変更しました。「👁️ プレビュー」または「🖨️ PDF出力 / 印刷」を押して反映してください。', 'info');
+      showStatus('設定を変更しました。「🖨️ PDF出力 / 印刷」または「PNG出力 (ZIP)」を押して反映してください。', 'info');
     }
   }
 
@@ -4347,9 +4347,9 @@
       stopDocsWorkingProgress(true, 'ドキュメント読み込み完了');
       if (plan && plan.success) {
         const chunkNote = (plan.isChunked && plan.totalChunks > 1) ? `（全 ${plan.totalChunks} チャンク構成）` : '';
-        showStatus('選択完了: 「' + docName + '」' + chunkNote + ' — 用紙・罫線を確認し、「👁️ プレビュー」または「🖨️ PDF出力 / 印刷」を押してください。', 'success');
+        showStatus('選択完了: 「' + docName + '」' + chunkNote + ' — 用紙・罫線を確認し、「🖨️ PDF出力 / 印刷」または「PNG出力 (ZIP)」を押してください。', 'success');
       } else {
-        showStatus('選択完了: 「' + docName + '」 — 「👁️ プレビュー」または「🖨️ PDF出力 / 印刷」を押してください。', 'success');
+        showStatus('選択完了: 「' + docName + '」 — 「🖨️ PDF出力 / 印刷」または「PNG出力 (ZIP)」を押してください。', 'success');
       }
     } catch (err) {
       const fileNameEl = document.getElementById('docsSelectedFileName');
@@ -4358,7 +4358,7 @@
         fileNameEl.style.color = '#1a73e8';
       }
       stopDocsWorkingProgress(false);
-      showStatus('選択完了: 「' + docName + '」 — 「👁️ プレビュー」または「🖨️ PDF出力 / 印刷」を押してください。', 'info');
+      showStatus('選択完了: 「' + docName + '」 — 「🖨️ PDF出力 / 印刷」または「PNG出力 (ZIP)」を押してください。', 'info');
     } finally {
       setDocsButtonsBusy(false);
     }
@@ -4547,7 +4547,7 @@ function loadSampleDocs() {
   if (btnViewOrig) btnViewOrig.style.display = 'inline-block';
 
   setDocsButtonsBusy(false);
-  showStatus('✨ 5言語混在サンプル（日・英・中・台・韓 / 数式・グラフ・表入り）をセットしました！Googleドライブを一切汚さず、すぐ下の「👁️ プレビュー」または「🖨️ PDF出力 / 印刷」をお試しいただけます。', 'success');
+  showStatus('✨ 5言語混在サンプル（日・英・中・台・韓 / 数式・グラフ・表入り）をセットしました！Googleドライブを一切汚さず、すぐ下の「🖨️ PDF出力 / 印刷」または「PNG出力 (ZIP)」をお試しいただけます。', 'success');
 }
 
 const _origResetDocsFile = resetDocsFile;
@@ -4729,9 +4729,9 @@ loadDocsPdfData = async function(docId, docName, token) {
     stopDocsWorkingProgress(true, 'ドキュメント読み込み完了');
     if (plan && plan.success) {
       const chunkNote = (plan.isChunked && plan.totalChunks > 1) ? `（全 ${plan.totalChunks} チャンク構成）` : '';
-      showStatus('選択完了: 「' + docName + '」' + chunkNote + ' — 用紙・罫線を確認し、「👁️ プレビュー」または「🖨️ PDF出力 / 印刷」を押してください。', 'success');
+      showStatus('選択完了: 「' + docName + '」' + chunkNote + ' — 用紙・罫線を確認し、「🖨️ PDF出力 / 印刷」または「PNG出力 (ZIP)」を押してください。', 'success');
     } else {
-      showStatus('選択完了: 「' + docName + '」 — 「👁️ プレビュー」または「🖨️ PDF出力 / 印刷」を押してください。', 'success');
+      showStatus('選択完了: 「' + docName + '」 — 「🖨️ PDF出力 / 印刷」または「PNG出力 (ZIP)」を押してください。', 'success');
     }
   } catch (err) {
     const fileNameEl = document.getElementById('docsSelectedFileName');
@@ -4740,7 +4740,7 @@ loadDocsPdfData = async function(docId, docName, token) {
       fileNameEl.style.color = '#1a73e8';
     }
     stopDocsWorkingProgress(false);
-    showStatus('選択完了: 「' + docName + '」 — 「👁️ プレビュー」または「🖨️ PDF出力 / 印刷」を押してください。', 'info');
+    showStatus('選択完了: 「' + docName + '」 — 「🖨️ PDF出力 / 印刷」または「PNG出力 (ZIP)」を押してください。', 'info');
   } finally {
     setDocsButtonsBusy(false);
   }
@@ -5129,7 +5129,7 @@ var loadSampleDocx;
       if (btnDlDocx) btnDlDocx.style.display = 'none';
 
       stopDocsWorkingProgress(true, 'Word (.docx) 読み込み完了');
-      showStatus('選択完了: 「' + file.name + '」 — 用紙・罫線を確認し、「👁️ プレビュー」または「🖨️ PDF出力 / 印刷」を押してください。', 'success');
+      showStatus('選択完了: 「' + file.name + '」 — 用紙・罫線を確認し、「🖨️ PDF出力 / 印刷」または「PNG出力 (ZIP)」を押してください。', 'success');
     } catch (err) {
       stopDocsWorkingProgress(false);
       showStatus('Word (.docx) 読み込みエラー: ' + err.message, 'error');
@@ -5223,7 +5223,7 @@ var loadSampleDocx;
                 if (btnDlDocx) btnDlDocx.style.display = 'none';
 
                 stopDocsWorkingProgress(true, 'Word (.docx) 選択・読み込み完了');
-                showStatus('選択完了: 「' + doc.name + '」 — 用紙・罫線を確認し、「👁️ プレビュー」または「🖨️ PDF出力 / 印刷」を押してください。', 'success');
+                showStatus('選択完了: 「' + doc.name + '」 — 用紙・罫線を確認し、「🖨️ PDF出力 / 印刷」または「PNG出力 (ZIP)」を押してください。', 'success');
               } catch (dlErr) {
                 stopDocsWorkingProgress(false);
                 showStatus('Googleドライブからの読み込みエラー: ' + dlErr.message, 'error');
@@ -5287,7 +5287,7 @@ var loadSampleDocx;
     const previewContent = document.getElementById('docxPreviewContent');
     if (previewContent) previewContent.innerHTML = '';
     if (selectedDocxFileId || selectedDocxBase64) {
-      showStatus('設定を変更しました。「👁️ プレビュー」または「🖨️ PDF出力 / 印刷」を押して反映してください。', 'info');
+      showStatus('設定を変更しました。「🖨️ PDF出力 / 印刷」または「PNG出力 (ZIP)」を押して反映してください。', 'info');
     }
   }
 
@@ -14659,6 +14659,99 @@ var loadSampleDocx;
 
 
 
+  // ==============================================================================
+  // Google Picker リストビュー (DocsViewMode.LIST) 既定化 ＆ 全動線プレビュー文言完全除去
+  // ==============================================================================
+  (function applyPickerListModeAndStripPreviewText() {
+    // 1. I18N_TEXTS 内の旧プレビュー表記を全4言語から除去
+    if (typeof I18N_TEXTS === 'object' && I18N_TEXTS) {
+      const cleanLabels = {
+        ja: { btnPreview: '', titlePreview: '組版出力', titleDocxPreview: 'Word (.docx) 組版出力' },
+        en: { btnPreview: '', titlePreview: 'Typesetting Output', titleDocxPreview: 'Word (.docx) Typesetting Output' },
+        'zh-TW': { btnPreview: '', titlePreview: '排版匯出', titleDocxPreview: 'Word (.docx) 排版匯出' },
+        ko: { btnPreview: '', titlePreview: '조판 출력', titleDocxPreview: 'Word (.docx) 조판 출력' }
+      };
+      Object.keys(cleanLabels).forEach(lang => {
+        if (I18N_TEXTS[lang]) {
+          I18N_TEXTS[lang].btnPreview = cleanLabels[lang].btnPreview;
+          I18N_TEXTS[lang].titlePreview = cleanLabels[lang].titlePreview;
+          I18N_TEXTS[lang].titleDocxPreview = cleanLabels[lang].titleDocxPreview;
+        }
+      });
+    }
+
+    // 2. 全 Google Picker (DOCS / DOCX / PDF / 縦書きエディタ) の DocsView に LIST モードを強制適用
+    const _prevInstallPickerHook = window.installGooglePickerBuilderSessionHook;
+    function ensurePickerListViewHookInstalled() {
+      if (typeof _prevInstallPickerHook === 'function') {
+        _prevInstallPickerHook();
+      }
+      if (!(typeof google !== 'undefined' && google.picker && google.picker.PickerBuilder && google.picker.PickerBuilder.prototype)) {
+        return;
+      }
+      const proto = google.picker.PickerBuilder.prototype;
+      if (proto.__llListViewHooked) return;
+      const origAddView = proto.addView;
+      if (typeof origAddView === 'function') {
+        proto.addView = function(view) {
+          try {
+            const listMode = google.picker.DocsViewMode && google.picker.DocsViewMode.LIST;
+            if (view && listMode && typeof view.setMode === 'function') {
+              view.setMode(listMode);
+            }
+          } catch (_) {}
+          return origAddView.apply(this, arguments);
+        };
+      }
+      proto.__llListViewHooked = true;
+    }
+    installGooglePickerBuilderSessionHook = ensurePickerListViewHookInstalled;
+    window.installGooglePickerBuilderSessionHook = ensurePickerListViewHookInstalled;
+
+    // 3. ステータスメッセージの旧「プレビュー」言及除去 ＆ 非日本語選択時の案内文同期
+    const _prevShowStatusNoPreview = showStatus;
+    showStatus = function(msg, type) {
+      let text = String(msg || '')
+        .replace(/「\s*(?:👁️\s*)?プレビュー\s*」\s*または\s*/g, '');
+
+      if (currentLanguage && currentLanguage !== 'ja') {
+        const actionGuides = {
+          en: {
+            selectedPrefix: 'Selected: ',
+            confirmGuide: ' — Check paper & ruling settings, then click "Export PDF / Print" or "Export PNG (ZIP)".',
+            shortGuide: ' — Click "Export PDF / Print" or "Export PNG (ZIP)".',
+            changedMsg: 'Settings updated. Click "Export PDF / Print" or "Export PNG (ZIP)" to export.'
+          },
+          'zh-TW': {
+            selectedPrefix: '已選取：',
+            confirmGuide: ' — 確認紙張與格線設定後，請點擊「匯出 PDF / 列印」或「匯出 PNG (ZIP)」。',
+            shortGuide: ' — 請點擊「匯出 PDF / 列印」或「匯出 PNG (ZIP)」。',
+            changedMsg: '設定已變更。請點擊「匯出 PDF / 列印」或「匯出 PNG (ZIP)」匯出。'
+          },
+          ko: {
+            selectedPrefix: '선택 완료: ',
+            confirmGuide: ' — 용지·줄눈 설정을 확인한 뒤 "PDF 출력 / 인쇄" 또는 "PNG 저장 (ZIP)"을 눌러 주세요.',
+            shortGuide: ' — "PDF 출력 / 인쇄" 또는 "PNG 저장 (ZIP)"을 눌러 주세요.',
+            changedMsg: '설정이 변경되었습니다. "PDF 출력 / 인쇄" 또는 "PNG 저장 (ZIP)"을 눌러 출력해 주세요.'
+          }
+        };
+        const g = actionGuides[currentLanguage];
+        if (g) {
+          if (text.indexOf('選択完了:') !== -1) {
+            text = text
+              .replace(/^[\s]*選択完了:\s*/, g.selectedPrefix)
+              .replace(/\s*—\s*用紙・罫線を確認し、.*$/, g.confirmGuide)
+              .replace(/\s*—\s*「.*$/, g.shortGuide);
+          } else if (text.indexOf('設定を変更しました。') !== -1) {
+            text = g.changedMsg;
+          }
+        }
+      }
+      return _prevShowStatusNoPreview(text, type);
+    };
+    window.showStatus = showStatus;
+  })();
+
 
   </script>
   <script id="tategakiEditorScript">
@@ -19306,6 +19399,9 @@ var loadSampleDocx;
         const docsView = new google.picker.DocsView()
           .setIncludeFolders(true)
           .setMimeTypes('application/vnd.google-apps.document');
+        if (google.picker.DocsViewMode && google.picker.DocsViewMode.LIST && typeof docsView.setMode === 'function') {
+          docsView.setMode(google.picker.DocsViewMode.LIST);
+        }
 
         const picker = new google.picker.PickerBuilder()
           .enableFeature(google.picker.Feature.NAV_HIDDEN)
