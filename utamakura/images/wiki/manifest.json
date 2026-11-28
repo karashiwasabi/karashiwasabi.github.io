@@ -651,9 +651,9 @@
   },
   {
     "place": "那須野",
-    "file_key": "reg_nasuno.svg",
-    "local_path": "images/wiki/reg_nasuno.svg",
-    "caption": "那須野（下野国北東部に広がる広大な扇状地「那須野が原」の範囲と歌枕群）"
+    "file_key": "flickr_49557486382_nasuno.jpg",
+    "local_path": "images/wiki/flickr_49557486382_nasuno.jpg",
+    "credit": "出典：Flickr（撮影：i-saint / CC BY 2.0）"
   },
   {
     "place": "岩城",
@@ -863,5 +863,104 @@
     "place": "竜田山",
     "file_key": "Tatsuta-taisha, haiden.jpg",
     "local_path": "images/wiki/Tatsuta-taisha__haiden.jpg"
+  },
+  {
+    "place": "磐代",
+    "file_key": "岩代王子.jpg",
+    "local_path": "images/wiki/wiki_603ec5734e.jpg"
+  },
+  {
+    "place": "敏馬",
+    "file_key": "Minume_shrine.jpg",
+    "local_path": "images/wiki/Minume_shrine.jpg"
+  },
+  {
+    "place": "野島の崎",
+    "file_key": "Esakitoudai_01.jpg",
+    "local_path": "images/wiki/Esakitoudai_01.jpg"
+  },
+  {
+    "place": "印南の海",
+    "file_key": "Harimanada6003.jpg",
+    "local_path": "images/wiki/Harimanada6003.jpg"
+  },
+  {
+    "place": "鞆の浦",
+    "file_key": "Tomonoura08bs3200.jpg",
+    "local_path": "images/wiki/Tomonoura08bs3200.jpg"
+  },
+  {
+    "place": "佐保川",
+    "file_key": "Saho_River,_Daian-ji,_Nara.jpg",
+    "local_path": "images/wiki/Saho_River__Daian-ji__Nara.jpg"
+  },
+  {
+    "place": "香椎の潟",
+    "file_key": "Torii_of_Mishima_Shrine_in_Hakata_Bay.JPG",
+    "local_path": "images/wiki/Torii_of_Mishima_Shrine_in_Hakata_Bay.jpg"
+  },
+  {
+    "place": "立山",
+    "file_key": "20_Tateyama_from_Mikurigaike_1998-7-17.jpg",
+    "local_path": "images/wiki/20_Tateyama_from_Mikurigaike_1998-7-17.jpg"
+  },
+  {
+    "place": "射水川",
+    "file_key": "Oyabe_River_and_Mt._Futagami_ac.jpg",
+    "local_path": "images/wiki/Oyabe_River_and_Mt._Futagami_ac.jpg"
+  },
+  {
+    "place": "鹿島",
+    "file_key": "Kashima-jingu_ichinotorii.JPG",
+    "local_path": "images/wiki/Kashima-jingu_ichinotorii.jpg"
+  },
+  {
+    "place": "湯殿山",
+    "file_key": "find47_1747_yudonosan.jpg",
+    "local_path": "images/wiki/find47_1747_yudonosan.jpg",
+    "credit": "出典：FIND/47（撮影：Makoto_Lab / CC BY 4.0）"
+  },
+  {
+    "place": "初瀬",
+    "file_key": "find47_2994_hasedera.jpg",
+    "local_path": "images/wiki/find47_2994_hasedera.jpg",
+    "credit": "出典：FIND/47（撮影：Charlie_or_Y-N / CC BY 4.0）"
+  },
+  {
+    "place": "草加",
+    "file_key": "flickr_15441089461_soka.jpg",
+    "local_path": "images/wiki/flickr_15441089461_soka.jpg",
+    "credit": "出典：Flickr（撮影：Kasadera / CC BY 2.0・一部トリミング）"
+  },
+  {
+    "place": "黒羽",
+    "file_key": "flickr_63191509_kurobane.jpg",
+    "local_path": "images/wiki/flickr_63191509_kurobane.jpg",
+    "credit": "出典：Flickr（撮影：Hyougushi / CC BY-SA 2.0）"
+  },
+  {
+    "place": "高円",
+    "file_key": "Takamadoyama 201611.jpg",
+    "local_path": "images/wiki/Takamadoyama_201611.jpg"
+  },
+  {
+    "place": "勝野",
+    "file_key": "Shirahige shrine , 白鬚神社 - panoramio.jpg",
+    "local_path": "images/wiki/Shirahige_shrine_Takashima.jpg"
+  },
+  {
+    "place": "養老の滝",
+    "file_key": "Streams (Yourou Waterfall).JPG",
+    "local_path": "images/wiki/Streams__Yourou_Waterfall_.jpg"
+  },
+  {
+    "place": "曝井",
+    "file_key": "Font Sarashii （曝井） - panoramio.jpg",
+    "local_path": "images/wiki/Font_Sarashii.jpg"
+  },
+  {
+    "place": "室の浦",
+    "file_key": "Murotsu4079.JPG",
+    "local_path": "images/wiki/Murotsu4079.jpg"
   }
 ]

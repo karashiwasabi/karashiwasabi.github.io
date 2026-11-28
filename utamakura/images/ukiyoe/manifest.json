@@ -458,5 +458,65 @@
     "caption": "歌川広重『五十三次名所図会 五十五 大尾 京 三條大はし』（東京国立博物館所蔵 / 出典：ColBase CC BY 4.0）",
     "file_key": "colbase_tokaido53_kyo_sanjo.jpg",
     "local_path": "images/ukiyoe/colbase_tokaido53_kyo_sanjo.jpg"
+  },
+  {
+    "place": "しのぶの里",
+    "id": "tokyo_shinobu_mochizuri",
+    "artist": "江戸期木版摺物",
+    "series": "諸国名所境内之図",
+    "title": "陸奥国信夫郡文字摺石、同観世音境内之図",
+    "caption": "『陸奥国信夫郡文字摺石、同観世音境内之図』（東京都立中央図書館所蔵・部分 / PDM）",
+    "file_key": "tokyo_shinobu_mochizuri.jpg",
+    "local_path": "images/ukiyoe/tokyo_shinobu_mochizuri.jpg"
+  },
+  {
+    "place": "難波潟",
+    "id": "hokusai_hyakunin_naniwagata",
+    "artist": "葛飾北斎",
+    "series": "百人一首うばがゑとき",
+    "title": "伊勢（難波潟）",
+    "caption": "葛飾北斎『百人一首うばがゑとき 伊勢（難波潟）』（メトロポリタン美術館所蔵 / CC0）",
+    "file_key": "百人一首 うばがゑとき 伊勢-Poem by Ise, from the series One Hundred Poems Explained by the Nurse (Hyakunin isshu uba ga etoki) MET DP140969.jpg",
+    "local_path": "images/ukiyoe/hokusai_hyakunin_naniwagata.jpg"
+  },
+  {
+    "place": "竜田山",
+    "id": "r60_yamato_tatsutagawa",
+    "artist": "歌川広重",
+    "series": "六十余州名所図会",
+    "title": "大和 龍田山 龍田川",
+    "caption": "歌川広重『六十余州名所図会 大和 龍田山 龍田川』",
+    "file_key": "The Famous Scenes of the Sixty States 02 Yamato.jpg",
+    "local_path": "images/ukiyoe/r60_yamato_tatsutagawa.jpg"
+  },
+  {
+    "place": "立山",
+    "id": "hiroshige_sankai_etchu_tateyama",
+    "artist": "歌川広重",
+    "series": "山海見立相撲",
+    "title": "越中立山",
+    "caption": "歌川広重『山海見立相撲 越中立山』（国立国会図書館所蔵・Wikimedia Commons PDM）",
+    "file_key": "NDL-DC 1307351 Utagawa Hiroshige 山海見立相撲越中立山 crd.jpg",
+    "local_path": "images/ukiyoe/hiroshige_sankai_etchu_tateyama.jpg"
+  },
+  {
+    "place": "鹿島",
+    "id": "colbase_r60_hitachi_kashima",
+    "artist": "歌川広重",
+    "series": "六十余州名所図会",
+    "title": "常陸 鹿嶋太神宮",
+    "caption": "歌川広重『六十余州名所図会 常陸 鹿嶋太神宮』（東京国立博物館所蔵 / 出典：ColBase CC BY 4.0）",
+    "file_key": "colbase_r60_hitachi_kashima.jpg",
+    "local_path": "images/ukiyoe/colbase_r60_hitachi_kashima.jpg"
+  },
+  {
+    "place": "養老の滝",
+    "id": "hokusai_taki_yoro",
+    "artist": "葛飾北斎",
+    "series": "諸国瀧廻り",
+    "title": "美濃ノ国養老の滝",
+    "caption": "葛飾北斎『諸国瀧廻り 美濃ノ国養老の滝』（メトロポリタン美術館所蔵 / CC0）",
+    "file_key": "諸國瀧廻リ 美濃ノ国養老の滝-Yōrō Waterfall in Mino Province (Mino no Yōrō no taki), from the series A Tour of Waterfalls in Various Provinces (Shokoku taki meguri) MET DP141254.jpg",
+    "local_path": "images/ukiyoe/hokusai_taki_yoro.jpg"
   }
 ]

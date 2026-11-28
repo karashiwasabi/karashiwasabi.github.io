@@ -642,7 +642,7 @@
     .leaflet-tooltip-top.transparent-box:before { display: none; }
     .map-toast {
       position: absolute;
-      top: 8px;
+      top: 42px;
       left: 8px;
       z-index: 4300;
       background: rgba(34, 27, 21, 0.96);
@@ -654,8 +654,10 @@
       box-shadow: 0 3px 12px rgba(0,0,0,0.48);
       display: none;
       flex-direction: column;
-      width: min(46%, 320px);
-      max-height: calc(100% - 16px);
+      width: min(calc(47% - 12px), 300px);
+      max-height: calc(100% - 50px);
+      box-sizing: border-box;
+      overflow-x: hidden;
       overflow-y: auto;
     }
     .toast-img-el {
@@ -818,17 +820,54 @@
       .kakikudashi { font-size: 0.95rem; }
       .translation { font-size: 0.96rem; }
       .map-toast {
-        top: 6px;
+        top: 38px;
         left: 6px;
-        width: min(52%, 250px);
-        max-height: calc(100% - 12px);
-        padding: 6px 8px;
-        font-size: 0.74rem;
+        width: calc(47% - 8px);
+        max-width: calc(48% - 6px);
+        max-height: calc(100% - 44px);
+        padding: 5px 7px;
+        font-size: 0.72rem;
+        box-sizing: border-box;
+        overflow-x: hidden;
+      }
+      .toast-img-el {
+        max-height: 16vh;
+        margin-top: 4px;
+      }
+      .custom-label {
+        font-size: 11px;
+        padding: 2px 5px;
+        max-width: 148px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .custom-label.selected-pin {
+        font-size: 12px;
+        padding: 2px 6px;
+      }
+      .area-banner-label {
+        font-size: 11.5px;
+        padding: 3px 7px;
+        max-width: 148px;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
     }
-    @media (max-width: 520px) {
-      .vol-nav-bar { gap: 6px; padding: 0 6px; }
-      .home-top-link { position: static; margin-right: auto; padding: 2px 6px; font-size: 0.72rem; }
+    .slim-nav-btn { flex: 0 0 auto; }
+    .vol-nav-bar { box-sizing: border-box; width: 100%; max-width: 100%; min-width: 0; overflow: hidden; }
+    .vol-nav-bar .para-select {
+      flex: 0 1 230px;
+      min-width: 0;
+      max-width: 230px;
+      box-sizing: border-box;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    @media (max-width: 600px) {
+      .vol-nav-bar { gap: 6px; padding: 0 8px; }
+      .home-top-link { position: static; margin-right: auto; padding: 2px 6px; font-size: 0.72rem; flex: 0 0 auto; }
+      .vol-nav-bar .para-select { flex: 1 1 0px; width: 0; min-width: 0; max-width: 230px; font-size: 0.85rem; padding: 2px 6px; }
     }
   </style>
 </head>
@@ -894,7 +933,7 @@
         </article>
         <article class="ssr-volume">
           <h3><a href="manyoshu.html">万葉集　歌枕名歌選</a></h3>
-          <p>日本最古の和歌集『万葉集』から、各地の歴史的歌枕・名歌（全240首：第1首〜第240首）を精選。万葉百科DB準拠の万葉仮名原文・読み下し・現代語訳とともに歌枕の原風景を巡ります。</p>
+          <p>日本最古の和歌集『万葉集』から、各地の歴史的歌枕・名歌（全260首：第1首〜第260首）を精選。万葉百科DB準拠の万葉仮名原文・読み下し・現代語訳とともに歌枕の原風景を巡ります。</p>
         </article>
       </section>
       <section class="ssr-places">
@@ -954,6 +993,10 @@
         <article class="ssr-place-item">
           <h3>天橋立（あまのはしだて）</h3>
           <p>旧国：山陰道（丹後国） ／ 現在地：京都府宮津市文珠・府中（特別名勝 天橋立）</p>
+        </article>
+        <article class="ssr-place-item">
+          <h3>鳴呼見の浦（あみのうら）</h3>
+          <p>旧国：東海道（志摩国） ／ 現在地：三重県鳥羽市小浜町（あみの浦・小浜湾周辺）</p>
         </article>
         <article class="ssr-place-item">
           <h3>年魚市潟（あゆちがた）</h3>
@@ -1028,8 +1071,20 @@
           <p>旧国：山陰道（因幡国） ／ 現在地：鳥取県鳥取市国府町宮下・稲葉丘（稲葉山・因幡国一宮 宇倍神社・因幡国庁跡）</p>
         </article>
         <article class="ssr-place-item">
+          <h3>印南の海（いなみのうみ）</h3>
+          <p>旧国：山陽道（播磨国） ／ 現在地：兵庫県明石市西部〜加古川市沖（印南野沿岸・播磨灘）</p>
+        </article>
+        <article class="ssr-place-item">
           <h3>伊吹山（いぶきやま）</h3>
           <p>旧国：東山道（近江国・美濃国） ／ 現在地：滋賀県米原市・岐阜県揖斐郡揖斐川町（伊吹山）</p>
+        </article>
+        <article class="ssr-place-item">
+          <h3>射水川（いみずがわ）</h3>
+          <p>旧国：北陸道（越中国） ／ 現在地：富山県高岡市伏木（小矢部川［旧射水川］河口）</p>
+        </article>
+        <article class="ssr-place-item">
+          <h3>妹山（いもやま）</h3>
+          <p>旧国：南海道（紀伊国） ／ 現在地：和歌山県伊都郡かつらぎ町西渋田（紀の川南岸・妹山）</p>
         </article>
         <article class="ssr-place-item">
           <h3>種の浜（いろのはま）</h3>
@@ -1038,6 +1093,10 @@
         <article class="ssr-place-item">
           <h3>岩城（いわき）</h3>
           <p>旧国：東山道 ／ 現在地：福島県いわき市一帯</p>
+        </article>
+        <article class="ssr-place-item">
+          <h3>磐代（いわしろ）</h3>
+          <p>旧国：南海道（紀伊国） ／ 現在地：和歌山県日高郡みなべ町西岩代（岩代の結松・岩代王子）</p>
         </article>
         <article class="ssr-place-item">
           <h3>岩手の里（いわでのさと）</h3>
@@ -1200,12 +1259,32 @@
           <p>旧国：東山道 ／ 現在地：宮城県名取市愛島笠島（藤原実方朝臣の墓・道祖神社）</p>
         </article>
         <article class="ssr-place-item">
+          <h3>風速の浦（かざはやのうら）</h3>
+          <p>旧国：山陽道（安芸国） ／ 現在地：広島県東広島市安芸津町風早（風早の浦・三津湾沿岸）</p>
+        </article>
+        <article class="ssr-place-item">
+          <h3>香椎の潟（かしいのかた）</h3>
+          <p>旧国：西海道（筑前国） ／ 現在地：福岡県福岡市東区香椎・御島崎（香椎潟・御島神社）</p>
+        </article>
+        <article class="ssr-place-item">
+          <h3>鹿島（かしま）</h3>
+          <p>旧国：東海道（常陸国） ／ 現在地：茨城県鹿嶋市宮中（鹿島神宮）</p>
+        </article>
+        <article class="ssr-place-item">
           <h3>かた見の薄（かたみのすすき）</h3>
           <p>旧国：東山道 ／ 現在地：宮城県名取市愛島笠島（藤原実方朝臣の墓）</p>
         </article>
         <article class="ssr-place-item">
+          <h3>勝野（かちの）</h3>
+          <p>旧国：東山道（近江国） ／ 現在地：滋賀県高島市勝野・鵜川（勝野の原・白鬚神社周辺）</p>
+        </article>
+        <article class="ssr-place-item">
           <h3>金沢（かなざわ）</h3>
           <p>旧国：北陸道 ／ 現在地：石川県金沢市（金沢城公園・兼六園・成学寺周辺）</p>
+        </article>
+        <article class="ssr-place-item">
+          <h3>軽の池（かるのいけ）</h3>
+          <p>旧国：畿内（大和国） ／ 現在地：奈良県橿原市大軽町・石川町（石川池・軽池比定地周辺）</p>
         </article>
         <article class="ssr-place-item">
           <h3>河原院（かわらのいん）</h3>
@@ -1320,6 +1399,14 @@
           <p>旧国：北陸道（佐渡国） ／ 現在地：新潟県佐渡市（佐渡島）</p>
         </article>
         <article class="ssr-place-item">
+          <h3>佐保川（さほがわ）</h3>
+          <p>旧国：畿内（大和国） ／ 現在地：奈良県奈良市法蓮町（佐保川・万葉歌碑付近）</p>
+        </article>
+        <article class="ssr-place-item">
+          <h3>曝井（さらしい）</h3>
+          <p>旧国：東海道（常陸国） ／ 現在地：茨城県水戸市愛宕町（曝井・滝坂古道）</p>
+        </article>
+        <article class="ssr-place-item">
           <h3>塩竈（しおがま）</h3>
           <p>旧国：東山道 ／ 現在地：宮城県塩竈市一森山（鹽竈神社・塩竈港）</p>
         </article>
@@ -1396,6 +1483,10 @@
           <p>旧国：東山道 ／ 現在地：福島県福島市瀬上町</p>
         </article>
         <article class="ssr-place-item">
+          <h3>背の山（せのやま）</h3>
+          <p>旧国：南海道（紀伊国） ／ 現在地：和歌山県伊都郡かつらぎ町背ノ山（紀の川北岸・背ノ山）</p>
+        </article>
+        <article class="ssr-place-item">
           <h3>千住（せんじゅ）</h3>
           <p>旧国：東海道 ／ 現在地：東京都足立区千住・荒川区南千住付近</p>
         </article>
@@ -1436,6 +1527,10 @@
           <p>旧国：東山道 ／ 現在地：岩手県西磐井郡平泉町平泉字柳御所（国指定名勝 おくのほそ道の風景地 高館〔高館義経堂〕）</p>
         </article>
         <article class="ssr-place-item">
+          <h3>高円（たかまど）</h3>
+          <p>旧国：畿内（大和国） ／ 現在地：奈良県奈良市白毫寺町・高円山（高円の野・白毫寺周辺）</p>
+        </article>
+        <article class="ssr-place-item">
           <h3>武隈の松（たけくまのまつ）</h3>
           <p>旧国：東山道 ／ 現在地：宮城県岩沼市二木（国指定名勝 おくのほそ道の風景地 武隈の松〔二木の松〕）</p>
         </article>
@@ -1450,6 +1545,10 @@
         <article class="ssr-place-item">
           <h3>太田の神社（ただのじんじゃ）</h3>
           <p>旧国：北陸道 ／ 現在地：石川県小松市上本折町（国指定名勝 おくのほそ道の風景地 多太神社）</p>
+        </article>
+        <article class="ssr-place-item">
+          <h3>立山（たちやま）</h3>
+          <p>旧国：北陸道（越中国） ／ 現在地：富山県中新川郡立山町芦峅寺（立山連峰）</p>
         </article>
         <article class="ssr-place-item">
           <h3>竜田川（たつたがわ）</h3>
@@ -1552,6 +1651,10 @@
           <p>旧国：東海道 ／ 現在地：東京都台東区上野桜木（東叡山寛永寺）</p>
         </article>
         <article class="ssr-place-item">
+          <h3>鞆の浦（とものうら）</h3>
+          <p>旧国：山陽道（備後国） ／ 現在地：広島県福山市鞆町鞆（国指定名勝 鞆公園・鞆の浦）</p>
+        </article>
+        <article class="ssr-place-item">
           <h3>登米（とよま）</h3>
           <p>旧国：東山道 ／ 現在地：宮城県登米市登米町寺池</p>
         </article>
@@ -1562,6 +1665,10 @@
         <article class="ssr-place-item">
           <h3>長島（ながしま）</h3>
           <p>旧国：東海道（伊勢国） ／ 現在地：三重県桑名市長島町（長島城跡・大智院）</p>
+        </article>
+        <article class="ssr-place-item">
+          <h3>鳴島（なきしま）</h3>
+          <p>旧国：山陽道（播磨国） ／ 現在地：兵庫県たつの市御津町室津（金ヶ崎南方沖・君島〔旧称・鳴島〕）</p>
         </article>
         <article class="ssr-place-item">
           <h3>那古（なご）</h3>
@@ -1642,6 +1749,10 @@
         <article class="ssr-place-item">
           <h3>能因島（のういんじま）</h3>
           <p>旧国：東山道 ／ 現在地：秋田県にかほ市象潟町（国指定天然記念物 象潟・能因島）</p>
+        </article>
+        <article class="ssr-place-item">
+          <h3>野島の崎（のじまのさき）</h3>
+          <p>旧国：南海道（淡路国） ／ 現在地：兵庫県淡路市野島江崎（野島の崎・江埼灯台付近）</p>
         </article>
         <article class="ssr-place-item">
           <h3>野田の玉川（のだのたまがわ）</h3>
@@ -1732,6 +1843,10 @@
           <p>旧国：東山道 ／ 現在地：宮城県塩竈市（国指定名勝 おくのほそ道の風景地 籬が島）</p>
         </article>
         <article class="ssr-place-item">
+          <h3>巻向山（まきむくやま）</h3>
+          <p>旧国：畿内（大和国） ／ 現在地：奈良県桜井市穴師・巻向（巻向山）</p>
+        </article>
+        <article class="ssr-place-item">
           <h3>松島（まつしま）</h3>
           <p>旧国：東山道 ／ 現在地：宮城県宮城郡松島町（特別名勝 おくのほそ道の風景地 松島）</p>
         </article>
@@ -1772,6 +1887,10 @@
           <p>旧国：東山道 ／ 現在地：山形県鶴岡市羽黒町手向（国指定名勝 おくのほそ道の風景地 羽黒山南谷）</p>
         </article>
         <article class="ssr-place-item">
+          <h3>敏馬（みぬめ）</h3>
+          <p>旧国：畿内（摂津国） ／ 現在地：兵庫県神戸市灘区岩屋中町（式内社・敏馬神社）</p>
+        </article>
+        <article class="ssr-place-item">
           <h3>三春（みはる）</h3>
           <p>旧国：東山道 ／ 現在地：福島県田村郡三春町</p>
         </article>
@@ -1798,6 +1917,10 @@
         <article class="ssr-place-item">
           <h3>むやむやの関（むやむやのせき）</h3>
           <p>旧国：東山道 ／ 現在地：秋田県にかほ市象潟町小砂川〜山形県遊佐町吹浦（三崎山旧街道・有耶無耶関跡）</p>
+        </article>
+        <article class="ssr-place-item">
+          <h3>室の浦（むろのうら）</h3>
+          <p>旧国：山陽道（播磨国） ／ 現在地：兵庫県たつの市御津町室津（室津港・室の浦）</p>
         </article>
         <article class="ssr-place-item">
           <h3>室の八島（むろのやしま）</h3>
@@ -1840,6 +1963,10 @@
           <p>旧国：山陰道（丹後国） ／ 現在地：京都府宮津市由良（由良川河口・丹後由良海岸）</p>
         </article>
         <article class="ssr-place-item">
+          <h3>養老の滝（ようろうのたき）</h3>
+          <p>旧国：東山道（美濃国） ／ 現在地：岐阜県養老郡養老町高林（養老公園・養老の滝）</p>
+        </article>
+        <article class="ssr-place-item">
           <h3>吉崎（よしざき）</h3>
           <p>旧国：北陸道 ／ 現在地：福井県あわら市吉崎・石川県加賀市吉崎町（北潟湖・吉崎御坊跡）</p>
         </article>
@@ -1877,6 +2004,10 @@
         <article class="ssr-person-item">
           <h3>安倍虫麻呂・安倍朝臣虫麻呂（あべのむしまろ：奈良時代天平期の官人・万葉歌人、三笠の山の月を詠む）（あべのむしまろ）</h3>
           <p>奈良時代天平期に活躍した官人・万葉歌人。橘諸兄や大伴家持らと親交があり、播磨守・皇后宮亮・中務大輔などを歴任した。『万葉集』には巻四・巻六・巻八に短歌六首が収められ、巻六・980番歌「雨隠る三笠の山を高みかも月の出で来ぬ夜は更けにつつ」では、三笠の山並みの高さを仰ぎながら月の出を待ち侘びる静かな夜の情趣を詠み上げている。</p>
+        </article>
+        <article class="ssr-person-item">
+          <h3>有間皇子（ありまのみこ：飛鳥時代の皇族・孝徳天皇皇子、斉明天皇4年に謀反の嫌疑で紀伊へ護送され磐代の結松の自傷歌を残した悲劇の皇子）（ありまのみこ）</h3>
+          <p>孝徳天皇の皇子で母は阿倍倉梯麻呂の娘・小足媛。斉明天皇4年（658）十一月、留守官・蘇我赤兄に政事の失を語らわれて謀反の嫌疑をかけられ、行幸先の紀伊国牟婁温湯へ護送された。その帰途、磐代の海辺で浜松の枝を結ぶ自傷歌二首（『万葉集』巻二・141〜142）を残し、藤白坂で十九歳の生涯を閉じた。</p>
         </article>
         <article class="ssr-person-item">
           <h3>在原業平朝臣（ありわらのなりひらあそん：平安初期の歌人・六歌仙・三十六歌仙・百人一首第17番歌人）（ありわらのなりひらあそん）</h3>
@@ -1977,6 +2108,10 @@
         <article class="ssr-person-item">
           <h3>大舎人部千文（おおとねりべのちふみ：常陸国那賀郡出身の防人、筑波嶺のさ百合に寄せて妻恋を詠んだ東国歌人）（おおとねりべのちふみ）</h3>
           <p>天平勝宝7歳（755）二月に常陸国那賀郡から筑紫警固のため徴発された防人（上丁）。難波津での検校において防人部領使より大伴家持へ進上された「筑波嶺のさ百合の花の夜床にもかなしけ妹そ昼もかなしけ」（『万葉集』巻二十・4369）ほか二首が採録され、防人歌屈指の名唱として知られる。</p>
+        </article>
+        <article class="ssr-person-item">
+          <h3>大伴東人・大伴宿禰東人（おおとものあずまひと：奈良時代中期の貴族・万葉歌人、聖武天皇の美濃国多芸行宮行幸に従駕し養老の滝を詠む）（おおとものあずまひと）</h3>
+          <p>大伴宿禰氏の一族。天平12年（740）の藤原広嗣の乱の折、聖武天皇の伊勢・美濃行幸に従駕し、美濃国の多芸行宮にて養老の滝の霊水を讃える歌（『万葉集』巻六・1034番）を詠んだ。『続日本紀』によれば天平宝字年間に従五位下・弾正弼や周防国守、宝亀年間に従五位上・散位頭などを歴任した。</p>
         </article>
         <article class="ssr-person-item">
           <h3>大伴像見・大伴宿禰像見（おおとものかたみ：奈良時代の官人・万葉歌人、石上降るとも雨に障らめやの熱情歌で知られる）（おおとものかたみ）</h3>
@@ -2882,6 +3017,9 @@
           <h3>路通・八十村路通（ろつう：蕉門の漂泊俳人、素龍清書本では「露通」と表記、敦賀まで芭蕉を出迎え美濃国大垣へと伴った門人）（ろつう）</h3>
           <p>美濃国（または近江国・京都）出身の漂泊の俳人（八十村氏、号は路通、素龍清書本では「露通」と表記）。乞食・放浪の境涯にあったところを芭蕉に見出されて門人となり、その才気と風狂を愛された。元禄2年（1689）8月、芭蕉の北陸下向を知って越前国敦賀の湊まで出迎えに駆けつけ、芭蕉に付き従って美濃国大垣へと入った。</p>
         </article>
+        <article class="ssr-person-item">
+          <h3>天武天皇</h3>
+        </article>
       </section>
     </div>
   </div>
@@ -2902,8 +3040,14 @@
   const INITIAL_OVERVIEW_LAT = 36.4;
   const INITIAL_OVERVIEW_LNG = 137.4;
   const INITIAL_OVERVIEW_ZOOM = 6;
+  const MOBILE_MAP_LAYOUT_MAX_WIDTH_PX = 900;
+  // 写真・浮世絵トーストを左半分（0%〜48%）に収め、歌枕の地点ピン・領域を右半分（50%〜100%）の中央へ表示する定数
   const MAP_LEFT_PANEL_WIDTH_RATIO = 0.48;
-  const MAP_RIGHT_HALF_CENTER_OFFSET_RATIO = 0.24;
+  const MAP_RIGHT_HALF_CENTER_OFFSET_RATIO = 0.25;
+  const MAP_RIGHT_HALF_MOBILE_OFFSET_RATIO = 0.26;
+  const MAP_RIGHT_HALF_PAN_DURATION_SEC = 0.45;
+  const AREA_FIT_RIGHT_MARGIN_PX = 24;
+  const AREA_FIT_VERTICAL_MARGIN_PX = 36;
   const TOAST_GMAP_ZOOM = 16;
 
   const GOJUON_ROW_CHARS = ['あ', 'か', 'さ', 'た', 'な', 'は', 'ま', 'や', 'ら', 'わ'];
@@ -3001,11 +3145,15 @@
   });
 
   function setMapViewInRightHalf(lat, lng, zoomLevel) {
+    map.invalidateSize({ pan: false });
     const mapSize = map.getSize();
-    const offsetX = Math.round(mapSize.x * MAP_RIGHT_HALF_CENTER_OFFSET_RATIO);
+    const offsetRatio = window.innerWidth <= MOBILE_MAP_LAYOUT_MAX_WIDTH_PX
+      ? MAP_RIGHT_HALF_MOBILE_OFFSET_RATIO
+      : MAP_RIGHT_HALF_CENTER_OFFSET_RATIO;
+    const offsetX = Math.round(mapSize.x * offsetRatio);
     const targetPoint = map.project([lat, lng], zoomLevel);
     const shiftedCenter = map.unproject(targetPoint.subtract([offsetX, 0]), zoomLevel);
-    map.setView(shiftedCenter, zoomLevel, { animate: true, duration: 0.45 });
+    map.setView(shiftedCenter, zoomLevel, { animate: true, duration: MAP_RIGHT_HALF_PAN_DURATION_SEC });
   }
 
   function clearMapHighlights() {
@@ -3157,14 +3305,19 @@
     clearMapHighlights();
     pinMarkerGroup.clearLayers();
     map.stop();
+    map.invalidateSize({ pan: false });
 
     if (found.is_area && found.area_polygon) {
       const areaZoom = Math.round(found.zoom || 9);
       const mapSize = map.getSize();
-      const leftPadPx = Math.round(mapSize.x * MAP_LEFT_PANEL_WIDTH_RATIO) + 16;
-      map.fitBounds(found.area_polygon, { paddingTopLeft: [leftPadPx, 24], paddingBottomRight: [24, 24], maxZoom: areaZoom });
+      const polyBounds = L.latLngBounds(found.area_polygon);
+      const horizontalPadPx = Math.round(mapSize.x * MAP_LEFT_PANEL_WIDTH_RATIO) + AREA_FIT_RIGHT_MARGIN_PX;
+      const boundsZoom = map.getBoundsZoom(polyBounds, false, L.point(horizontalPadPx, AREA_FIT_VERTICAL_MARGIN_PX));
+      const targetAreaZoom = Math.min(areaZoom, boundsZoom);
+      const polyCenter = polyBounds.getCenter();
+      setMapViewInRightHalf(polyCenter.lat, polyCenter.lng, targetAreaZoom);
       const areaPoly = L.polygon(found.area_polygon, { color: '#d84315', weight: 3.5, fillColor: '#ffab40', fillOpacity: 0.25 }).addTo(map);
-      const bannerMarker = L.marker([found.lat, found.lng], {
+      const bannerMarker = L.marker([polyCenter.lat, polyCenter.lng], {
         icon: L.divIcon({ className: '', html: `<span class="area-banner-label">🗺️ ${escapeHtml(found.key)}</span>`, iconSize: [140, 28], iconAnchor: [70, 14] }),
         interactive: false
       }).addTo(map);
