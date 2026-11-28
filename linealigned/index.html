@@ -693,6 +693,55 @@
       margin-top: 0.25rem;
       margin-bottom: 1rem;
     }
+    .direction-switch-group.has-3-cols {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+    }
+    .direction-switch-group .mode-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .direction-switch-group .mode-btn.tategaki-launch-tab-btn {
+      background: #fff1f2;
+      color: #b91c1c;
+      border: 1px solid #fecdd3;
+      font-weight: 800;
+    }
+    .direction-switch-group .mode-btn.tategaki-launch-tab-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .direction-switch-group .mode-btn.tategaki-launch-tab-btn:hover {
+      background: #ffe4e6;
+      border-color: #fda4af;
+    }
+    .studio-unified-rule-card {
+      display: flex;
+      flex-direction: column;
+      gap: var(--v166-row-gap);
+      background: var(--v166-panel-bg);
+      border: 1px solid var(--v166-panel-border);
+      border-radius: var(--v166-panel-radius);
+      padding: var(--v166-panel-padding);
+      margin-top: 4px;
+    }
+    .studio-unified-rule-card .studio-btn-panel {
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      padding: 0;
+      margin-top: 0;
+    }
+    .studio-integrated-color-row {
+      margin-bottom: 0 !important;
+      padding-top: 2px;
+    }
+    .studio-integrated-color-row .setting-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #475569;
+      margin-bottom: 4px;
+    }
     .direction-switch-group .mode-btn.active {
       background: linear-gradient(135deg, #dc2626, #b91c1c);
       color: #ffffff;
@@ -2198,7 +2247,7 @@
   <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 0.75rem;">
     <div style="font-size: 1.05rem; font-weight: 800; color: #1f1f1f;">
       <span style="color: #1a73e8; font-weight: 900;">Line-aligned</span>
-      <span style="color: #5f6368; font-size: 0.78rem; margin-left: 6px;">ver.166 (Build 20261128_2015)</span>
+      <span style="color: #5f6368; font-size: 0.78rem; margin-left: 6px;">ver.167 (Build 20261128_2127)</span>
     </div>
     <div style="display: flex; align-items: center; gap: 6px;">
       <a href="https://wasabikarashi.com/" id="uiLinkTop" style="display: inline-flex; align-items: center; gap: 3px; background: #f1f5f9; border: 1px solid #dadce0; border-radius: 8px; padding: 5px 10px; font-size: 0.75rem; font-weight: 700; color: #3c4043; text-decoration: none; white-space: nowrap;">トップ</a>
@@ -2232,7 +2281,7 @@
   <!-- ========================================== -->
   <div id="docsMenuContainer" class="docs-menu-container" style="display: block;">
     <div style="margin-bottom: 0.75rem;">
-      <div class="setting-label" id="uiLabelDocsInput">入力ファイル</div>
+      <div class="setting-label" id="uiLabelDocsInput" style="display: none;"></div>
       <button class="btn-select" id="btnDocsDriveSelect" onclick="openDocsPicker()" style="width: 100%; margin-bottom: 8px;">
         <span id="uiTextDocsDriveSelect">Googleドライブから選択</span>
       </button>
@@ -2242,20 +2291,19 @@
           <button type="button" class="btn-change-file" id="uiBtnResetDocsFile" onclick="resetDocsFile()" style="display: none;">別のファイルを選ぶ</button>
         </div>
       </div>
-      <!-- Step 1: 縦書きエディタ（A4横）起動ボタン -->
-      <button type="button" class="btn-select" id="btnOpenTategakiEditor" onclick="openTategakiEditorModal()" style="width: 100%; margin-top: 8px; background: #fef2f2; color: #b91c1c; border: 1.5px solid #fca5a5; font-weight: 800;">
-        <span id="uiTextBtnOpenTategakiEditor">📝 縦書きエディタを開く（A4横）</span>
-      </button>
     </div>
 
-    <!-- ファイル選択の下：出力の向き（横書き / 縦書き・赤色アクティブ） -->
+    <!-- ② 横書き / 縦書き / 縦書きエディタ -->
     <div id="docsDirectionSlot">
-      <div class="mode-switch-group direction-switch-group" id="directionSwitchGroup">
+      <div class="mode-switch-group direction-switch-group has-3-cols" id="directionSwitchGroup">
         <button type="button" class="mode-btn active" id="btnDirHorizontal" onclick="switchWritingDirection('horizontal')">
           <span id="uiTextDirHorizontal">横書き</span>
         </button>
         <button type="button" class="mode-btn" id="btnDirVertical" onclick="switchWritingDirection('vertical')">
           <span id="uiTextDirVertical">縦書き</span>
+        </button>
+        <button type="button" class="mode-btn tategaki-launch-tab-btn" id="btnOpenTategakiEditor" onclick="openTategakiEditorModal()">
+          <span id="uiTextBtnOpenTategakiEditor">縦書きエディタ</span>
         </button>
       </div>
     </div>
@@ -14350,11 +14398,15 @@ var loadSampleDocx;
       }
     });
 
-    // 縦書きエディタ起動ボタンは日本語UI専用とし、他言語 (En / 繁 / 韓) または繁體中文組版規格の選択時は非表示にする
+    // 縦書きエディタ起動ボタンは DOCS タブかつ日本語UI専用とし、他タブ・他言語・繁體中文組版規格時は非表示＆2列化する
     const btnOpenTategaki = document.getElementById('btnOpenTategakiEditor');
+    const dirGroupForLocale = document.getElementById('directionSwitchGroup');
     if (btnOpenTategaki) {
-      const shouldShowTategakiBtn = (currentLanguage === 'ja') && !(isVert && isZhTw);
+      const shouldShowTategakiBtn = (activeMainModeName === 'docs') && (currentLanguage === 'ja') && !(isVert && isZhTw);
       btnOpenTategaki.style.display = shouldShowTategakiBtn ? '' : 'none';
+      if (dirGroupForLocale) {
+        dirGroupForLocale.classList.toggle('has-3-cols', shouldShowTategakiBtn);
+      }
     }
 
     if (currentLoadedDocsSampleKind === 'zhtw' && selectedDocsId === SAMPLE_ZHTW_DOCS_ID) {
@@ -14782,6 +14834,223 @@ var loadSampleDocx;
       return _prevShowStatusNoPreview(text, type);
     };
     window.showStatus = showStatus;
+  })();
+
+
+  // ==============================================================================
+  // Studio 動線整理（①原稿種類［入力ファイル見出し撤廃］➔ ②横書き・縦書き・縦書きエディタ
+  // ➔ ③用紙・印刷形式 ➔ ④行間・罫線［行間 / 本文の罫線 / ノートの罫線 / 罫線の種類 / 罫線の色］➔ ⑤出力）
+  // ==============================================================================
+  (function applyStreamlinedStudioFlowOrder() {
+    const STREAMLINED_FLOW_I18N = {
+      ja: {
+        paperLabel: '用紙・印刷形式',
+        ruleSectionTitle: '行間・罫線',
+        pdfRuleSectionTitle: '行間・ノートの罫線',
+        genkoSectionTitle: '原稿用紙デザイン',
+        subPitchLabel: '行間',
+        lineColorLabel: '罫線の色',
+        tategakiTabLabel: '縦書きエディタ'
+      },
+      en: {
+        paperLabel: 'Paper & Print Format',
+        ruleSectionTitle: 'Line Spacing & Ruling',
+        pdfRuleSectionTitle: 'Line Spacing & Note Ruling',
+        genkoSectionTitle: 'Manuscript Design',
+        subPitchLabel: 'Line Spacing',
+        lineColorLabel: 'Line Color',
+        tategakiTabLabel: 'Vertical Editor'
+      },
+      'zh-TW': {
+        paperLabel: '紙張與列印格式',
+        ruleSectionTitle: '行距與格線',
+        pdfRuleSectionTitle: '行距與筆記格線',
+        genkoSectionTitle: '稿紙設計',
+        subPitchLabel: '行距',
+        lineColorLabel: '格線顏色',
+        tategakiTabLabel: '直書編輯器'
+      },
+      ko: {
+        paperLabel: '용지 및 인쇄 형식',
+        ruleSectionTitle: '줄 간격 및 줄눈',
+        pdfRuleSectionTitle: '줄 간격 및 노트 줄눈',
+        genkoSectionTitle: '원고지 디자인',
+        subPitchLabel: '줄 간격',
+        lineColorLabel: '줄눈 색상',
+        tategakiTabLabel: '세로쓰기 에디터'
+      }
+    };
+
+    function getFlowText(lang) {
+      return STREAMLINED_FLOW_I18N[lang || currentLanguage] || STREAMLINED_FLOW_I18N.ja;
+    }
+
+    // 1. 4言語辞書のラベル同期（丸数字を廃し「用紙・印刷形式」「行間・罫線」「行間」「罫線の色」へ統一）
+    Object.keys(STREAMLINED_FLOW_I18N).forEach(lang => {
+      const ft = STREAMLINED_FLOW_I18N[lang];
+      if (V166_BUTTON_UI_I18N && V166_BUTTON_UI_I18N[lang]) {
+        V166_BUTTON_UI_I18N[lang].sectionRuleTitle = ft.ruleSectionTitle;
+        V166_BUTTON_UI_I18N[lang].sectionPdfRuleTitle = ft.pdfRuleSectionTitle;
+        V166_BUTTON_UI_I18N[lang].sectionGenkoTitle = ft.genkoSectionTitle;
+        V166_BUTTON_UI_I18N[lang].subPitch = ft.subPitchLabel;
+      }
+      if (UNIFIED_UI_I18N && UNIFIED_UI_I18N[lang]) {
+        UNIFIED_UI_I18N[lang].labelPaper = ft.paperLabel;
+        UNIFIED_UI_I18N[lang].labelRuleKindPitch = ft.ruleSectionTitle;
+      }
+      if (typeof I18N_TEXTS === 'object' && I18N_TEXTS && I18N_TEXTS[lang]) {
+        I18N_TEXTS[lang].paperProfile = ft.paperLabel;
+        I18N_TEXTS[lang].pdfPaper = ft.paperLabel;
+        I18N_TEXTS[lang].gridType = ft.ruleSectionTitle;
+        I18N_TEXTS[lang].pdfGrid = ft.pdfRuleSectionTitle;
+        I18N_TEXTS[lang].lineColor = ft.lineColorLabel;
+      }
+    });
+
+    function hideLegacyInputHeaders() {
+      ['uiLabelDocsInput', 'uiLabelDocxInput', 'uiLabelPdfInput'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+      });
+    }
+
+    // 2. ④「行間・罫線」パネルの順序組替（先頭＝行間）＆「罫線の色」のパネル内末尾統合
+    function reorganizeRuleAndColorSection(prefix) {
+      const isPdf = (prefix === 'pdf');
+      const normalPanel = document.getElementById(prefix + 'NormalBtnPanel');
+      const pitchRow = document.getElementById(prefix + 'RowPitch');
+      if (normalPanel && pitchRow && normalPanel.firstElementChild !== pitchRow) {
+        normalPanel.insertBefore(pitchRow, normalPanel.firstElementChild);
+      }
+
+      if (isPdf) return;
+
+      const settingItem = normalPanel ? normalPanel.closest('.setting-item') : null;
+      const genkoPanel = document.getElementById(prefix + 'GenkoBtnPanel');
+      const colorLabelId = (prefix === 'docx') ? 'uiLabelDocxLineColor' : 'uiLabelLineColor';
+      const colorLabelEl = document.getElementById(colorLabelId);
+      const colorItem = colorLabelEl ? colorLabelEl.closest('.setting-item') : null;
+      if (!settingItem || !normalPanel) return;
+
+      let unifiedCard = document.getElementById(prefix + 'UnifiedRuleCard');
+      if (!unifiedCard) {
+        unifiedCard = document.createElement('div');
+        unifiedCard.id = prefix + 'UnifiedRuleCard';
+        unifiedCard.className = 'studio-unified-rule-card';
+        settingItem.appendChild(unifiedCard);
+        unifiedCard.appendChild(normalPanel);
+        if (genkoPanel) {
+          unifiedCard.appendChild(genkoPanel);
+        }
+        if (colorItem) {
+          colorItem.classList.add('studio-integrated-color-row');
+          unifiedCard.appendChild(colorItem);
+        }
+      }
+    }
+
+    function syncStreamlinedLabelsAndDirectionCols() {
+      hideLegacyInputHeaders();
+      const ft = getFlowText(currentLanguage);
+      const setTxt = (id, txt) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = txt;
+      };
+      setTxt('uiLabelPaperProfile', ft.paperLabel);
+      setTxt('uiLabelDocxPaperProfile', ft.paperLabel);
+      setTxt('uiLabelPdfPaper', ft.paperLabel);
+      setTxt('uiTextLineColor', ft.lineColorLabel);
+      setTxt('uiTextDocxLineColor', ft.lineColorLabel);
+      setTxt('uiTextBtnOpenTategakiEditor', ft.tategakiTabLabel);
+
+      const dirGroup = document.getElementById('directionSwitchGroup');
+      const btnTategaki = document.getElementById('btnOpenTategakiEditor');
+      if (dirGroup && btnTategaki) {
+        const isVert = (currentWritingDirection === 'vertical');
+        const isZhTw = (window.__currentVerticalTypesetLocale === VerticalLocaleTaiwanZhTW);
+        const showTategakiTab = (activeMainModeName === 'docs') && (currentLanguage === 'ja') && !(isVert && isZhTw);
+        btnTategaki.style.display = showTategakiTab ? '' : 'none';
+        dirGroup.classList.toggle('has-3-cols', showTategakiTab);
+      }
+    }
+
+    // 3. 方向切替バーの表示条件更新（DOCSはファイル未選択時も常時表示、DOCXは縦書き専用.docx以外で常時表示）
+    syncDirectionBarPlacementAndVisibility = function() {
+      const dirGroup = document.getElementById('directionSwitchGroup');
+      if (!dirGroup) return;
+
+      if (activeMainModeName === 'docs') {
+        const docsSlot = document.getElementById('docsDirectionSlot');
+        if (docsSlot && dirGroup.parentElement !== docsSlot) {
+          docsSlot.appendChild(dirGroup);
+        }
+        const hideForSample = (typeof currentLoadedDocsSampleKind === 'string' && currentLoadedDocsSampleKind !== '');
+        dirGroup.style.display = hideForSample ? 'none' : 'grid';
+        syncStreamlinedLabelsAndDirectionCols();
+        return;
+      }
+
+      if (activeMainModeName === 'docx') {
+        const docxSlot = document.getElementById('docxDirectionSlot');
+        if (docxSlot && dirGroup.parentElement !== docxSlot) {
+          docxSlot.appendChild(dirGroup);
+        }
+        const hideForVertOrSample = !!isCurrentDocxNativeVertical || (typeof currentLoadedDocxSampleKind === 'string' && currentLoadedDocxSampleKind !== '');
+        dirGroup.style.display = hideForVertOrSample ? 'none' : 'grid';
+        syncStreamlinedLabelsAndDirectionCols();
+        return;
+      }
+
+      dirGroup.style.display = 'none';
+    };
+
+    const _prevSwitchLangFlow = window.switchLanguage;
+    window.switchLanguage = function(lang) {
+      if (typeof _prevSwitchLangFlow === 'function') {
+        _prevSwitchLangFlow(lang);
+      }
+      syncStreamlinedLabelsAndDirectionCols();
+      refreshAllV166Panels();
+    };
+    switchLanguage = window.switchLanguage;
+
+    const _prevSwitchDirFlow = window.switchWritingDirection;
+    window.switchWritingDirection = function(dir) {
+      if (typeof _prevSwitchDirFlow === 'function') {
+        _prevSwitchDirFlow(dir);
+      }
+      syncStreamlinedLabelsAndDirectionCols();
+    };
+
+    const _prevSetVertLocaleFlow = window.setVerticalTypesetLocale;
+    window.setVerticalTypesetLocale = function(localeCode) {
+      if (typeof _prevSetVertLocaleFlow === 'function') {
+        _prevSetVertLocaleFlow(localeCode);
+      }
+      syncStreamlinedLabelsAndDirectionCols();
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      ['docs', 'docx', 'pdf'].forEach(reorganizeRuleAndColorSection);
+      syncStreamlinedLabelsAndDirectionCols();
+      syncDirectionBarPlacementAndVisibility();
+      refreshAllV166Panels();
+    });
+  })();
+
+  // 組版処理中（busy時）は3列目の「縦書きエディタ」起動ボタンも同時ロックして二重遷移を防ぐ
+  (function lockTategakiTabBtnWhileBusy() {
+    const _prevSetDocsBusyFlow = setDocsButtonsBusy;
+    setDocsButtonsBusy = function(busy, activeAction) {
+      if (typeof _prevSetDocsBusyFlow === 'function') {
+        _prevSetDocsBusyFlow(busy, activeAction);
+      }
+      const btnTategaki = document.getElementById('btnOpenTategakiEditor');
+      if (btnTategaki) {
+        btnTategaki.disabled = !!busy;
+      }
+    };
+    window.setDocsButtonsBusy = setDocsButtonsBusy;
   })();
 
 
