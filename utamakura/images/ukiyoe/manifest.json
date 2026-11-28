@@ -518,5 +518,25 @@
     "caption": "葛飾北斎『諸国瀧廻り 美濃ノ国養老の滝』（メトロポリタン美術館所蔵 / CC0）",
     "file_key": "諸國瀧廻リ 美濃ノ国養老の滝-Yōrō Waterfall in Mino Province (Mino no Yōrō no taki), from the series A Tour of Waterfalls in Various Provinces (Shokoku taki meguri) MET DP141254.jpg",
     "local_path": "images/ukiyoe/hokusai_taki_yoro.jpg"
+  },
+  {
+    "place": "高角山",
+    "id": "r60_iwami_takazunoyama",
+    "artist": "歌川広重",
+    "series": "六十余州名所図会",
+    "title": "石見 高津山 汐浜",
+    "caption": "歌川広重『六十余州名所図会 石見 高津山 汐浜』（Wikimedia Commons PDM）",
+    "file_key": "Iwami Province, Mount Takazuno, Salt Beach (5765891758).jpg",
+    "local_path": "images/ukiyoe/r60_iwami_takazunoyama.jpg"
+  },
+  {
+    "place": "比良の湊",
+    "id": "hiroshige_omi8_hira",
+    "artist": "歌川広重",
+    "series": "近江八景",
+    "title": "比良暮雪",
+    "caption": "歌川広重『近江八景之内 比良暮雪』（メトロポリタン美術館所蔵 / CC0）",
+    "file_key": "Hira no Bosetsu-近江八景の内 比良暮雪-Evening Snow on Mount Hira MET DP122152.jpg",
+    "local_path": "images/ukiyoe/hiroshige_omi8_hira.jpg"
   }
 ]
