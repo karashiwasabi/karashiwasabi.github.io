@@ -3197,9 +3197,28 @@
     maxZoom: MAP_MAX_ZOOM_LEVEL
   }).addTo(map);
 
+  // 『正史三國志』と完全同一の最前面ペイン階層・県単位縮尺（ズーム9）定数
+  const PREFECTURE_STANDARD_MAX_ZOOM = 9;
+  const PIN_MARKER_PANE_Z_INDEX = 620;
+  const SELECTED_PIN_PANE_Z_INDEX = 750;
+  const SELECTED_LABEL_PANE_Z_INDEX = 760;
+  const PIN_MARKER_RADIUS_PX = 6.5;
+  const PIN_MARKER_BORDER_WEIGHT_PX = 1.8;
+  const PIN_TOOLTIP_OFFSET_Y_PX = -7;
+  const PREFECTURE_FOCUS_CIRCLE_RADIUS_M = 4500;
+  const WIDE_FOCUS_CIRCLE_RADIUS_M = 8000;
+
+  map.createPane('pinsTopPane');
+  map.getPane('pinsTopPane').style.zIndex = String(PIN_MARKER_PANE_Z_INDEX);
+  map.createPane('selectedPinTopPane');
+  map.getPane('selectedPinTopPane').style.zIndex = String(SELECTED_PIN_PANE_Z_INDEX);
+  map.createPane('selectedLabelTopPane');
+  map.getPane('selectedLabelTopPane').style.zIndex = String(SELECTED_LABEL_PANE_Z_INDEX);
+
   const natureGroup = L.layerGroup().addTo(map);
   const pinMarkerGroup = L.layerGroup().addTo(map);
   let activeHighlightLayers = [];
+  let activeSelectedPinKey = '';
   const toastActiveColByPlace = {};
   const SOURCE_TAB_DEFS = [
     { col: 'wiki', label: '📷 WIKI写真' },
@@ -3236,29 +3255,40 @@
     map.setView(shiftedCenter, zoomLevel, { animate: true, duration: MAP_RIGHT_HALF_PAN_DURATION_SEC });
   }
 
-  function clearMapHighlights() {
+  function clearMapHighlights(resetSelectedPin = true) {
     activeHighlightLayers.forEach(layer => map.removeLayer(layer));
     activeHighlightLayers = [];
-    document.querySelectorAll('.custom-label').forEach(el => el.classList.remove('selected-pin'));
+    if (resetSelectedPin) {
+      activeSelectedPinKey = '';
+      document.querySelectorAll('.custom-label').forEach(el => el.classList.remove('selected-pin'));
+    }
   }
 
   function addPinMarkerToGroup(place) {
+    const isSelected = (place.key === activeSelectedPinKey);
+    const selCls = isSelected ? ' selected-pin' : '';
     let fillColor = '#e65100';
     if (String(place.province || '').includes('東山道')) fillColor = '#2e7d32';
     else if (String(place.province || '').includes('北陸道')) fillColor = '#1565c0';
     const marker = L.circleMarker([place.lat, place.lng], {
-      radius: 6.5,
+      pane: isSelected ? 'selectedPinTopPane' : 'pinsTopPane',
+      radius: PIN_MARKER_RADIUS_PX,
       fillColor: fillColor,
       color: '#fff',
-      weight: 1.8,
+      weight: PIN_MARKER_BORDER_WEIGHT_PX,
       fillOpacity: 0.95
     }).addTo(pinMarkerGroup);
-    marker.bindTooltip(`<span class="custom-label" id="pin-label-${escapeHtml(place.key)}">${escapeHtml(place.key)}</span>`, {
+    const tooltipOpts = {
       permanent: true,
+      interactive: true,
       direction: 'top',
-      offset: [0, -7],
+      offset: [0, PIN_TOOLTIP_OFFSET_Y_PX],
       className: 'transparent-box'
-    });
+    };
+    if (isSelected) {
+      tooltipOpts.pane = 'selectedLabelTopPane';
+    }
+    marker.bindTooltip(`<span class="custom-label${selCls}" id="pin-label-${escapeHtml(place.key)}">${escapeHtml(place.key)}</span>`, tooltipOpts);
     marker.on('click', () => {
       if (selectedItem && selectedItem.type !== 'place') {
         focusSinglePlaceOnMap(place.key, true, false);
@@ -3270,12 +3300,14 @@
     });
   }
 
-  function renderOverviewPlacesOnMap() {
-    clearMapHighlights();
+  function renderOverviewPlacesOnMap(extraKey = '') {
+    if (!extraKey) {
+      clearMapHighlights(true);
+      const toastEl = document.getElementById('mapToast');
+      if (toastEl) toastEl.style.display = 'none';
+    }
     pinMarkerGroup.clearLayers();
-    const toastEl = document.getElementById('mapToast');
-    if (toastEl) toastEl.style.display = 'none';
-    CORPUS.places.filter(p => p.is_pin && catalogMapByType.place.has(p.key)).forEach(addPinMarkerToGroup);
+    CORPUS.places.filter(p => p.is_pin && (catalogMapByType.place.has(p.key) || p.key === extraKey)).forEach(addPinMarkerToGroup);
   }
 
   function getGlossaryPlaceGmap(placeObj) {
@@ -3382,13 +3414,14 @@
     if (!found) return;
     hideIndexOverlay();
     showJumpPlaceBtnInToast = Boolean(showOpenArticleBtn);
-    clearMapHighlights();
-    pinMarkerGroup.clearLayers();
+    clearMapHighlights(false);
+    activeSelectedPinKey = (!found.is_area && !found.is_river) ? found.key : '';
+    renderOverviewPlacesOnMap(found.key);
     map.stop();
     map.invalidateSize({ pan: false });
 
     if (found.is_area && found.area_polygon) {
-      const areaZoom = Math.round(found.zoom || 9);
+      const areaZoom = Math.min(Math.round(found.zoom || PREFECTURE_STANDARD_MAX_ZOOM), PREFECTURE_STANDARD_MAX_ZOOM);
       const mapSize = map.getSize();
       const polyBounds = L.latLngBounds(found.area_polygon);
       const horizontalPadPx = Math.round(mapSize.x * MAP_LEFT_PANEL_WIDTH_RATIO) + AREA_FIT_RIGHT_MARGIN_PX;
@@ -3396,29 +3429,27 @@
       const targetAreaZoom = Math.min(areaZoom, boundsZoom);
       const polyCenter = polyBounds.getCenter();
       setMapViewInRightHalf(polyCenter.lat, polyCenter.lng, targetAreaZoom);
-      const areaPoly = L.polygon(found.area_polygon, { color: '#d84315', weight: 3.5, fillColor: '#ffab40', fillOpacity: 0.25 }).addTo(map);
+      const areaPoly = L.polygon(found.area_polygon, { color: '#d84315', weight: 3.5, fillColor: '#ffab40', fillOpacity: 0.25, interactive: false }).addTo(map);
       const bannerMarker = L.marker([polyCenter.lat, polyCenter.lng], {
+        pane: 'selectedLabelTopPane',
         icon: L.divIcon({ className: '', html: `<span class="area-banner-label">🗺️ ${escapeHtml(found.key)}</span>`, iconSize: [140, 28], iconAnchor: [70, 14] }),
         interactive: false
       }).addTo(map);
       activeHighlightLayers.push(areaPoly, bannerMarker);
     } else if (found.is_river) {
-      const riverZoom = Math.round(found.zoom || 11);
+      const riverZoom = Math.min(Math.round(found.zoom || PREFECTURE_STANDARD_MAX_ZOOM), PREFECTURE_STANDARD_MAX_ZOOM);
       setMapViewInRightHalf(found.lat, found.lng, riverZoom);
       (CORPUS.river_lines || []).filter(r => r.key === found.key).forEach(river => {
-        const hl = L.polyline(river.coords, { color: '#ffeb3b', weight: 7, opacity: 0.85 }).addTo(map);
-        const fg = L.polyline(river.coords, { color: '#d32f2f', weight: 3.5, opacity: 0.95 }).addTo(map);
+        const hl = L.polyline(river.coords, { color: '#ffeb3b', weight: 7, opacity: 0.85, interactive: false }).addTo(map);
+        const fg = L.polyline(river.coords, { color: '#d32f2f', weight: 3.5, opacity: 0.95, interactive: false }).addTo(map);
         activeHighlightLayers.push(hl, fg);
       });
     } else {
-      addPinMarkerToGroup(found);
-      const labelEl = document.getElementById(`pin-label-${found.key}`);
-      if (labelEl) labelEl.classList.add('selected-pin');
       const parentArea = CORPUS.places.find(a => a.is_area && a.key === found.parent_area);
-      const pointZoom = Math.round(found.zoom || 12);
+      const pointZoom = Math.min(Math.round(found.zoom || PREFECTURE_STANDARD_MAX_ZOOM), PREFECTURE_STANDARD_MAX_ZOOM);
       if (parentArea && parentArea.area_polygon) {
         const parentPoly = L.polygon(parentArea.area_polygon, {
-          color: '#2e7d32', weight: 2.5, dashArray: '6, 4', fillColor: '#66bb6a', fillOpacity: 0.10
+          color: '#2e7d32', weight: 2.5, dashArray: '6, 4', fillColor: '#66bb6a', fillOpacity: 0.10, interactive: false
         }).addTo(map);
         const pLat = parentArea.area_polygon[0][0];
         const pLng = (parentArea.area_polygon[0][1] + parentArea.area_polygon[1][1]) / 2;
@@ -3429,9 +3460,11 @@
         activeHighlightLayers.push(parentPoly, parentBanner);
       }
       setMapViewInRightHalf(found.lat, found.lng, pointZoom);
-      const circleRadiusMeters = pointZoom >= 12 ? 350 : (pointZoom >= 11 ? 600 : (pointZoom >= 9 ? 3500 : 8000));
+      const circleRadiusMeters = pointZoom >= PREFECTURE_STANDARD_MAX_ZOOM
+        ? PREFECTURE_FOCUS_CIRCLE_RADIUS_M
+        : WIDE_FOCUS_CIRCLE_RADIUS_M;
       const ptCircle = L.circle([found.lat, found.lng], {
-        radius: circleRadiusMeters, color: '#c62828', weight: 2.5, fillColor: '#ff5252', fillOpacity: 0.25
+        radius: circleRadiusMeters, color: '#c62828', weight: 2.5, fillColor: '#ff5252', fillOpacity: 0.25, interactive: false
       }).addTo(map);
       activeHighlightLayers.push(ptCircle);
     }
