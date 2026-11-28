@@ -1136,13 +1136,36 @@
         padding: var(--tategaki-stage-pad-y-compact-px) 0;
       }
     }
+    .tategaki-page-zoom-slot {
+      position: relative;
+      flex-shrink: 0;
+    }
     .tategaki-engine-pages-host .page-container {
       margin: 0 !important;
       border: none;
       box-shadow: 0 14px 36px rgba(15, 23, 42, 0.45) !important;
-      position: relative;
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform-origin: 0 0;
       background: #ffffff;
       flex-shrink: 0;
+    }
+    .tategaki-zoom-toolbar-group .zoom-step-btn {
+      min-width: 26px;
+      padding: 0 6px;
+      font-weight: 800;
+    }
+    .tategaki-zoom-toolbar-group .zoom-pct-btn {
+      min-width: 48px;
+      padding: 0 6px;
+      font-variant-numeric: tabular-nums;
+      font-weight: 700;
+    }
+    .tategaki-zoom-toolbar-group .zoom-fit-btn {
+      padding: 0 8px;
+      font-weight: 700;
+      white-space: nowrap;
     }
     /* 各ページ内の37列本文枠（右余白18mm・左余白20mm・上下余白18mmの「余白の□」の内側にだけパラグラフの□を並べる） */
     .tategaki-paragraph-editor-layer {
@@ -2175,7 +2198,7 @@
   <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 0.75rem;">
     <div style="font-size: 1.05rem; font-weight: 800; color: #1f1f1f;">
       <span style="color: #1a73e8; font-weight: 900;">Line-aligned</span>
-      <span style="color: #5f6368; font-size: 0.78rem; margin-left: 6px;">ver.166 (Build 20261127_2110)</span>
+      <span style="color: #5f6368; font-size: 0.78rem; margin-left: 6px;">ver.166 (Build 20261128_2015)</span>
     </div>
     <div style="display: flex; align-items: center; gap: 6px;">
       <a href="https://wasabikarashi.com/" id="uiLinkTop" style="display: inline-flex; align-items: center; gap: 3px; background: #f1f5f9; border: 1px solid #dadce0; border-radius: 8px; padding: 5px 10px; font-size: 0.75rem; font-weight: 700; color: #3c4043; text-decoration: none; white-space: nowrap;">トップ</a>
@@ -2688,6 +2711,15 @@
 
     <div class="tategaki-toolbar-group">
       <button type="button" id="btnTategakiRubyMode" class="tategaki-tb-btn ruby-mode-btn" onmousedown="event.preventDefault()" onclick="toggleTategakiRubyKuntenMode()" title="ルビ（読み仮名）・送り仮名・返り点（レ点等）を付ける専用モードを開閉します">🎯 ルビ・訓点</button>
+    </div>
+
+    <span class="tategaki-toolbar-sep"></span>
+
+    <div class="tategaki-toolbar-group tategaki-zoom-toolbar-group">
+      <button type="button" id="btnTategakiZoomOut" class="tategaki-tb-btn zoom-step-btn" onmousedown="event.preventDefault()" onclick="stepTategakiZoom(-1)" title="原稿の表示を縮小します（1行の字数・組版は変わりません）">－</button>
+      <button type="button" id="btnTategakiZoomReset" class="tategaki-tb-btn zoom-pct-btn" onmousedown="event.preventDefault()" onclick="setTategakiZoomExact(1)" title="100% 原寸表示に戻します">100%</button>
+      <button type="button" id="btnTategakiZoomIn" class="tategaki-tb-btn zoom-step-btn" onmousedown="event.preventDefault()" onclick="stepTategakiZoom(1)" title="原稿の表示を拡大します（1行の字数・組版は変わりません）">＋</button>
+      <button type="button" id="btnTategakiZoomFitHeight" class="tategaki-tb-btn zoom-fit-btn" onmousedown="event.preventDefault()" onclick="fitTategakiZoomToStageHeight(false)" title="画面の縦幅に原稿の天から地までぴったり収まる倍率に合わせます（タブレットでの上下スクロール解消）">↕ 縦幅に合わせる</button>
     </div>
   </div>
 
@@ -14776,6 +14808,27 @@ var loadSampleDocx;
   const VerticalLeftRuleClearanceMm = 0.50;
   const VerticalGlyphCenterHalfRatio = 0.5;
 
+  // 縦書きエディタ原稿表示ズーム定数（組版スロット計算は常に 1.0 原寸基準を維持）
+  const TategakiZoomDefaultScale = 1.0;
+  const TategakiZoomMinScale = 0.35;
+  const TategakiZoomMaxScale = 1.50;
+  const TategakiZoomStepScale = 0.10;
+  const TategakiZoomPercentFactor = 100;
+  const TategakiZoomScaleEpsilon = 0.005;
+  const TategakiAutoFitStageReservePx = 40.0;   // 通常ステージの上下パディング＋影用余白 [px]
+  const TategakiAutoFitCompactReservePx = 24.0; // 小高さ画面（タブレット等）の上下パディング＋影用余白 [px]
+  const TategakiCompactViewportMaxHeightPx = 860;
+  const TategakiAutoFitTriggerMaxScale = 0.98;  // 原寸では縦が見切れる端末のみ初期自動縮小を発動する閾値
+
+  let currentTategakiZoomScale = TategakiZoomDefaultScale;
+  let isTategakiZoomAutoFit = true;
+
+  function getEffectiveTategakiZoomScale() {
+    return (typeof currentTategakiZoomScale === 'number' && currentTategakiZoomScale >= TategakiZoomMinScale && currentTategakiZoomScale <= TategakiZoomMaxScale)
+      ? currentTategakiZoomScale
+      : TategakiZoomDefaultScale;
+  }
+
   let cachedTategakiDocsJsonStr = '';
   let cachedTategakiHtmlDataStr = '';
 
@@ -15918,6 +15971,9 @@ var loadSampleDocx;
 
     const stage = document.getElementById('tategakiEditorStage');
     if (stage) stage.scrollLeft = 0;
+    if (isTategakiZoomAutoFit && typeof fitTategakiZoomToStageHeight === 'function') {
+      fitTategakiZoomToStageHeight(true);
+    }
 
     layoutParagraphBlocksInto37SlotPages(host, paraList, pageImagesByIdx);
     updateTategakiEditorCharCount();
@@ -16448,14 +16504,19 @@ var loadSampleDocx;
   }
 
   // ------------------------------------------
-  // 段落実測・スタイル計算ヘルパー（折り返し列ごとの可変必要行数 N に完全対応）
+  // 段落実測・スタイル計算ヘルパー（折り返し列ごとの可変必要行数 N ＆ 表示ズーム非依存の原寸幾何に完全対応）
   // ------------------------------------------
+  function getUnscaledElementRectWidthPx(el) {
+    if (!el || typeof el.getBoundingClientRect !== 'function') return 0;
+    return el.getBoundingClientRect().width / getEffectiveTategakiZoomScale();
+  }
+
   function getBlockConsumedSlotsAttr(paraEl) {
     return parseInt(paraEl.dataset.consumedSlots || '1', 10) || 1;
   }
 
   function measureParagraphTotalUsedSlots(paraEl, baseSlots, slotWPx) {
-    const wPx = paraEl.getBoundingClientRect().width;
+    const wPx = getUnscaledElementRectWidthPx(paraEl);
     return Math.max(baseSlots || 1, Math.round(wPx / slotWPx));
   }
 
@@ -16463,7 +16524,8 @@ var loadSampleDocx;
     const baseSlots = getBlockConsumedSlotsAttr(paraEl);
     const multiEls = paraEl.querySelectorAll('[data-inline-slots]');
     if (multiEls.length === 0) return baseSlots;
-    const layerRightPx = layerEl.getBoundingClientRect().right;
+    const invZoom = 1.0 / getEffectiveTategakiZoomScale();
+    const layerRightPx = layerEl.getBoundingClientRect().right * invZoom;
     const clearancePx = VerticalLeftRuleClearanceMm * TategakiCssPxPerMm;
     let firstSlots = baseSlots;
     multiEls.forEach(el => {
@@ -16473,7 +16535,8 @@ var loadSampleDocx;
       for (let i = 0; i < rects.length; i++) {
         const r = rects[i];
         if (r.width <= 0 && r.height <= 0) continue;
-        const colEndSlot = Math.round((layerRightPx - (r.left - clearancePx)) / slotWPx);
+        const rLeftUnscaledPx = r.left * invZoom;
+        const colEndSlot = Math.round((layerRightPx - (rLeftUnscaledPx - clearancePx)) / slotWPx);
         const colStartSlot = colEndSlot - nSlots;
         if (colStartSlot === paraStartSlot) {
           firstSlots = Math.max(firstSlots, nSlots);
@@ -16487,7 +16550,8 @@ var loadSampleDocx;
     const records = [];
     const calloutBoxes = [];
     let usedSlots = 0;
-    const layerRightPx = layerEl.getBoundingClientRect().right;
+    const invZoom = 1.0 / getEffectiveTategakiZoomScale();
+    const layerRightPx = layerEl.getBoundingClientRect().right * invZoom;
     const clearancePx = VerticalLeftRuleClearanceMm * TategakiCssPxPerMm;
 
     Array.from(layerEl.children).forEach(paraEl => {
@@ -16535,7 +16599,8 @@ var loadSampleDocx;
         for (let i = 0; i < rects.length; i++) {
           const r = rects[i];
           if (r.width <= 0 && r.height <= 0) continue;
-          const colEndSlot = Math.round((layerRightPx - (r.left - clearancePx)) / slotWPx);
+          const rLeftUnscaledPx = r.left * invZoom;
+          const colEndSlot = Math.round((layerRightPx - (rLeftUnscaledPx - clearancePx)) / slotWPx);
           const colStartSlot = Math.max(usedSlots, Math.min(paraEndSlot - nSlots, colEndSlot - nSlots));
           const prev = overrideMap.get(colStartSlot) || 0;
           if (nSlots > prev) overrideMap.set(colStartSlot, nSlots);
@@ -16892,7 +16957,7 @@ var loadSampleDocx;
     while (lo <= hi) {
       const mid = (lo + hi) >> 1;
       pEl.innerHTML = remTokens.slice(0, mid).join('');
-      if (pEl.getBoundingClientRect().width <= maxAllowedWPx) {
+      if (getUnscaledElementRectWidthPx(pEl) <= maxAllowedWPx) {
         bestK = mid;
         lo = mid + 1;
       } else {
@@ -17061,15 +17126,50 @@ var loadSampleDocx;
     return sections;
   }
 
+  function applyZoomScaleToPageSlotAndPageEl(zoomSlotEl, pageEl, pageWPx, pageHPx, scale) {
+    const s = (typeof scale === 'number' && scale > 0) ? scale : TategakiZoomDefaultScale;
+    const scaledWPx = pageWPx * s;
+    const scaledHPx = pageHPx * s;
+    if (zoomSlotEl) {
+      zoomSlotEl.style.width = scaledWPx.toFixed(2) + 'px';
+      zoomSlotEl.style.minWidth = scaledWPx.toFixed(2) + 'px';
+      zoomSlotEl.style.height = scaledHPx.toFixed(2) + 'px';
+    }
+    if (pageEl) {
+      pageEl.style.width = pageWPx.toFixed(2) + 'px';
+      pageEl.style.minWidth = pageWPx.toFixed(2) + 'px';
+      pageEl.style.height = pageHPx.toFixed(2) + 'px';
+      pageEl.style.transform = Math.abs(s - TategakiZoomDefaultScale) < TategakiZoomScaleEpsilon
+        ? 'none'
+        : ('scale(' + s.toFixed(4) + ')');
+    }
+  }
+
+  function applyCurrentTategakiZoomToAllPages() {
+    const host = document.getElementById('tategakiEnginePagesHost');
+    if (!host || !cachedSheetSvgConfig) return;
+    const pageWPx = cachedSheetSvgConfig.paperWMm * TategakiCssPxPerMm;
+    const pageHPx = cachedSheetSvgConfig.paperHMm * TategakiCssPxPerMm;
+    const scale = getEffectiveTategakiZoomScale();
+    host.querySelectorAll('.page-container').forEach(pageEl => {
+      const slotEl = pageEl.parentElement && pageEl.parentElement.classList.contains('tategaki-page-zoom-slot')
+        ? pageEl.parentElement
+        : null;
+      applyZoomScaleToPageSlotAndPageEl(slotEl, pageEl, pageWPx, pageHPx, scale);
+    });
+  }
+
   function createTategakiSheetPageContainerStepA(host, cfg, pageIdx, pageImagesByIdx, imgSeqRef) {
     const pageWPx = cfg.paperWMm * TategakiCssPxPerMm;
     const pageHPx = cfg.paperHMm * TategakiCssPxPerMm;
+    const scale = getEffectiveTategakiZoomScale();
+
+    const zoomSlotEl = document.createElement('div');
+    zoomSlotEl.className = 'tategaki-page-zoom-slot';
 
     const pageEl = document.createElement('div');
     pageEl.className = 'page-container';
-    pageEl.style.width = pageWPx.toFixed(2) + 'px';
-    pageEl.style.minWidth = pageWPx.toFixed(2) + 'px';
-    pageEl.style.height = pageHPx.toFixed(2) + 'px';
+    applyZoomScaleToPageSlotAndPageEl(zoomSlotEl, pageEl, pageWPx, pageHPx, scale);
 
     const imgs = pageImagesByIdx && pageImagesByIdx.get(pageIdx);
     if (Array.isArray(imgs)) {
@@ -17081,7 +17181,8 @@ var loadSampleDocx;
     const badge = document.createElement('div');
     badge.className = 'tategaki-engine-page-badge';
     pageEl.appendChild(badge);
-    host.appendChild(pageEl);
+    zoomSlotEl.appendChild(pageEl);
+    host.appendChild(zoomSlotEl);
 
     return {
       pageIdx,
@@ -17471,7 +17572,7 @@ var loadSampleDocx;
             let effectiveLimitSlots = activeBand.remSlots;
             let maxAllowedWPx = (effectiveLimitSlots * slotWPx) + TategakiLineFitSnapTolerancePx;
             pEl.innerHTML = remTokens.slice(0, 1).join('');
-            const firstTokenWPx = pEl.getBoundingClientRect().width;
+            const firstTokenWPx = getUnscaledElementRectWidthPx(pEl);
 
             if (firstTokenWPx > maxAllowedWPx) {
               if (bandHasBlocks) {
@@ -19466,6 +19567,9 @@ var loadSampleDocx;
       stage.scrollLeft = 0;
       stage.scrollTop = 0;
     }
+    isTategakiZoomAutoFit = true;
+    isTategakiZoomFitAllowUpscale = false;
+    fitTategakiZoomToStageHeight(true);
 
     if (isRealUserGoogleDocId(selectedDocsId)) {
       await loadRealGoogleDocIntoTategakiEditor(selectedDocsId, selectedDocsName || 'Google ドキュメント', false);
@@ -21324,13 +21428,20 @@ var loadSampleDocx;
     const bar = document.getElementById('tategakiRubyKuntenBar');
     const host = document.getElementById('tategakiEnginePagesHost');
     const btnMode = document.getElementById('btnTategakiRubyMode');
+    const prevDisplay = bar ? bar.style.display : '';
     if (btnMode) btnMode.classList.toggle('active', isTategakiRubyKuntenMode);
     if (host) host.classList.toggle('is-ruby-kunten-mode', isTategakiRubyKuntenMode);
     if (!bar || !isTategakiRubyKuntenMode || !host) {
       if (bar) bar.style.display = 'none';
+      if (bar && prevDisplay !== 'none' && isTategakiZoomAutoFit && typeof fitTategakiZoomToStageHeight === 'function') {
+        fitTategakiZoomToStageHeight(true);
+      }
       return;
     }
     bar.style.display = 'flex';
+    if (prevDisplay !== 'flex' && isTategakiZoomAutoFit && typeof fitTategakiZoomToStageHeight === 'function') {
+      fitTategakiZoomToStageHeight(true);
+    }
 
     // 入力欄自体にフォーカスがある間はユーザーのタイピングを上書きしない
     const rubyInput = document.getElementById('tategakiRkRubyInput');
@@ -21545,6 +21656,121 @@ var loadSampleDocx;
   }
   window.onTategakiColumnsChange = onTategakiColumnsChange;
 
+
+  // ==========================================
+  // 原稿表示ズーム制御（50%〜150% ＆ タブレット向けステージ縦幅ぴったり自動フィット）
+  // ※ 組版エンジン側の消費スロット数・ページ分割計算は常に 1.0 原寸基準で不変維持
+  // ==========================================
+  function clampTategakiZoomScale(rawScale) {
+    if (typeof rawScale !== 'number' || !Number.isFinite(rawScale)) {
+      return TategakiZoomDefaultScale;
+    }
+    return Math.max(TategakiZoomMinScale, Math.min(TategakiZoomMaxScale, rawScale));
+  }
+
+  function computeStageFitHeightScale(clampMaxToDefault) {
+    const stage = document.getElementById('tategakiEditorStage');
+    if (!stage || stage.clientHeight <= 0) {
+      return TategakiZoomDefaultScale;
+    }
+    const paperHMm = (cachedSheetSvgConfig && cachedSheetSvgConfig.paperHMm)
+      ? cachedSheetSvgConfig.paperHMm
+      : TategakiA4LandscapeHeightMm;
+    const pageHPx = paperHMm * TategakiCssPxPerMm;
+    const isCompactViewport = (typeof window !== 'undefined' && window.innerHeight <= TategakiCompactViewportMaxHeightPx);
+    const reservePx = isCompactViewport ? TategakiAutoFitCompactReservePx : TategakiAutoFitStageReservePx;
+    const availHPx = Math.max(1, stage.clientHeight - reservePx);
+    const rawFit = availHPx / pageHPx;
+    const clamped = clampTategakiZoomScale(rawFit);
+    return clampMaxToDefault ? Math.min(TategakiZoomDefaultScale, clamped) : clamped;
+  }
+
+  function syncTategakiZoomToolbarUi() {
+    const scale = getEffectiveTategakiZoomScale();
+    const pct = Math.round(scale * TategakiZoomPercentFactor);
+    const btnOut = document.getElementById('btnTategakiZoomOut');
+    const btnIn = document.getElementById('btnTategakiZoomIn');
+    const btnPct = document.getElementById('btnTategakiZoomReset');
+    const btnFit = document.getElementById('btnTategakiZoomFitHeight');
+    if (btnPct) {
+      btnPct.textContent = pct + '%';
+    }
+    if (btnOut) {
+      btnOut.disabled = (scale <= TategakiZoomMinScale + TategakiZoomScaleEpsilon);
+    }
+    if (btnIn) {
+      btnIn.disabled = (scale >= TategakiZoomMaxScale - TategakiZoomScaleEpsilon);
+    }
+    if (btnFit) {
+      btnFit.classList.toggle('active', !!isTategakiZoomAutoFit);
+    }
+  }
+
+  let isTategakiZoomFitAllowUpscale = false;
+
+  function applyTategakiZoomScaleInternal(nextScale, keepAutoFitFlag, allowUpscaleFlag) {
+    currentTategakiZoomScale = clampTategakiZoomScale(nextScale);
+    isTategakiZoomAutoFit = !!keepAutoFitFlag;
+    isTategakiZoomFitAllowUpscale = !!allowUpscaleFlag;
+    applyCurrentTategakiZoomToAllPages();
+    syncTategakiZoomToolbarUi();
+  }
+
+  function setTategakiZoomExact(targetScale) {
+    applyTategakiZoomScaleInternal(targetScale, false, false);
+  }
+  window.setTategakiZoomExact = setTategakiZoomExact;
+
+  function stepTategakiZoom(direction) {
+    const dir = direction >= 0 ? 1 : -1;
+    const baseStepIndex = Math.round(getEffectiveTategakiZoomScale() / TategakiZoomStepScale);
+    const nextScale = (baseStepIndex + dir) * TategakiZoomStepScale;
+    applyTategakiZoomScaleInternal(nextScale, false, false);
+  }
+  window.stepTategakiZoom = stepTategakiZoom;
+
+  function fitTategakiZoomToStageHeight(isInitialAuto) {
+    if (isInitialAuto && !isTategakiZoomFitAllowUpscale) {
+      // 初期オープン・リサイズ追従時：PC大画面は 100% 原寸を維持し、タブレット等の小高さ画面では縦見切れゼロに縮小する
+      const autoCandidate = computeStageFitHeightScale(true);
+      const target = (autoCandidate < TategakiAutoFitTriggerMaxScale)
+        ? autoCandidate
+        : TategakiZoomDefaultScale;
+      applyTategakiZoomScaleInternal(target, true, false);
+      return;
+    }
+    // ツールバーの「↕ 縦幅に合わせる」ボタン押下時（および以降の追従）：現在のステージ縦幅ぴったりに合わせる
+    const manualFit = computeStageFitHeightScale(false);
+    applyTategakiZoomScaleInternal(manualFit, true, true);
+  }
+  window.fitTategakiZoomToStageHeight = fitTategakiZoomToStageHeight;
+
+  // ステージ高さ変化（タブレット回転・ルビ訓点バー開閉等）への自動フィット追従
+  // ResizeObserver ループ警告を防ぐため requestAnimationFrame 経由＆高さ変化時のみ実行する
+  window.addEventListener('DOMContentLoaded', () => {
+    syncTategakiZoomToolbarUi();
+    const stage = document.getElementById('tategakiEditorStage');
+    if (stage && typeof ResizeObserver === 'function') {
+      let lastObservedStageHeightPx = -1;
+      let zoomResizeRafId = 0;
+      const ro = new ResizeObserver(() => {
+        const overlay = document.getElementById('tategakiEditorOverlay');
+        if (!overlay || overlay.style.display === 'none') return;
+        const curH = stage.clientHeight;
+        if (curH <= 0 || curH === lastObservedStageHeightPx) return;
+        lastObservedStageHeightPx = curH;
+        if (!isTategakiZoomAutoFit) return;
+        if (zoomResizeRafId) cancelAnimationFrame(zoomResizeRafId);
+        zoomResizeRafId = requestAnimationFrame(() => {
+          zoomResizeRafId = 0;
+          if (isTategakiZoomAutoFit) {
+            fitTategakiZoomToStageHeight(true);
+          }
+        });
+      });
+      ro.observe(stage);
+    }
+  });
 
 
   </script>
