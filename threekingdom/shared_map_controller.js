@@ -28,6 +28,13 @@
   const PIN_MARKER_BORDER_WEIGHT_PX = 1.8;      // 地点丸ピンの白縁線幅(px)
   const PIN_TOOLTIP_OFFSET_Y_PX = -7;           // 地点ピンラベルの上方向オフセット(px)
 
+  // 選択した地名（地点ピン・赤名札・エリア強調バナー）を最前面へ出す専用ペイン定数（全巻・総合索引標準仕様）
+  // ※ z-index 階段：ポリゴン(400) < 親枠補助バナー(600) < 通常丸ピン(620) < 通常名札(650)
+  //                < 選択丸ピン(750) < 選択名札・選択エリアバナー(760) < ズームボタン(1000) < 索引(1500) < ナビ(2000)
+  const SELECTED_PIN_PANE_Z_INDEX = 750;        // 選択中の地点丸ピン専用ペインのz-index
+  const SELECTED_LABEL_PANE_Z_INDEX = 760;      // 選択中の地点赤名札・選択エリアバナー専用ペインのz-index
+  const ENABLE_ALL_VOLUMES_TOP_FOCUS = true;    // 全公開巻・総合索引・今後の全追加巻で常時有効
+
   const RIVER_BASE_WEIGHT_PX = 2.5;             // 常時表示する河川ラインの線幅(px)
   const RIVER_BASE_OPACITY = 0.72;              // 常時表示する河川ラインの不透明度
   const RIVER_HIGHLIGHT_OUTER_WEIGHT_PX = 7.0;  // 河川選択時の外側ハイライト線幅(px)
@@ -202,6 +209,14 @@
     return '#e65100';
   }
 
+  function isTopFocusEnabled(cfg) {
+    if (cfg && typeof cfg.enableTopFocus === 'boolean') return cfg.enableTopFocus;
+    if (typeof global !== 'undefined' && global.location && /[?&]top=0\b/.test(String(global.location.search || ''))) {
+      return false;
+    }
+    return ENABLE_ALL_VOLUMES_TOP_FOCUS;
+  }
+
   /**
    * 共通地図コントローラを生成・初期化する。
    * @param {Object} options 設定オブジェクト
@@ -217,6 +232,7 @@
     const riverLines = Array.isArray(cfg.riverLines) ? cfg.riverLines : [];
     const singlePinOnlyOnFocus = Boolean(cfg.singlePinOnlyOnFocus);
     const natureLabelMode = cfg.natureLabelMode || 'volume';
+    const topFocusEnabled = isTopFocusEnabled(cfg);
 
     const placeByKey = new Map();
     places.forEach(p => {
@@ -271,6 +287,14 @@
     map.createPane('pinsTopPane');
     map.getPane('pinsTopPane').style.zIndex = String(PIN_MARKER_PANE_Z_INDEX);
 
+    // 選択した地点ピン(750)および選択赤名札・選択エリアバナー(760)を他ピン・他名札(650)より一番上に出す専用ペイン
+    if (topFocusEnabled) {
+      map.createPane('selectedPinTopPane');
+      map.getPane('selectedPinTopPane').style.zIndex = String(SELECTED_PIN_PANE_Z_INDEX);
+      map.createPane('selectedLabelTopPane');
+      map.getPane('selectedLabelTopPane').style.zIndex = String(SELECTED_LABEL_PANE_Z_INDEX);
+    }
+
     // 2. 常時表示する自然地形（河川ライン・山脈名・大河名：4言語動的切替対応）
     const natureGroup = L.layerGroup().addTo(map);
     function renderNatureLayers() {
@@ -312,6 +336,7 @@
     const pinMarkerGroup = L.layerGroup().addTo(map);
     let activeHighlightLayers = [];
     let currentDirectKeys = [];
+    let activeSelectedPinKey = '';
     let lastFocusedState = null;
 
     global.addEventListener('resize', () => {
@@ -329,6 +354,7 @@
         el.classList.remove('selected-pin');
       });
       if (hideToast) {
+        activeSelectedPinKey = '';
         lastFocusedState = null;
         const toastEl = document.getElementById(toastId);
         if (toastEl) toastEl.style.display = 'none';
@@ -345,8 +371,7 @@
 
     /**
      * 指定された地名キー群のうち、地点の丸ピンのみを描画する。
-     * ※リロード時・段落切り替え時は事前の青・茶色エリア枠を一切出さず（クリック時のみ枠を表示）、
-     *   地図の中心移動・縮尺変更（fitBounds）も行わない。
+     * 他のピン・名札はそのまま維持し、選択中の地点ピン＆赤名札のみ最前面ペインへ配置する。
      */
     function renderPlaceKeys(rawKeysIterable, keepHighlights = false) {
       if (!keepHighlights) {
@@ -359,9 +384,11 @@
       currentDirectKeys = Array.from(directSet);
 
       places.filter(p => isPinPlace(p) && directSet.has(p.key)).forEach(place => {
+        const isSelected = topFocusEnabled && place.key === activeSelectedPinKey;
         const fillColor = resolvePinFillColor(place.province);
+        const selCls = place.key === activeSelectedPinKey ? ' selected-pin' : '';
         const marker = L.circleMarker([place.lat, place.lng], {
-          pane: 'pinsTopPane',
+          pane: isSelected ? 'selectedPinTopPane' : 'pinsTopPane',
           radius: PIN_MARKER_RADIUS_PX,
           fillColor: fillColor,
           color: '#fff',
@@ -369,15 +396,20 @@
           fillOpacity: 0.95
         }).addTo(pinMarkerGroup);
 
+        const tooltipOptions = {
+          permanent: true,
+          interactive: true,
+          direction: 'top',
+          offset: [0, PIN_TOOLTIP_OFFSET_Y_PX],
+          className: 'transparent-box'
+        };
+        if (isSelected) {
+          tooltipOptions.pane = 'selectedLabelTopPane';
+        }
+
         marker.bindTooltip(
-          `<span class="custom-label" id="pin-label-${escapeHtml(place.key)}">${escapeHtml(localizePinShortName(place.key))}</span>`,
-          {
-            permanent: true,
-            interactive: true,
-            direction: 'top',
-            offset: [0, PIN_TOOLTIP_OFFSET_Y_PX],
-            className: 'transparent-box'
-          }
+          `<span class="custom-label${selCls}" id="pin-label-${escapeHtml(place.key)}">${escapeHtml(localizePinShortName(place.key))}</span>`,
+          tooltipOptions
         );
         marker.on('click', () => handleMapItemClick(place.key));
       });
@@ -404,6 +436,7 @@
       const found = placeByKey.get(placeKey);
       clearHighlights(false);
       if (!found) return false;
+      activeSelectedPinKey = isPinPlace(found) ? found.key : '';
 
       if (singlePinOnlyOnFocus) {
         renderPlaceKeys([found.key], true);
@@ -416,7 +449,7 @@
       map.invalidateSize();
       map.stop();
 
-      // (A) エリア（州・郡・広域）の場合：領域ポリゴンと中央バナーを表示（最大ズーム7）
+      // (A) エリア（州・郡・広域）の場合：領域ポリゴンと中央バナーを表示（最大ズーム7、バナーは最前面ペイン）
       if (found.is_area && found.area_polygon) {
         map.fitBounds(found.area_polygon, {
           padding: [FIT_BOUNDS_PADDING_PX, FIT_BOUNDS_PADDING_PX],
@@ -431,7 +464,7 @@
           interactive: false
         }).addTo(map);
 
-        const bannerMarker = L.marker([found.lat, found.lng], {
+        const bannerOpts = {
           icon: L.divIcon({
             className: '',
             html: `<span class="area-banner-label">🗺️ ${escapeHtml(localizePinShortName(found.key))}</span>`,
@@ -439,7 +472,11 @@
             iconAnchor: [AREA_BANNER_WIDTH_PX / 2, AREA_BANNER_HEIGHT_PX / 2]
           }),
           interactive: false
-        }).addTo(map);
+        };
+        if (topFocusEnabled) {
+          bannerOpts.pane = 'selectedLabelTopPane';
+        }
+        const bannerMarker = L.marker([found.lat, found.lng], bannerOpts).addTo(map);
         activeHighlightLayers.push(areaPoly, bannerMarker);
       }
       // (B) 河川の場合：基準縮尺ズーム7で移動し、水系ポリラインをハイライト
