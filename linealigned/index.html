@@ -9521,40 +9521,52 @@ var loadSampleDocx;
 
 
   // ============================================================================
-  // GA4 エンジン実行イベント計測（横→横 / 横→縦 / 縦→縦 / PDF見開き）
+  // GA4 入力種別（DOCS / DOCX / PDF）出力イベント計測（国別・形式別一致）
   // ============================================================================
   (function attachLineAlignedRenderAnalytics() {
-    const docsBtn = document.getElementById('btnDocsExportPdf');
-    if (docsBtn) {
-      docsBtn.addEventListener('click', function() {
+    function bindDocsExportTrack(btnId, outFmt) {
+      const btn = document.getElementById(btnId);
+      if (!btn) return;
+      btn.addEventListener('click', function() {
+        if (!selectedDocsId || isDocsBusy) return;
         if (typeof trackStudioEvent === 'function') {
-          const ev = currentWritingDirection === 'vertical'
-            ? 'linealigned_render_h2v'
-            : 'linealigned_render_h2h';
-          trackStudioEvent(ev, { source_type: 'docs' });
+          trackStudioEvent('linealigned_render_docs', {
+            source_type: 'docs',
+            direction: currentWritingDirection,
+            output_format: outFmt
+          });
         }
       });
     }
 
-    const docxBtn = document.getElementById('btnDocxExportPdf');
-    if (docxBtn) {
-      docxBtn.addEventListener('click', function() {
+    function bindDocxExportTrack(btnId, outFmt) {
+      const btn = document.getElementById(btnId);
+      if (!btn) return;
+      btn.addEventListener('click', function() {
+        if ((!selectedDocxFileId && !selectedDocxBase64) || isDocxBusy) return;
         if (typeof trackStudioEvent === 'function') {
-          const isV2V = currentLoadedDocxSampleKind === 'v2v' ||
-            (!currentLoadedDocxSampleKind && typeof isCurrentDocxNativeVertical !== 'undefined' && isCurrentDocxNativeVertical);
-          const ev = isV2V
-            ? 'linealigned_render_v2v'
-            : (currentWritingDirection === 'vertical' ? 'linealigned_render_h2v' : 'linealigned_render_h2h');
-          trackStudioEvent(ev, { source_type: 'docx' });
+          trackStudioEvent('linealigned_render_docx', {
+            source_type: 'docx',
+            direction: currentWritingDirection,
+            output_format: outFmt
+          });
         }
       });
     }
+
+    bindDocsExportTrack('btnDocsExportPdf', 'pdf');
+    bindDocsExportTrack('btnDocsExportPngZip', 'png_zip');
+    bindDocxExportTrack('btnDocxExportPdf', 'pdf');
+    bindDocxExportTrack('btnDocxExportPngZip', 'png_zip');
 
     const pdfBtn = document.getElementById('generateBtn');
     if (pdfBtn) {
       pdfBtn.addEventListener('click', function() {
         if (typeof trackStudioEvent === 'function') {
-          trackStudioEvent('linealigned_render_pdf', { source_type: 'pdf' });
+          trackStudioEvent('linealigned_render_pdf', {
+            source_type: 'pdf',
+            output_format: 'pdf'
+          });
         }
       });
     }
